@@ -1,0 +1,88 @@
+•Analyzing expression:((+35(2√7))+(9(2√13)))/21
+  •Added implicit multiplications:((35*(2√7))+(9*(2√13)))/21
+  •Subdivision in classes:
+    •Analyzing expression:(35*(2√7))+(9*(2√13))
+      •Added implicit multiplications:(35*(2√7))+(9*(2√13))
+      •Subdivision in classes:
+        •Analyzing expression:35*(2√7)
+          •Added implicit multiplications:35*(2√7)
+          •Subdivision in classes:
+            •Added variable to expression:35
+            •Added variable to expression:*
+            •Analyzing expression:2√7
+              •Subdivision in classes:
+                •Added variable to expression:2
+                •Added variable to expression:√
+                •Added variable to expression:7
+              •Finished the subdivision in classes.
+              •Pushing classes...
+              •Correcting classes:
+                •Set variable to expression:√
+                  var1=2
+                  var2=7
+                  (result)=2√7
+              •Finished correcting classes.
+              •Result:2√7
+            •Added variable to expression:Parentesi
+          •Finished the subdivision in classes.
+          •Pushing classes...
+          •Correcting classes:
+            •Set variable to expression:*
+              var1=35
+              var2=2√7
+              (result)=35*(2√7)
+          •Finished correcting classes.
+          •Result:35*(2√7)
+        •Added variable to expression:Parentesi
+        •Added variable to expression:+
+        •Analyzing expression:9*(2√13)
+          •Added implicit multiplications:9*(2√13)
+          •Subdivision in classes:
+            •Added variable to expression:9
+            •Added variable to expression:*
+            •Analyzing expression:2√13
+              •Subdivision in classes:
+                •Added variable to expression:2
+                •Added variable to expression:√
+                •Added variable to expression:13
+              •Finished the subdivision in classes.
+              •Pushing classes...
+              •Correcting classes:
+                •Set variable to expression:√
+                  var1=2
+                  var2=13
+                  (result)=2√13
+              •Finished correcting classes.
+              •Result:2√13
+            •Added variable to expression:Parentesi
+          •Finished the subdivision in classes.
+          •Pushing classes...
+          •Correcting classes:
+            •Set variable to expression:*
+              var1=9
+              var2=2√13
+              (result)=9*(2√13)
+          •Finished correcting classes.
+          •Result:9*(2√13)
+        •Added variable to expression:Parentesi
+      •Finished the subdivision in classes.
+      •Pushing classes...
+      •Correcting classes:
+        •Set variable to expression:+
+          var1=35*(2√7)
+          var2=9*(2√13)
+          (result)=35*(2√7)+9*(2√13)
+      •Finished correcting classes.
+      •Result:35*(2√7)+9*(2√13)
+    •Added variable to expression:Parentesi
+    •Added variable to expression:/
+    •Added variable to expression:21
+  •Finished the subdivision in classes.
+  •Pushing classes...
+  •Correcting classes:
+    •Set variable to expression:/
+      var1=35*(2√7)+9*(2√13)
+      var2=21
+      (result)=(35*(2√7)+9*(2√13))/21
+  •Finished correcting classes.
+  •Result:(35*(2√7)+9*(2√13))/21
