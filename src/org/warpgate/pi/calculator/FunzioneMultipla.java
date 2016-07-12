@@ -3,6 +3,8 @@ package org.warpgate.pi.calculator;
 import java.util.Arrays;
 import java.util.List;
 
+import com.rits.cloning.Cloner;
+
 public abstract class FunzioneMultipla implements Funzione {
 	public FunzioneMultipla() {
 		setVariables(new Funzione[]{});
@@ -51,4 +53,19 @@ public abstract class FunzioneMultipla implements Funzione {
 	public abstract String simbolo();
 	@Override
 	public abstract Termine calcola() throws Errore;
+	
+	@Override
+	public String toString() {
+		try {
+			return calcola().toString();
+		} catch (Errore e) {
+			return e.id.toString();
+		}
+	}
+
+	@Override
+	public Funzione clone() {
+		Cloner cloner = new Cloner();
+		return cloner.deepClone(this);
+	}
 }

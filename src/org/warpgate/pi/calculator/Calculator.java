@@ -1,6 +1,6 @@
 package org.warpgate.pi.calculator;
 
-import org.nevec.rjm.BigSurdVec;
+import org.nevec.rjm.NumeroAvanzatoVec;
 
 public class Calculator {
 	
@@ -10,7 +10,7 @@ public class Calculator {
 
 	public Termine calcolarisultato(String string) throws Errore {
 		System.out.println("INPUT: " + string);
-		Parentesi espressione = new Parentesi(string, "");
+		Parentesi espressione = new Parentesi(string);
 		return espressione.calcola();
 	}
 

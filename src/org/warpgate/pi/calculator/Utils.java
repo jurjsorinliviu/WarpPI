@@ -1,20 +1,30 @@
 package org.warpgate.pi.calculator;
 
+import java.awt.Color;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
+import org.warp.engine.Display;
+import org.warp.engine.Display.Font;
 
 public class Utils {
-	
+
 	public static final int scale = 130;
+	public static final int resultScale = 8;
 
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;
+	public static final Font fontBig = new Font("CalcBig", Font.PLAIN, 16);
+	public static final Font fontSmall = new Font("CalcSmall", Font.PLAIN, 16);
 	
 	public static DebugStream debug = new DebugStream();
 
@@ -68,11 +78,77 @@ public class Utils {
 		   c[aLen] = b;
 		   return c;
 	}
-	
-	public static boolean ciSonoSoloNumeriESomme(ArrayList<Funzione> fl) {
+
+	public static boolean ciSonoSoloFunzioniImpostateSommeEquazioniESistemi(ArrayList<Funzione> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Somma || fl.get(i) instanceof Parentesi)) {
-				return false;
+			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Somma || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Parentesi)) {
+				if (fl.get(i) instanceof FunzioneAnteriore) {
+					if (((FunzioneAnteriore)fl.get(i)).variable == null) {
+						return false;
+					}
+				} else if (fl.get(i) instanceof FunzioneDueValori) {
+					if (((FunzioneDueValori)fl.get(i)).variable1 == null || ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	public static boolean ciSonoSoloFunzioniImpostateSommeMoltiplicazioniEquazioniESistemi(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Moltiplicazione || fl.get(i) instanceof Somma || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Parentesi)) {
+				if (fl.get(i) instanceof FunzioneAnteriore) {
+					if (((FunzioneAnteriore)fl.get(i)).variable == null) {
+						return false;
+					}
+				} else if (fl.get(i) instanceof FunzioneDueValori) {
+					if (((FunzioneDueValori)fl.get(i)).variable1 == null || ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public static boolean ciSonoSoloFunzioniImpostateEquazioniESistemi(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Parentesi)) {
+				if (fl.get(i) instanceof FunzioneAnteriore) {
+					if (((FunzioneAnteriore)fl.get(i)).variable == null) {
+						return false;
+					}
+				} else if (fl.get(i) instanceof FunzioneDueValori) {
+					if (((FunzioneDueValori)fl.get(i)).variable1 == null || ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	public static boolean ciSonoSoloFunzioniImpostateESistemi(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Parentesi)) {
+				if (fl.get(i) instanceof FunzioneAnteriore) {
+					if (((FunzioneAnteriore)fl.get(i)).variable == null) {
+						return false;
+					}
+				} else if (fl.get(i) instanceof FunzioneDueValori) {
+					if (((FunzioneDueValori)fl.get(i)).variable1 == null || ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+						return false;
+					}
+				} else {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -80,8 +156,19 @@ public class Utils {
 
 	public static boolean ciSonoFunzioniSNnonImpostate(ArrayList<Funzione> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof FunzioneSingola) {
-				if (((FunzioneSingola)fl.get(i)).variable == null) {
+			if (fl.get(i) instanceof FunzioneAnteriore && !(fl.get(i) instanceof ParteSistema)) {
+				if (((FunzioneAnteriore)fl.get(i)).variable == null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean ciSonoFunzioniNSNnonImpostate(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (fl.get(i) instanceof FunzioneDueValori && !(fl.get(i) instanceof Equazione) && !(fl.get(i) instanceof Somma) && !(fl.get(i) instanceof Sottrazione) && !(fl.get(i) instanceof Moltiplicazione) && !(fl.get(i) instanceof Divisione)) {
+				if (((FunzioneDueValori)fl.get(i)).variable1 == null && ((FunzioneDueValori)fl.get(i)).variable2 == null) {
 					return true;
 				}
 			}
@@ -89,10 +176,64 @@ public class Utils {
 		return false;
 	}
 	
-	public static boolean ciSonoAltreFunzioni(ArrayList<Funzione> fl) {
+	public static boolean ciSonoMoltiplicazioniNonImpostate(ArrayList<Funzione> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Somma || fl.get(i) instanceof Parentesi || fl.get(i) instanceof FunzioneSingola || fl.get(i) instanceof Moltiplicazione || fl.get(i) instanceof Divisione)) {
-				return true;
+			if (fl.get(i) instanceof Moltiplicazione || fl.get(i) instanceof Divisione) {
+				if (((FunzioneDueValori)fl.get(i)).variable1 == null && ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean ciSonoSommeNonImpostate(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (fl.get(i) instanceof Somma) {
+				if (((FunzioneDueValori)fl.get(i)).variable1 == null && ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean ciSonoEquazioniNonImpostate(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (fl.get(i) instanceof Equazione) {
+				if (((FunzioneDueValori)fl.get(i)).variable1 == null && ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static boolean ciSonoSistemiNonImpostati(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (fl.get(i) instanceof ParteSistema) {
+				if (((ParteSistema)fl.get(i)).variable == null) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	public static boolean ciSonoAltreFunzioniImpostate(ArrayList<Funzione> fl) {
+		for (int i = 0; i < fl.size(); i++) {
+			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Somma || fl.get(i) instanceof Parentesi || fl.get(i) instanceof FunzioneAnteriore || fl.get(i) instanceof Moltiplicazione || fl.get(i) instanceof Divisione)) {
+				if (fl.get(i) instanceof FunzioneAnteriore) {
+					if (((FunzioneAnteriore)fl.get(i)).variable == null) {
+						return true;
+					}
+				} else if (fl.get(i) instanceof FunzioneDueValori) {
+					if (((FunzioneDueValori)fl.get(i)).variable1 == null || ((FunzioneDueValori)fl.get(i)).variable2 == null) {
+						return true;
+					}
+				} else {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -106,51 +247,120 @@ public class Utils {
 		try {
 			return new Rational(str);
 		} catch (NumberFormatException ex) {
-			long bits = Double.doubleToLongBits(Double.parseDouble(str));
-
-			long sign = bits >>> 63;
-			long exponent = ((bits >>> 52) ^ (sign << 11)) - 1023;
-			long fraction = bits << 12; // bits are "reversed" but that's not a problem
-
-			long a = 1L;
-			long b = 1L;
-
-			for (int i = 63; i >= 12; i--) {
-			    a = a * 2 + ((fraction >>> i) & 1);
-			    b *= 2;
+			if (new BigDecimal(str).compareTo(new BigDecimal(Double.MAX_VALUE)) < 0 && new BigDecimal(str).compareTo(new BigDecimal(Double.MIN_VALUE)) > 0) {
+				if (str.equals("-")) {
+					str = "-1";
+				}
+				long bits = Double.doubleToLongBits(Double.parseDouble(str));
+	
+				long sign = bits >>> 63;
+				long exponent = ((bits >>> 52) ^ (sign << 11)) - 1023;
+				long fraction = bits << 12; // bits are "reversed" but that's not a problem
+	
+				long a = 1L;
+				long b = 1L;
+	
+				for (int i = 63; i >= 12; i--) {
+				    a = a * 2 + ((fraction >>> i) & 1);
+				    b *= 2;
+				}
+	
+				if (exponent > 0)
+				    a *= 1 << exponent;
+				else
+				    b *= 1 << -exponent;
+	
+				if (sign == 1)
+				    a *= -1;
+				
+				if (b == 0) {
+					a = 0;
+					b = 1;
+				}
+	
+				return new Rational(new BigInteger(a+""),new BigInteger(b+""));
+			} else {
+				BigDecimal original = new BigDecimal(str);
+				
+				BigInteger numerator = original.unscaledValue();
+				
+				BigInteger denominator = BigDecimalMath.pow(BigDecimal.TEN, new BigDecimal(original.scale())).toBigIntegerExact();
+				
+				return new Rational(numerator, denominator);
 			}
-
-			if (exponent > 0)
-			    a *= 1 << exponent;
-			else
-			    b *= 1 << -exponent;
-
-			if (sign == 1)
-			    a *= -1;
-			
-			if (b == 0) {
-				a = 0;
-				b = 1;
-			}
-
-			
-			return new Rational(new BigInteger(a+""),new BigInteger(b+""));
 		}
 	}
 	
 	public static BigDecimal rationalToIrrationalString(Rational r) {
 		return BigDecimalMath.divideRound(new BigDecimal(r.numer()).setScale(Utils.scale, Utils.scaleMode), new BigDecimal(r.denom()).setScale(Utils.scale, Utils.scaleMode));
 	}
-	public static boolean variabiliUguali(ArrayList<VariabileEdEsponente> variables, ArrayList<VariabileEdEsponente> variables2) {
+	public static boolean variabiliUguali(ArrayList<Incognita> variables, ArrayList<Incognita> variables2) {
 		if (variables.size() != variables2.size()) {
 			return false;
 		} else {
-			for (VariabileEdEsponente v : variables) {
+			for (Incognita v : variables) {
 				if (!variables2.contains(v)) {
 					return false;
 				}
 			}
 			return true;
+		}
+	}
+	
+	public static void writeLetter(Display d, String text, int x, int y, boolean small) {
+		if (small) {
+			d.setFont(fontSmall);
+		} else {
+			d.setFont(fontBig);
+		}
+		d.setColor(Color.BLACK);
+		d.drawString(text, x, y+getFontHeight(small));
+	}
+	
+	public static void writeSquareRoot(Display g, Funzione var, int x, int y, boolean small) {
+		if (small) {
+			g.setFont(fontSmall);
+		} else {
+			g.setFont(fontBig);
+		}
+		g.setColor(Color.BLACK);
+		int w1 = var.getWidth();
+		int h1 = var.getHeight(small);
+		int wsegno = 5;
+		int hsegno = h1+2;
+		
+		var.draw(x+wsegno, y+(hsegno-h1), g, small);
+
+		g.draw45Line(x, y+hsegno-3, x+2, y+hsegno-1, false);
+		g.drawOrthoLine(x+2, y+(hsegno-1)/2+1, x+2, y+hsegno-1);
+		g.drawOrthoLine(x+3, y, x+3, y+(hsegno-1)/2);
+		g.drawOrthoLine(x+3, y, x+3+1+w1+2, y);
+	}
+
+	public static final int getPlainTextWidth(String text) {
+		Graphics graphics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).getGraphics();
+		// get metrics from the graphics
+		FontMetrics metrics = graphics.getFontMetrics(fontBig.getFontAwt());
+		// get the advance of my text in this font
+		// and render context
+		int adv = metrics.stringWidth(text);
+		// calculate the size of a box to hold the
+		// text with some padding.
+		if (adv > 0) {
+			adv-=1;
+		}
+		return adv;
+	}
+
+	public static final int getFontHeight() {
+		return getFontHeight(false);
+	}
+	
+	public static final int getFontHeight(boolean small) {
+		if (small) {
+			return 6;
+		} else {
+			return 9;
 		}
 	}
 }

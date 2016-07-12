@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Vector;
 
+import org.warpgate.pi.calculator.Errore;
+
 /** A one-parameter polynomial with rational coefficients.
 * Alternatively to be interpreted as a sequence which has the polynomial as an (approximate)
 * generating function.
@@ -61,9 +63,10 @@ class RatPoly
         * @param A the list of values in the numerator of AFB
         * @param B the list of values in the denominator of AFB
         * @param nmax the order of the truncated polynomial representation
+         * @throws Errore 
         * @since 2008-11-13
         */
-        public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax)
+        public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax) throws Errore
         {
                 /* To allow common initialization with the signature below,
                 * the main body is assembled in a separate function.
@@ -77,9 +80,10 @@ class RatPoly
         *   At least one of these values must be a negative integer, which implicitly determines
         *   the order of the new polynomial.
         * @param B the list of values in the denominator of AFB
+         * @throws Errore 
         * @since 2009-08-05
         */
-        public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B)
+        public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B) throws Errore
         {
                 BigInteger Nmax = BigInteger.ONE.negate() ;
                 for(int j=0; j < A.size() ; j++)
@@ -103,9 +107,10 @@ class RatPoly
         * @param A the list of values in the numerator of AFB
         * @param B the list of values in the denominator of AFB
         * @param nmax the order of the truncated polynomial representation
+         * @throws Errore 
         * @since 2008-11-13
         */
-        protected void init(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax)
+        protected void init(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax) throws Errore
         {
                 a = new Vector<Rational>() ;
                 Factorial f=new Factorial() ;
@@ -370,9 +375,10 @@ class RatPoly
         * term that remains undetermined based on the current number of coefficients.
         * @param r the exponent of the power
         * @return This^r .
+         * @throws Errore 
         * @since 2009-05-18
         */
-        public RatPoly pow(final Rational r) throws ArithmeticException
+        public RatPoly pow(final Rational r) throws ArithmeticException, Errore
         {
                 /* split (a0+a1*x+a2*x^2+...)^r = a0^r*(1+a1/a0*r+a2/a0*r^2+..)^r
                 */
@@ -443,9 +449,10 @@ class RatPoly
         /** Divide by a constant.
         * @param val the constant through which the coefficients will be divided.
         * @return the Taylor expansion of this/val .
+         * @throws Errore 
         * @since 2009-05-18
         */
-        public RatPoly divide(final Rational val)
+        public RatPoly divide(final Rational val) throws Errore
         {
                 if ( val.compareTo(Rational.ZERO) != 0 )
                 {
@@ -462,8 +469,9 @@ class RatPoly
         * @param val the other polynomial
         * @param nmax the maximum degree of the Taylor expansion of the result.
         * @return the Taylor expansion of this/val up to degree nmax.
+         * @throws Errore 
         */
-        public RatPoly divide(final RatPoly val,int nmax)
+        public RatPoly divide(final RatPoly val,int nmax) throws Errore
         {
                 RatPoly num = this ;
                 RatPoly denom = val ;
@@ -501,9 +509,10 @@ class RatPoly
         * @return A vector with [0] containg the polynomial of degree which is the
         *  difference of thisdegree and the degree of val. [1] the remainder polynomial.
         * This = returnvalue[0] + returnvalue[1]/val .
+         * @throws Errore 
         * @since 2012-03-01
         */
-        public RatPoly[] divideAndRemainder(final RatPoly val)
+        public RatPoly[] divideAndRemainder(final RatPoly val) throws Errore
         {
                 RatPoly[] ret = new RatPoly[2] ;
                 /* remove any high-order zeros
@@ -648,9 +657,10 @@ class RatPoly
 
         /** Scale coefficients such that the coefficient in front of the maximum degree is unity.
         * @return The scaled polynomial
+         * @throws Errore 
         * @since 2008-10-26
         */
-        public RatPoly monic()
+        public RatPoly monic() throws Errore
         {
                 RatPoly m = new RatPoly() ;
                 final int d = degree() ;
@@ -776,9 +786,10 @@ class RatPoly
         /** Generate the roots of the polynomial in floating point arithmetic.
         * @see <a href="http://en.wikipedia.org/wiki/Durand-Kerner_method">Durand Kerner method</a>
         * @param the number of floating point digits
+         * @throws Errore 
         * @since 2008-10-26
         */
-        public Vector<BigComplex> roots(int digits)
+        public Vector<BigComplex> roots(int digits) throws Errore
         {
                 RatPoly mon = monic() ;
 

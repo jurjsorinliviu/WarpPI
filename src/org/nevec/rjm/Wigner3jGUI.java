@@ -16,6 +16,8 @@ import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.warpgate.pi.calculator.Errore;
+
 /**
  * An interactive interface to the Wigner3j class. The GUI allows to preselect
  * one of the symbols if the number of j-terms is small (6j up to 15j), or to
@@ -133,9 +135,10 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 	} /* init */
 
 	/**
+	 * @throws Errore 
 	 * @since 2010-08-27
 	 */
-	public void compute() {
+	public void compute() throws Errore {
 		String tr = inpGtria.getText();
 		String[] trias = new String[4];
 
@@ -206,7 +209,12 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 		 */
 		if (lin == "compute") {
 			outG.setText("");
-			compute();
+			try {
+				compute();
+			} catch (Errore e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 	} /* actionPerformed */
 

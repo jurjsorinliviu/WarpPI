@@ -3,6 +3,8 @@ package org.nevec.rjm;
 import java.math.BigInteger;
 import java.util.Scanner;
 
+import org.warpgate.pi.calculator.Errore;
+
 /**
  * Exact representations of Wigner 3jm and 3nj values of half-integer arguments.
  * 
@@ -30,8 +32,9 @@ public class Wigner3j {
 	 * 
 	 * @since 2011-02-15
 	 * @author Richard J. Mathar
+	 * @throws Errore 
 	 */
-	static public void main(String args[]) {
+	static public void main(String args[]) throws Errore {
 		if (args[0].compareTo("6j") == 0) {
 			try {
 				String m1 = "6";
@@ -102,8 +105,9 @@ public class Wigner3j {
 	 *         inequalities is violated or some parameters are out of range.
 	 * @since 2011-02-13
 	 * @author Richard J. Mathar
+	 * @throws Errore 
 	 */
-	static public BigSurd wigner3jm(int j1, int j2, int j3, int m1, int m2, int m3) {
+	static public BigSurd wigner3jm(int j1, int j2, int j3, int m1, int m2, int m3) throws Errore {
 		Rational J1 = new Rational(j1, 2);
 		Rational J2 = new Rational(j2, 2);
 		Rational J3 = new Rational(j3, 2);
@@ -136,8 +140,9 @@ public class Wigner3j {
 	 * @since 2011-02-13
 	 * @since 2012-02-15 Upgraded return value to BigSurdVec
 	 * @author Richard J. Mathar
+	 * @throws Errore 
 	 */
-	static public BigSurdVec wigner3j(String m1, String t1, String t2, String j) {
+	static public BigSurdVec wigner3j(String m1, String t1, String t2, String j) throws Errore {
 		/*
 		 * The first number in the line "m" is the number of angular momenta.
 		 * The rest of the line is ignored.
@@ -265,8 +270,9 @@ public class Wigner3j {
 	 * @since 2011-02-13
 	 * @since 2012-02-15 Upgraded to return BigSurdVec
 	 * @author Richard J. Mathar
+	 * @throws Errore 
 	 */
-	static private BigSurdVec wigner3j(final int[] tvec, final Rational[] J, final Rational[] M, final int[] triadidx) {
+	static private BigSurdVec wigner3j(final int[] tvec, final Rational[] J, final Rational[] M, final int[] triadidx) throws Errore {
 		/*
 		 * The result of the computation. The sum over all m-combinations of the
 		 * triads.
@@ -473,8 +479,9 @@ public class Wigner3j {
 	 *         inequalities is violated or some parameters are out of range.
 	 * @since 2011-02-13
 	 * @author Richard J. Mathar
+	 * @throws Errore 
 	 */
-	static protected BigSurd wigner3jm(Rational j1, Rational j2, Rational j3, Rational m1, Rational m2, Rational m3) {
+	static protected BigSurd wigner3jm(Rational j1, Rational j2, Rational j3, Rational m1, Rational m2, Rational m3) throws Errore {
 		/*
 		 * Check that m1+m2+m3 = 0
 		 */

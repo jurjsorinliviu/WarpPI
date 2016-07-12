@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.security.ProviderException;
 
+import org.warpgate.pi.calculator.Errore;
 import org.warpgate.pi.calculator.Utils;
 
 /** Square roots on the real line.
@@ -56,8 +57,12 @@ public class BigSurd implements Cloneable, Comparable<BigSurd>
                 if ( b.signum() < 0 )
                         throw new ProviderException("Not implemented: imaginary surds") ;
                 this.disc = b ;
-                normalize() ;
-                normalizeG() ;
+                try {
+                    normalize() ;
+					normalizeG() ;
+				} catch (Errore e) {
+					e.printStackTrace();
+				}
         }
 
         /** ctor given the numerator and denominator of the root.
@@ -175,9 +180,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd>
         /** Divide by another square root.
         * @param val A second number of this type.
         * @return The value of this/val
+         * @throws Errore 
         * @since 2011-02-12
         */
-        public BigSurd divide(final BigSurd val)
+        public BigSurd divide(final BigSurd val) throws Errore
         {
                 if( val.signum() == 0 )
                         throw new ArithmeticException("Dividing "+ toFancyString() + " through zero.") ;
@@ -218,9 +224,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd>
 		/** Divide by an integer.
         * @param val a second number.
         * @return the value of this/val
+		 * @throws Errore 
         * @since 2011-02-12
         */
-        public BigSurd divide(final BigInteger val)
+        public BigSurd divide(final BigInteger val) throws Errore
         {
                 if( val.signum() == 0 )
                         throw new ArithmeticException("Dividing "+ toFancyString() + " through zero.") ;
@@ -230,9 +237,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd>
         /** Divide by an integer.
         * @param val A second number.
         * @return The value of this/val
+         * @throws Errore 
         * @since 2011-02-12
         */
-        public BigSurd divide(int val)
+        public BigSurd divide(int val) throws Errore
         {
                 if( val == 0 )
                         throw new ArithmeticException("Dividing "+ toFancyString() + " through zero.") ;
@@ -384,9 +392,10 @@ System.out.println("dv sq " + res) ;
         } /* BigSurd.signum */
 
         /** Normalize to squarefree discriminant.
+         * @throws Errore 
         * @since 2011-02-12
         */
-        protected void normalize()
+        protected void normalize() throws Errore
         {
                 /* Move squares out of the numerator and denominator of the discriminant
                 */
@@ -418,9 +427,10 @@ System.out.println("dv sq " + res) ;
         } /* BigSurd.normalize */
 
         /** Normalize to coprime numerator and denominator in prefactor and discriminant
+         * @throws Errore 
         * @since 2011-02-12
         */
-        protected void normalizeG()
+        protected void normalizeG() throws Errore
         {
                 /* Is there a common factor between the numerator of the prefactor
                 * and the denominator of the discriminant ?

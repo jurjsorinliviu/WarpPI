@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.Vector;
 
+import org.warpgate.pi.calculator.Errore;
+
 /** Polynomial with integer coefficients.
 * Alternatively to be interpreted as a sequence which has the polynomial as an (approximate)
 * generating function.
@@ -519,9 +521,10 @@ public class BigIntegerPoly implements Cloneable
         * @return A (potentially empty) vector of factors, without multiplicity.
         *  Only factors with non-zero absolute coefficient are generated.
         *  This means the factors are of the form x^2+a*x+b=0 with nonzero b.
+         * @throws Errore 
         * @since 2012-03-01
         */
-        protected Vector<BigIntegerPoly> i2roots()
+        protected Vector<BigIntegerPoly> i2roots() throws Errore
         {
                 /* The vector of the factors to be returned
                 */
@@ -605,9 +608,10 @@ public class BigIntegerPoly implements Cloneable
         /** Factorization into integer polynomials.
         * The current factorization detects only factors which are polynomials of order up to 2.
         * @return The vector of factors. Factors with higher multiplicity are represented by repetition.
+         * @throws Errore 
         * @since 2012-03-01
         */
-        public Vector<BigIntegerPoly> ifactor()
+        public Vector<BigIntegerPoly> ifactor() throws Errore
         {
                 /* this ought be entirely rewritten in terms of the LLL algorithm
                 */

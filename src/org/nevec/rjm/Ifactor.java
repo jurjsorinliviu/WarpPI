@@ -4,6 +4,8 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Vector;
 
+import org.warpgate.pi.calculator.Errore;
+
 /** Factored integers.
 * This class contains a non-negative integer with the prime factor decomposition attached.
 * @since 2006-08-14
@@ -423,9 +425,10 @@ public class Ifactor implements Cloneable, Comparable<Ifactor>
         * @return n^(1/r).
         *   The return value falls into the Ifactor class if r is positive, but if r is negative
         *   a Rational type is needed.
+         * @throws Errore 
         * @since 2009-05-18
         */
-        public Rational root(final int r) throws ArithmeticException
+        public Rational root(final int r) throws ArithmeticException, Errore
         {
                 if ( r == 0 )
                         throw new ArithmeticException("Cannot pull zeroth root of "+ toString()) ;

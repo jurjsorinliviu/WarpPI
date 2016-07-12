@@ -3,6 +3,8 @@ package org.nevec.rjm ;
 import java.math.BigInteger;
 import java.util.Vector;
 
+import org.warpgate.pi.calculator.Errore;
+
 
 /** Bernoulli numbers.
 * @since 2006-06-25
@@ -44,8 +46,9 @@ public class Bernoulli
         /** The Bernoulli number at the index provided.
         * @param n the index, non-negative.
         * @return the B_0=1 for n=0, B_1=-1/2 for n=1, B_2=1/6 for n=2 etc
+         * @throws Errore 
         */
-        public Rational at(int n)
+        public Rational at(int n) throws Errore
         {
                 if ( n == 1)
                         return(new Rational(-1,2)) ;
@@ -67,7 +70,7 @@ public class Bernoulli
         * @param n The index of the Bernoulli number.
         * @return The Bernoulli number at n.
         */
-        private Rational doubleSum(int n)
+        private Rational doubleSum(int n) throws Errore
         {
                 Rational resul = Rational.ZERO ;
                 for(int k=0 ; k <= n ; k++)
