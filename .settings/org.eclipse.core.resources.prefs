@@ -1,12 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/org/nevec/rjm/BigSurd.java=UTF-8
 encoding//src/org/nevec/rjm/BigSurdVec.java=UTF-8
-encoding//src/org/nevec/rjm/NumeroAvanzato.java=UTF-8
-encoding//src/org/nevec/rjm/NumeroAvanzatoVec.java=UTF-8
-encoding//src/org/warp/engine/lwjgl/Display.java=UTF-8
 encoding//src/org/warpgate/pi/calculator/Main.java=UTF-8
 encoding//src/org/warpgate/pi/calculator/Parentesi.java=UTF-8
 encoding//src/org/warpgate/pi/calculator/Radice.java=UTF-8
 encoding//src/org/warpgate/pi/calculator/RadiceQuadrata.java=UTF-8
 encoding//src/org/warpgate/pi/calculator/Simboli.java=UTF-8
-encoding//src/org/warpgate/pi/calculator/screens/EquationScreen.java=UTF-8
