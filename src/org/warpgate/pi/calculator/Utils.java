@@ -13,8 +13,6 @@ import java.util.ArrayList;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
-import org.warp.engine.Display;
-import org.warp.engine.Display.Font;
 
 public class Utils {
 
@@ -23,8 +21,6 @@ public class Utils {
 
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;
-	public static final Font fontBig = new Font("CalcBig", Font.PLAIN, 16);
-	public static final Font fontSmall = new Font("CalcSmall", Font.PLAIN, 16);
 	
 	public static DebugStream debug = new DebugStream();
 
@@ -335,21 +331,6 @@ public class Utils {
 		g.drawOrthoLine(x+2, y+(hsegno-1)/2+1, x+2, y+hsegno-1);
 		g.drawOrthoLine(x+3, y, x+3, y+(hsegno-1)/2);
 		g.drawOrthoLine(x+3, y, x+3+1+w1+2, y);
-	}
-
-	public static final int getPlainTextWidth(String text) {
-		Graphics graphics = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB).getGraphics();
-		// get metrics from the graphics
-		FontMetrics metrics = graphics.getFontMetrics(fontBig.getFontAwt());
-		// get the advance of my text in this font
-		// and render context
-		int adv = metrics.stringWidth(text);
-		// calculate the size of a box to hold the
-		// text with some padding.
-		if (adv > 0) {
-			adv-=1;
-		}
-		return adv;
 	}
 
 	public static final int getFontHeight() {

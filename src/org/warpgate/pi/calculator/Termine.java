@@ -11,7 +11,6 @@ import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.NumeroAvanzato;
 import org.nevec.rjm.NumeroAvanzatoVec;
 import org.nevec.rjm.Rational;
-import org.warp.engine.Display;
 
 import com.rits.cloning.Cloner;
 

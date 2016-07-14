@@ -1,20 +1,22 @@
 package org.warpgate.pi.calculator;
 
 import org.nevec.rjm.NumeroAvanzatoVec;
+import org.warp.engine.lwjgl.Screen;
 
 public class Calculator {
 	
-	public Calculator(boolean b) {
-		Utils.debugOn = b;
-	}
-
-	public Termine calcolarisultato(String string) throws Errore {
+	public static String angleMode = "deg";
+	public static Screen[] sessions = new Screen[5];
+	public static int currentSession = 0;
+	public static boolean haxMode = true;
+	
+	public static Termine calcolarisultato(String string) throws Errore {
 		System.out.println("INPUT: " + string);
 		Parentesi espressione = new Parentesi(string);
 		return espressione.calcola();
 	}
 
-	public RisultatoEquazione calcolaequazione(String string) throws Errore {
+	public static RisultatoEquazione calcolaequazione(String string) throws Errore {
 		if (string.split("=").length == 0) {
 			return new RisultatoEquazione(new Termine("0"), true);
 		}

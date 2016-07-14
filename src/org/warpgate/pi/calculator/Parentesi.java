@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.nevec.rjm.NumeroAvanzato;
 import org.nevec.rjm.NumeroAvanzatoVec;
-import org.warp.engine.Display;
 
 public class Parentesi extends FunzioneMultipla {
 
@@ -356,6 +355,7 @@ public class Parentesi extends FunzioneMultipla {
 					fase = "sistemi"; //SESTA FASE
 				} else {
 					System.out.println("errore?");//BOH
+					throw new Errore(Errori.SYNTAX_ERROR);
 				}
 				while (i < funzioniOLD.size() && change == false && funzioniOLD.size() > 1) {
 					Funzione funzioneTMP = funzioniOLD.get(i);

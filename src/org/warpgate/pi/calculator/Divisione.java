@@ -5,7 +5,6 @@ import java.awt.Graphics;
 
 import org.nevec.rjm.NumeroAvanzatoVec;
 import org.nevec.rjm.Rational;
-import org.warp.engine.Display;
 
 public class Divisione extends FunzioneDueValori {
 
@@ -37,17 +36,17 @@ public class Divisione extends FunzioneDueValori {
 		return false;
 	}
 
-	public void draw(int x, int y, Display g, boolean small, boolean drawMinus) {
+	public void draw(int x, int y, boolean small, boolean drawMinus) {
 		boolean beforedrawminus = this.drawMinus;
 		this.drawMinus = drawMinus;
-		draw(x, y, g, small);
+		draw(x, y, small);
 		this.drawMinus = beforedrawminus;
 	}
 	
 	private boolean drawMinus = true;
 	
 	@Override
-	public void draw(int x, int y, Display g, boolean small) {
+	public void draw(int x, int y, boolean small) {
 		Object var1 = variable1;
 		Object var2 = variable2;
 		small = true;

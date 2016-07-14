@@ -220,7 +220,7 @@ public class BigDecimalMath
                                 break ;
                         s = s.add(x.divide(s,locmc)).divide(half,locmc) ;
                         /* debugging*/
-                        System.out.println("itr "+x.round(locmc).toString() + " " + s.round(locmc).toString()) ;
+                        //System.out.println("itr "+x.round(locmc).toString() + " " + s.round(locmc).toString()) ;
                 }
                 return s ;
         } /* BigDecimalMath.sqrt */

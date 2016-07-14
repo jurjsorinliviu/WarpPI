@@ -1,7 +1,6 @@
 package org.warpgate.pi.calculator;
 
 import org.nevec.rjm.NumeroAvanzatoVec;
-import org.warp.engine.Display;
 
 import com.rits.cloning.Cloner;
 

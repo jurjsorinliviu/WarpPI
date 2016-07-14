@@ -2,8 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/New2DGame"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DrakeEngine2"/>
 	<classpathentry kind="lib" path="D:/Programmazione/Java/Progetti Eclipse/GatePack/libs/objenesis-2.4.jar"/>
+	<classpathentry kind="src" path="res"/>
+	<classpathentry kind="lib" path="D:/Users/Andrea/Downloads/PNGDecoder.jar"/>
+	<classpathentry kind="lib" path="D:/Programmazione/Java/Progetti Eclipse/lwjgl-3.0.0b-raspberry/jar/lwjgl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/Programmazione/Java/Progetti Eclipse/lwjgl-3.0.0b-raspberry/native"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
