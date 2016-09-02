@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Vector;
 
-import org.warpgate.pi.calculator.Errore;
-import org.warpgate.pi.calculator.Utils;
+import org.warp.picalculator.Errore;
+import org.warp.picalculator.Utils;
 
 /**
  * A BigSurdVec represents an algebraic sum or differences of values which each
@@ -78,7 +78,8 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	/**
 	 * Combine terms that can be written as a single surd. This unites for
 	 * example the terms sqrt(90) and sqrt(10) to 4*sqrt(10).
-	 * @throws Errore 
+	 * 
+	 * @throws Errore
 	 * 
 	 * @since 2012-02-15
 	 */
@@ -141,6 +142,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @return 0 or +-1.
 	 * @since 2012-02-15
 	 */
+	@Override
 	public int compareTo(BigSurdVec oth) {
 		BigSurdVec diff;
 		try {
@@ -158,7 +160,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * equal to or larger than zero.
 	 * 
 	 * @return 0 or +-1.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2012-02-15
 	 */
 	public int signum() throws Errore {
@@ -209,12 +211,14 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 			else
 				lhs = new BigSurdVec(terms.elementAt(0), terms.elementAt(2));
 			lhs = lhs.sqr();
-			/* 
-			 * Strange line: this line isn't used, but it's present in this code!
+			/*
+			 * Strange line: this line isn't used, but it's present in this
+			 * code!
 			 * 
 			 * 
 			 * 
-			BigSurd rhs = new BigSurd(terms.elementAt(offsig).sqr(), Rational.ONE);
+			 * BigSurd rhs = new BigSurd(terms.elementAt(offsig).sqr(),
+			 * Rational.ONE);
 			 * 
 			 * 
 			 * 
@@ -304,7 +308,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be added to this.
 	 * @return The new value representing this+val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public BigSurdVec add(final BigSurdVec val) throws Errore {
 		BigSurdVec sum = new BigSurdVec();
@@ -331,7 +335,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be added to this.
 	 * @return The new value representing this+val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public BigSurdVec add(final BigSurd val) throws Errore {
 		BigSurdVec sum = new BigSurdVec();
@@ -350,7 +354,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be subtracted from this.
 	 * @return The new value representing this-val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public BigSurdVec subtract(final BigSurdVec val) throws Errore {
 		BigSurdVec sum = new BigSurdVec();
@@ -370,7 +374,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be subtracted from this.
 	 * @return The new value representing this-val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public BigSurdVec subtract(final BigSurd val) throws Errore {
 		BigSurdVec sum = new BigSurdVec();
@@ -407,7 +411,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * Compute the square.
 	 * 
 	 * @return this value squared.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2012-02-15
 	 */
 	public BigSurdVec sqr() throws Errore {
@@ -431,7 +435,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            a second number of this type.
 	 * @return the product of this with the val.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public BigSurdVec multiply(final BigSurd val) throws Errore {
@@ -554,6 +558,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @return the human-readable version in base 10
 	 * @since 2012-02-16
 	 */
+	@Override
 	public String toString() {
 		/*
 		 * simple cases with one term forwarded to the BigSurd class
@@ -597,16 +602,16 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 					if (numerator.compareTo(BigInteger.ONE) != 0) {
 						s += numerator.toString();
 						s += "*";
-						//s += "(";    Radice quadrata. non servono le parentesi.
+						// s += "("; Radice quadrata. non servono le parentesi.
 					}
 					s += "Ⓐ";
 					if (bs.disc.isInteger()) {
 						s += bs.disc.toString();
 					} else {
-						s += "("+bs.disc.toString()+")";
+						s += "(" + bs.disc.toString() + ")";
 					}
 					if (numerator.compareTo(BigInteger.ONE) != 0) {
-						//s += ")";    Radice quadrata. non servono le parentesi.
+						// s += ")"; Radice quadrata. non servono le parentesi.
 					}
 				}
 			}

@@ -6,15 +6,17 @@ import java.math.MathContext;
 import java.util.Comparator;
 import java.util.Vector;
 
-import org.warpgate.pi.calculator.Errore;
-import org.warpgate.pi.calculator.Incognita;
-import org.warpgate.pi.calculator.Incognite;
-import org.warpgate.pi.calculator.Utils;
+import org.warp.picalculator.Errore;
+import org.warp.picalculator.Incognite;
+import org.warp.picalculator.Utils;
 
 /**
- * A NumeroAvanzatoVec represents an algebraic sum or differences of values which each
- * term an instance of NumeroAvanzato. This mainly means that sums or differences of
- * two NumeroAvanzato (or two NumeroAvanzatoVec) can be represented (exactly) as a NumeroAvanzatoVec.
+ * A NumeroAvanzatoVec represents an algebraic sum or differences of values
+ * which each
+ * term an instance of NumeroAvanzato. This mainly means that sums or
+ * differences of
+ * two NumeroAvanzato (or two NumeroAvanzatoVec) can be represented (exactly) as
+ * a NumeroAvanzatoVec.
  * 
  * @since 2012-02-15
  * @author Richard J. Mathar
@@ -31,7 +33,8 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	public static final NumeroAvanzatoVec ONE = new NumeroAvanzatoVec(NumeroAvanzato.ONE);
 
 	/**
-	 * Internal representation: Each term as a single NumeroAvanzato. The value zero is
+	 * Internal representation: Each term as a single NumeroAvanzato. The value
+	 * zero is
 	 * represented by an empty vector.
 	 */
 	Vector<NumeroAvanzato> terms;
@@ -80,7 +83,8 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	/**
 	 * Combine terms that can be written as a single surd. This unites for
 	 * example the terms sqrt(90) and sqrt(10) to 4*sqrt(10).
-	 * @throws Errore 
+	 * 
+	 * @throws Errore
 	 * 
 	 * @since 2012-02-15
 	 */
@@ -129,15 +133,15 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 			if (!merged)
 				newter.add(todo);
 		}
-		
+
 		newter.sort(new Comparator<NumeroAvanzato>() {
-	        @Override
-	        public int compare(NumeroAvanzato o1, NumeroAvanzato o2) {
-	        	int index1 = Incognite.priorità(o1.getIncognitex().sqrt().multiply(o1.getIncognitey()).divide(o1.getIncognitez()));
-	        	int index2 = Incognite.priorità(o2.getIncognitex().sqrt().multiply(o2.getIncognitey()).divide(o2.getIncognitez()));
-	        	return index2-index1;
-	        }        
-	    });
+			@Override
+			public int compare(NumeroAvanzato o1, NumeroAvanzato o2) {
+				int index1 = Incognite.priorità(o1.getIncognitex().sqrt().multiply(o1.getIncognitey()).divide(o1.getIncognitez()));
+				int index2 = Incognite.priorità(o2.getIncognitex().sqrt().multiply(o2.getIncognitey()).divide(o2.getIncognitez()));
+				return index2 - index1;
+			}
+		});
 
 		/* overwrite old version */
 		terms = newter;
@@ -152,6 +156,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * @return 0 or +-1.
 	 * @since 2012-02-15
 	 */
+	@Override
 	public int compareTo(NumeroAvanzatoVec oth) {
 		NumeroAvanzatoVec diff;
 		try {
@@ -168,7 +173,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * equal to or larger than zero.
 	 * 
 	 * @return 0 or +-1.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2012-02-15
 	 */
 	public int signum() throws Errore {
@@ -180,7 +185,8 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 			return 0;
 
 		/*
-		 * if there is one term: forward to the signum function of NumeroAvanzato
+		 * if there is one term: forward to the signum function of
+		 * NumeroAvanzato
 		 */
 		if (terms.size() == 1)
 			return terms.firstElement().signum();
@@ -219,12 +225,14 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 			else
 				lhs = new NumeroAvanzatoVec(terms.elementAt(0), terms.elementAt(2));
 			lhs = lhs.sqr();
-			/* 
-			 * Strange line: this line isn't used, but it's present in this code!
+			/*
+			 * Strange line: this line isn't used, but it's present in this
+			 * code!
 			 * 
 			 * 
 			 * 
-			NumeroAvanzato rhs = new NumeroAvanzato(terms.elementAt(offsig).sqr(), Rational.ONE);
+			 * NumeroAvanzato rhs = new
+			 * NumeroAvanzato(terms.elementAt(offsig).sqr(), Rational.ONE);
 			 * 
 			 * 
 			 * 
@@ -317,7 +325,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * @param val
 	 *            The value to be added to this.
 	 * @return The new value representing this+val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public NumeroAvanzatoVec add(final NumeroAvanzatoVec val) throws Errore {
 		NumeroAvanzatoVec sum = new NumeroAvanzatoVec();
@@ -344,7 +352,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * @param val
 	 *            The value to be added to this.
 	 * @return The new value representing this+val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public NumeroAvanzatoVec add(final NumeroAvanzato val) throws Errore {
 		NumeroAvanzatoVec sum = new NumeroAvanzatoVec();
@@ -363,7 +371,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * @param val
 	 *            The value to be subtracted from this.
 	 * @return The new value representing this-val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public NumeroAvanzatoVec subtract(final NumeroAvanzatoVec val) throws Errore {
 		NumeroAvanzatoVec sum = new NumeroAvanzatoVec();
@@ -383,7 +391,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * @param val
 	 *            The value to be subtracted from this.
 	 * @return The new value representing this-val.
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public NumeroAvanzatoVec subtract(final NumeroAvanzato val) throws Errore {
 		NumeroAvanzatoVec sum = new NumeroAvanzatoVec();
@@ -420,7 +428,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * Compute the square.
 	 * 
 	 * @return this value squared.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2012-02-15
 	 */
 	public NumeroAvanzatoVec sqr() throws Errore {
@@ -444,7 +452,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * @param val
 	 *            a second number of this type.
 	 * @return the product of this with the val.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public NumeroAvanzatoVec multiply(final NumeroAvanzato val) throws Errore {
@@ -499,7 +507,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 		}
 		return val;
 	} /* NumeroAvanzatoVec.isRational */
-	
+
 	public boolean isNumeroAvanzato() {
 		return (this.terms.size() <= 1);
 	}
@@ -549,7 +557,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	public BigInteger toBigInteger(boolean hasBigIntegerVariables) {
 		BigDecimal tmp = BigDecimal.ZERO.setScale(Utils.scale, Utils.scaleMode);
 		if (isBigInteger(hasBigIntegerVariables) == false)
-			throw new ArithmeticException("Undefined conversion " + toString() + " to Rational.");
+			throw new ArithmeticException("Undefined conversion " + toString() + " to BigInteger.");
 		for (NumeroAvanzato s : terms) {
 			tmp = BigDecimalMath.addRound(tmp, s.pref.BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)));
 		}
@@ -569,14 +577,13 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 		return tmp;
 	} /* NumeroAvanzato.toBigDecimal */
 
-
 	public NumeroAvanzato toNumeroAvanzato() {
 		if (this.terms.size() == 0) {
 			return NumeroAvanzato.ZERO;
 		}
 		return this.terms.get(0);
 	}
-	
+
 	/**
 	 * Return a string in the format (number/denom)*()^(1/2). If the
 	 * discriminant equals 1, print just the prefactor.
@@ -584,25 +591,26 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 	 * @return the human-readable version in base 10
 	 * @since 2012-02-16
 	 */
+	@Override
 	public String toString() {
 		/*
 		 * simple cases with one term forwarded to the NumeroAvanzato class
 		 */
 		return toFancyString();
 		/*
-		if (terms.size() == 0)
-			return new String("0");
-		else {
-			String s = new String();
-			for (int t = 0; t < terms.size(); t++) {
-				NumeroAvanzato bs = terms.elementAt(t);
-				if (bs.signum() > 0)
-					s += "+";
-				s += bs.toString();
-			}
-			return s;
-		}
-		*/
+		 * if (terms.size() == 0)
+		 * return new String("0");
+		 * else {
+		 * String s = new String();
+		 * for (int t = 0; t < terms.size(); t++) {
+		 * NumeroAvanzato bs = terms.elementAt(t);
+		 * if (bs.signum() > 0)
+		 * s += "+";
+		 * s += bs.toString();
+		 * }
+		 * return s;
+		 * }
+		 */
 	} /* toString */
 
 	public String toFancyString() {
@@ -613,7 +621,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 			NumeroAvanzato bs = terms.elementAt(0).clone();
 			String num = bs.BigDecimalValue(new MathContext(Utils.resultScale, Utils.scaleMode2)).toEngineeringString();
 			if (num.contains("E")) {
-				s += "("+num.replace("E+", "*10^")+")";
+				s += "(" + num.replace("E+", "*10^") + ")";
 			} else {
 				s += num;
 			}
@@ -624,12 +632,13 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 			Incognite incognitedenom = new Incognite();
 			for (int i = 0; i < terms.size(); i++) {
 				denominator = BigIntegerMath.lcm(denominator, terms.elementAt(i).pref.b);
-				//denominator = denominator.multiply(terms.elementAt(i).pref.b);
+				// denominator =
+				// denominator.multiply(terms.elementAt(i).pref.b);
 				Incognite iz = terms.elementAt(i).getIncognitez();
 				incognitedenom = Incognite.lcm(incognitedenom, iz);
 			}
 			String s = "";
-			
+
 			if (denominator.abs().compareTo(new BigInteger("10000")) > 0) {
 				for (int i = 0; i < terms.size(); i++) {
 					NumeroAvanzato bs = terms.elementAt(i).clone();
@@ -638,11 +647,11 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 						if (bs.signum() > 0) {
 							s += "+";
 						}
-						num = num.replace("E+", "*10^")+")";
+						num = num.replace("E+", "*10^") + ")";
 						if (num.contains("*10^1)")) {
 							num = num.replace("*10^1)", ")");
 						} else {
-							num = "("+num;
+							num = "(" + num;
 						}
 						s += num;
 					} else {
@@ -655,7 +664,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 				}
 				return s;
 			}
-			
+
 			if (denominator.compareTo(BigInteger.ONE) != 0 || incognitedenom.count() > 0) {
 				if (terms.size() == 1 && terms.get(0).multiply(denominator).isBigInteger(true) == false) {
 					s += "(";
@@ -663,12 +672,12 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 			}
 			for (int t = 0; t < terms.size(); t++) {
 				NumeroAvanzato bs = terms.elementAt(t).clone();
-				
+
 				bs = bs.setIncognitey(bs.getIncognitey().divide(bs.getIncognitez()));
 				bs = bs.setIncognitey(bs.getIncognitey().multiply(incognitedenom));
 				bs = bs.multiply(denominator);
 				bs = bs.setIncognitez(incognitedenom);
-				
+
 				bs.pref = new Rational(bs.pref.a, BigInteger.ONE);
 				if (bs.signum() > 0 && t > 0)
 					s += "+";
@@ -687,7 +696,7 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 					} else if (numb.equals("-1")) {
 						s += "-";
 					}
-					s +=incognite;
+					s += incognite;
 				} else if (bs.isRational(true) || bs.isTooPreciseRational(true)) {
 					try {
 						s += bs.toRational(true).toString();
@@ -706,13 +715,13 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 								s += "-";
 							}
 						}
-						//s += "(";
+						// s += "(";
 					}
 					if (bs.disc.isInteger() && bs.getIncognitex().count() == 0) {
 						s += "Ⓐ(";
 						s += bs.disc.toString();
 						s += ")";
-					} else if((bs.disc.toString().equals("1") || bs.disc.toString().equals("-1")) && bs.getIncognitex().count() > 0) {
+					} else if ((bs.disc.toString().equals("1") || bs.disc.toString().equals("-1")) && bs.getIncognitex().count() > 0) {
 						s += "Ⓐ(";
 						if (bs.disc.toString().equals("-1")) {
 							s += "-";
@@ -720,16 +729,16 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 						s += bs.getIncognitex().toString();
 						s += ")";
 					} else {
-						s += "Ⓐ("+bs.disc.toString()+bs.getIncognitex().toString()+")";
+						s += "Ⓐ(" + bs.disc.toString() + bs.getIncognitex().toString() + ")";
 					}
 					if ((numerator.compareTo(BigInteger.ONE) != 0 || bs.getIncognitey().count() > 0) && (bs.disc.compareTo(BigInteger.ONE) != 0 || bs.getIncognitex().count() > 0)) {
 						if (((bs.getIncognitey().count() > 0) || (bs.getIncognitey().count() == 0 && numerator.toString().length() > 0))) {
 							s += bs.getIncognitey().toString();
 						}
-						//s += "(";
+						// s += "(";
 					}
 					if ((numerator.compareTo(BigInteger.ONE) != 0 || bs.getIncognitey().count() > 0) && (bs.disc.compareTo(BigInteger.ONE) != 0 || bs.getIncognitex().count() > 0)) {
-						//s += ")";
+						// s += ")";
 					}
 				}
 			}

@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import org.warpgate.pi.calculator.Errore;
-import org.warpgate.pi.calculator.Errori;
+import org.warp.picalculator.Errore;
+import org.warp.picalculator.Errori;
 
 /**
  * Fractions (rational numbers). They are divisions of two BigInteger numbers,
@@ -153,6 +153,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * 
 	 * @since 2008-11-07
 	 */
+	@Override
 	public Rational clone() {
 		/*
 		 * protected access means this does not work return new
@@ -231,7 +232,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *            the exponent.
 	 * @return this value raised to the power given by the exponent. If the
 	 *         exponent is 0, the value 1 is returned.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2009-05-18
 	 */
 	public Rational pow(BigInteger exponent) throws Errore {
@@ -253,7 +254,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *            third root etc
 	 * @return this value raised to the inverse power given by the root
 	 *         argument, this^(1/r).
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2009-05-18
 	 */
 	public Rational root(BigInteger r) throws Errore {
@@ -293,7 +294,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *            The exponent.
 	 * @return This value raised to the power given by the exponent. If the
 	 *         exponent is 0, the value 1 is returned.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2009-05-18
 	 */
 	public Rational pow(Rational exponent) throws Errore {
@@ -314,7 +315,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @param val
 	 *            A second rational number.
 	 * @return The value of this/val
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public Rational divide(final Rational val) throws Errore {
 		if (val.compareTo(Rational.ZERO) == 0)
@@ -334,7 +335,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @param val
 	 *            a second number.
 	 * @return the value of this/val
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public Rational divide(BigInteger val) throws Errore {
 		if (val.compareTo(BigInteger.ZERO) == 0)
@@ -349,7 +350,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @param val
 	 *            A second number.
 	 * @return The value of this/val
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public Rational divide(int val) throws Errore {
 		if (val == 0)
@@ -451,7 +452,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return the binomial coefficient.
 	 * @since 2006-06-27
 	 * @author Richard J. Mathar
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public static Rational binomial(Rational n, BigInteger m) throws Errore {
 		if (m.compareTo(BigInteger.ZERO) == 0)
@@ -473,7 +474,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return the binomial coefficient.
 	 * @since 2009-05-19
 	 * @author Richard J. Mathar
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public static Rational binomial(Rational n, int m) throws Errore {
 		if (m == 0)
@@ -495,7 +496,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return Gamma(n+k+1/2)/k!/GAMMA(n-k+1/2)
 	 * @since 2010-07-18
 	 * @author Richard J. Mathar
-	 * @throws Errore 
+	 * @throws Errore
 	 */
 	public static Rational hankelSymb(Rational n, int k) throws Errore {
 		if (k == 0)
@@ -593,6 +594,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return -1, 0 or 1 if this number is numerically less than, equal to, or
 	 *         greater than val.
 	 */
+	@Override
 	public int compareTo(final Rational val) {
 		/*
 		 * Since we have always kept the denominators positive, simple
@@ -622,6 +624,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * 
 	 * @return the human-readable version in base 10
 	 */
+	@Override
 	public String toString() {
 		if (b.compareTo(BigInteger.ONE) != 0)
 			return (a.toString() + "/" + b.toString());
@@ -788,7 +791,8 @@ public class Rational implements Cloneable, Comparable<Rational> {
 
 	/**
 	 * Conversion to an integer value, if this can be done exactly.
-	 * @throws Errore 
+	 * 
+	 * @throws Errore
 	 * 
 	 * @since 2011-02-13
 	 */
@@ -800,7 +804,8 @@ public class Rational implements Cloneable, Comparable<Rational> {
 
 	/**
 	 * Conversion to a BigInteger value, if this can be done exactly.
-	 * @throws Errore 
+	 * 
+	 * @throws Errore
 	 * 
 	 * @since 2012-03-02
 	 */
@@ -817,8 +822,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2010-05-26
 	 */
 	public boolean isIntegerFrac() {
-		return (a.compareTo(MAX_INT) <= 0 && a.compareTo(MIN_INT) >= 0 && b.compareTo(MAX_INT) <= 0
-				&& b.compareTo(MIN_INT) >= 0);
+		return (a.compareTo(MAX_INT) <= 0 && a.compareTo(MIN_INT) >= 0 && b.compareTo(MAX_INT) <= 0 && b.compareTo(MIN_INT) >= 0);
 	} /* Rational.isIntegerFrac */
 
 	/**

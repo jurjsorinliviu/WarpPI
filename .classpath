@@ -2,12 +2,30 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/Programmazione/Java/Progetti Eclipse/GatePack/libs/objenesis-2.4.jar"/>
 	<classpathentry kind="src" path="res"/>
-	<classpathentry kind="lib" path="D:/Users/Andrea/Downloads/PNGDecoder.jar"/>
-	<classpathentry kind="lib" path="D:/Programmazione/Java/Progetti Eclipse/lwjgl-3.0.0b-raspberry/jar/lwjgl.jar">
+	<classpathentry kind="lib" path="D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4.jar" sourcepath="D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4-sources.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="D:/Programmazione/Java/Progetti Eclipse/lwjgl-3.0.0b-raspberry/native"/>
+			<attribute name="javadoc_location" value="jar:file:/D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-core.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-core-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-core-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-device.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-device-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-device-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-gpio-extension.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-gpio-extension-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-gpio-extension-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-service.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-service-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-service-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

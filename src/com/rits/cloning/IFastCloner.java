@@ -7,8 +7,8 @@ import java.util.Map;
  * (it has to be registered with Cloner)
  *
  * @author kostantinos.kougios
- * 21 May 2009
+ *         21 May 2009
  */
 public interface IFastCloner {
-    public Object clone(Object t, IDeepCloner cloner, Map<Object, Object> clones);
+	public Object clone(Object t, IDeepCloner cloner, Map<Object, Object> clones);
 }

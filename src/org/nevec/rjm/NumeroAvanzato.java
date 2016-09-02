@@ -5,10 +5,8 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.security.ProviderException;
 
-import org.warpgate.pi.calculator.Errore;
-import org.warpgate.pi.calculator.Incognita;
-import org.warpgate.pi.calculator.Incognite;
-import org.warpgate.pi.calculator.Utils;
+import org.warp.picalculator.Errore;
+import org.warp.picalculator.Incognite;
 
 /**
  * Square roots on the real line. These represent numbers which are a product of
@@ -67,7 +65,7 @@ public class NumeroAvanzato implements Cloneable {
 	 *            the prefactor.
 	 * @param b
 	 *            the discriminant.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public NumeroAvanzato(Rational a, Rational b) {
@@ -83,7 +81,7 @@ public class NumeroAvanzato implements Cloneable {
 		incognitez = new Incognite();
 		try {
 			normalize();
-		normalizeG();
+			normalizeG();
 		} catch (Errore e) {
 			e.printStackTrace();
 		}
@@ -101,7 +99,7 @@ public class NumeroAvanzato implements Cloneable {
 		incognitey = y;
 		incognitez = z;
 		try {
-		normalize();
+			normalize();
 			normalizeG();
 		} catch (Errore e) {
 			e.printStackTrace();
@@ -143,6 +141,7 @@ public class NumeroAvanzato implements Cloneable {
 	 * 
 	 * @since 2011-02-12
 	 */
+	@Override
 	public NumeroAvanzato clone() {
 		Rational fclon = pref.clone();
 		Rational dclon = disc.clone();
@@ -190,8 +189,7 @@ public class NumeroAvanzato implements Cloneable {
 	 * @since 2011-02-12
 	 */
 	public NumeroAvanzato multiply(final NumeroAvanzato val) {
-		return new NumeroAvanzato(pref.multiply(val.pref), disc.multiply(val.disc), incognitex.multiply(val.incognitex),
-				incognitey.multiply(val.incognitey), incognitez.multiply(val.incognitez));
+		return new NumeroAvanzato(pref.multiply(val.pref), disc.multiply(val.disc), incognitex.multiply(val.incognitex), incognitey.multiply(val.incognitey), incognitez.multiply(val.incognitez));
 	} /* NumeroAvanzato.multiply */
 
 	/**
@@ -235,7 +233,7 @@ public class NumeroAvanzato implements Cloneable {
 	 * Compute the square.
 	 * 
 	 * @return this value squared.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public NumeroAvanzato pow2() throws Errore {
@@ -259,7 +257,7 @@ public class NumeroAvanzato implements Cloneable {
 	 * @param val
 	 *            A second number of this type.
 	 * @return The value of this/val
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public NumeroAvanzato divide(final NumeroAvanzato val) throws Errore {
@@ -283,7 +281,7 @@ public class NumeroAvanzato implements Cloneable {
 	 * @param val
 	 *            a second number.
 	 * @return the value of this/val
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public NumeroAvanzato divide(final BigInteger val) throws Errore {
@@ -298,7 +296,7 @@ public class NumeroAvanzato implements Cloneable {
 	 * @param val
 	 *            A second number.
 	 * @return The value of this/val
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public NumeroAvanzato divide(int val) throws Errore {
@@ -340,7 +338,7 @@ public class NumeroAvanzato implements Cloneable {
 	 *            the other constant to compare with
 	 * @return -1, 0 or 1 if this number is numerically less than, equal to, or
 	 *         greater than val.
-	 * @throws Errore 
+	 * @throws Errore
 	 * @since 2011-02-12
 	 */
 	public int signumComparedTo(final NumeroAvanzato val) throws Errore {
@@ -388,6 +386,7 @@ public class NumeroAvanzato implements Cloneable {
 	 * @return the human-readable version in base 10
 	 * @since 2011-02-12
 	 */
+	@Override
 	public String toString() {
 		try {
 			return toFancyString();
@@ -396,11 +395,12 @@ public class NumeroAvanzato implements Cloneable {
 			e.printStackTrace();
 		}
 		/*
-		if (disc.compareTo(Rational.ONE) != 0 && disc.compareTo(Rational.ZERO) != 0)
-			return ("(" + pref.toString() + ")*(" + disc.toString() + ")^(1/2)");
-		else
-			return pref.toString();
-			*/
+		 * if (disc.compareTo(Rational.ONE) != 0 &&
+		 * disc.compareTo(Rational.ZERO) != 0)
+		 * return ("(" + pref.toString() + ")*(" + disc.toString() + ")^(1/2)");
+		 * else
+		 * return pref.toString();
+		 */
 		return "err";
 	} /* NumeroAvanzato.toString */
 
@@ -435,7 +435,8 @@ public class NumeroAvanzato implements Cloneable {
 	/**
 	 * True if the value is integer. Equivalent to the indication whether a
 	 * conversion to an integer can be exact.
-	 * @param hasBigIntegerVariables 
+	 * 
+	 * @param hasBigIntegerVariables
 	 * 
 	 * @since 2011-02-12
 	 */
@@ -464,16 +465,16 @@ public class NumeroAvanzato implements Cloneable {
 					return false;
 				}
 			}
-			
+
 			if (this.pref.b.compareTo(new BigInteger("10000")) > 0) {
 				return false;
 			}
 			return true;
 		}
 		return false;
-		
+
 	} /* NumeroAvanzato.isRational */
-	
+
 	public boolean isTooPreciseRational(boolean hasRationalVariables) {
 		if (disc.signum() == 0 || disc.compareTo(new Rational(1, 1)) == 0) {
 			if (incognitex.count() > 0) {
@@ -483,7 +484,7 @@ public class NumeroAvanzato implements Cloneable {
 					return false;
 				}
 			}
-			
+
 			if (this.pref.b.compareTo(new BigInteger("10000")) > 0) {
 				return true;
 			}
@@ -494,7 +495,8 @@ public class NumeroAvanzato implements Cloneable {
 
 	/**
 	 * Convert to a rational value if possible
-	 * @throws Errore 
+	 * 
+	 * @throws Errore
 	 * 
 	 * @since 2012-02-15
 	 */
@@ -511,7 +513,7 @@ public class NumeroAvanzato implements Cloneable {
 		else
 			throw new ArithmeticException("Undefined conversion " + toFancyString() + " to Rational.");
 	}
-	
+
 	/**
 	 * The sign: 1 if the number is >0, 0 if ==0, -1 if <0
 	 * 
@@ -529,7 +531,8 @@ public class NumeroAvanzato implements Cloneable {
 
 	/**
 	 * Normalize to squarefree discriminant.
-	 * @throws Errore 
+	 * 
+	 * @throws Errore
 	 * 
 	 * @since 2011-02-12
 	 */
@@ -567,23 +570,23 @@ public class NumeroAvanzato implements Cloneable {
 			}
 
 			disc = new Rational(numC, denC);
-			
+
 			if (disc.b.compareTo(BigInteger.ZERO) == 0 || disc.a.compareTo(BigInteger.ZERO) == 0 || pref.a.compareTo(BigInteger.ZERO) == 0) {
 				incognitex = new Incognite();
 				incognitey = new Incognite();
 			}
-			
+
 			if (disc.b.compareTo(BigInteger.ZERO) == 0 || pref.b.compareTo(BigInteger.ZERO) == 0) {
 				incognitez = new Incognite();
 			}
-			
+
 			if (incognitey.compareTo(incognitez)) {
 				incognitey = new Incognite();
 				incognitez = new Incognite();
 			}
-			
+
 			/**/
-			Incognite[] incognitetemp = new Incognite[]{incognitex, incognitey, incognitez};
+			Incognite[] incognitetemp = new Incognite[] { incognitex, incognitey, incognitez };
 			incognitetemp = Incognite.normalizeBigSurdVariables(incognitetemp);
 			incognitex = incognitetemp[0];
 			incognitey = incognitetemp[1];
@@ -600,7 +603,8 @@ public class NumeroAvanzato implements Cloneable {
 	/**
 	 * Normalize to coprime numerator and denominator in prefactor and
 	 * discriminant
-	 * @throws Errore 
+	 * 
+	 * @throws Errore
 	 * 
 	 * @since 2011-02-12
 	 */
