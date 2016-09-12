@@ -1,11 +1,11 @@
 package org.warp.picalculator;
 
-public interface Funzione {
-	public String simbolo();
+public interface Function {
+	public String getSymbol();
 
-	public Funzione calcola() throws Errore;
+	public Function solve() throws Error;
 
-	public void calcolaGrafica();
+	public void generateGraphics();
 
 	public void draw(int x, int y);
 

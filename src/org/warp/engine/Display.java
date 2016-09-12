@@ -147,22 +147,56 @@ public class Display {
 		public static void glDrawSkin(int skinwidth, int[] skin, int x0, int y0, int s0, int t0, int s1, int t1, boolean transparent) {
 			x0+=Main.screenPos[0];
 			y0+=Main.screenPos[1];
+			int oldColor;
+			int newColor;
+			int onex = s0 <= s1?1:-1;
+			int oney = t0 <= t1?1:-1;
+			int width = 0;
+			int height = 0;
+			if (onex == -1) {
+				int s00 = s0;
+				s0 = s1;
+				s1 = s00;
+				width = s1-s0;
+			}
+			if (oney == -1) {
+				int t00 = t0;
+				t0 = t1;
+				t1 = t00;
+				height = t1-t0;
+			}
 			if (x0 >= size[0] || y0 >= size[0]) {
 				return;
 			}
-			if (x0 + (s1-s0) >= size[0]) {
+			if (x0 + width >= size[0]) {
 				s1 = size[0] - x0 + s0;
 			}
-			if (y0 + (t1-t0) >= size[1]) {
+			if (y0 + height >= size[1]) {
 				t1 = size[1] - y0 + t0;
 			}
-			int oldColor;
-			int newColor;
+			if (x0 < 0) {
+				if (onex == -1) {
+					width += x0;
+					s1 += x0 + 1;
+				} else {
+					s0 -= x0;
+				}
+				x0 = 0;
+			}
+			if (y0 < 0) {
+				if (oney == -1) {
+					height += y0;
+					t1 += y0 + 1;
+				} else {
+					t0 -= y0;
+				}
+				y0 = 0;
+			}
 			for (int texx = 0; texx < s1 - s0; texx++) {
 				for (int texy = 0; texy < t1 - t0; texy++) {
 					newColor = skin[(s0 + texx) + (t0 + texy) * skinwidth];
 					if (transparent) {
-						oldColor = canvas2d[(x0 + texx) + (y0 + texy) * size[0]];
+						oldColor = canvas2d[(x0 + texx*onex + width) + (y0 + texy*oney + height) * size[0]];
 						float a2 = ((float)(newColor >> 24 & 0xFF)) / 255f;
 						float a1 = 1f-a2;
 						int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
@@ -170,7 +204,7 @@ public class Display {
 						int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
 						newColor = 0xFF000000 | r << 16 | g << 8 | b;
 					}
-					canvas2d[(x0 + texx) + (y0 + texy) * size[0]] = newColor;
+					canvas2d[(x0 + texx*onex + width) + (y0 + texy*oney + height) * size[0]] = newColor;
 				}
 			}
 		}

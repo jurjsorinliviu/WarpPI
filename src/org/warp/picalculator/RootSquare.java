@@ -2,21 +2,21 @@ package org.warp.picalculator;
 
 import org.nevec.rjm.Rational;
 
-public class RadiceQuadrata extends FunzioneAnterioreBase {
+public class RootSquare extends AnteriorFunctionBase {
 
-	public RadiceQuadrata(FunzioneBase value) {
+	public RootSquare(FunctionBase value) {
 		super(value);
 	}
 
 	@Override
-	public String simbolo() {
-		return Simboli.SQUARE_ROOT;
+	public String getSymbol() {
+		return MathematicalSymbols.SQUARE_ROOT;
 	}
 	
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable.setSmall(small);
-		variable.calcolaGrafica();
+		variable.generateGraphics();
 		
 		height = getVariable().getHeight() + 2;
 		width = 1 + 4 + getVariable().getWidth() + 1;
@@ -24,17 +24,17 @@ public class RadiceQuadrata extends FunzioneAnterioreBase {
 	}
 
 	@Override
-	public Termine calcola() throws Errore {
+	public Number solve() throws Error {
 		try {
-			Termine result = getVariable().calcola();
-			result = result.pow(new Termine(new Rational(1, 2)));
+			Number result = getVariable().solve();
+			result = result.pow(new Number(new Rational(1, 2)));
 			return result;
 		} catch(NullPointerException ex) {
-			throw new Errore(Errori.ERROR);
+			throw new Error(Errors.ERROR);
 		} catch(NumberFormatException ex) {
-			throw new Errore(Errori.SYNTAX_ERROR);
+			throw new Error(Errors.SYNTAX_ERROR);
 		} catch(ArithmeticException ex) {
-			throw new Errore(Errori.NUMBER_TOO_SMALL);
+			throw new Error(Errors.NUMBER_TOO_SMALL);
 		}
 	}
 

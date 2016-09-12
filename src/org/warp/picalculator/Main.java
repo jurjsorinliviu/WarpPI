@@ -47,15 +47,6 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		try {
-			Termine t = new Termine("9999.9");
-			Termine r = t.calcola();
-			System.out.println(t.toString());
-			System.out.println(r.toString());
-		} catch (Errore e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		new Main();
 	}
 }

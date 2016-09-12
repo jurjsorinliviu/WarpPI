@@ -1,8 +1,6 @@
 package org.warp.picalculator.screens;
 
-import static org.warp.engine.Display.Render.glClearColor;
-import static org.warp.engine.Display.Render.glDrawStringLeft;
-import static org.warp.engine.Display.Render.setFont;
+import static org.warp.engine.Display.Render.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -12,9 +10,9 @@ import org.warp.device.PIDisplay;
 import org.warp.engine.Display;
 import org.warp.engine.Screen;
 import org.warp.picalculator.Calculator;
-import org.warp.picalculator.Errore;
-import org.warp.picalculator.Errori;
-import org.warp.picalculator.Funzione;
+import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
+import org.warp.picalculator.Function;
 import org.warp.picalculator.Utils;
 
 public class EquationScreen extends Screen {
@@ -25,8 +23,8 @@ public class EquationScreen extends Screen {
 	public volatile int caretPos = 0;
 	public volatile boolean showCaret = true;
 	public volatile float showCaretDelta = 0f;
-	public Funzione f;
-	public Funzione f2;
+	public Function f;
+	public Function f2;
 	public int ew1;
 	public int ew2;
 	public int eh2;
@@ -37,8 +35,8 @@ public class EquationScreen extends Screen {
 	public boolean aftersleep;
 	public boolean autoscroll;
 	public int errorLevel = 0; // 0 = nessuno, 1 = risultato, 2 = tutto
-	public Errore err1;
-	public Errore err2;
+	public Error err1;
+	public Error err2;
 	boolean mustRefresh = true;
 
 	public EquationScreen() {
@@ -109,7 +107,7 @@ public class EquationScreen extends Screen {
 			// System.out.println("Time elapsed: " + (double) timeElapsed /
 			// 1000000 + " milliseconds\n");
 
-		} catch (Errore e) {
+		} catch (Error e) {
 			glClearColor(0xFFDC3C32);
 			StringWriter sw = new StringWriter();
 			PrintWriter pw = new PrintWriter(sw);
@@ -120,13 +118,13 @@ public class EquationScreen extends Screen {
 		}
 	}
 
-	public void interpreta(String eqn) throws Errore {
+	public void interpreta(String eqn) throws Error {
 		equazioneCorrente = eqn;
-		f = Calculator.interpreta(equazioneCorrente.replace("sqrt", "Ⓐ").replace("^", "Ⓑ"));
-		f.calcolaGrafica();
+		f = Calculator.parseString(equazioneCorrente.replace("sqrt", "Ⓐ").replace("^", "Ⓑ"));
+		f.generateGraphics();
 	}
 	
-	public void solve() throws Errore {
+	public void solve() throws Error {
 		Calculator.solve();
 	}
 
@@ -148,6 +146,7 @@ public class EquationScreen extends Screen {
 	public void render() {
 		setFont(PIDisplay.fonts[0]);
 		glClearColor(0xFFCCE7D4);
+		glColor3f(0, 0, 0);
 		glDrawStringLeft(2, 22, nuovaEquazione.substring(0, caretPos)+(showCaret?"|":"")+nuovaEquazione.substring(((showCaret==false||nuovaEquazione.length()<=caretPos)?caretPos:caretPos+1), nuovaEquazione.length()));
 		if (f != null)
 			f.draw(2, 22+1+9+1);
@@ -185,9 +184,9 @@ public class EquationScreen extends Screen {
 								interpreta(nuovaEquazione);
 								solve();
 							} catch (Exception ex) {
-								throw new Errore(Errori.ERROR);
+								throw new Error(Errors.ERROR);
 							}
-						} catch (Errore e) {
+						} catch (Error e) {
 							glClearColor(0xFFDC3C32);
 							StringWriter sw = new StringWriter();
 							PrintWriter pw = new PrintWriter(sw);

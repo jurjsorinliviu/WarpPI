@@ -25,7 +25,8 @@ public class Keyboard {
 	private static final int QH_pin = 40;
 	private static final int CLK_INH_pin = 33;
 
-	private static boolean[][] precedentStates = new boolean[8][8];
+	private static volatile boolean[][] precedentStates = new boolean[8][8];
+	public static volatile boolean[][] debugKeysDown = new boolean[8][8];
 	
 	public static void startKeyboard() {
 		if (Utils.debugOn == false) {
@@ -75,7 +76,11 @@ public class Keyboard {
 	}
 
 	public static boolean isKeyDown(int row, int col) {
-		return precedentStates[row][col];
+		if (Utils.debugOn == false) {
+			return precedentStates[row-1][col-1];
+		} else {
+			return debugKeysDown[row-1][col-1];
+		}
 	}
 	
 	private static void keyReleasedRaw(int row, int col) {
@@ -84,7 +89,7 @@ public class Keyboard {
 		}
 	}
 
-	private static void keyPressedRaw(int row, int col) {
+	static void keyPressedRaw(int row, int col) {
 		if (row == 1 && col == 1) {
 			keyPressed(Key.SHIFT);
 		} else if (row == 1 && col == 2) {

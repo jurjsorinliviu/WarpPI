@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Vector;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 
 /**
  * A one-parameter polynomial with rational coefficients.
@@ -75,10 +75,10 @@ class RatPoly {
 	 *            the list of values in the denominator of AFB
 	 * @param nmax
 	 *            the order of the truncated polynomial representation
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2008-11-13
 	 */
-	public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax) throws Errore {
+	public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax) throws Error {
 		/*
 		 * To allow common initialization with the signature below,
 		 * the main body is assembled in a separate function.
@@ -96,10 +96,10 @@ class RatPoly {
 	 *            the order of the new polynomial.
 	 * @param B
 	 *            the list of values in the denominator of AFB
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-05
 	 */
-	public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B) throws Errore {
+	public RatPoly(final Vector<BigInteger> A, final Vector<BigInteger> B) throws Error {
 		BigInteger Nmax = BigInteger.ONE.negate();
 		for (int j = 0; j < A.size(); j++) {
 			if (A.elementAt(j).compareTo(BigInteger.ZERO) <= 0) {
@@ -125,10 +125,10 @@ class RatPoly {
 	 *            the list of values in the denominator of AFB
 	 * @param nmax
 	 *            the order of the truncated polynomial representation
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2008-11-13
 	 */
-	protected void init(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax) throws Errore {
+	protected void init(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax) throws Error {
 		a = new Vector<Rational>();
 		Factorial f = new Factorial();
 		for (int n = 0; n <= nmax; n++) {
@@ -433,10 +433,10 @@ class RatPoly {
 	 * @param r
 	 *            the exponent of the power
 	 * @return This^r .
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-05-18
 	 */
-	public RatPoly pow(final Rational r) throws ArithmeticException, Errore {
+	public RatPoly pow(final Rational r) throws ArithmeticException, Error {
 		/*
 		 * split (a0+a1*x+a2*x^2+...)^r = a0^r*(1+a1/a0*r+a2/a0*r^2+..)^r
 		 */
@@ -520,10 +520,10 @@ class RatPoly {
 	 * @param val
 	 *            the constant through which the coefficients will be divided.
 	 * @return the Taylor expansion of this/val .
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-05-18
 	 */
-	public RatPoly divide(final Rational val) throws Errore {
+	public RatPoly divide(final Rational val) throws Error {
 		if (val.compareTo(Rational.ZERO) != 0) {
 			RatPoly resul = new RatPoly();
 			for (int n = 0; n < a.size(); n++)
@@ -541,9 +541,9 @@ class RatPoly {
 	 * @param nmax
 	 *            the maximum degree of the Taylor expansion of the result.
 	 * @return the Taylor expansion of this/val up to degree nmax.
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public RatPoly divide(final RatPoly val, int nmax) throws Errore {
+	public RatPoly divide(final RatPoly val, int nmax) throws Error {
 		RatPoly num = this;
 		RatPoly denom = val;
 
@@ -583,10 +583,10 @@ class RatPoly {
 	 *         difference of thisdegree and the degree of val. [1] the remainder
 	 *         polynomial.
 	 *         This = returnvalue[0] + returnvalue[1]/val .
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2012-03-01
 	 */
-	public RatPoly[] divideAndRemainder(final RatPoly val) throws Errore {
+	public RatPoly[] divideAndRemainder(final RatPoly val) throws Error {
 		RatPoly[] ret = new RatPoly[2];
 		/*
 		 * remove any high-order zeros
@@ -738,10 +738,10 @@ class RatPoly {
 	 * degree is unity.
 	 * 
 	 * @return The scaled polynomial
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2008-10-26
 	 */
-	public RatPoly monic() throws Errore {
+	public RatPoly monic() throws Error {
 		RatPoly m = new RatPoly();
 		final int d = degree();
 		for (int i = 0; i <= d; i++) {
@@ -879,10 +879,10 @@ class RatPoly {
 	 *      Kerner method</a>
 	 * @param the
 	 *            number of floating point digits
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2008-10-26
 	 */
-	public Vector<BigComplex> roots(int digits) throws Errore {
+	public Vector<BigComplex> roots(int digits) throws Error {
 		RatPoly mon = monic();
 
 		Random rand = new Random();

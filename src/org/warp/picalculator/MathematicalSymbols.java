@@ -2,7 +2,7 @@ package org.warp.picalculator;
 
 import static org.warp.picalculator.Utils.concat;
 
-public class Simboli {
+public class MathematicalSymbols {
 	public static final String SUM = "+";
 	public static final String SUBTRACTION = "-";
 	public static final String MULTIPLICATION = "*";
@@ -12,23 +12,23 @@ public class Simboli {
 	public static final String SQUARE_ROOT = "Ⓐ";
 	public static final String PARENTHESIS_OPEN = "(";
 	public static final String PARENTHESIS_CLOSE = ")";
-	public static final String POTENZA = "Ⓑ";
+	public static final String POWER = "Ⓑ";
 	public static final String EQUATION = "=";
 	public static final String SYSTEM = "{";
 
-	public static final String[] funzioni() {
-		return concat(funzioniNSN(), funzioniSN());
+	public static final String[] functions() {
+		return concat(functionsNSN(), functionsSN());
 	}
 
-	public static final String[] funzioniNSN() {
-		return new String[] { NTH_ROOT, POTENZA };
+	public static final String[] functionsNSN() {
+		return new String[] { NTH_ROOT, POWER };
 	}
 
-	public static final String[] funzioniSN() {
+	public static final String[] functionsSN() {
 		return new String[] { SQUARE_ROOT };
 	}
 
-	public static final String[] segni(boolean withMultiplication, boolean withPrioritaryMultiplication) {
+	public static final String[] signums(boolean withMultiplication, boolean withPrioritaryMultiplication) {
 		String[] ret = new String[] { SUM, DIVISION };
 		if (withMultiplication) {
 			ret = Utils.add(ret, MULTIPLICATION);
@@ -39,15 +39,15 @@ public class Simboli {
 		return ret;
 	}
 
-	public static final String[] parentesi() {
+	public static final String[] parentheses() {
 		return new String[] { PARENTHESIS_OPEN, PARENTHESIS_CLOSE };
 	}
 
-	public static String[] incognite() {
+	public static String[] variables() {
 		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z" };
 	}
 
-	public static String[] sintassiGenerale() {
+	public static String[] genericSyntax() {
 		return new String[] { SYSTEM, EQUATION };
 	}
 }

@@ -5,8 +5,8 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import org.warp.picalculator.Errore;
-import org.warp.picalculator.Errori;
+import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
 
 /**
  * Fractions (rational numbers). They are divisions of two BigInteger numbers,
@@ -232,15 +232,15 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *            the exponent.
 	 * @return this value raised to the power given by the exponent. If the
 	 *         exponent is 0, the value 1 is returned.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-05-18
 	 */
-	public Rational pow(BigInteger exponent) throws Errore {
+	public Rational pow(BigInteger exponent) throws Error {
 		/* test for overflow */
 		if (exponent.compareTo(MAX_INT) == 1)
-			throw new Errore(Errori.NUMBER_TOO_LARGE);
+			throw new Error(Errors.NUMBER_TOO_LARGE);
 		if (exponent.compareTo(MIN_INT) == -1)
-			throw new Errore(Errori.NUMBER_TOO_SMALL);
+			throw new Error(Errors.NUMBER_TOO_SMALL);
 
 		/* promote to the simpler interface above */
 		return pow(exponent.intValue());
@@ -254,20 +254,20 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *            third root etc
 	 * @return this value raised to the inverse power given by the root
 	 *         argument, this^(1/r).
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-05-18
 	 */
-	public Rational root(BigInteger r) throws Errore {
+	public Rational root(BigInteger r) throws Error {
 		/* test for overflow */
 		if (r.compareTo(MAX_INT) == 1)
-			throw new Errore(Errori.NUMBER_TOO_LARGE);
+			throw new Error(Errors.NUMBER_TOO_LARGE);
 		if (r.compareTo(MIN_INT) == -1)
-			throw new Errore(Errori.NUMBER_TOO_SMALL);
+			throw new Error(Errors.NUMBER_TOO_SMALL);
 
 		int rthroot = r.intValue();
 		/* cannot pull root of a negative value with even-valued root */
 		if (compareTo(ZERO) == -1 && (rthroot % 2) == 0)
-			throw new Errore(Errori.NEGATIVE_PARAMETER);
+			throw new Error(Errors.NEGATIVE_PARAMETER);
 
 		/*
 		 * extract a sign such that we calculate |n|^(1/r), still r carrying any
@@ -294,10 +294,10 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *            The exponent.
 	 * @return This value raised to the power given by the exponent. If the
 	 *         exponent is 0, the value 1 is returned.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-05-18
 	 */
-	public Rational pow(Rational exponent) throws Errore {
+	public Rational pow(Rational exponent) throws Error {
 		if (exponent.a.compareTo(BigInteger.ZERO) == 0)
 			return new Rational(1, 1);
 
@@ -315,11 +315,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @param val
 	 *            A second rational number.
 	 * @return The value of this/val
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public Rational divide(final Rational val) throws Errore {
+	public Rational divide(final Rational val) throws Error {
 		if (val.compareTo(Rational.ZERO) == 0)
-			throw new Errore(Errori.DIVISION_BY_ZERO);
+			throw new Error(Errors.DIVISION_BY_ZERO);
 		BigInteger num = a.multiply(val.b);
 		BigInteger deno = b.multiply(val.a);
 		/*
@@ -335,11 +335,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @param val
 	 *            a second number.
 	 * @return the value of this/val
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public Rational divide(BigInteger val) throws Errore {
+	public Rational divide(BigInteger val) throws Error {
 		if (val.compareTo(BigInteger.ZERO) == 0)
-			throw new Errore(Errori.DIVISION_BY_ZERO);
+			throw new Error(Errors.DIVISION_BY_ZERO);
 		Rational val2 = new Rational(val, BigInteger.ONE);
 		return (divide(val2));
 	} /* Rational.divide */
@@ -350,11 +350,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @param val
 	 *            A second number.
 	 * @return The value of this/val
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public Rational divide(int val) throws Errore {
+	public Rational divide(int val) throws Error {
 		if (val == 0)
-			throw new Errore(Errori.DIVISION_BY_ZERO);
+			throw new Error(Errors.DIVISION_BY_ZERO);
 		Rational val2 = new Rational(val, 1);
 		return (divide(val2));
 	} /* Rational.divide */
@@ -452,9 +452,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return the binomial coefficient.
 	 * @since 2006-06-27
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public static Rational binomial(Rational n, BigInteger m) throws Errore {
+	public static Rational binomial(Rational n, BigInteger m) throws Error {
 		if (m.compareTo(BigInteger.ZERO) == 0)
 			return Rational.ONE;
 		Rational bin = n;
@@ -474,9 +474,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return the binomial coefficient.
 	 * @since 2009-05-19
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public static Rational binomial(Rational n, int m) throws Errore {
+	public static Rational binomial(Rational n, int m) throws Error {
 		if (m == 0)
 			return Rational.ONE;
 		Rational bin = n;
@@ -496,13 +496,13 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return Gamma(n+k+1/2)/k!/GAMMA(n-k+1/2)
 	 * @since 2010-07-18
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public static Rational hankelSymb(Rational n, int k) throws Errore {
+	public static Rational hankelSymb(Rational n, int k) throws Error {
 		if (k == 0)
 			return Rational.ONE;
 		else if (k < 0)
-			throw new Errore(Errori.NEGATIVE_PARAMETER);
+			throw new Error(Errors.NEGATIVE_PARAMETER);
 		Rational nkhalf = n.subtract(k).add(Rational.HALF);
 		nkhalf = nkhalf.Pochhammer(2 * k);
 		Factorial f = new Factorial();
@@ -792,26 +792,26 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	/**
 	 * Conversion to an integer value, if this can be done exactly.
 	 * 
-	 * @throws Errore
+	 * @throws Error
 	 * 
 	 * @since 2011-02-13
 	 */
-	int intValue() throws Errore {
+	int intValue() throws Error {
 		if (!isInteger())
-			throw new Errore(Errori.CONVERSION_ERROR);
+			throw new Error(Errors.CONVERSION_ERROR);
 		return a.intValue();
 	}
 
 	/**
 	 * Conversion to a BigInteger value, if this can be done exactly.
 	 * 
-	 * @throws Errore
+	 * @throws Error
 	 * 
 	 * @since 2012-03-02
 	 */
-	BigInteger BigIntegerValue() throws Errore {
+	BigInteger BigIntegerValue() throws Error {
 		if (!isBigInteger())
-			throw new Errore(Errori.CONVERSION_ERROR);
+			throw new Error(Errors.CONVERSION_ERROR);
 		return a;
 	}
 

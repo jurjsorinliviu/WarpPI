@@ -9,37 +9,37 @@ import org.warp.engine.Display;
 
 import com.rits.cloning.Cloner;
 
-public abstract class FunzioneAnteriore implements Funzione {
-	public FunzioneAnteriore(Funzione value) {
+public abstract class AnteriorFunction implements Function {
+	public AnteriorFunction(Function value) {
 		setVariable(value);
 	}
 
-	protected Funzione variable = new Termine(NumeroAvanzatoVec.ZERO);
+	protected Function variable = new Number(NumeroAvanzatoVec.ZERO);
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 	
-	public Funzione getVariable() {
+	public Function getVariable() {
 		return variable;
 	}
 
-	public void setVariable(Funzione value) {
+	public void setVariable(Function value) {
 		variable = value;
 	}
 
 	@Override
-	public abstract String simbolo();
+	public abstract String getSymbol();
 
 	@Override
-	public abstract Funzione calcola() throws Errore;
+	public abstract Function solve() throws Error;
 
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable.setSmall(small);
-		variable.calcolaGrafica();
+		variable.generateGraphics();
 		
-		width = getStringWidth(simbolo()) + 1 + getVariable().getWidth();
+		width = getStringWidth(getSymbol()) + 1 + getVariable().getWidth();
 		height = variable.getHeight();
 		line = variable.getLine();
 	}
@@ -47,7 +47,7 @@ public abstract class FunzioneAnteriore implements Funzione {
 	@Override
 	public void draw(int x, int y) {
 		float h1 = getVariable().getHeight();
-		int wsegno = getStringWidth(simbolo());
+		int wsegno = getStringWidth(getSymbol());
 		float hsegno = Utils.getFontHeight(small);
 		float maxh = getHeight();
 		if (small) {
@@ -56,7 +56,7 @@ public abstract class FunzioneAnteriore implements Funzione {
 			Display.Render.setFont(PIDisplay.fonts[0]);
 		}
 		
-		glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), simbolo());
+		glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), getSymbol());
 		getVariable().draw(x + wsegno + 1, (int) Math.floor(y + (maxh - h1) / 2));
 	}
 
@@ -78,14 +78,14 @@ public abstract class FunzioneAnteriore implements Funzione {
 	@Override
 	public String toString() {
 		try {
-			return calcola().toString();
-		} catch (Errore e) {
+			return solve().toString();
+		} catch (Error e) {
 			return e.id.toString();
 		}
 	}
 
 	@Override
-	public FunzioneAnteriore clone() {
+	public AnteriorFunction clone() {
 		Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}

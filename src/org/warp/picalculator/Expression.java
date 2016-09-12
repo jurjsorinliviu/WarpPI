@@ -14,30 +14,31 @@ import java.util.regex.Pattern;
 import org.nevec.rjm.NumeroAvanzato;
 import org.nevec.rjm.NumeroAvanzatoVec;
 
-public class Espressione extends FunzioneMultiplaBase {
+public class Expression extends FunctionMultipleValuesBase {
 
-	public Espressione() {
+	public Expression() {
 		super();
 	}
 
-	public Espressione(FunzioneBase[] values) {
+	public Expression(FunctionBase[] values) {
 		super(values);
 	}
 
-	private boolean parentesiIniziale = false;
+	private boolean initialParenthesis = false;
 
-	public Espressione(String string) throws Errore {
+	public Expression(String string) throws Error {
 		this(string, "", true);
 	}
 
-	public Espressione(String string, String debugSpaces, boolean parentesiIniziale) throws Errore {
+	public Expression(String string, String debugSpaces, boolean initialParenthesis) throws Error {
 		super();
-		this.parentesiIniziale = parentesiIniziale;
+		this.initialParenthesis = initialParenthesis;
 		boolean isNumber = false;
 
+		// Determine if the expression is already a number:
 		// Determina se l'espressione è già un numero:
 		try {
-			new Termine(string);
+			new Number(string);
 			isNumber = true;
 		} catch (NumberFormatException ex) {
 			isNumber = false;
@@ -47,115 +48,121 @@ public class Espressione extends FunzioneMultiplaBase {
 		Utils.debug.println(debugSpaces + "•Analyzing expression:" + processExpression);
 		
 		if (isNumber){
+			// If the expression is already a number:
 			// Se l'espressione è già un numero:
-			Termine t = new Termine(string);
-			setVariables(new FunzioneBase[] { t });
+			Number t = new Number(string);
+			setVariables(new FunctionBase[] { t });
 			Utils.debug.println(debugSpaces + "•Result:" + t.toString());
 		} else {
+			// Else prepare the expression:
 			// Altrimenti prepara l'espressione:
 			debugSpaces += "  ";
 
+			// IF the expression is not a number:
 			// Se l'espressione non è già un numero:
 
-			// Controlla se ci sono più di un uguale
+			// Check if there are more than one equal symbol (=)
+			// Controlla se ci sono più di un uguale (=)
 			int equationsFound = 0;
 			int systemsFound = 0;
 			for (char c : processExpression.toCharArray()) {
-				if (("" + c).equals(Simboli.EQUATION)) {
+				if (("" + c).equals(MathematicalSymbols.EQUATION)) {
 					equationsFound += 1;
 				}
-				if (("" + c).equals(Simboli.SYSTEM)) {
+				if (("" + c).equals(MathematicalSymbols.SYSTEM)) {
 					equationsFound += 1;
 				}
 			}
 			if (equationsFound == 1 && systemsFound == 0) {
-				processExpression = Simboli.SYSTEM + processExpression;
+				processExpression = MathematicalSymbols.SYSTEM + processExpression;
 				systemsFound += 1;
 			}
 			if (equationsFound != systemsFound) {
-				throw new Errore(Errori.SYNTAX_ERROR);
+				throw new Error(Errors.SYNTAX_ERROR);
 			}
 
+			//Solve the exceeding symbols ++ and --
 			// Correggi i segni ++ e -- in eccesso
 			Pattern pattern = Pattern.compile("\\+\\++?|\\-\\-+?");
 			Matcher matcher = pattern.matcher(processExpression);
-			boolean cambiati = false;
+			boolean symbolsChanged = false;
 			while (matcher.find()) {
-				cambiati = true;
+				symbolsChanged = true;
 				String correzione = "+";
 				processExpression = processExpression.substring(0, matcher.start(0) + 1) + correzione + processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
 				matcher = pattern.matcher(processExpression);
 			}
 
+			// Correct the exceeding symbols +- and -+
 			// Correggi i segni +- e -+ in eccesso
 			pattern = Pattern.compile("\\+\\-|\\-\\+");
 			matcher = pattern.matcher(processExpression);
 			while (matcher.find()) {
-				cambiati = true;
+				symbolsChanged = true;
 				String correzione = "-";
 				processExpression = processExpression.substring(0, matcher.start(0)) + correzione + processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
 				matcher = pattern.matcher(processExpression);
 			}
-
+			
 			// Rimuovi i segni appena dopo le parentesi
 			if (processExpression.contains("(+")) {
-				cambiati = true;
+				symbolsChanged = true;
 				processExpression = processExpression.replace("(+", "(");
 			}
 
 			// Cambia i segni appena prima le parentesi
 			if (processExpression.contains("-(")) {
-				cambiati = true;
+				symbolsChanged = true;
 				processExpression = processExpression.replace("-(", "-1*(");
 			}
 			// Rimuovi i segni appena dopo l'inizio
 			if (processExpression.startsWith("+")) {
-				cambiati = true;
+				symbolsChanged = true;
 				processExpression = processExpression.substring(1, processExpression.length());
 			}
 
 			// Rimuovi i + in eccesso
-			pattern = Pattern.compile("[" + ArrayToRegex(Utils.add(concat(Simboli.segni(true, true), Simboli.funzioni()), "(")) + "]\\+[^" + ArrayToRegex(concat(concat(Simboli.segni(true, true), Simboli.funzioni()), new String[] { "(", ")" })) + "]+?[" + ArrayToRegex(concat(Simboli.segni(true, true), Simboli.funzioni())) + "]|[" + ArrayToRegex(concat(Simboli.segni(true, true), Simboli.funzioni())) + "]+?\\+[^" + ArrayToRegex(concat(concat(Simboli.segni(true, true), Simboli.funzioni()), new String[] { "(", ")" })) + "]");
+			pattern = Pattern.compile("[" + ArrayToRegex(Utils.add(concat(MathematicalSymbols.signums(true, true), MathematicalSymbols.functions()), "(")) + "]\\+[^" + ArrayToRegex(concat(concat(MathematicalSymbols.signums(true, true), MathematicalSymbols.functions()), new String[] { "(", ")" })) + "]+?[" + ArrayToRegex(concat(MathematicalSymbols.signums(true, true), MathematicalSymbols.functions())) + "]|[" + ArrayToRegex(concat(MathematicalSymbols.signums(true, true), MathematicalSymbols.functions())) + "]+?\\+[^" + ArrayToRegex(concat(concat(MathematicalSymbols.signums(true, true), MathematicalSymbols.functions()), new String[] { "(", ")" })) + "]");
 			matcher = pattern.matcher(processExpression);
-			cambiati = false;
+			symbolsChanged = false;
 			while (matcher.find()) {
-				cambiati = true;
+				symbolsChanged = true;
 				String correzione = matcher.group(0).replaceFirst(Matcher.quoteReplacement("+"), "");
 				processExpression = processExpression.substring(0, matcher.start(0) + 1) + correzione + processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
 				matcher = pattern.matcher(processExpression);
 			}
 
 			// Correggi i segni - in +-
-			pattern = Pattern.compile("[^" + Utils.ArrayToRegex(concat(concat(Simboli.funzioni(), new String[] { Simboli.PARENTHESIS_OPEN }), Simboli.segni(true, true))) + "]-");
+			pattern = Pattern.compile("[^" + Utils.ArrayToRegex(concat(concat(MathematicalSymbols.functions(), new String[] { MathematicalSymbols.PARENTHESIS_OPEN }), MathematicalSymbols.signums(true, true))) + "]-");
 			matcher = pattern.matcher(processExpression);
 			while (matcher.find()) {
-				cambiati = true;
+				symbolsChanged = true;
 				String correzione = "+-";
 				processExpression = processExpression.substring(0, matcher.start(0) + 1) + correzione + processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
 				matcher = pattern.matcher(processExpression);
 			}
 
-			if (cambiati) {
+			if (symbolsChanged) {
 				Utils.debug.println(debugSpaces + "•Resolved signs:" + processExpression);
 			}
 
 			// Aggiungi i segni * accanto alle parentesi
 			pattern = Pattern.compile("\\([^\\(]+?\\)");
 			matcher = pattern.matcher(processExpression);
-			cambiati = false;
+			symbolsChanged = false;
 			while (matcher.find()) {
-				cambiati = true;
+				symbolsChanged = true;
 				// sistema i segni * impliciti prima e dopo l'espressione.
 				String beforeexp = processExpression.substring(0, matcher.start(0));
 				String newexp = matcher.group(0).substring(1, matcher.group(0).length() - 1);
 				String afterexp = processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
-				if (Pattern.compile("[^\\-" + Utils.ArrayToRegex(Utils.add(concat(Simboli.funzioni(), concat(Simboli.segni(true, true), Simboli.sintassiGenerale())), "(")) + "]$").matcher(beforeexp).find()) {
+				if (Pattern.compile("[^\\-" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functions(), concat(MathematicalSymbols.signums(true, true), MathematicalSymbols.genericSyntax())), "(")) + "]$").matcher(beforeexp).find()) {
 					// Se la stringa precedente finisce con un numero
-					beforeexp += Simboli.MULTIPLICATION;
+					beforeexp += MathematicalSymbols.MULTIPLICATION;
 				}
-				if (Pattern.compile("^[^\\-" + Utils.ArrayToRegex(Utils.add(concat(Simboli.funzioni(), concat(Simboli.segni(true, true), Simboli.sintassiGenerale())), ")")) + "]").matcher(afterexp).find()) {
+				if (Pattern.compile("^[^\\-" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functions(), concat(MathematicalSymbols.signums(true, true), MathematicalSymbols.genericSyntax())), ")")) + "]").matcher(afterexp).find()) {
 					// Se la stringa successiva inizia con un numero
-					afterexp = Simboli.MULTIPLICATION + afterexp;
+					afterexp = MathematicalSymbols.MULTIPLICATION + afterexp;
 				}
 				processExpression = beforeexp + "⑴" + newexp + "⑵" + afterexp;
 				matcher = pattern.matcher(processExpression);
@@ -163,7 +170,7 @@ public class Espressione extends FunzioneMultiplaBase {
 
 			processExpression = processExpression.replace("⑴", "(").replace("⑵", ")");
 
-			if (cambiati) {
+			if (symbolsChanged) {
 				Utils.debug.println(debugSpaces + "•Added implicit multiplications:" + processExpression);
 			}
 
@@ -171,61 +178,63 @@ public class Espressione extends FunzioneMultiplaBase {
 
 			debugSpaces += "  ";
 
-			// Suddividi tutto
-			Espressione parentesiNonSuddivisaCorrettamente = new Espressione();
-			parentesiNonSuddivisaCorrettamente.setVariables(new FunzioneBase[] {});
+			// Convert the expression to a list of objects
+			Expression imputRawParenthesis = new Expression();
+			imputRawParenthesis.setVariables(new FunctionBase[] {});
 			String tmp = "";
-			final String[] funzioni = concat(concat(concat(concat(Simboli.funzioni(), Simboli.parentesi()), Simboli.segni(true, true)), Simboli.incognite()), Simboli.sintassiGenerale());
+			final String[] functions = concat(concat(concat(concat(MathematicalSymbols.functions(), MathematicalSymbols.parentheses()), MathematicalSymbols.signums(true, true)), MathematicalSymbols.variables()), MathematicalSymbols.genericSyntax());
 			for (int i = 0; i < processExpression.length(); i++) {
 				// Per ogni carattere cerca se è un numero o una funzione:
 				String charI = processExpression.charAt(i) + "";
-				if (Utils.isInArray(charI, funzioni)) {
+				if (Utils.isInArray(charI, functions)) {
 
+					// Finds the type of function fron the following list
 					// Cerca il tipo di funzione tra le esistenti
-					FunzioneBase f = null;
+					FunctionBase f = null;
 					switch (charI) {
-						case Simboli.SUM:
-							f = new Somma(null, null);
+						case MathematicalSymbols.SUM:
+							f = new Sum(null, null);
 							break;
-						case Simboli.MULTIPLICATION:
-							f = new Moltiplicazione(null, null);
+						case MathematicalSymbols.MULTIPLICATION:
+							f = new Multiplication(null, null);
 							break;
-						case Simboli.PRIORITARY_MULTIPLICATION:
-							f = new MoltiplicazionePrioritaria(null, null);
+						case MathematicalSymbols.PRIORITARY_MULTIPLICATION:
+							f = new PrioritaryMultiplication(null, null);
 							break;
-						case Simboli.DIVISION:
-							f = new Divisione(null, null);
+						case MathematicalSymbols.DIVISION:
+							f = new Division(null, null);
 							break;
-						case Simboli.NTH_ROOT:
-							f = new Radice(null, null);
+						case MathematicalSymbols.NTH_ROOT:
+							f = new Root(null, null);
 							break;
-						case Simboli.SQUARE_ROOT:
-							f = new RadiceQuadrata(null);
+						case MathematicalSymbols.SQUARE_ROOT:
+							f = new RootSquare(null);
 							break;
-						case Simboli.POTENZA:
-							f = new Potenza(null, null);
+						case MathematicalSymbols.POWER:
+							f = new Power(null, null);
 							break;
-						case Simboli.PARENTHESIS_OPEN:
+						case MathematicalSymbols.PARENTHESIS_OPEN:
+							// Find the last closed parenthesis
 							// cerca l'ultima parentesi chiusa
 							int startIndex = i;
 							int endIndex = -1;
 							int jumps = -1;
 							for (int i2 = startIndex; i2 < processExpression.length(); i2++) {
-								if ((processExpression.charAt(i2) + "").equals(Simboli.PARENTHESIS_CLOSE)) {
+								if ((processExpression.charAt(i2) + "").equals(MathematicalSymbols.PARENTHESIS_CLOSE)) {
 									if (jumps == 0) {
 										endIndex = i2;
 										break;
 									} else if (jumps > 0) {
 										jumps -= 1;
 									} else if (jumps < 0) {
-										throw new Errore(Errori.UNBALANCED_BRACKETS);
+										throw new Error(Errors.UNBALANCED_BRACKETS);
 									}
-								} else if ((processExpression.charAt(i2) + "").equals(Simboli.PARENTHESIS_OPEN)) {
+								} else if ((processExpression.charAt(i2) + "").equals(MathematicalSymbols.PARENTHESIS_OPEN)) {
 									jumps += 1;
 								}
 							}
 							if (endIndex == -1 || endIndex < startIndex) {
-								throw new Errore(Errori.UNBALANCED_BRACKETS);
+								throw new Error(Errors.UNBALANCED_BRACKETS);
 							}
 							startIndex += 1;
 							i = startIndex;
@@ -235,55 +244,55 @@ public class Espressione extends FunzioneMultiplaBase {
 								tmpExpr += processExpression.charAt(i);
 								i++;
 							}
-							f = new Espressione(tmpExpr, debugSpaces, false);
+							f = new Expression(tmpExpr, debugSpaces, false);
 							break;
 						default:
-							if (Utils.isInArray(charI, Simboli.incognite())) {
+							if (Utils.isInArray(charI, MathematicalSymbols.variables())) {
 								// Fallback
 								NumeroAvanzato na = NumeroAvanzato.ONE;
-								Incognite iy = na.getIncognitey();
-								iy.incognite.add(new Incognita(charI.charAt(0), 1, 1));
-								na = na.setIncognitey(iy);
-								f = new Termine(na);
+								Variables iy = na.getVariableY();
+								iy.variables.add(new Variable(charI.charAt(0), 1, 1));
+								na = na.setVariableY(iy);
+								f = new Number(na);
 							} else {
 								throw new java.lang.RuntimeException("Il carattere " + charI + " non è tra le funzioni designate!\nAggiungerlo ad esse o rimuovere il carattere dall'espressione!");
 							}
 					}
-					if (f instanceof Espressione) {
+					if (f instanceof Expression) {
 						tmp = "";
-					} else if (f instanceof Termine) {
-						if (parentesiNonSuddivisaCorrettamente.getVariablesLength() == 0) {
+					} else if (f instanceof Number) {
+						if (imputRawParenthesis.getVariablesLength() == 0) {
 							if (tmp.length() > 0) {
-								parentesiNonSuddivisaCorrettamente.addVariableToEnd(new Termine(tmp));
+								imputRawParenthesis.addVariableToEnd(new Number(tmp));
 								Utils.debug.println(debugSpaces + "•Added value to expression:" + tmp);
-								parentesiNonSuddivisaCorrettamente.addVariableToEnd(new MoltiplicazionePrioritaria(null, null));
-								Utils.debug.println(debugSpaces + "•Added variable to expression:" + new MoltiplicazionePrioritaria(null, null).simbolo());
+								imputRawParenthesis.addVariableToEnd(new PrioritaryMultiplication(null, null));
+								Utils.debug.println(debugSpaces + "•Added variable to expression:" + new PrioritaryMultiplication(null, null).getSymbol());
 							}
 						} else {
 							if (tmp.length() > 0) {
-								if (parentesiNonSuddivisaCorrettamente.getVariable(parentesiNonSuddivisaCorrettamente.getVariablesLength() - 1) instanceof Termine) {
-									parentesiNonSuddivisaCorrettamente.addVariableToEnd(new MoltiplicazionePrioritaria(null, null));
-									Utils.debug.println(debugSpaces + "•Added variable to expression:" + new MoltiplicazionePrioritaria(null, null).simbolo());
+								if (imputRawParenthesis.getVariable(imputRawParenthesis.getVariablesLength() - 1) instanceof Number) {
+									imputRawParenthesis.addVariableToEnd(new PrioritaryMultiplication(null, null));
+									Utils.debug.println(debugSpaces + "•Added variable to expression:" + new PrioritaryMultiplication(null, null).getSymbol());
 								}
 								if (tmp.equals("-")) {
 									tmp = "-1";
 								}
-								parentesiNonSuddivisaCorrettamente.addVariableToEnd(new Termine(tmp));
+								imputRawParenthesis.addVariableToEnd(new Number(tmp));
 								Utils.debug.println(debugSpaces + "•Added value to expression:" + tmp);
 							}
-							if (tmp.length() > 0 || parentesiNonSuddivisaCorrettamente.getVariable(parentesiNonSuddivisaCorrettamente.getVariablesLength() - 1) instanceof Termine) {
-								parentesiNonSuddivisaCorrettamente.addVariableToEnd(new MoltiplicazionePrioritaria(null, null));
-								Utils.debug.println(debugSpaces + "•Added variable to expression:" + new MoltiplicazionePrioritaria(null, null).simbolo());
+							if (tmp.length() > 0 || imputRawParenthesis.getVariable(imputRawParenthesis.getVariablesLength() - 1) instanceof Number) {
+								imputRawParenthesis.addVariableToEnd(new PrioritaryMultiplication(null, null));
+								Utils.debug.println(debugSpaces + "•Added variable to expression:" + new PrioritaryMultiplication(null, null).getSymbol());
 							}
 						}
 					} else {
 						if (tmp.length() != 0) {
-							parentesiNonSuddivisaCorrettamente.addVariableToEnd(new Termine(tmp));
+							imputRawParenthesis.addVariableToEnd(new Number(tmp));
 							Utils.debug.println(debugSpaces + "•Added variable to expression:" + tmp);
 						}
 					}
-					parentesiNonSuddivisaCorrettamente.addVariableToEnd(f);
-					Utils.debug.println(debugSpaces + "•Added variable to expression:" + f.simbolo());
+					imputRawParenthesis.addVariableToEnd(f);
+					Utils.debug.println(debugSpaces + "•Added variable to expression:" + f.getSymbol());
 					tmp = "";
 				} else {
 					try {
@@ -301,9 +310,9 @@ public class Espressione extends FunzioneMultiplaBase {
 			if (tmp.length() > 0) {
 				Utils.debug.println(debugSpaces + "•Added variable to expression:" + tmp);
 				try {
-					parentesiNonSuddivisaCorrettamente.addVariableToEnd(new Termine(tmp));
+					imputRawParenthesis.addVariableToEnd(new Number(tmp));
 				} catch (NumberFormatException ex) {
-					throw new Errore(Errori.SYNTAX_ERROR);
+					throw new Error(Errors.SYNTAX_ERROR);
 				}
 				tmp = "";
 			}
@@ -317,13 +326,13 @@ public class Espressione extends FunzioneMultiplaBase {
 			// Fine suddivisione di insieme
 
 			Utils.debug.println(debugSpaces + "•Removing useless parentheses");
-			for (int i = 0; i < parentesiNonSuddivisaCorrettamente.variables.length; i++) {
-				if (parentesiNonSuddivisaCorrettamente.variables[i] instanceof Espressione) {
-					Espressione par = (Espressione) parentesiNonSuddivisaCorrettamente.variables[i];
+			for (int i = 0; i < imputRawParenthesis.variables.length; i++) {
+				if (imputRawParenthesis.variables[i] instanceof Expression) {
+					Expression par = (Expression) imputRawParenthesis.variables[i];
 					if (par.variables.length == 1) {
-						FunzioneBase subFunz = par.variables[0];
-						if (subFunz instanceof Espressione || subFunz instanceof Termine) {
-							parentesiNonSuddivisaCorrettamente.variables[i] = subFunz;
+						FunctionBase subFunz = par.variables[0];
+						if (subFunz instanceof Expression || subFunz instanceof Number) {
+							imputRawParenthesis.variables[i] = subFunz;
 							Utils.debug.println(debugSpaces + "  •Useless parentheses removed");
 						}
 					}
@@ -333,142 +342,142 @@ public class Espressione extends FunzioneMultiplaBase {
 			// Inizia l'affinazione dell'espressione
 			Utils.debug.println(debugSpaces + "•Pushing classes...");
 
-			FunzioneBase[] funzioniOLDArray = parentesiNonSuddivisaCorrettamente.getVariables();
-			ArrayList<FunzioneBase> funzioniOLD = new ArrayList<FunzioneBase>();
-			for (int i = 0; i < funzioniOLDArray.length; i++) {
-				FunzioneBase funzione = funzioniOLDArray[i];
+			FunctionBase[] oldFunctionsArray = imputRawParenthesis.getVariables();
+			ArrayList<FunctionBase> oldFunctionsList = new ArrayList<FunctionBase>();
+			for (int i = 0; i < oldFunctionsArray.length; i++) {
+				FunctionBase funzione = oldFunctionsArray[i];
 				if (funzione != null) {
 					//Affinazione
-					if (funzione instanceof Radice) {
-						if ((i - 1) >= 0 && funzioniOLDArray[i-1] instanceof Termine && ((Termine)funzioniOLDArray[i-1]).getTerm().compareTo(new NumeroAvanzatoVec(new NumeroAvanzato(new BigInteger("2")))) == 0) {
-							funzioniOLDArray[i] = null;
-							funzioniOLDArray[i-1] = null;
-							funzioniOLD.remove(funzioniOLD.size()-1);
+					if (funzione instanceof Root) {
+						if ((i - 1) >= 0 && oldFunctionsArray[i-1] instanceof Number && ((Number)oldFunctionsArray[i-1]).getTerm().compareTo(new NumeroAvanzatoVec(new NumeroAvanzato(new BigInteger("2")))) == 0) {
+							oldFunctionsArray[i] = null;
+							oldFunctionsArray[i-1] = null;
+							oldFunctionsList.remove(oldFunctionsList.size()-1);
 							i -= 1;
-							funzione = new RadiceQuadrata(null);
+							funzione = new RootSquare(null);
 						}
 					}
 					//Aggiunta della funzione alla lista grezza
-					funzioniOLD.add(funzione);
+					oldFunctionsList.add(funzione);
 				}
 			}
 
-			if (funzioniOLD.size() > 1) {
+			if (oldFunctionsList.size() > 1) {
 				Utils.debug.println(debugSpaces + "  •Correcting classes:");
 
 				int before = 0;
-				String fase = "funzioniSN";
+				String step = "SN Functions";
 				int n = 0;
 				do {
-					before = funzioniOLD.size();
+					before = oldFunctionsList.size();
 					int i = 0;
 					boolean change = false;
-					if (Utils.ciSonoMoltiplicazioniPrioritarieNonImpostate(funzioniOLD)) {
-						fase = "moltiplicazioni prioritarie"; // PRIMA FASE
-					} else if (Utils.ciSonoFunzioniSNnonImpostate(funzioniOLD)) {
-						fase = "funzioniSN"; // SECONDA FASE
-					} else if (Utils.ciSonoFunzioniNSNnonImpostate(funzioniOLD)) {
-						fase = "funzioniNSN"; // TERZA FASE
-					} else if (Utils.ciSonoMoltiplicazioniNonImpostate(funzioniOLD)) {
-						fase = "moltiplicazioni"; // QUARTA FASE
-					} else if (Utils.ciSonoSommeNonImpostate(funzioniOLD)) {
-						fase = "somme"; // QUINTA FASE
+					if (Utils.areThereEmptyPrioritaryMultiplications(oldFunctionsList)) {
+						step = "prioritary multiplications"; // PRIMA FASE
+					} else if (Utils.areThereOnlyEmptySNFunctions(oldFunctionsList)) {
+						step = "SN Functions"; // SECONDA FASE
+					} else if (Utils.areThereOnlyEmptyNSNFunctions(oldFunctionsList)) {
+						step = "NSN Functions"; // TERZA FASE
+					} else if (Utils.areThereEmptyMultiplications(oldFunctionsList)) {
+						step = "multiplications"; // QUARTA FASE
+					} else if (Utils.areThereEmptySums(oldFunctionsList)) {
+						step = "sums"; // QUINTA FASE
 					} else {
 //						fase = "errore";
 						System.out.println("WARN: ---> POSSIBILE ERRORE????? <---");// BOH
 //						throw new Errore(Errori.SYNTAX_ERROR);
-						while (funzioniOLD.size() > 1) {
-							funzioniOLD.set(0, new Moltiplicazione(funzioniOLD.get(0), funzioniOLD.remove(1)));
+						while (oldFunctionsList.size() > 1) {
+							oldFunctionsList.set(0, new Multiplication(oldFunctionsList.get(0), oldFunctionsList.remove(1)));
 						}
 					}
-					Utils.debug.println(debugSpaces + "  •Phase: "+fase);
-					while (i < funzioniOLD.size() && change == false && funzioniOLD.size() > 1) {
-						FunzioneBase funzioneTMP = funzioniOLD.get(i);
-						if (funzioneTMP instanceof FunzioneDueValoriBase) {
-							if (fase != "funzioniSN") {
+					Utils.debug.println(debugSpaces + "  •Phase: "+step);
+					while (i < oldFunctionsList.size() && change == false && oldFunctionsList.size() > 1) {
+						FunctionBase funzioneTMP = oldFunctionsList.get(i);
+						if (funzioneTMP instanceof FunctionTwoValuesBase) {
+							if (step != "SN Functions") {
 								if (
-										(fase == "somme" && (funzioneTMP instanceof Somma) == true && ((funzioneTMP instanceof FunzioneAnterioreBase && ((FunzioneAnterioreBase) funzioneTMP).variable == null) || (funzioneTMP instanceof FunzioneDueValoriBase && ((FunzioneDueValoriBase) funzioneTMP).variable1 == null && ((FunzioneDueValoriBase) funzioneTMP).variable2 == null) || (!(funzioneTMP instanceof FunzioneAnterioreBase) && !(funzioneTMP instanceof FunzioneDueValoriBase))))
+										(step == "sums" && (funzioneTMP instanceof Sum) == true && ((funzioneTMP instanceof AnteriorFunctionBase && ((AnteriorFunctionBase) funzioneTMP).variable == null) || (funzioneTMP instanceof FunctionTwoValuesBase && ((FunctionTwoValuesBase) funzioneTMP).variable1 == null && ((FunctionTwoValuesBase) funzioneTMP).variable2 == null) || (!(funzioneTMP instanceof AnteriorFunctionBase) && !(funzioneTMP instanceof FunctionTwoValuesBase))))
 										||
 										(
-											fase.equals("moltiplicazioni prioritarie")
+											step.equals("prioritary multiplications")
 											&&
-											(funzioneTMP instanceof MoltiplicazionePrioritaria)
+											(funzioneTMP instanceof PrioritaryMultiplication)
 											&&
-											((FunzioneDueValoriBase) funzioneTMP).variable1 == null
+											((FunctionTwoValuesBase) funzioneTMP).variable1 == null
 											&&
-											((FunzioneDueValoriBase) funzioneTMP).variable2 == null
+											((FunctionTwoValuesBase) funzioneTMP).variable2 == null
 										)
 										||
 										(
-											fase.equals("moltiplicazioni")
+											step.equals("multiplications")
 											&&
 											(
-												(funzioneTMP instanceof Moltiplicazione)
+												(funzioneTMP instanceof Multiplication)
 												||
-												(funzioneTMP instanceof Divisione)
+												(funzioneTMP instanceof Division)
 											)
 											&&
-											((FunzioneDueValoriBase) funzioneTMP).variable1 == null
+											((FunctionTwoValuesBase) funzioneTMP).variable1 == null
 											&&
-											((FunzioneDueValoriBase) funzioneTMP).variable2 == null
+											((FunctionTwoValuesBase) funzioneTMP).variable2 == null
 										)
 										||
 										(
-											fase == "funzioniNSN"
+											step == "NSN Functions"
 											&&
-											(funzioneTMP instanceof Somma) == false
+											(funzioneTMP instanceof Sum) == false
 											&&
-											(funzioneTMP instanceof Moltiplicazione) == false
+											(funzioneTMP instanceof Multiplication) == false
 											&&
-											(funzioneTMP instanceof MoltiplicazionePrioritaria) == false
+											(funzioneTMP instanceof PrioritaryMultiplication) == false
 											&&
-											(funzioneTMP instanceof Divisione) == false
+											(funzioneTMP instanceof Division) == false
 											&&
 											(
 												(
-													funzioneTMP instanceof FunzioneAnterioreBase
+													funzioneTMP instanceof AnteriorFunctionBase
 													&&
-													((FunzioneAnterioreBase) funzioneTMP).variable == null
+													((AnteriorFunctionBase) funzioneTMP).variable == null
 												)
 												||
 												(
-													funzioneTMP instanceof FunzioneDueValoriBase
+													funzioneTMP instanceof FunctionTwoValuesBase
 													&&
-													((FunzioneDueValoriBase) funzioneTMP).variable1 == null
+													((FunctionTwoValuesBase) funzioneTMP).variable1 == null
 													&&
-													((FunzioneDueValoriBase) funzioneTMP).variable2 == null
+													((FunctionTwoValuesBase) funzioneTMP).variable2 == null
 												)
 												||
 												(
-													!(funzioneTMP instanceof FunzioneAnterioreBase)
+													!(funzioneTMP instanceof AnteriorFunctionBase)
 													&&
-													!(funzioneTMP instanceof FunzioneDueValoriBase)
+													!(funzioneTMP instanceof FunctionTwoValuesBase)
 												)
 											)
 										)
 									) {
 									change = true;
 
-									if (i + 1 < funzioniOLD.size() && i - 1 >= 0) {
-										((FunzioneDueValoriBase) funzioneTMP).setVariable1((FunzioneBase) funzioniOLD.get(i - 1));
-										((FunzioneDueValoriBase) funzioneTMP).setVariable2((FunzioneBase) funzioniOLD.get(i + 1));
-										funzioniOLD.set(i, funzioneTMP);
+									if (i + 1 < oldFunctionsList.size() && i - 1 >= 0) {
+										((FunctionTwoValuesBase) funzioneTMP).setVariable1((FunctionBase) oldFunctionsList.get(i - 1));
+										((FunctionTwoValuesBase) funzioneTMP).setVariable2((FunctionBase) oldFunctionsList.get(i + 1));
+										oldFunctionsList.set(i, funzioneTMP);
 
 										// è importante togliere prima gli elementi
 										// in fondo e poi quelli davanti, perché gli
 										// indici scalano da destra a sinistra.
-										funzioniOLD.remove(i + 1);
-										funzioniOLD.remove(i - 1);
+										oldFunctionsList.remove(i + 1);
+										oldFunctionsList.remove(i - 1);
 
-										Utils.debug.println(debugSpaces + "  •Set variable to expression:" + funzioneTMP.simbolo());
+										Utils.debug.println(debugSpaces + "  •Set variable to expression:" + funzioneTMP.getSymbol());
 										try {
-											Utils.debug.println(debugSpaces + "    " + "var1=" + ((FunzioneDueValoriBase) funzioneTMP).getVariable1().calcola());
+											Utils.debug.println(debugSpaces + "    " + "var1=" + ((FunctionTwoValuesBase) funzioneTMP).getVariable1().solve());
 										} catch (NullPointerException ex2) {}
 										try {
-											Utils.debug.println(debugSpaces + "    " + "var2=" + ((FunzioneDueValoriBase) funzioneTMP).getVariable2().calcola());
+											Utils.debug.println(debugSpaces + "    " + "var2=" + ((FunctionTwoValuesBase) funzioneTMP).getVariable2().solve());
 										} catch (NullPointerException ex2) {}
 										try {
-											Utils.debug.println(debugSpaces + "    " + "(result)=" + ((FunzioneDueValoriBase) funzioneTMP).calcola());
+											Utils.debug.println(debugSpaces + "    " + "(result)=" + ((FunctionTwoValuesBase) funzioneTMP).solve());
 										} catch (NullPointerException ex2) {}
 
 									} else {
@@ -476,24 +485,24 @@ public class Espressione extends FunzioneMultiplaBase {
 									}
 								}
 							}
-						} else if (funzioneTMP instanceof FunzioneAnterioreBase) {
-							if ((fase == "funzioniSN" && ((FunzioneAnterioreBase) funzioneTMP).variable == null)) {
-								if (i + 1 < funzioniOLD.size()) {
-									FunzioneBase nextFunc = funzioniOLD.get(i + 1);
-									if (nextFunc instanceof FunzioneAnterioreBase && ((FunzioneAnterioreBase)nextFunc).variable == null) {
+						} else if (funzioneTMP instanceof AnteriorFunctionBase) {
+							if ((step == "SN Functions" && ((AnteriorFunctionBase) funzioneTMP).variable == null)) {
+								if (i + 1 < oldFunctionsList.size()) {
+									FunctionBase nextFunc = oldFunctionsList.get(i + 1);
+									if (nextFunc instanceof AnteriorFunctionBase && ((AnteriorFunctionBase)nextFunc).variable == null) {
 										
 									} else {
 										change = true;
-										((FunzioneAnterioreBase) funzioneTMP).setVariable((FunzioneBase) nextFunc);
-										funzioniOLD.set(i, funzioneTMP);
+										((AnteriorFunctionBase) funzioneTMP).setVariable((FunctionBase) nextFunc);
+										oldFunctionsList.set(i, funzioneTMP);
 
 										// è importante togliere prima gli elementi in
 										// fondo e poi quelli davanti, perché gli indici
 										// scalano da destra a sinistra.
-										funzioniOLD.remove(i + 1);
+										oldFunctionsList.remove(i + 1);
 
-										Utils.debug.println(debugSpaces + "  •Set variable to expression:" + funzioneTMP.simbolo());
-										FunzioneBase var = ((FunzioneAnterioreBase) funzioneTMP).getVariable().calcola();
+										Utils.debug.println(debugSpaces + "  •Set variable to expression:" + funzioneTMP.getSymbol());
+										FunctionBase var = ((AnteriorFunctionBase) funzioneTMP).getVariable().solve();
 										if (var == null) {
 											Utils.debug.println(debugSpaces + "    " + "var=null");
 										} else {
@@ -504,7 +513,7 @@ public class Espressione extends FunzioneMultiplaBase {
 									throw new java.lang.RuntimeException("Argomenti mancanti! Sistemare l'equazione!");
 								}
 							}
-						} else if (funzioneTMP instanceof Termine || funzioneTMP instanceof Espressione) {
+						} else if (funzioneTMP instanceof Number || funzioneTMP instanceof Expression) {
 							if (n < 300) {
 								// Utils.debug.println(debugSpaces+" •Set variable
 								// to number:"+funzioneTMP.calcola());
@@ -515,9 +524,9 @@ public class Espressione extends FunzioneMultiplaBase {
 						i++;
 						n++;
 					}
-				} while (((funzioniOLD.size() != before || fase != "somme") && funzioniOLD.size() > 1));
+				} while (((oldFunctionsList.size() != before || step != "sums") && oldFunctionsList.size() > 1));
 			}
-			setVariables(funzioniOLD);
+			setVariables(oldFunctionsList);
 
 			dsl = debugSpaces.length();
 			debugSpaces = "";
@@ -526,36 +535,36 @@ public class Espressione extends FunzioneMultiplaBase {
 			}
 			Utils.debug.println(debugSpaces + "•Finished correcting classes.");
 
-			Termine result = calcola();
+			Number result = solve();
 			Utils.debug.println(debugSpaces + "•Result:" + result);
 		}
 	}
 
 	@Override
-	public String simbolo() {
+	public String getSymbol() {
 		return "Parentesi";
 	}
 
 	@Override
-	public Termine calcola() throws Errore {
+	public Number solve() throws Error {
 		if (variables.length == 0) {
-			return new Termine("0");
+			return new Number("0");
 		} else if (variables.length == 1) {
-			return (Termine) variables[0].calcola();
+			return (Number) variables[0].solve();
 		} else {
-			Termine result = new Termine("0");
-			for (Funzione f : variables) {
-				result = result.add((Termine) f.calcola());
+			Number result = new Number("0");
+			for (Function f : variables) {
+				result = result.add((Number) f.solve());
 			}
 			return result;
 		}
 	}
 
 	@Override
-	public void calcolaGrafica() {
-		for (Funzione var : variables) {
+	public void generateGraphics() {
+		for (Function var : variables) {
 			var.setSmall(small);
-			var.calcolaGrafica();
+			var.generateGraphics();
 		}
 		
 		width = calcWidth();
@@ -565,11 +574,11 @@ public class Espressione extends FunzioneMultiplaBase {
 	
 	public boolean parenthesesNeeded() {
 		boolean parenthesesneeded = true;
-		if (parentesiIniziale) {
+		if (initialParenthesis) {
 			parenthesesneeded = false;
 		} else {
 			if (variables.length == 1) {
-				if (variables[0] instanceof Divisione) {
+				if (variables[0] instanceof Division) {
 					parenthesesneeded = false;
 				} else {
 					parenthesesneeded = true;
@@ -593,7 +602,7 @@ public class Espressione extends FunzioneMultiplaBase {
 			glDrawLine(x, y + 2, x, y + h - 3);
 			glDrawLine(x, y + h - 3, x + 2, y + h - 1);
 			x += 4;
-			for (Funzione f : variables) {
+			for (Function f : variables) {
 				float fheight = f.getHeight();
 				float y2 = miny + ((maxy - miny) / 2 - fheight / 2);
 				f.draw(x, (int) y2);
@@ -617,7 +626,7 @@ public class Espressione extends FunzioneMultiplaBase {
 			return this.variables[0].getWidth();
 		} else {
 			int w = 0;
-			for (Funzione f : variables) {
+			for (Function f : variables) {
 				w += f.getWidth();
 			}
 			return 1 + 4 + w + 2 + 4;
@@ -630,12 +639,12 @@ public class Espressione extends FunzioneMultiplaBase {
 	}
 	
 	private int calcHeight() {
-		if (parentesiIniziale || variables.length == 1) {
+		if (initialParenthesis || variables.length == 1) {
 			return this.variables[0].getHeight();
 		} else {
-			Funzione tmin = null;
-			Funzione tmax = null;
-			for (Funzione t : variables) {
+			Function tmin = null;
+			Function tmax = null;
+			for (Function t : variables) {
 				if (tmin == null || t.getLine() >= tmin.getLine()) {
 					tmin = t;
 				}
@@ -655,11 +664,11 @@ public class Espressione extends FunzioneMultiplaBase {
 	}
 	
 	private int calcLine() {
-		if (parentesiIniziale || variables.length == 1) {
+		if (initialParenthesis || variables.length == 1) {
 			return this.variables[0].getLine();
 		} else {
-			Funzione tl = null;
-			for (Funzione t : variables) {
+			Function tl = null;
+			for (Function t : variables) {
 				if (tl == null || t.getLine() >= tl.getLine()) {
 					tl = t;
 				}

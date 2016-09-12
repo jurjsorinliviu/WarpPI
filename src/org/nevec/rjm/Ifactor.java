@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Vector;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 
 /**
  * Factored integers.
@@ -465,10 +465,10 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 *         The return value falls into the Ifactor class if r is positive,
 	 *         but if r is negative
 	 *         a Rational type is needed.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-05-18
 	 */
-	public Rational root(final int r) throws ArithmeticException, Errore {
+	public Rational root(final int r) throws ArithmeticException, Error {
 		if (r == 0)
 			throw new ArithmeticException("Cannot pull zeroth root of " + toString());
 		else if (r < 0) {

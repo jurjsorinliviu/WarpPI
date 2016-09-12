@@ -5,47 +5,47 @@ import java.util.List;
 
 import com.rits.cloning.Cloner;
 
-public abstract class FunzioneMultipla implements Funzione {
-	public FunzioneMultipla() {
-		setVariables(new Funzione[] {});
+public abstract class FunctionMultipleValues implements Function {
+	public FunctionMultipleValues() {
+		setVariables(new Function[] {});
 	}
 
-	public FunzioneMultipla(Funzione[] values) {
+	public FunctionMultipleValues(Function[] values) {
 		setVariables(values);
 	}
 
-	protected Funzione[] variables;
+	protected Function[] variables;
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 
-	public Funzione[] getVariables() {
+	public Function[] getVariables() {
 		return variables;
 	}
 
-	public void setVariables(Funzione[] value) {
+	public void setVariables(Function[] value) {
 		variables = value;
 	}
 
-	public void setVariables(final List<Funzione> value) {
+	public void setVariables(final List<Function> value) {
 		int vsize = value.size();
-		Funzione[] tmp = new Funzione[vsize];
+		Function[] tmp = new Function[vsize];
 		for (int i = 0; i < vsize; i++) {
 			tmp[i] = value.get(i);
 		}
 		variables = tmp;
 	}
 
-	public Funzione getVariable(int index) {
+	public Function getVariable(int index) {
 		return variables[index];
 	}
 
-	public void setVariable(int index, Funzione value) {
+	public void setVariable(int index, Function value) {
 		variables[index] = value;
 	}
 
-	public void addVariableToEnd(Funzione value) {
+	public void addVariableToEnd(Function value) {
 		int index = variables.length;
 		setVariablesLength(index + 1);
 		variables[index] = value;
@@ -60,25 +60,25 @@ public abstract class FunzioneMultipla implements Funzione {
 	}
 
 	@Override
-	public abstract String simbolo();
+	public abstract String getSymbol();
 
 	@Override
-	public abstract Funzione calcola() throws Errore;
+	public abstract Function solve() throws Error;
 
 	@Override
-	public abstract void calcolaGrafica();
+	public abstract void generateGraphics();
 	
 	@Override
 	public String toString() {
 		try {
-			return calcola().toString();
-		} catch (Errore e) {
+			return solve().toString();
+		} catch (Error e) {
 			return e.id.toString();
 		}
 	}
 
 	@Override
-	public Funzione clone() {
+	public Function clone() {
 		Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}

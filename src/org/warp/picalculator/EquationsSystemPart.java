@@ -1,71 +1,43 @@
 package org.warp.picalculator;
 
+import static org.warp.engine.Display.Render.glColor3f;
 import static org.warp.engine.Display.Render.glDrawLine;
 
-public class Sistema extends FunzioneMultipla {
-	static final int spacing = 2;
-	
-	public Sistema() {
-		super();
-	}
-	
-	public Sistema(Funzione value) {
-		super(new Funzione[]{value});
-	}
-	
-	public Sistema(Funzione[] value) {
-		super(value);
+public class EquationsSystemPart extends AnteriorFunction {
+
+	public EquationsSystemPart(Equation equazione) {
+		super(equazione);
 	}
 
 	@Override
-	public String simbolo() {
-		return null;
+	public String getSymbol() {
+		return MathematicalSymbols.SYSTEM;
 	}
 
 	@Override
-	public Funzione calcola() throws NumberFormatException, Errore {
+	public Equation solve() throws NumberFormatException, Error {
 		// TODO implementare il calcolo dei sistemi
-		return variables[0].calcola();
+		return (Equation) variable.solve();
 	}
 
 	@Override
-	public void calcolaGrafica() {
-		for (Funzione f : variables) {
-			f.setSmall(false);
-			f.calcolaGrafica();
-		}
+	public void generateGraphics() {
+		variable.setSmall(false);
+		variable.generateGraphics();
 		
-		width = 0;
-		for (Funzione f : variables) {
-			if (f.getWidth() > width) {
-				width = f.getWidth();
-			}
-		}
-		width += 5;
-		
-		height = 3;
-		for (Funzione f : variables) {
-			height += f.getHeight()+spacing;
-		}
-		height = height - spacing + 2;
-		
-		line = height/2;
+		width = 5 + getVariable().getWidth();
+		height = 3 + getVariable().getHeight() + 2;
+		line = 3 + getVariable().getLine();
 	}
 	
 	@Override
 	public void draw(int x, int y) {
-
 		final int h = this.getHeight() - 1;
 		final int paddingTop = 3;
 		final int spazioSotto = (h - 3 - 2) / 2 + paddingTop;
 		final int spazioSopra = h - spazioSotto;
-		int dy = paddingTop;
-		for (Funzione f : variables) {
-			f.draw(x + 5, y + dy);
-			dy+=f.getHeight()+spacing;
-		}
-		
-		
+		variable.draw(x + 5, y + paddingTop);
+		glColor3f(0, 0, 0);
 		glDrawLine(x + 2, y + 0, x + 3, y + 0);
 		glDrawLine(x + 1, y + 1, x + 1, y + spazioSotto / 2);
 		glDrawLine(x + 2, y + spazioSotto / 2 + 1, x + 2, y + spazioSotto - 1);

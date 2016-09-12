@@ -9,49 +9,49 @@ import org.warp.engine.Display;
 
 import com.rits.cloning.Cloner;
 
-public abstract class FunzioneDueValoriBase extends FunzioneBase {
-	public FunzioneDueValoriBase(FunzioneBase value1, FunzioneBase value2) {
+public abstract class FunctionTwoValuesBase extends FunctionBase {
+	public FunctionTwoValuesBase(FunctionBase value1, FunctionBase value2) {
 		setVariable1(value1);
 		setVariable2(value2);
 	}
 
-	protected FunzioneBase variable1 = new Termine(Rational.ZERO);
+	protected FunctionBase variable1 = new Number(Rational.ZERO);
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 
-	public FunzioneBase getVariable1() {
+	public FunctionBase getVariable1() {
 		return variable1;
 	}
 
-	public void setVariable1(FunzioneBase value) {
+	public void setVariable1(FunctionBase value) {
 		variable1 = value;
 	}
 
-	protected FunzioneBase variable2 = new Termine(Rational.ZERO);
+	protected FunctionBase variable2 = new Number(Rational.ZERO);
 
-	public FunzioneBase getVariable2() {
+	public FunctionBase getVariable2() {
 		return variable2;
 	}
 
-	public void setVariable2(FunzioneBase value) {
+	public void setVariable2(FunctionBase value) {
 		variable2 = value;
 	}
 
 	@Override
-	public abstract String simbolo();
+	public abstract String getSymbol();
 
 	@Override
-	public abstract Termine calcola() throws Errore;
+	public abstract Number solve() throws Error;
 	
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable1.setSmall(small);
-		variable1.calcolaGrafica();
+		variable1.generateGraphics();
 		
 		variable2.setSmall(small);
-		variable2.calcolaGrafica();
+		variable2.generateGraphics();
 		
 		width = calcWidth();
 		height = calcHeight();
@@ -70,8 +70,8 @@ public abstract class FunzioneDueValoriBase extends FunzioneBase {
 			} else {
 				Display.Render.setFont(PIDisplay.fonts[0]);
 			}
-			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, simbolo());
-			dx += getStringWidth(simbolo());
+			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
+			dx += getStringWidth(getSymbol());
 		}
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
@@ -94,14 +94,14 @@ public abstract class FunzioneDueValoriBase extends FunzioneBase {
 	@Override
 	public String toString() {
 		try {
-			return calcola().toString();
-		} catch (Errore e) {
+			return solve().toString();
+		} catch (Error e) {
 			return e.id.toString();
 		}
 	}
 
 	@Override
-	public FunzioneDueValoriBase clone() {
+	public FunctionTwoValuesBase clone() {
 		Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}
@@ -116,13 +116,13 @@ public abstract class FunzioneDueValoriBase extends FunzioneBase {
 	}	
 
 	protected int calcWidth() {
-		return variable1.getWidth() + 1 + (drawSignum() ? getStringWidth(simbolo()) : 0) + variable2.getWidth();
+		return variable1.getWidth() + 1 + (drawSignum() ? getStringWidth(getSymbol()) : 0) + variable2.getWidth();
 	}
 	
 	protected int calcHeight() {
 
-		FunzioneBase tmin = variable1;
-		FunzioneBase tmax = variable1;
+		FunctionBase tmin = variable1;
+		FunctionBase tmax = variable1;
 		if (tmin == null || variable2.getLine() >= tmin.getLine()) {
 			tmin = variable2;
 		}
@@ -133,7 +133,7 @@ public abstract class FunzioneDueValoriBase extends FunzioneBase {
 	}
 	
 	protected int calcLine() {
-		FunzioneBase tl = variable1;
+		FunctionBase tl = variable1;
 		if (tl == null || variable2.getLine() >= tl.getLine()) {
 			tl = variable2;
 		}

@@ -9,26 +9,26 @@ import org.nevec.rjm.NumeroAvanzatoVec;
 import org.warp.device.PIDisplay;
 import org.warp.engine.Display;
 
-public class Divisione extends FunzioneDueValoriBase {
+public class Division extends FunctionTwoValuesBase {
 
-	public Divisione(FunzioneBase value1, FunzioneBase value2) {
+	public Division(FunctionBase value1, FunctionBase value2) {
 		super(value1, value2);
 	}
 
 	@Override
-	public String simbolo() {
-		return Simboli.DIVISION;
+	public String getSymbol() {
+		return MathematicalSymbols.DIVISION;
 	}
 
 	@Override
-	public Termine calcola() throws Errore {
+	public Number solve() throws Error {
 		if (variable2 == null || variable1 == null) {
-			return new Termine("0");
+			return new Number("0");
 		}
-		if (variable2.calcola().getTerm().compareTo(NumeroAvanzatoVec.ZERO) == 0) {
-			throw new Errore(Errori.DIVISION_BY_ZERO);
+		if (variable2.solve().getTerm().compareTo(NumeroAvanzatoVec.ZERO) == 0) {
+			throw new Error(Errors.DIVISION_BY_ZERO);
 		}
-		return variable1.calcola().divide(variable2.calcola());
+		return variable1.solve().divide(variable2.solve());
 	}
 
 	public boolean hasMinus() {
@@ -49,12 +49,12 @@ public class Divisione extends FunzioneDueValoriBase {
 	private boolean drawMinus = true;
 
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable1.setSmall(true);
-		variable1.calcolaGrafica();
+		variable1.generateGraphics();
 		
 		variable2.setSmall(true);
-		variable2.calcolaGrafica();
+		variable2.generateGraphics();
 		
 		width = calcWidth();
 		height = calcHeight();
@@ -72,8 +72,8 @@ public class Divisione extends FunzioneDueValoriBase {
 		boolean minus = false;
 		int minusw = 0;
 		int minush = 0;
-		String numerator = ((Funzione) var1).toString();
-		if (numerator.startsWith("-") && ((Funzione) var1) instanceof Termine && ((Termine) var1).term.isBigInteger(true)) {
+		String numerator = ((Function) var1).toString();
+		if (numerator.startsWith("-") && ((Function) var1) instanceof Number && ((Number) var1).term.isBigInteger(true)) {
 			minus = true;
 			numerator = numerator.substring(1);
 		}
@@ -83,10 +83,10 @@ public class Divisione extends FunzioneDueValoriBase {
 			w1 = getStringWidth(numerator);
 			h1 = Utils.getFontHeight(small);
 		} else {
-			w1 = ((Funzione) var1).getWidth();
-			h1 = ((Funzione) var1).getHeight();
+			w1 = ((Function) var1).getWidth();
+			h1 = ((Function) var1).getHeight();
 		}
-		int w2 = ((Funzione) var2).getWidth();
+		int w2 = ((Function) var2).getWidth();
 		int maxw;
 		if (w1 > w2) {
 			maxw = 1 + w1;
@@ -104,9 +104,9 @@ public class Divisione extends FunzioneDueValoriBase {
 			glDrawStringLeft(x+1, y + h1 + 1 + 1 - (minush / 2), "-");
 			glDrawStringLeft((int) (x+1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
 		} else {
-			((Funzione) var1).draw((int) (x+1 + minusw + (maxw - w1) / 2d), y);
+			((Function) var1).draw((int) (x+1 + minusw + (maxw - w1) / 2d), y);
 		}
-		((Funzione) var2).draw((int) (x+1 + minusw + (maxw - w2) / 2d), y + h1 + 1 + 1 + 1);
+		((Function) var2).draw((int) (x+1 + minusw + (maxw - w2) / 2d), y + h1 + 1 + 1 + 1);
 		glColor3f(0, 0, 0);
 		glFillRect(x+1+ minusw, y + h1 + 1, maxw, 1);
 	}
@@ -121,7 +121,7 @@ public class Divisione extends FunzioneDueValoriBase {
 
 		boolean minus = false;
 		String numerator = variable1.toString();
-		if (numerator.startsWith("-") && variable1 instanceof Termine && ((Termine) variable1).term.isBigInteger(true)) {
+		if (numerator.startsWith("-") && variable1 instanceof Number && ((Number) variable1).term.isBigInteger(true)) {
 			minus = true;
 			numerator = numerator.substring(1);
 		}
@@ -149,7 +149,7 @@ public class Divisione extends FunzioneDueValoriBase {
 	protected int calcWidth() {
 		boolean minus = false;
 		String numerator = variable1.toString();
-		if (numerator.startsWith("-") && variable1 instanceof Termine && ((Termine) variable1).term.isBigInteger(true)) {
+		if (numerator.startsWith("-") && variable1 instanceof Number && ((Number) variable1).term.isBigInteger(true)) {
 			minus = true;
 			numerator = numerator.substring(1);
 		}

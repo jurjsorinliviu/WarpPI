@@ -6,32 +6,32 @@ import static org.warp.engine.Display.Render.glDrawStringLeft;
 import org.warp.device.PIDisplay;
 import org.warp.engine.Display;
 
-public class Somma extends FunzioneDueValoriBase {
+public class Sum extends FunctionTwoValuesBase {
 
-	public Somma(FunzioneBase value1, FunzioneBase value2) {
+	public Sum(FunctionBase value1, FunctionBase value2) {
 		super(value1, value2);
 	}
 
 	@Override
-	public String simbolo() {
-		return Simboli.SUM;
+	public String getSymbol() {
+		return MathematicalSymbols.SUM;
 	}
 
 	@Override
-	public Termine calcola() throws Errore {
-		Termine val1 = getVariable1().calcola();
-		Termine val2 = getVariable2().calcola();
-		Termine result = val1.add(val2);
+	public Number solve() throws Error {
+		Number val1 = getVariable1().solve();
+		Number val2 = getVariable2().solve();
+		Number result = val1.add(val2);
 		return result;
 	}
 
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable1.setSmall(small);
-		variable1.calcolaGrafica();
+		variable1.generateGraphics();
 		
 		variable2.setSmall(small);
-		variable2.calcolaGrafica();
+		variable2.generateGraphics();
 		
 		width = calcWidth();
 		height = calcHeight();
@@ -54,8 +54,8 @@ public class Somma extends FunzioneDueValoriBase {
 			Display.Render.setFont(PIDisplay.fonts[0]);
 		}
 		dx += 1;
-		glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, simbolo());
-		dx += getStringWidth(simbolo());
+		glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
+		dx += getStringWidth(getSymbol());
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
 
@@ -69,7 +69,7 @@ public class Somma extends FunzioneDueValoriBase {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += getStringWidth(simbolo());
+		dx += getStringWidth(getSymbol());
 		return dx += variable2.getWidth();
 	}
 }

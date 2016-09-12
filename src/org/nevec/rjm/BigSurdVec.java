@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Vector;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 
 /**
@@ -69,7 +69,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		terms.add(b);
 		try {
 			normalize();
-		} catch (Errore e) {
+		} catch (Error e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -79,11 +79,11 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * Combine terms that can be written as a single surd. This unites for
 	 * example the terms sqrt(90) and sqrt(10) to 4*sqrt(10).
 	 * 
-	 * @throws Errore
+	 * @throws Error
 	 * 
 	 * @since 2012-02-15
 	 */
-	protected void normalize() throws Errore {
+	protected void normalize() throws Error {
 		/*
 		 * nothing to be done if at most one term
 		 */
@@ -148,7 +148,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		try {
 			diff = this.subtract(oth);
 			return diff.signum();
-		} catch (Errore e) {
+		} catch (Error e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return 0;
@@ -160,10 +160,10 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * equal to or larger than zero.
 	 * 
 	 * @return 0 or +-1.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2012-02-15
 	 */
-	public int signum() throws Errore {
+	public int signum() throws Error {
 		/*
 		 * the case of zero is unique, because no (reduced) vector of surds
 		 * other than the one element 0 itself can add/subtract to zero.
@@ -308,9 +308,9 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be added to this.
 	 * @return The new value representing this+val.
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public BigSurdVec add(final BigSurdVec val) throws Errore {
+	public BigSurdVec add(final BigSurdVec val) throws Error {
 		BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
@@ -335,9 +335,9 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be added to this.
 	 * @return The new value representing this+val.
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public BigSurdVec add(final BigSurd val) throws Errore {
+	public BigSurdVec add(final BigSurd val) throws Error {
 		BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
@@ -354,9 +354,9 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be subtracted from this.
 	 * @return The new value representing this-val.
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public BigSurdVec subtract(final BigSurdVec val) throws Errore {
+	public BigSurdVec subtract(final BigSurdVec val) throws Error {
 		BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
@@ -374,9 +374,9 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            The value to be subtracted from this.
 	 * @return The new value representing this-val.
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public BigSurdVec subtract(final BigSurd val) throws Errore {
+	public BigSurdVec subtract(final BigSurd val) throws Error {
 		BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
@@ -411,10 +411,10 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * Compute the square.
 	 * 
 	 * @return this value squared.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2012-02-15
 	 */
-	public BigSurdVec sqr() throws Errore {
+	public BigSurdVec sqr() throws Error {
 		/*
 		 * Binomial expansion. First the sum of the terms squared, then 2 times
 		 * the mixed products.
@@ -435,10 +435,10 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @param val
 	 *            a second number of this type.
 	 * @return the product of this with the val.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2011-02-12
 	 */
-	public BigSurdVec multiply(final BigSurd val) throws Errore {
+	public BigSurdVec multiply(final BigSurd val) throws Error {
 		BigSurdVec resul = new BigSurdVec();
 		for (BigSurd s : terms)
 			resul.terms.add(s.multiply(val));
@@ -446,7 +446,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		return resul;
 	} /* multiply */
 
-	public BigSurdVec multiply(final BigSurdVec val) throws Errore {
+	public BigSurdVec multiply(final BigSurdVec val) throws Error {
 		BigSurdVec resul = new BigSurdVec();
 		for (BigSurd s : terms) {
 			resul.terms.add(s);
@@ -457,7 +457,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		return resul;
 	} /* multiply */
 
-	public BigSurdVec divide(final BigSurd val) throws Errore {
+	public BigSurdVec divide(final BigSurd val) throws Error {
 		BigSurdVec resul = new BigSurdVec();
 		for (BigSurd s : terms)
 			resul.terms.add(s.divide(val));
@@ -465,7 +465,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		return resul;
 	} /* multiply */
 
-	public BigSurdVec divide(final BigSurdVec val) throws Errore {
+	public BigSurdVec divide(final BigSurdVec val) throws Error {
 		BigSurdVec resul = new BigSurdVec();
 		resul.terms = terms;
 		for (BigSurd s : val.terms) {

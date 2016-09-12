@@ -80,15 +80,15 @@ public class Utils {
 		return c;
 	}
 
-	public static boolean ciSonoSoloFunzioniImpostateSommeEquazioniESistemi(ArrayList<Funzione> fl) {
+	public static boolean areThereOnlySettedUpFunctionsSumsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Somma || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Espressione)) {
-				if (fl.get(i) instanceof FunzioneAnterioreBase) {
-					if (((FunzioneAnterioreBase) fl.get(i)).variable == null) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+				if (fl.get(i) instanceof AnteriorFunctionBase) {
+					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunzioneDueValoriBase) {
-					if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null || ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
+					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 						return false;
 					}
 				} else {
@@ -99,15 +99,15 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean ciSonoSoloFunzioniImpostateSommeMoltiplicazioniEquazioniESistemi(ArrayList<Funzione> fl) {
+	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Moltiplicazione || fl.get(i) instanceof MoltiplicazionePrioritaria || fl.get(i) instanceof Somma || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Espressione)) {
-				if (fl.get(i) instanceof FunzioneAnterioreBase) {
-					if (((FunzioneAnterioreBase) fl.get(i)).variable == null) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+				if (fl.get(i) instanceof AnteriorFunctionBase) {
+					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunzioneDueValoriBase) {
-					if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null || ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
+					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 						return false;
 					}
 				} else {
@@ -118,15 +118,15 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean ciSonoSoloFunzioniImpostateEquazioniESistemi(ArrayList<Funzione> fl) {
+	public static boolean areThereOnlySettedUpFunctionsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Espressione)) {
-				if (fl.get(i) instanceof FunzioneAnterioreBase) {
-					if (((FunzioneAnterioreBase) fl.get(i)).variable == null) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+				if (fl.get(i) instanceof AnteriorFunctionBase) {
+					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunzioneDueValoriBase) {
-					if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null || ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
+					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 						return false;
 					}
 				} else {
@@ -137,15 +137,15 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean ciSonoSoloFunzioniImpostateESistemi(ArrayList<Funzione> fl) {
+	public static boolean areThereOnlySettedUpFunctionsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Equazione || fl.get(i) instanceof ParteSistema || fl.get(i) instanceof Espressione)) {
-				if (fl.get(i) instanceof FunzioneAnterioreBase) {
-					if (((FunzioneAnterioreBase) fl.get(i)).variable == null) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+				if (fl.get(i) instanceof AnteriorFunctionBase) {
+					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunzioneDueValoriBase) {
-					if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null || ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
+					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 						return false;
 					}
 				} else {
@@ -156,10 +156,10 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean ciSonoFunzioniSNnonImpostate(ArrayList<FunzioneBase> fl) {
+	public static boolean areThereOnlyEmptySNFunctions(ArrayList<FunctionBase> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof FunzioneAnterioreBase) {
-				if (((FunzioneAnterioreBase) fl.get(i)).variable == null) {
+			if (fl.get(i) instanceof AnteriorFunctionBase) {
+				if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 					return true;
 				}
 			}
@@ -167,10 +167,10 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean ciSonoFunzioniNSNnonImpostate(ArrayList<FunzioneBase> fl) {
+	public static boolean areThereOnlyEmptyNSNFunctions(ArrayList<FunctionBase> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof FunzioneDueValoriBase && !(fl.get(i) instanceof Somma) && !(fl.get(i) instanceof Sottrazione) && !(fl.get(i) instanceof Moltiplicazione) && !(fl.get(i) instanceof MoltiplicazionePrioritaria) && !(fl.get(i) instanceof Divisione)) {
-				if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null && ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+			if (fl.get(i) instanceof FunctionTwoValuesBase && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof PrioritaryMultiplication) && !(fl.get(i) instanceof Division)) {
+				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 					return true;
 				}
 			}
@@ -179,10 +179,10 @@ public class Utils {
 	}
 
 
-	public static boolean ciSonoMoltiplicazioniPrioritarieNonImpostate(ArrayList<FunzioneBase> funzioniOLD) {
+	public static boolean areThereEmptyPrioritaryMultiplications(ArrayList<FunctionBase> funzioniOLD) {
 		for (int i = 0; i < funzioniOLD.size(); i++) {
-			if (funzioniOLD.get(i) instanceof MoltiplicazionePrioritaria) {
-				if (((FunzioneDueValoriBase) funzioniOLD.get(i)).variable1 == null && ((FunzioneDueValoriBase) funzioniOLD.get(i)).variable2 == null) {
+			if (funzioniOLD.get(i) instanceof PrioritaryMultiplication) {
+				if (((FunctionTwoValuesBase) funzioniOLD.get(i)).variable1 == null && ((FunctionTwoValuesBase) funzioniOLD.get(i)).variable2 == null) {
 					return true;
 				}
 			}
@@ -190,10 +190,10 @@ public class Utils {
 		return false;
 	}
 	
-	public static boolean ciSonoMoltiplicazioniNonImpostate(ArrayList<FunzioneBase> fl) {
+	public static boolean areThereEmptyMultiplications(ArrayList<FunctionBase> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof Moltiplicazione || fl.get(i) instanceof Divisione) {
-				if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null && ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+			if (fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division) {
+				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 					return true;
 				}
 			}
@@ -201,10 +201,10 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean ciSonoSommeNonImpostate(ArrayList<FunzioneBase> fl) {
+	public static boolean areThereEmptySums(ArrayList<FunctionBase> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof Somma) {
-				if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null && ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+			if (fl.get(i) instanceof Sum) {
+				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 					return true;
 				}
 			}
@@ -212,10 +212,10 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean ciSonoSistemiNonImpostati(ArrayList<Funzione> fl) {
+	public static boolean areThereEmptySystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof ParteSistema) {
-				if (((ParteSistema) fl.get(i)).variable == null) {
+			if (fl.get(i) instanceof EquationsSystemPart) {
+				if (((EquationsSystemPart) fl.get(i)).variable == null) {
 					return true;
 				}
 			}
@@ -223,15 +223,15 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean ciSonoAltreFunzioniImpostate(ArrayList<Funzione> fl) {
+	public static boolean areThereOtherSettedUpFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Termine || fl.get(i) instanceof Somma || fl.get(i) instanceof Espressione || fl.get(i) instanceof FunzioneAnterioreBase || fl.get(i) instanceof Moltiplicazione || fl.get(i) instanceof MoltiplicazionePrioritaria || fl.get(i) instanceof Divisione)) {
-				if (fl.get(i) instanceof FunzioneAnterioreBase) {
-					if (((FunzioneAnterioreBase) fl.get(i)).variable == null) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunctionBase || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Division)) {
+				if (fl.get(i) instanceof AnteriorFunctionBase) {
+					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return true;
 					}
-				} else if (fl.get(i) instanceof FunzioneDueValoriBase) {
-					if (((FunzioneDueValoriBase) fl.get(i)).variable1 == null || ((FunzioneDueValoriBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
+					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 						return true;
 					}
 				} else {
@@ -245,13 +245,13 @@ public class Utils {
 	public static Rational getRational(BigDecimal str) {
 		try {
 			return getRational(str.toString());
-		} catch (Errore e) {
+		} catch (Error e) {
 			//E' IMPOSSIBILE CHE VENGA THROWATO UN ERRORE
 			return new Rational("0");
 		}
 	}
 
-	public static Rational getRational(String str) throws Errore {
+	public static Rational getRational(String str) throws Error {
 		try {
 			return new Rational(str);
 		} catch (NumberFormatException ex) {
@@ -304,11 +304,11 @@ public class Utils {
 		return BigDecimalMath.divideRound(new BigDecimal(r.numer()).setScale(Utils.scale, Utils.scaleMode), new BigDecimal(r.denom()).setScale(Utils.scale, Utils.scaleMode));
 	}
 
-	public static boolean variabiliUguali(ArrayList<Incognita> variables, ArrayList<Incognita> variables2) {
+	public static boolean equalsVariables(ArrayList<Variable> variables, ArrayList<Variable> variables2) {
 		if (variables.size() != variables2.size()) {
 			return false;
 		} else {
-			for (Incognita v : variables) {
+			for (Variable v : variables) {
 				if (!variables2.contains(v)) {
 					return false;
 				}
@@ -317,7 +317,7 @@ public class Utils {
 		}
 	}
 
-	public static void writeSquareRoot(Funzione var, int x, int y, boolean small) {
+	public static void writeSquareRoot(Function var, int x, int y, boolean small) {
 		var.setSmall(small);
 		int w1 = var.getWidth();
 		int h1 = var.getHeight();

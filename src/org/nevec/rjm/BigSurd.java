@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.security.ProviderException;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 
 /**
@@ -70,7 +70,7 @@ public class BigSurd implements Cloneable, Comparable<BigSurd> {
 		try {
 			normalize();
 			normalizeG();
-		} catch (Errore e) {
+		} catch (Error e) {
 			e.printStackTrace();
 		}
 	}
@@ -212,10 +212,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd> {
 	 * @param val
 	 *            A second number of this type.
 	 * @return The value of this/val
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2011-02-12
 	 */
-	public BigSurd divide(final BigSurd val) throws Errore {
+	public BigSurd divide(final BigSurd val) throws Error {
 		if (val.signum() == 0)
 			throw new ArithmeticException("Dividing " + toFancyString() + " through zero.");
 		return new BigSurd(pref.divide(val.pref), disc.divide(val.disc));
@@ -258,10 +258,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd> {
 	 * @param val
 	 *            a second number.
 	 * @return the value of this/val
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2011-02-12
 	 */
-	public BigSurd divide(final BigInteger val) throws Errore {
+	public BigSurd divide(final BigInteger val) throws Error {
 		if (val.signum() == 0)
 			throw new ArithmeticException("Dividing " + toFancyString() + " through zero.");
 		return new BigSurd(pref.divide(val), disc);
@@ -273,10 +273,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd> {
 	 * @param val
 	 *            A second number.
 	 * @return The value of this/val
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2011-02-12
 	 */
-	public BigSurd divide(int val) throws Errore {
+	public BigSurd divide(int val) throws Error {
 		if (val == 0)
 			throw new ArithmeticException("Dividing " + toFancyString() + " through zero.");
 		return new BigSurd(pref.divide(val), disc);
@@ -452,10 +452,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd> {
 	/**
 	 * Normalize to squarefree discriminant.
 	 * 
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2011-02-12
 	 */
-	protected void normalize() throws Errore {
+	protected void normalize() throws Error {
 		/*
 		 * Move squares out of the numerator and denominator of the discriminant
 		 */
@@ -492,10 +492,10 @@ public class BigSurd implements Cloneable, Comparable<BigSurd> {
 	 * Normalize to coprime numerator and denominator in prefactor and
 	 * discriminant
 	 * 
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2011-02-12
 	 */
-	protected void normalizeG() throws Errore {
+	protected void normalizeG() throws Error {
 		/*
 		 * Is there a common factor between the numerator of the prefactor
 		 * and the denominator of the discriminant ?

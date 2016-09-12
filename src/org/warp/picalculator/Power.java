@@ -1,23 +1,23 @@
 package org.warp.picalculator;
 
-public class Potenza extends FunzioneDueValoriBase {
+public class Power extends FunctionTwoValuesBase {
 
-	public Potenza(FunzioneBase value1, FunzioneBase value2) {
+	public Power(FunctionBase value1, FunctionBase value2) {
 		super(value1, value2);
 	}
 
 	@Override
-	public String simbolo() {
-		return Simboli.POTENZA;
+	public String getSymbol() {
+		return MathematicalSymbols.POWER;
 	}
 
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable1.setSmall(small);
-		variable1.calcolaGrafica();
+		variable1.generateGraphics();
 		
 		variable2.setSmall(true);
-		variable2.calcolaGrafica();
+		variable2.generateGraphics();
 		
 		height = variable1.getHeight() + variable2.getHeight() - 4;
 		line = variable2.getHeight() - 4 + variable1.getLine();
@@ -25,8 +25,8 @@ public class Potenza extends FunzioneDueValoriBase {
 	}
 
 	@Override
-	public Termine calcola() throws NumberFormatException, Errore {
-		return getVariable1().calcola().pow(getVariable2().calcola());
+	public Number solve() throws NumberFormatException, Error {
+		return getVariable1().solve().pow(getVariable2().solve());
 	}
 
 	@Override

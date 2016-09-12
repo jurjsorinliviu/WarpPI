@@ -18,7 +18,7 @@ import org.warp.engine.Display;
 
 import com.rits.cloning.Cloner;
 
-public class Termine extends FunzioneBase {
+public class Number extends FunctionBase {
 
 	protected NumeroAvanzatoVec term = NumeroAvanzatoVec.ZERO;
 	protected int width;
@@ -26,27 +26,27 @@ public class Termine extends FunzioneBase {
 	protected int line;
 	protected boolean small;
 
-	public Termine(NumeroAvanzatoVec val) {
+	public Number(NumeroAvanzatoVec val) {
 		term = val;
 	}
 
-	public Termine(String s) throws Errore {
+	public Number(String s) throws Error {
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(Utils.getRational(s), Rational.ONE));
 	}
 
-	public Termine(Rational r) {
+	public Number(Rational r) {
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(r, Rational.ONE));
 	}
 
-	public Termine(BigInteger r) {
+	public Number(BigInteger r) {
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(new Rational(r, BigInteger.ONE), Rational.ONE));
 	}
 
-	public Termine(BigDecimal r) {
+	public Number(BigDecimal r) {
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(Utils.getRational(r), Rational.ONE));
 	}
 
-	public Termine(NumeroAvanzato numeroAvanzato) {
+	public Number(NumeroAvanzato numeroAvanzato) {
 		term = new NumeroAvanzatoVec(numeroAvanzato);
 	}
 
@@ -59,42 +59,42 @@ public class Termine extends FunzioneBase {
 	}
 
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		line = calcLine(); //TODO pp
 		height = calcHeight();
 		width = calcWidth();
 	}
 	
 	@Override
-	public Termine calcola() {
+	public Number solve() {
 		return this;
 	}
 
 	@Override
-	public String simbolo() {
+	public String getSymbol() {
 		return toString();
 	}
 
-	public Termine add(Termine f) throws Errore {
-		Termine ret = new Termine(getTerm().add(f.getTerm()));
+	public Number add(Number f) throws Error {
+		Number ret = new Number(getTerm().add(f.getTerm()));
 		return ret;
 	}
 
-	public Termine multiply(Termine f) throws Errore {
-		Termine ret = new Termine(getTerm().multiply(f.getTerm()));
+	public Number multiply(Number f) throws Error {
+		Number ret = new Number(getTerm().multiply(f.getTerm()));
 		return ret;
 	}
 
-	public Termine divide(Termine f) throws Errore {
-		Termine ret = new Termine(getTerm().divide(f.getTerm()));
+	public Number divide(Number f) throws Error {
+		Number ret = new Number(getTerm().divide(f.getTerm()));
 		return ret;
 	}
 
-	public Termine pow(Termine f) throws Errore {
-		Termine ret = new Termine(NumeroAvanzatoVec.ONE);
+	public Number pow(Number f) throws Error {
+		Number ret = new Number(NumeroAvanzatoVec.ONE);
 		if (f.getTerm().isBigInteger(true)) {
 			for (BigInteger i = BigInteger.ZERO; i.compareTo(f.getTerm().toBigInteger(true)) < 0; i = i.add(BigInteger.ONE)) {
-				ret = ret.multiply(new Termine(getTerm()));
+				ret = ret.multiply(new Number(getTerm()));
 			}
 		} else if (getTerm().isRational(true) && f.getTerm().isRational(false) && f.getTerm().toRational(false).compareTo(Rational.HALF) == 0) {
 			// Rational originalExponent = f.getTerm().toRational();
@@ -102,12 +102,12 @@ public class Termine extends FunzioneBase {
 			// originalExponent.numer());
 			Rational numberToRoot = getTerm().toRational(true);
 			NumeroAvanzato na = new NumeroAvanzato(Rational.ONE, numberToRoot);
-			na = na.setIncognitex(getTerm().toNumeroAvanzato().getIncognitey().multiply(getTerm().toNumeroAvanzato().getIncognitez()));
-			na = na.setIncognitey(new Incognite());
-			na = na.setIncognitez(getTerm().toNumeroAvanzato().getIncognitez());
-			ret = new Termine(na);
+			na = na.setVariableX(getTerm().toNumeroAvanzato().getVariableY().multiply(getTerm().toNumeroAvanzato().getVariableZ()));
+			na = na.setVariableY(new Variables());
+			na = na.setVariableZ(getTerm().toNumeroAvanzato().getVariableZ());
+			ret = new Number(na);
 		} else {
-			ret = new Termine(BigDecimalMath.pow(getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)), f.getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2))));
+			ret = new Number(BigDecimalMath.pow(getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)), f.getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2))));
 		}
 		return ret;
 	}
@@ -346,7 +346,7 @@ public class Termine extends FunzioneBase {
 
 	public boolean soloIncognitaSemplice() {
 		if (this.getTerm().isBigInteger(true)) {
-			if (this.getTerm().toBigInteger(true).compareTo(BigInteger.ONE) == 0 && this.getTerm().toNumeroAvanzato().getIncognitey().count() > 0) {
+			if (this.getTerm().toBigInteger(true).compareTo(BigInteger.ONE) == 0 && this.getTerm().toNumeroAvanzato().getVariableY().count() > 0) {
 				return true;
 			}
 		}
@@ -376,7 +376,7 @@ public class Termine extends FunzioneBase {
 	}
 
 	@Override
-	public Termine clone() {
+	public Number clone() {
 		Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}

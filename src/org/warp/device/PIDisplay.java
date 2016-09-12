@@ -1,15 +1,6 @@
 package org.warp.device;
 
-import static org.warp.engine.Display.Render.getMatrixOfImage;
-import static org.warp.engine.Display.Render.glClear;
-import static org.warp.engine.Display.Render.glColor3f;
-import static org.warp.engine.Display.Render.glColor4f;
-import static org.warp.engine.Display.Render.glDrawLine;
-import static org.warp.engine.Display.Render.glDrawSkin;
-import static org.warp.engine.Display.Render.glDrawStringCenter;
-import static org.warp.engine.Display.Render.glDrawStringLeft;
-import static org.warp.engine.Display.Render.glDrawStringRight;
-import static org.warp.engine.Display.Render.setFont;
+import static org.warp.engine.Display.Render.*;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -203,6 +194,8 @@ public final class PIDisplay {
 	}
 
 	private void draw_status() {
+		glColor3f(204, 231, 212);
+		glFillRect(0, 0, Main.screenSize[0], 20);
 		glColor3f(0, 0, 0);
 		glDrawLine(0, 20, Main.screenSize[0]-1, 20);
 		glColor3f(0, 0, 0);
@@ -317,8 +310,8 @@ public final class PIDisplay {
 			colore(0.0f, 0.0f, 0.0f, 0.5f);
 			glDrawStringCenter((Main.screenSize[0] / 2), (Main.screenSize[1]/ 2) + 22, "PLEASE WAIT...");
 		} else {
-			draw_status();
 			draw_screen();
+			draw_status();
 			draw_bottom();
 		}
 	}

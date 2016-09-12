@@ -1,15 +1,15 @@
 package org.warp.picalculator;
 
-public abstract class FunzioneBase implements Funzione {
+public abstract class FunctionBase implements Function {
 
 	@Override
-	public abstract String simbolo();
+	public abstract String getSymbol();
 
 	@Override
-	public abstract Termine calcola() throws Errore;
+	public abstract Number solve() throws Error;
 
 	@Override
-	public abstract void calcolaGrafica();
+	public abstract void generateGraphics();
 
 	@Override
 	public abstract void draw(int x, int y);

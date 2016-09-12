@@ -4,24 +4,24 @@ import static org.warp.engine.Display.Render.glDrawLine;
 
 import org.nevec.rjm.NumeroAvanzatoVec;
 
-public class Radice extends FunzioneDueValoriBase {
+public class Root extends FunctionTwoValuesBase {
 
-	public Radice(FunzioneBase value1, FunzioneBase value2) {
+	public Root(FunctionBase value1, FunctionBase value2) {
 		super(value1, value2);
 	}
 
 	@Override
-	public String simbolo() {
-		return Simboli.NTH_ROOT;
+	public String getSymbol() {
+		return MathematicalSymbols.NTH_ROOT;
 	}
 
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable1.setSmall(true);
-		variable1.calcolaGrafica();
+		variable1.generateGraphics();
 		
 		variable2.setSmall(small);
-		variable2.calcolaGrafica();
+		variable2.generateGraphics();
 		
 		width = 1 + variable1.getWidth() + 2 + variable2.getWidth() + 2;
 		height = variable1.getHeight() + variable2.getHeight() - 2;
@@ -29,10 +29,10 @@ public class Radice extends FunzioneDueValoriBase {
 	}
 
 	@Override
-	public Termine calcola() throws NumberFormatException, Errore {
-		Termine exponent = new Termine(NumeroAvanzatoVec.ONE);
-		exponent = exponent.divide(getVariable1().calcola());
-		return getVariable2().calcola().pow(exponent);
+	public Number solve() throws NumberFormatException, Error {
+		Number exponent = new Number(NumeroAvanzatoVec.ONE);
+		exponent = exponent.divide(getVariable1().solve());
+		return getVariable2().solve().pow(exponent);
 	}
 
 	@Override

@@ -9,37 +9,37 @@ import org.warp.engine.Display;
 
 import com.rits.cloning.Cloner;
 
-public abstract class FunzioneAnterioreBase extends FunzioneBase {
-	public FunzioneAnterioreBase(FunzioneBase value) {
+public abstract class AnteriorFunctionBase extends FunctionBase {
+	public AnteriorFunctionBase(FunctionBase value) {
 		setVariable(value);
 	}
 
-	protected FunzioneBase variable = new Termine(NumeroAvanzatoVec.ZERO);
+	protected FunctionBase variable = new Number(NumeroAvanzatoVec.ZERO);
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 	
-	public FunzioneBase getVariable() {
+	public FunctionBase getVariable() {
 		return variable;
 	}
 
-	public void setVariable(FunzioneBase value) {
+	public void setVariable(FunctionBase value) {
 		variable = value;
 	}
 
 	@Override
-	public abstract String simbolo();
+	public abstract String getSymbol();
 
 	@Override
-	public abstract Termine calcola() throws Errore;
+	public abstract Number solve() throws Error;
 
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable.setSmall(small);
-		variable.calcolaGrafica();
+		variable.generateGraphics();
 		
-		width = getStringWidth(simbolo()) + 1 + getVariable().getWidth();
+		width = getStringWidth(getSymbol()) + 1 + getVariable().getWidth();
 		height = variable.getHeight();
 		line = variable.getLine();
 	}
@@ -47,7 +47,7 @@ public abstract class FunzioneAnterioreBase extends FunzioneBase {
 	@Override
 	public void draw(int x, int y) {
 		float h1 = getVariable().getHeight();
-		int wsegno = getStringWidth(simbolo());
+		int wsegno = getStringWidth(getSymbol());
 		float hsegno = Utils.getFontHeight(small);
 		float maxh = getHeight();
 		if (small) {
@@ -56,7 +56,7 @@ public abstract class FunzioneAnterioreBase extends FunzioneBase {
 			Display.Render.setFont(PIDisplay.fonts[0]);
 		}
 		
-		glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), simbolo());
+		glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), getSymbol());
 		getVariable().draw(x + wsegno + 1, (int) Math.floor(y + (maxh - h1) / 2));
 	}
 
@@ -78,14 +78,14 @@ public abstract class FunzioneAnterioreBase extends FunzioneBase {
 	@Override
 	public String toString() {
 		try {
-			return calcola().toString();
-		} catch (Errore e) {
+			return solve().toString();
+		} catch (Error e) {
 			return e.id.toString();
 		}
 	}
 
 	@Override
-	public FunzioneAnterioreBase clone() {
+	public AnteriorFunctionBase clone() {
 		Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}

@@ -1,12 +1,12 @@
 package org.warp.picalculator.screens;
 
-import static org.warp.engine.Display.Render.glDrawStringCenter;
+import static org.warp.engine.Display.Render.*;
 
 import org.warp.device.Keyboard.Key;
 import org.warp.engine.Display;
 import org.warp.engine.Screen;
 import org.warp.picalculator.Calculator;
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 import org.warp.picalculator.Main;
 
 public class SolveEquationScreen extends Screen {
@@ -30,7 +30,12 @@ public class SolveEquationScreen extends Screen {
 
 	@Override
 	public void render() {
-		glDrawStringCenter(Display.getWidth()/2, 29, "ciaoooooooooooooooooooooooooooooo");
+		glColor4f(0, 0, 0, 64);
+		glDrawStringCenter(Main.screenSize[0]/2+1, Main.screenSize[1]/4, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		glDrawStringCenter(Main.screenSize[0]/2, Main.screenSize[1]/4+1, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		glDrawStringCenter(Main.screenSize[0]/2+1, Main.screenSize[1]/4+1, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		glColor3f(255, 0, 0);
+		glDrawStringCenter(Main.screenSize[0]/2, Main.screenSize[1]/4, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
 	}
 
 	@Override
@@ -50,7 +55,7 @@ public class SolveEquationScreen extends Screen {
 				Main.d.goBack();
 				try {
 					Calculator.solve('X');
-				} catch (Errore e) {
+				} catch (Error e) {
 					Screen scr = Main.d.getScreen();
 					if (scr instanceof EquationScreen) {
 						EquationScreen escr = (EquationScreen) scr;

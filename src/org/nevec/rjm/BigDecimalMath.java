@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.security.ProviderException;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 
 /**
  * BigDecimal special functions.
@@ -55,10 +55,10 @@ public class BigDecimalMath {
 	 * @param mc
 	 *            The required precision of the result.
 	 * @return 3.14159...
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-05-29
 	 */
-	static public BigDecimal pi(final MathContext mc) throws Errore {
+	static public BigDecimal pi(final MathContext mc) throws Error {
 		/* look it up if possible */
 		if (mc.getPrecision() < PI.precision())
 			return PI.round(mc);
@@ -79,10 +79,10 @@ public class BigDecimalMath {
 	 * @param mc
 	 *            The required precision of the result.
 	 * @return 0.577...
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-13
 	 */
-	static public BigDecimal gamma(MathContext mc) throws Errore {
+	static public BigDecimal gamma(MathContext mc) throws Error {
 		/* look it up if possible */
 		if (mc.getPrecision() < GAMMA.precision())
 			return GAMMA.round(mc);
@@ -574,9 +574,9 @@ public class BigDecimalMath {
 	 * @return ln(n).
 	 * @since 2009-08-08
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 */
-	static public BigDecimal log(int n, final MathContext mc) throws Errore {
+	static public BigDecimal log(int n, final MathContext mc) throws Error {
 		/*
 		 * the value is undefined if x is negative.
 		 */
@@ -1017,10 +1017,10 @@ public class BigDecimalMath {
 	 * @param x
 	 *            The argument in radians.
 	 * @return sin(x) in the range -1 to 1.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-06-01
 	 */
-	static public BigDecimal sin(final BigDecimal x) throws Errore {
+	static public BigDecimal sin(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ZERO) < 0)
 			return sin(x.negate()).negate();
 		else if (x.compareTo(BigDecimal.ZERO) == 0)
@@ -1111,10 +1111,10 @@ public class BigDecimalMath {
 	 * @param x
 	 *            The argument in radians.
 	 * @return cos(x) in the range -1 to 1.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-06-01
 	 */
-	static public BigDecimal cos(final BigDecimal x) throws Errore {
+	static public BigDecimal cos(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ZERO) < 0)
 			return cos(x.negate());
 		else if (x.compareTo(BigDecimal.ZERO) == 0)
@@ -1207,9 +1207,9 @@ public class BigDecimalMath {
 	 * @param x
 	 *            the argument in radians.
 	 * @return the tan(x)
-	 * @throws Errore
+	 * @throws Error
 	 */
-	static public BigDecimal tan(final BigDecimal x) throws Errore {
+	static public BigDecimal tan(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ZERO) == 0)
 			return BigDecimal.ZERO;
 		else if (x.compareTo(BigDecimal.ZERO) < 0) {
@@ -1271,10 +1271,10 @@ public class BigDecimalMath {
 	 * @param x
 	 *            the argument in radians.
 	 * @return the cot(x)
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-07-31
 	 */
-	static public BigDecimal cot(final BigDecimal x) throws Errore {
+	static public BigDecimal cot(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ZERO) == 0) {
 			throw new ArithmeticException("Cannot take cot of zero " + x.toString());
 		} else if (x.compareTo(BigDecimal.ZERO) < 0) {
@@ -1334,9 +1334,9 @@ public class BigDecimalMath {
 	 * @param x
 	 *            the argument.
 	 * @return the arcsin(x) in radians.
-	 * @throws Errore
+	 * @throws Error
 	 */
-	static public BigDecimal asin(final BigDecimal x) throws Errore {
+	static public BigDecimal asin(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ONE) > 0 || x.compareTo(BigDecimal.ONE.negate()) < 0) {
 			throw new ArithmeticException("Out of range argument " + x.toString() + " of asin");
 		} else if (x.compareTo(BigDecimal.ZERO) == 0)
@@ -1436,10 +1436,10 @@ public class BigDecimalMath {
 	 * @param x
 	 *            the argument.
 	 * @return the arccos(x) in radians.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-09-29
 	 */
-	static public BigDecimal acos(final BigDecimal x) throws Errore {
+	static public BigDecimal acos(final BigDecimal x) throws Error {
 		/*
 		 * Essentially forwarded to pi/2 - asin(x)
 		 */
@@ -1470,10 +1470,10 @@ public class BigDecimalMath {
 	 *            the argument.
 	 * @return the principal value of arctan(x) in radians in the range -pi/2 to
 	 *         +pi/2.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-03
 	 */
-	static public BigDecimal atan(final BigDecimal x) throws Errore {
+	static public BigDecimal atan(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ZERO) < 0) {
 			return atan(x.negate()).negate();
 		} else if (x.compareTo(BigDecimal.ZERO) == 0)
@@ -1568,10 +1568,10 @@ public class BigDecimalMath {
 	 *            The argument.
 	 * @return The cosh(x) = (exp(x)+exp(-x))/2 .
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-19
 	 */
-	static public BigDecimal cosh(final BigDecimal x) throws Errore {
+	static public BigDecimal cosh(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ZERO) < 0)
 			return cos(x.negate());
 		else if (x.compareTo(BigDecimal.ZERO) == 0)
@@ -1643,10 +1643,10 @@ public class BigDecimalMath {
 	 *            the argument.
 	 * @return the sinh(x) = (exp(x)-exp(-x))/2 .
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-19
 	 */
-	static public BigDecimal sinh(final BigDecimal x) throws Errore {
+	static public BigDecimal sinh(final BigDecimal x) throws Error {
 		if (x.compareTo(BigDecimal.ZERO) < 0)
 			return sinh(x.negate()).negate();
 		else if (x.compareTo(BigDecimal.ZERO) == 0)
@@ -1817,10 +1817,10 @@ public class BigDecimalMath {
 	 * @param x
 	 *            The argument.
 	 * @return Gamma(x).
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-06
 	 */
-	static public BigDecimal Gamma(final BigDecimal x) throws Errore {
+	static public BigDecimal Gamma(final BigDecimal x) throws Error {
 		/*
 		 * reduce to interval near 1.0 with the functional relation,
 		 * Abramowitz-Stegun 6.1.33
@@ -1924,10 +1924,10 @@ public class BigDecimalMath {
 	 * @param mc
 	 *            The required accuracy in the result.
 	 * @return Gamma(x).
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2010-05-26
 	 */
-	static public BigDecimal Gamma(final Rational q, final MathContext mc) throws Errore {
+	static public BigDecimal Gamma(final Rational q, final MathContext mc) throws Error {
 		if (q.isBigInteger()) {
 			if (q.compareTo(Rational.ZERO) <= 0)
 				throw new ArithmeticException("Gamma at " + q.toString());
@@ -2025,10 +2025,10 @@ public class BigDecimalMath {
 	 * @param x
 	 *            the original value
 	 * @return the value modulo 2*pi in the interval from 0 to 2*pi.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-06-01
 	 */
-	static public BigDecimal mod2pi(BigDecimal x) throws Errore {
+	static public BigDecimal mod2pi(BigDecimal x) throws Error {
 		/*
 		 * write x= 2*pi*k+r with the precision in r defined by the precision of
 		 * x and not
@@ -2074,10 +2074,10 @@ public class BigDecimalMath {
 	 * @param x
 	 *            The original value
 	 * @return The value modulo pi, shifted to the interval from -Pi/2 to Pi/2.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-07-31
 	 */
-	static public BigDecimal modpi(BigDecimal x) throws Errore {
+	static public BigDecimal modpi(BigDecimal x) throws Error {
 		/*
 		 * write x= pi*k+r with the precision in r defined by the precision of x
 		 * and not
@@ -2128,10 +2128,10 @@ public class BigDecimalMath {
 	 * @param mc
 	 *            Specification of the accuracy of the result.
 	 * @return zeta(n).
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-05
 	 */
-	static public BigDecimal zeta(final int n, final MathContext mc) throws Errore {
+	static public BigDecimal zeta(final int n, final MathContext mc) throws Error {
 		if (n <= 0)
 			throw new ProviderException("Not implemented: zeta at negative argument " + n);
 		if (n == 1)
@@ -2311,10 +2311,10 @@ public class BigDecimalMath {
 	 * @param n
 	 *            The positive integer argument.
 	 * @return zeta(n)-1.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-20
 	 */
-	static public double zeta1(final int n) throws Errore {
+	static public double zeta1(final int n) throws Error {
 		/*
 		 * precomputed static table in double precision
 		 */
@@ -2358,10 +2358,10 @@ public class BigDecimalMath {
 	 * @return psi(x).
 	 *         The error is sometimes up to 10 ulp, where AS 6.3.15 suffers from
 	 *         cancellation of digits and psi=0
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-26
 	 */
-	static public double psi(final double x) throws Errore {
+	static public double psi(final double x) throws Error {
 		/*
 		 * the single positive zero of psi(x)
 		 */
@@ -2411,11 +2411,11 @@ public class BigDecimalMath {
 	 * @param mc
 	 *            Specification of the accuracy of the result
 	 * @return S_(n,p)(a)
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2009-08-09
 	 * @see <a href="http://arxiv.org/abs/math/9803067">arXiv:math/9803067</a>
 	 */
-	static protected BigDecimal broadhurstBBP(final int n, final int p, final int a[], MathContext mc) throws Errore {
+	static protected BigDecimal broadhurstBBP(final int n, final int p, final int a[], MathContext mc) throws Error {
 		/*
 		 * Explore the actual magnitude of the result first with a quick
 		 * estimate.

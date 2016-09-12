@@ -3,7 +3,7 @@ package org.nevec.rjm;
 import java.math.BigInteger;
 import java.util.Vector;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 
 /**
  * BigInteger special functions and Number theory.
@@ -416,9 +416,9 @@ public class BigIntegerMath {
 	 * @return The vector of x in A*x=rhs.
 	 * @since 2010-08-28
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 */
-	static public Rational[] solve(final BigInteger[][] A, final BigInteger[] rhs) throws ArithmeticException, Errore {
+	static public Rational[] solve(final BigInteger[][] A, final BigInteger[] rhs) throws ArithmeticException, Error {
 
 		final int rL = A.length;
 		if (rL == 0)
@@ -547,11 +547,11 @@ public class BigIntegerMath {
 	 * @return t(n,k)
 	 * @since 2009-08-06
 	 * @author Richard J. Mathar
-	 * @throws Errore
+	 * @throws Error
 	 * @see <a href="http://dx.doi.org/10.1080/01630568908816313">P. L. Butzer
 	 *      et al, Num. Funct. Anal. Opt. 10 (5)( 1989) 419-488</a>
 	 */
-	static public Rational centrlFactNumt(int n, int k) throws Errore {
+	static public Rational centrlFactNumt(int n, int k) throws Error {
 		if (k > n || k < 0 || (k % 2) != (n % 2))
 			return Rational.ZERO;
 		else if (k == n)

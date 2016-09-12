@@ -16,7 +16,7 @@ import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 
 /**
  * An interactive interface to the Wigner3j class. The GUI allows to preselect
@@ -134,10 +134,10 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 	} /* init */
 
 	/**
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2010-08-27
 	 */
-	public void compute() throws Errore {
+	public void compute() throws Error {
 		String tr = inpGtria.getText();
 		String[] trias = new String[4];
 
@@ -211,7 +211,7 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 			outG.setText("");
 			try {
 				compute();
-			} catch (Errore e1) {
+			} catch (Error e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}

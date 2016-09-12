@@ -3,7 +3,7 @@ package org.nevec.rjm;
 import java.math.BigInteger;
 import java.util.Vector;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 
 /**
  * Bernoulli numbers.
@@ -50,9 +50,9 @@ public class Bernoulli {
 	 * @param n
 	 *            the index, non-negative.
 	 * @return the B_0=1 for n=0, B_1=-1/2 for n=1, B_2=1/6 for n=2 etc
-	 * @throws Errore
+	 * @throws Error
 	 */
-	public Rational at(int n) throws Errore {
+	public Rational at(int n) throws Error {
 		if (n == 1)
 			return (new Rational(-1, 2));
 		else if (n % 2 != 0)
@@ -74,7 +74,7 @@ public class Bernoulli {
 	 * 
 	 * @return The Bernoulli number at n.
 	 */
-	private Rational doubleSum(int n) throws Errore {
+	private Rational doubleSum(int n) throws Error {
 		Rational resul = Rational.ZERO;
 		for (int k = 0; k <= n; k++) {
 			Rational jsum = Rational.ZERO;

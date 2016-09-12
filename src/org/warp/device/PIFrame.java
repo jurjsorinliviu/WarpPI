@@ -103,6 +103,9 @@ public class PIFrame extends JFrame {
 						} else {
 							Keyboard.keyPressed(Key.NONE);
 						}
+						int row = 2;
+						int col = 1;
+						Keyboard.debugKeysDown[row-1][col-1] = true;
 						break;
 					case KeyEvent.VK_1:
 						if (!Keyboard.shift && !Keyboard.alpha) {
@@ -223,6 +226,10 @@ public class PIFrame extends JFrame {
 						}
 						break;
 					case KeyEvent.VK_LEFT:
+						//LEFT
+						row = 2;
+						col = 3;
+						Keyboard.debugKeysDown[row-1][col-1] = true;
 						if (!Keyboard.shift && !Keyboard.alpha) {
 							Keyboard.keyPressed(Key.LEFT);
 						} else {
@@ -230,6 +237,10 @@ public class PIFrame extends JFrame {
 						}
 						break;
 					case KeyEvent.VK_RIGHT:
+						//RIGHT
+						row = 2;
+						col = 5;
+						Keyboard.debugKeysDown[row-1][col-1] = true;
 						if (!Keyboard.shift && !Keyboard.alpha) {
 							Keyboard.keyPressed(Key.RIGHT);
 						} else {
@@ -315,6 +326,9 @@ public class PIFrame extends JFrame {
 						} else {
 							Keyboard.keyReleased(Key.NONE);
 						}
+						int row = 2;
+						int col = 1;
+						Keyboard.debugKeysDown[row-1][col-1] = false;
 						break;
 					case KeyEvent.VK_1:
 						if (!Keyboard.shift && !Keyboard.alpha) {
@@ -357,6 +371,16 @@ public class PIFrame extends JFrame {
 					case KeyEvent.VK_A:
 						Keyboard.keyReleased(Key.ALPHA);
 						break;
+					case KeyEvent.VK_LEFT:
+						//LEFT
+						row = 2;
+						col = 3;
+						Keyboard.debugKeysDown[row-1][col-1] = false;
+					case KeyEvent.VK_RIGHT:
+						//RIGHT
+						row = 2;
+						col = 5;
+						Keyboard.debugKeysDown[row-1][col-1] = false;
 				}
 			}
 

@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.Vector;
 
-import org.warp.picalculator.Errore;
+import org.warp.picalculator.Error;
 
 /**
  * Polynomial with integer coefficients.
@@ -574,10 +574,10 @@ public class BigIntegerPoly implements Cloneable {
 	 *         Only factors with non-zero absolute coefficient are generated.
 	 *         This means the factors are of the form x^2+a*x+b=0 with nonzero
 	 *         b.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2012-03-01
 	 */
-	protected Vector<BigIntegerPoly> i2roots() throws Errore {
+	protected Vector<BigIntegerPoly> i2roots() throws Error {
 		/*
 		 * The vector of the factors to be returned
 		 */
@@ -672,10 +672,10 @@ public class BigIntegerPoly implements Cloneable {
 	 * 
 	 * @return The vector of factors. Factors with higher multiplicity are
 	 *         represented by repetition.
-	 * @throws Errore
+	 * @throws Error
 	 * @since 2012-03-01
 	 */
-	public Vector<BigIntegerPoly> ifactor() throws Errore {
+	public Vector<BigIntegerPoly> ifactor() throws Error {
 		/*
 		 * this ought be entirely rewritten in terms of the LLL algorithm
 		 */

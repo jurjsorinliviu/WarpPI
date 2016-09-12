@@ -9,49 +9,49 @@ import org.warp.engine.Display;
 
 import com.rits.cloning.Cloner;
 
-public abstract class FunzioneDueValori implements Funzione {
-	public FunzioneDueValori(Funzione value1, Funzione value2) {
+public abstract class FunctionTwoValues implements Function {
+	public FunctionTwoValues(Function value1, Function value2) {
 		setVariable1(value1);
 		setVariable2(value2);
 	}
 
-	protected Funzione variable1 = new Termine(Rational.ZERO);
+	protected Function variable1 = new Number(Rational.ZERO);
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 
-	public Funzione getVariable1() {
+	public Function getVariable1() {
 		return variable1;
 	}
 
-	public void setVariable1(Funzione value) {
+	public void setVariable1(Function value) {
 		variable1 = value;
 	}
 
-	protected Funzione variable2 = new Termine(Rational.ZERO);
+	protected Function variable2 = new Number(Rational.ZERO);
 
-	public Funzione getVariable2() {
+	public Function getVariable2() {
 		return variable2;
 	}
 
-	public void setVariable2(Funzione value) {
+	public void setVariable2(Function value) {
 		variable2 = value;
 	}
 
 	@Override
-	public abstract String simbolo();
+	public abstract String getSymbol();
 
 	@Override
-	public abstract Funzione calcola() throws Errore;
+	public abstract Function solve() throws Error;
 	
 	@Override
-	public void calcolaGrafica() {
+	public void generateGraphics() {
 		variable1.setSmall(small);
-		variable1.calcolaGrafica();
+		variable1.generateGraphics();
 		
 		variable2.setSmall(small);
-		variable2.calcolaGrafica();
+		variable2.generateGraphics();
 		
 		width = calcWidth();
 		height = calcHeight();
@@ -70,8 +70,8 @@ public abstract class FunzioneDueValori implements Funzione {
 			} else {
 				Display.Render.setFont(PIDisplay.fonts[1]);
 			}
-			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, simbolo());
-			dx += getStringWidth(simbolo());
+			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
+			dx += getStringWidth(getSymbol());
 		}
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
@@ -94,14 +94,14 @@ public abstract class FunzioneDueValori implements Funzione {
 	@Override
 	public String toString() {
 		try {
-			return calcola().toString();
-		} catch (Errore e) {
+			return solve().toString();
+		} catch (Error e) {
 			return e.id.toString();
 		}
 	}
 
 	@Override
-	public FunzioneDueValori clone() {
+	public FunctionTwoValues clone() {
 		Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}
@@ -116,13 +116,13 @@ public abstract class FunzioneDueValori implements Funzione {
 	}	
 
 	protected int calcWidth() {
-		return variable1.getWidth() + 1 + (drawSignum() ? getStringWidth(simbolo()) : 0) + variable2.getWidth();
+		return variable1.getWidth() + 1 + (drawSignum() ? getStringWidth(getSymbol()) : 0) + variable2.getWidth();
 	}
 	
 	protected int calcHeight() {
 
-		Funzione tmin = variable1;
-		Funzione tmax = variable1;
+		Function tmin = variable1;
+		Function tmax = variable1;
 		if (tmin == null || variable2.getLine() >= tmin.getLine()) {
 			tmin = variable2;
 		}
@@ -133,7 +133,7 @@ public abstract class FunzioneDueValori implements Funzione {
 	}
 	
 	protected int calcLine() {
-		Funzione tl = variable1;
+		Function tl = variable1;
 		if (tl == null || variable2.getLine() >= tl.getLine()) {
 			tl = variable2;
 		}
