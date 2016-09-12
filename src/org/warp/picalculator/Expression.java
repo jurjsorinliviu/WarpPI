@@ -349,7 +349,7 @@ public class Expression extends FunctionMultipleValuesBase {
 				if (funzione != null) {
 					//Affinazione
 					if (funzione instanceof Root) {
-						if ((i - 1) >= 0 && oldFunctionsArray[i-1] instanceof Number && ((Number)oldFunctionsArray[i-1]).getTerm().compareTo(new NumeroAvanzatoVec(new NumeroAvanzato(new BigInteger("2")))) == 0) {
+						if ((i - 1) >= 0 && oldFunctionsArray[i-1] instanceof Number && ((Number)oldFunctionsArray[i-1]).getTerm().isBigInteger(false) && ((Number)oldFunctionsArray[i-1]).getTerm().toBigInteger(false).compareTo(new BigInteger("2")) == 0) {
 							oldFunctionsArray[i] = null;
 							oldFunctionsArray[i-1] = null;
 							oldFunctionsList.remove(oldFunctionsList.size()-1);
