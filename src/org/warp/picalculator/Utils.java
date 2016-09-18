@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
@@ -82,7 +83,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsSumsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunctionBase) {
 					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return false;
@@ -101,7 +102,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunctionBase) {
 					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return false;
@@ -169,7 +170,7 @@ public class Utils {
 
 	public static boolean areThereOnlyEmptyNSNFunctions(ArrayList<FunctionBase> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof FunctionTwoValuesBase && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof PrioritaryMultiplication) && !(fl.get(i) instanceof Division)) {
+			if (fl.get(i) instanceof FunctionTwoValuesBase && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof SumSubtraction) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof PrioritaryMultiplication) && !(fl.get(i) instanceof Division)) {
 				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 					return true;
 				}
@@ -203,7 +204,7 @@ public class Utils {
 
 	public static boolean areThereEmptySums(ArrayList<FunctionBase> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof Sum) {
+			if (fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction) {
 				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
 					return true;
 				}
@@ -225,7 +226,7 @@ public class Utils {
 
 	public static boolean areThereOtherSettedUpFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunctionBase || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Division)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum ||  fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunctionBase || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Division)) {
 				if (fl.get(i) instanceof AnteriorFunctionBase) {
 					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
 						return true;
@@ -381,5 +382,14 @@ public class Utils {
 			realbytes[i] = Byte.toUnsignedInt(bytes[i]);
 		}
 		return realbytes;
+	}
+	
+	public static boolean allSolved(List<Function> expressions) {
+		for (Function itm : expressions) {
+			if (itm.getStepsCount() > 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

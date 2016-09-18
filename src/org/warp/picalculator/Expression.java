@@ -8,11 +8,11 @@ import static org.warp.picalculator.Utils.concat;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.nevec.rjm.NumeroAvanzato;
-import org.nevec.rjm.NumeroAvanzatoVec;
 
 public class Expression extends FunctionMultipleValuesBase {
 
@@ -194,6 +194,9 @@ public class Expression extends FunctionMultipleValuesBase {
 					switch (charI) {
 						case MathematicalSymbols.SUM:
 							f = new Sum(null, null);
+							break;
+						case MathematicalSymbols.SUM_SUBTRACTION:
+							f = new SumSubtraction(null, null);
 							break;
 						case MathematicalSymbols.MULTIPLICATION:
 							f = new Multiplication(null, null);
@@ -396,7 +399,7 @@ public class Expression extends FunctionMultipleValuesBase {
 						if (funzioneTMP instanceof FunctionTwoValuesBase) {
 							if (step != "SN Functions") {
 								if (
-										(step == "sums" && (funzioneTMP instanceof Sum) == true && ((funzioneTMP instanceof AnteriorFunctionBase && ((AnteriorFunctionBase) funzioneTMP).variable == null) || (funzioneTMP instanceof FunctionTwoValuesBase && ((FunctionTwoValuesBase) funzioneTMP).variable1 == null && ((FunctionTwoValuesBase) funzioneTMP).variable2 == null) || (!(funzioneTMP instanceof AnteriorFunctionBase) && !(funzioneTMP instanceof FunctionTwoValuesBase))))
+										(step == "sums" && (funzioneTMP instanceof Sum || funzioneTMP instanceof SumSubtraction) == true && ((funzioneTMP instanceof AnteriorFunctionBase && ((AnteriorFunctionBase) funzioneTMP).variable == null) || (funzioneTMP instanceof FunctionTwoValuesBase && ((FunctionTwoValuesBase) funzioneTMP).variable1 == null && ((FunctionTwoValuesBase) funzioneTMP).variable2 == null) || (!(funzioneTMP instanceof AnteriorFunctionBase) && !(funzioneTMP instanceof FunctionTwoValuesBase))))
 										||
 										(
 											step.equals("prioritary multiplications")
@@ -426,6 +429,8 @@ public class Expression extends FunctionMultipleValuesBase {
 											step == "NSN Functions"
 											&&
 											(funzioneTMP instanceof Sum) == false
+											&&
+											(funzioneTMP instanceof SumSubtraction) == false
 											&&
 											(funzioneTMP instanceof Multiplication) == false
 											&&
@@ -471,13 +476,13 @@ public class Expression extends FunctionMultipleValuesBase {
 
 										Utils.debug.println(debugSpaces + "  •Set variable to expression:" + funzioneTMP.getSymbol());
 										try {
-											Utils.debug.println(debugSpaces + "    " + "var1=" + ((FunctionTwoValuesBase) funzioneTMP).getVariable1().solve());
+											Utils.debug.println(debugSpaces + "    " + "var1=" + ((FunctionTwoValuesBase) funzioneTMP).getVariable1().toString());
 										} catch (NullPointerException ex2) {}
 										try {
-											Utils.debug.println(debugSpaces + "    " + "var2=" + ((FunctionTwoValuesBase) funzioneTMP).getVariable2().solve());
+											Utils.debug.println(debugSpaces + "    " + "var2=" + ((FunctionTwoValuesBase) funzioneTMP).getVariable2().toString());
 										} catch (NullPointerException ex2) {}
 										try {
-											Utils.debug.println(debugSpaces + "    " + "(result)=" + ((FunctionTwoValuesBase) funzioneTMP).solve());
+											Utils.debug.println(debugSpaces + "    " + "(result)=" + ((FunctionTwoValuesBase) funzioneTMP).toString());
 										} catch (NullPointerException ex2) {}
 
 									} else {
@@ -502,7 +507,7 @@ public class Expression extends FunctionMultipleValuesBase {
 										oldFunctionsList.remove(i + 1);
 
 										Utils.debug.println(debugSpaces + "  •Set variable to expression:" + funzioneTMP.getSymbol());
-										FunctionBase var = ((AnteriorFunctionBase) funzioneTMP).getVariable().solve();
+										FunctionBase var = ((AnteriorFunctionBase) funzioneTMP).getVariable();
 										if (var == null) {
 											Utils.debug.println(debugSpaces + "    " + "var=null");
 										} else {
@@ -535,7 +540,7 @@ public class Expression extends FunctionMultipleValuesBase {
 			}
 			Utils.debug.println(debugSpaces + "•Finished correcting classes.");
 
-			Number result = solve();
+			String result = toString();
 			Utils.debug.println(debugSpaces + "•Result:" + result);
 		}
 	}
@@ -546,17 +551,39 @@ public class Expression extends FunctionMultipleValuesBase {
 	}
 
 	@Override
-	public Number solve() throws Error {
+	public List<Function> solveOneStep() throws Error {
+		List<Function> ret = new ArrayList<>();
 		if (variables.length == 0) {
-			return new Number("0");
+			stepsCount = -1;
+			return ret;
 		} else if (variables.length == 1) {
-			return (Number) variables[0].solve();
-		} else {
-			Number result = new Number("0");
-			for (Function f : variables) {
-				result = result.add((Number) f.solve());
+			if (variables[0].getStepsCount() > 0) {
+				List<Function> l = variables[0].solveOneStep();
+				for (Function f : l) {
+					if (f instanceof Number) {
+						ret.add(f);
+					} else {
+						ret.add(new Expression(new FunctionBase[]{(FunctionBase) f}));
+					}
+				}
+				stepsCount = -1;
+				return ret;
+			} else {
+				ret.add(variables[0]);
+				stepsCount = -1;
+				return ret;
 			}
-			return result;
+		} else {
+			for (Function f : variables) {
+				if (f.getStepsCount() >= stepsCount - 1) {
+					List<Function> partial = f.solveOneStep();
+					for (Function fnc : partial) {
+						ret.add(new Expression(new FunctionBase[]{(FunctionBase) fnc}));
+					}
+				}
+			}
+			stepsCount = -1;
+			return ret;
 		}
 	}
 

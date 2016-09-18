@@ -61,20 +61,36 @@ public abstract class FunctionMultipleValues implements Function {
 
 	@Override
 	public abstract String getSymbol();
-
+	
+	protected int stepsCount = -1;
 	@Override
-	public abstract Function solve() throws Error;
+	public int getStepsCount() {
+		if (stepsCount == -1) {
+			int max = 0;
+			int cur = 0;
+			for (Function f : variables) {
+				cur = f.getStepsCount();
+				if (max < cur) {
+					max = cur;
+				}
+			}
+			return max+1;
+		} else {
+			return stepsCount;
+		}
+	}
 
 	@Override
 	public abstract void generateGraphics();
 	
 	@Override
 	public String toString() {
-		try {
-			return solve().toString();
-		} catch (Error e) {
-			return e.id.toString();
-		}
+//		try {
+//			return solve().toString();
+			return "TODO: fare una nuova alternativa a solve().toString()";
+//		} catch (Error e) {
+//			return e.id.toString();
+//		}
 	}
 
 	@Override

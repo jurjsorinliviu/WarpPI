@@ -130,7 +130,7 @@ public class Keyboard {
 			if (shift) {
 				keyPressed(Key.NONE);
 			} else if (alpha) {
-				keyPressed(Key.NONE);
+				keyPressed(Key.LETTER_Y);
 			} else {
 				keyPressed(Key.DOT);
 			}
@@ -138,7 +138,7 @@ public class Keyboard {
 			if (shift) {
 				keyPressed(Key.NONE);
 			} else if (alpha) {
-				keyPressed(Key.NONE);
+				keyPressed(Key.LETTER_X);
 			} else {
 				keyPressed(Key.NUM0);
 			}
@@ -216,7 +216,7 @@ public class Keyboard {
 			}
 		} else if (row == 8 && col == 4) {
 			if (shift) {
-				keyPressed(Key.NONE);
+				keyPressed(Key.PLUS_MINUS);
 			} else if (alpha) {
 				keyPressed(Key.NONE);
 			} else {
@@ -484,7 +484,7 @@ public class Keyboard {
 	}
 
 	public static enum Key {
-		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, DRG_CYCLE, LETTER_X, SIMPLIFY, SOLVE, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x
+		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, DRG_CYCLE, LETTER_X, LETTER_Y, SIMPLIFY, SOLVE, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x
 	}
 }
 
@@ -527,7 +527,7 @@ public class Keyboard {
 |5,8---|4,8---|3,8---|2,8---|1,8-----------------|
 | 0    | .    |      |      | SOLVE              |
 |      |      |      |      | SIMPLIFY           |
-|      |      |      |DRGCYCL|                   |
+| X    | Y    | Z    |DRGCYCL|                   |
 |------|------|------|------|--------------------|
 
 

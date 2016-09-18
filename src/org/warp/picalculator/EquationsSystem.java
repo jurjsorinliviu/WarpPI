@@ -2,6 +2,9 @@ package org.warp.picalculator;
 
 import static org.warp.engine.Display.Render.glDrawLine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EquationsSystem extends FunctionMultipleValues {
 	static final int spacing = 2;
 	
@@ -23,9 +26,14 @@ public class EquationsSystem extends FunctionMultipleValues {
 	}
 
 	@Override
-	public Function solve() throws NumberFormatException, Error {
+	public List<Function> solveOneStep() throws NumberFormatException, Error {
 		// TODO implementare il calcolo dei sistemi
-		return variables[0].solve();
+		if (stepsCount == 1) {
+			List<Function> l = new ArrayList<Function>();
+			l.add(variables[0]);
+			return l;
+		}
+		return variables[0].solveOneStep();
 	}
 
 	@Override

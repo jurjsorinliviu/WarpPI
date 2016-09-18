@@ -3,6 +3,8 @@ package org.warp.picalculator;
 import static org.warp.engine.Display.Render.glColor3f;
 import static org.warp.engine.Display.Render.glDrawLine;
 
+import java.util.List;
+
 public class EquationsSystemPart extends AnteriorFunction {
 
 	public EquationsSystemPart(Equation equazione) {
@@ -15,9 +17,9 @@ public class EquationsSystemPart extends AnteriorFunction {
 	}
 
 	@Override
-	public Equation solve() throws NumberFormatException, Error {
+	public List<Function> solveOneStep() throws NumberFormatException, Error {
 		// TODO implementare il calcolo dei sistemi
-		return (Equation) variable.solve();
+		return variable.solveOneStep();
 	}
 
 	@Override

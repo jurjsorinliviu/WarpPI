@@ -1,5 +1,9 @@
 package org.warp.picalculator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.nevec.rjm.NumeroAvanzato;
 import org.warp.device.PIDisplay;
 import org.warp.engine.Screen;
@@ -12,12 +16,6 @@ public class Calculator {
 	public static Screen[] sessions = new Screen[5];
 	public static int currentSession = 0;
 	public static boolean haxMode = true;
-
-	public static Number solveResult(String string) throws Error {
-		System.out.println("INPUT: " + string);
-		Expression expression = new Expression(string);
-		return expression.solve();
-	}
 
 	public static Function parseString(String string) throws Error {
 		if (string.contains("{")) {
@@ -55,8 +53,29 @@ public class Calculator {
 			if (f instanceof Equation) {
 				PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(es));
 			} else {
-				es.f2 = es.f.solve();
-				es.f2.generateGraphics();
+				List<Function> results = new ArrayList<>();
+				List<Function> partialResults = new ArrayList<>();
+				results.add(es.f);
+				while (Utils.allSolved(results) == false) {
+					for (Function itm : results) {
+						if (itm.getStepsCount() > 0) {
+							partialResults.addAll(itm.solveOneStep());
+						} else {
+							partialResults.add(itm);
+						}
+					}
+					results = new ArrayList<Function>(partialResults);
+					partialResults.clear();
+				}
+				if (results.size() == 0) {
+					
+				} else {
+					Collections.reverse(results);
+					es.f2 = results;
+					for (Function rf : es.f2) {
+						rf.generateGraphics();
+					}
+				}
 			}
 		}
 	}
@@ -66,8 +85,12 @@ public class Calculator {
 			EquationScreen es = (EquationScreen) Calculator.sessions[0];
 			Function f = es.f;
 			if (f instanceof Equation) {
-				es.f2 = ((Equation)f).solve(letter);
-				es.f2.generateGraphics();
+				List<Function> results = ((Equation)f).solve(letter);
+				Collections.reverse(results);
+				es.f2 = results;
+				for (Function rf : es.f2) {
+					rf.generateGraphics();
+				}
 			}
 		}
 	}

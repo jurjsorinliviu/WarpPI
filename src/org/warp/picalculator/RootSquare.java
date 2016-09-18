@@ -1,5 +1,9 @@
 package org.warp.picalculator;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.nevec.rjm.NumeroAvanzatoVec;
 import org.nevec.rjm.Rational;
 
 public class RootSquare extends AnteriorFunctionBase {
@@ -22,20 +26,38 @@ public class RootSquare extends AnteriorFunctionBase {
 		width = 1 + 4 + getVariable().getWidth() + 1;
 		line = getVariable().getLine() + 2;
 	}
-
+	
 	@Override
-	public Number solve() throws Error {
-		try {
-			Number result = getVariable().solve();
-			result = result.pow(new Number(new Rational(1, 2)));
-			return result;
-		} catch(NullPointerException ex) {
-			throw new Error(Errors.ERROR);
-		} catch(NumberFormatException ex) {
+	public List<Function> solveOneStep() throws Error {
+		if (variable == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
-		} catch(ArithmeticException ex) {
-			throw new Error(Errors.NUMBER_TOO_SMALL);
 		}
+		ArrayList<Function> result = new ArrayList<>();
+		if (stepsCount == 1) {
+			try {
+				Number var = (Number) getVariable();
+				result.add(var.pow(new Number(new Rational(1, 2))));
+			} catch(NullPointerException ex) {
+				throw new Error(Errors.ERROR);
+			} catch(NumberFormatException ex) {
+				throw new Error(Errors.SYNTAX_ERROR);
+			} catch(ArithmeticException ex) {
+				throw new Error(Errors.NUMBER_TOO_SMALL);
+			}
+		} else {
+			List<Function> l1 = new ArrayList<Function>();
+			if (variable.getStepsCount() >= stepsCount - 1) {
+				l1.addAll(variable.solveOneStep());
+			} else {
+				l1.add(variable);
+			}
+			
+			for (Function f : l1) {
+				result.add(new RootSquare((FunctionBase)f));
+			}
+		}
+		stepsCount=-1;
+		return result;
 	}
 
 	@Override

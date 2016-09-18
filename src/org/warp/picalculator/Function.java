@@ -1,9 +1,13 @@
 package org.warp.picalculator;
 
+import java.util.List;
+
 public interface Function {
 	public String getSymbol();
 
-	public Function solve() throws Error;
+	public int getStepsCount();
+
+	public List<Function> solveOneStep() throws Error;
 
 	public void generateGraphics();
 
@@ -16,4 +20,10 @@ public interface Function {
 	public int getLine();
 	
 	public void setSmall(boolean small);
+	
+	@Override
+	public int hashCode();
+	
+	@Override
+	public boolean equals(Object o);
 }

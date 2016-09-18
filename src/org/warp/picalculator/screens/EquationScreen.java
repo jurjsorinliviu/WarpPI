@@ -4,6 +4,7 @@ import static org.warp.engine.Display.Render.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.List;
 
 import org.warp.device.Keyboard.Key;
 import org.warp.device.PIDisplay;
@@ -24,7 +25,7 @@ public class EquationScreen extends Screen {
 	public volatile boolean showCaret = true;
 	public volatile float showCaretDelta = 0f;
 	public Function f;
-	public Function f2;
+	public List<Function> f2;
 	public int ew1;
 	public int ew2;
 	public int eh2;
@@ -150,8 +151,13 @@ public class EquationScreen extends Screen {
 		glDrawStringLeft(2, 22, nuovaEquazione.substring(0, caretPos)+(showCaret?"|":"")+nuovaEquazione.substring(((showCaret==false||nuovaEquazione.length()<=caretPos)?caretPos:caretPos+1), nuovaEquazione.length()));
 		if (f != null)
 			f.draw(2, 22+1+9+1);
-		if (f2 != null)
-			f2.draw(Display.getWidth() - 2 - f2.getWidth(), Display.getHeight() - 2 - f2.getHeight());
+		if (f2 != null) {
+			int bottomSpacing = 0;
+			for (Function f : f2) {
+				bottomSpacing += f.getHeight()+2;
+				f.draw(Display.getWidth() - 2 - f.getWidth(), Display.getHeight() - bottomSpacing);
+			}
+		}
 	}
 
 	@Override
@@ -184,6 +190,9 @@ public class EquationScreen extends Screen {
 								interpreta(nuovaEquazione);
 								solve();
 							} catch (Exception ex) {
+								if (Utils.debugOn) {
+									ex.printStackTrace();
+								}
 								throw new Error(Errors.ERROR);
 							}
 						} catch (Error e) {
@@ -234,6 +243,9 @@ public class EquationScreen extends Screen {
 			case MINUS:
 				typeChar("-");
 				return true;
+			case PLUS_MINUS:
+				typeChar("±");
+				return true;
 			case MULTIPLY:
 				typeChar("*");
 				return true;
@@ -264,6 +276,12 @@ public class EquationScreen extends Screen {
 				return true;
 			case POWER_OF_x:
 				typeChar("^");
+				return true;
+			case LETTER_X:
+				typeChar("X");
+				return true;
+			case LETTER_Y:
+				typeChar("Y");
 				return true;
 			case DELETE:
 				if (nuovaEquazione.length() > 0) {

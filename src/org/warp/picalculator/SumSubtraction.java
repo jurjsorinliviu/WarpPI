@@ -9,15 +9,15 @@ import java.util.List;
 import org.warp.device.PIDisplay;
 import org.warp.engine.Display;
 
-public class Sum extends FunctionTwoValuesBase {
+public class SumSubtraction extends FunctionTwoValuesBase {
 
-	public Sum(FunctionBase value1, FunctionBase value2) {
+	public SumSubtraction(FunctionBase value1, FunctionBase value2) {
 		super(value1, value2);
 	}
 
 	@Override
 	public String getSymbol() {
-		return MathematicalSymbols.SUM;
+		return MathematicalSymbols.SUM_SUBTRACTION;
 	}
 
 	@Override
@@ -28,6 +28,7 @@ public class Sum extends FunctionTwoValuesBase {
 		ArrayList<Function> result = new ArrayList<>();
 		if (stepsCount == 1) {
 			result.add(((Number)variable1).add((Number)variable2));
+			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number("-1"))));
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
 			List<Function> l2 = new ArrayList<Function>();
@@ -59,7 +60,7 @@ public class Sum extends FunctionTwoValuesBase {
 				if (cur2 >= size1) cur2 = 0;
 			}
 			for (Function[] f : results) {
-				result.add(new Sum((FunctionBase)f[0], (FunctionBase)f[1]));
+				result.add(new SumSubtraction((FunctionBase)f[0], (FunctionBase)f[1]));
 			}
 		}
 		stepsCount=-1;

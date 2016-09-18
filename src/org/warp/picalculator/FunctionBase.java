@@ -1,12 +1,17 @@
 package org.warp.picalculator;
 
+import java.util.List;
+
 public abstract class FunctionBase implements Function {
 
 	@Override
 	public abstract String getSymbol();
 
 	@Override
-	public abstract Number solve() throws Error;
+	public abstract int getStepsCount();
+	
+	@Override
+	public abstract List<Function> solveOneStep() throws Error;
 
 	@Override
 	public abstract void generateGraphics();

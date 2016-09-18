@@ -3,6 +3,8 @@ package org.warp.picalculator;
 import static org.warp.engine.Display.Render.getStringWidth;
 import static org.warp.engine.Display.Render.glDrawStringLeft;
 
+import java.util.List;
+
 import org.nevec.rjm.Rational;
 import org.warp.device.PIDisplay;
 import org.warp.engine.Display;
@@ -43,7 +45,10 @@ public abstract class FunctionTwoValues implements Function {
 	public abstract String getSymbol();
 
 	@Override
-	public abstract Function solve() throws Error;
+	public abstract int getStepsCount();
+
+	@Override
+	public abstract List<Function> solveOneStep() throws Error;
 	
 	@Override
 	public void generateGraphics() {
@@ -93,11 +98,12 @@ public abstract class FunctionTwoValues implements Function {
 
 	@Override
 	public String toString() {
-		try {
-			return solve().toString();
-		} catch (Error e) {
-			return e.id.toString();
-		}
+//		try {
+//			return solve().toString();
+			return "TODO: fare una nuova alternativa a solve().toString()";
+//		} catch (Error e) {
+//			return e.id.toString();
+//		}
 	}
 
 	@Override

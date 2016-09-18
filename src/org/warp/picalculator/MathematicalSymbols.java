@@ -4,6 +4,7 @@ import static org.warp.picalculator.Utils.concat;
 
 public class MathematicalSymbols {
 	public static final String SUM = "+";
+	public static final String SUM_SUBTRACTION = "±";
 	public static final String SUBTRACTION = "-";
 	public static final String MULTIPLICATION = "*";
 	public static final String PRIORITARY_MULTIPLICATION = "▪";
@@ -29,7 +30,7 @@ public class MathematicalSymbols {
 	}
 
 	public static final String[] signums(boolean withMultiplication, boolean withPrioritaryMultiplication) {
-		String[] ret = new String[] { SUM, DIVISION };
+		String[] ret = new String[] { SUM, SUM_SUBTRACTION, DIVISION };
 		if (withMultiplication) {
 			ret = Utils.add(ret, MULTIPLICATION);
 		}

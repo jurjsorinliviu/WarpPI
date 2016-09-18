@@ -5,6 +5,9 @@ import static org.warp.engine.Display.Render.glColor3f;
 import static org.warp.engine.Display.Render.glDrawStringLeft;
 import static org.warp.engine.Display.Render.glFillRect;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.nevec.rjm.NumeroAvanzatoVec;
 import org.warp.device.PIDisplay;
 import org.warp.engine.Display;
@@ -21,14 +24,53 @@ public class Division extends FunctionTwoValuesBase {
 	}
 
 	@Override
-	public Number solve() throws Error {
-		if (variable2 == null || variable1 == null) {
-			return new Number("0");
+	public List<Function> solveOneStep() throws Error {
+		if (variable1 == null || variable2 == null) {
+			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		if (variable2.solve().getTerm().compareTo(NumeroAvanzatoVec.ZERO) == 0) {
-			throw new Error(Errors.DIVISION_BY_ZERO);
+		ArrayList<Function> result = new ArrayList<>();
+		if (stepsCount == 1) {
+			if (variable2 instanceof Number && ((Number)variable2).getTerm().compareTo(NumeroAvanzatoVec.ZERO) == 0) {
+				throw new Error(Errors.DIVISION_BY_ZERO);
+			}
+			result.add(((Number) variable1).divide((Number)variable2));
+		} else {
+			List<Function> l1 = new ArrayList<Function>();
+			List<Function> l2 = new ArrayList<Function>();
+			if (variable1.getStepsCount() >= stepsCount - 1) {
+				l1.addAll(variable1.solveOneStep());
+			} else {
+				l1.add(variable1);
+			}
+			if (variable2.getStepsCount() >= stepsCount - 1) {
+				l2.addAll(variable2.solveOneStep());
+			} else {
+				l2.add(variable2);
+			}
+			
+			int size1 = l1.size();
+			int size2 = l2.size();
+			int cur1 = 0;
+			int cur2 = 0;
+			int total = l1.size()*l2.size();
+			Function[][] results = new Function[total][2];
+			for (int i = 0; i < total; i++) {
+				results[i] = new Function[]{l1.get(cur1), l2.get(cur2)};
+				if (size1 < size2 && cur2 % size1 == 0) {
+					cur2+=1;
+				}
+				if (size2 < size1 && cur1 % size2 == 0) {
+					cur1+=1;
+				}
+				if (cur1 >= size1) cur1 = 0;
+				if (cur2 >= size1) cur2 = 0;
+			}
+			for (Function[] f : results) {
+				result.add(new Division((FunctionBase)f[0], (FunctionBase)f[1]));
+			}
 		}
-		return variable1.solve().divide(variable2.solve());
+		stepsCount=-1;
+		return result;
 	}
 
 	public boolean hasMinus() {

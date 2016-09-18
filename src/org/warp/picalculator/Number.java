@@ -8,6 +8,8 @@ import static org.warp.engine.Display.Render.glFillRect;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.NumeroAvanzato;
@@ -63,11 +65,6 @@ public class Number extends FunctionBase {
 		line = calcLine(); //TODO pp
 		height = calcHeight();
 		width = calcWidth();
-	}
-	
-	@Override
-	public Number solve() {
-		return this;
 	}
 
 	@Override
@@ -384,6 +381,18 @@ public class Number extends FunctionBase {
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
+	}
+
+	@Override
+	public int getStepsCount() {
+		return 0;
+	}
+
+	@Override
+	public List<Function> solveOneStep() throws Error {
+		List<Function> result = new ArrayList<>();
+		result.add(this);
+		return result;
 	}
 
 	/*

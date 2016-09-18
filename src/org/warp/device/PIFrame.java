@@ -88,6 +88,13 @@ public class PIFrame extends JFrame {
 							Keyboard.keyPressed(Key.NONE);
 						}
 						break;
+					case KeyEvent.VK_Y:
+						if (Keyboard.alpha) {
+							Keyboard.keyPressed(Key.LETTER_Y);
+						} else {
+							Keyboard.keyPressed(Key.NONE);
+						}
+						break;
 					case KeyEvent.VK_B:
 						if (Keyboard.shift) {
 							Keyboard.keyPressed(Key.BRIGHTNESS_CYCLE_REVERSE);
@@ -186,6 +193,8 @@ public class PIFrame extends JFrame {
 					case KeyEvent.VK_ADD:
 						if (!Keyboard.shift && !Keyboard.alpha) {
 							Keyboard.keyPressed(Key.PLUS);
+						} else if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.PLUS_MINUS);
 						} else {
 							Keyboard.keyPressed(Key.NONE);
 						}
