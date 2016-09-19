@@ -1,21 +1,21 @@
 package org.warp.picalculator.screens;
 
-import static org.warp.engine.Display.Render.getMatrixOfImage;
-import static org.warp.engine.Display.Render.glClearColor;
-import static org.warp.engine.Display.Render.glDrawSkin;
-import static org.warp.engine.Display.Render.glDrawStringLeft;
-import static org.warp.engine.Display.Render.setFont;
+import static org.warp.picalculator.device.graphicengine.Display.Render.getMatrixOfImage;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glClearColor;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawSkin;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
+import static org.warp.picalculator.device.graphicengine.Display.Render.setFont;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.warp.device.Keyboard;
-import org.warp.device.Keyboard.Key;
-import org.warp.device.PIDisplay;
-import org.warp.engine.Screen;
 import org.warp.picalculator.Main;
+import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.device.PIDisplay;
+import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.graphicengine.Screen;
 
 public class MarioScreen extends Screen {
 

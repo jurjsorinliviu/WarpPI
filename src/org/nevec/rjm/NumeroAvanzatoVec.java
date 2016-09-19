@@ -7,8 +7,8 @@ import java.util.Comparator;
 import java.util.Vector;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Variables;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.Variables;
 
 /**
  * A NumeroAvanzatoVec represents an algebraic sum or differences of values

@@ -1,7 +1,7 @@
 package org.warp.picalculator;
 
-import org.warp.device.Keyboard;
-import org.warp.device.PIDisplay;
+import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.screens.EquationScreen;
 
 import com.pi4j.wiringpi.Gpio;

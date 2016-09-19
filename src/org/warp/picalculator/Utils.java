@@ -1,6 +1,6 @@
 package org.warp.picalculator;
 
-import static org.warp.engine.Display.Render.glDrawLine;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
 import java.awt.Font;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +15,20 @@ import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
+import org.warp.picalculator.math.Variable;
+import org.warp.picalculator.math.functions.AnteriorFunction;
+import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Expression;
+import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.functions.FunctionTwoValues;
+import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.PrioritaryMultiplication;
+import org.warp.picalculator.math.functions.Subtraction;
+import org.warp.picalculator.math.functions.Sum;
+import org.warp.picalculator.math.functions.SumSubtraction;
+import org.warp.picalculator.math.functions.equations.Equation;
+import org.warp.picalculator.math.functions.equations.EquationsSystemPart;
 
 public class Utils {
 
@@ -84,12 +98,12 @@ public class Utils {
 	public static boolean areThereOnlySettedUpFunctionsSumsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
-				if (fl.get(i) instanceof AnteriorFunctionBase) {
-					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
+				if (fl.get(i) instanceof AnteriorFunction) {
+					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
-					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValues) {
+					if (((FunctionTwoValues) fl.get(i)).getVariable1() == null || ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 						return false;
 					}
 				} else {
@@ -103,12 +117,12 @@ public class Utils {
 	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
-				if (fl.get(i) instanceof AnteriorFunctionBase) {
-					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
+				if (fl.get(i) instanceof AnteriorFunction) {
+					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
-					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValues) {
+					if (((FunctionTwoValues) fl.get(i)).getVariable1() == null || ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 						return false;
 					}
 				} else {
@@ -122,12 +136,12 @@ public class Utils {
 	public static boolean areThereOnlySettedUpFunctionsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
-				if (fl.get(i) instanceof AnteriorFunctionBase) {
-					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
+				if (fl.get(i) instanceof AnteriorFunction) {
+					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
-					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValues) {
+					if (((FunctionTwoValues) fl.get(i)).getVariable1() == null || ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 						return false;
 					}
 				} else {
@@ -141,12 +155,12 @@ public class Utils {
 	public static boolean areThereOnlySettedUpFunctionsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
-				if (fl.get(i) instanceof AnteriorFunctionBase) {
-					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
+				if (fl.get(i) instanceof AnteriorFunction) {
+					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
 					}
-				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
-					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValues) {
+					if (((FunctionTwoValues) fl.get(i)).getVariable1() == null || ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 						return false;
 					}
 				} else {
@@ -157,10 +171,10 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean areThereOnlyEmptySNFunctions(ArrayList<FunctionBase> fl) {
+	public static boolean areThereOnlyEmptySNFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof AnteriorFunctionBase) {
-				if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
+			if (fl.get(i) instanceof AnteriorFunction) {
+				if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 					return true;
 				}
 			}
@@ -168,10 +182,10 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean areThereOnlyEmptyNSNFunctions(ArrayList<FunctionBase> fl) {
+	public static boolean areThereOnlyEmptyNSNFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof FunctionTwoValuesBase && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof SumSubtraction) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof PrioritaryMultiplication) && !(fl.get(i) instanceof Division)) {
-				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+			if (fl.get(i) instanceof FunctionTwoValues && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof SumSubtraction) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof PrioritaryMultiplication) && !(fl.get(i) instanceof Division)) {
+				if (((FunctionTwoValues) fl.get(i)).getVariable1() == null && ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 					return true;
 				}
 			}
@@ -180,10 +194,10 @@ public class Utils {
 	}
 
 
-	public static boolean areThereEmptyPrioritaryMultiplications(ArrayList<FunctionBase> funzioniOLD) {
+	public static boolean areThereEmptyPrioritaryMultiplications(ArrayList<Function> funzioniOLD) {
 		for (int i = 0; i < funzioniOLD.size(); i++) {
 			if (funzioniOLD.get(i) instanceof PrioritaryMultiplication) {
-				if (((FunctionTwoValuesBase) funzioniOLD.get(i)).variable1 == null && ((FunctionTwoValuesBase) funzioniOLD.get(i)).variable2 == null) {
+				if (((FunctionTwoValues) funzioniOLD.get(i)).getVariable1() == null && ((FunctionTwoValues) funzioniOLD.get(i)).getVariable2() == null) {
 					return true;
 				}
 			}
@@ -191,10 +205,10 @@ public class Utils {
 		return false;
 	}
 	
-	public static boolean areThereEmptyMultiplications(ArrayList<FunctionBase> fl) {
+	public static boolean areThereEmptyMultiplications(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division) {
-				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+				if (((FunctionTwoValues) fl.get(i)).getVariable1() == null && ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 					return true;
 				}
 			}
@@ -202,10 +216,10 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean areThereEmptySums(ArrayList<FunctionBase> fl) {
+	public static boolean areThereEmptySums(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction) {
-				if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null && ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+				if (((FunctionTwoValues) fl.get(i)).getVariable1() == null && ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 					return true;
 				}
 			}
@@ -216,7 +230,7 @@ public class Utils {
 	public static boolean areThereEmptySystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof EquationsSystemPart) {
-				if (((EquationsSystemPart) fl.get(i)).variable == null) {
+				if (((EquationsSystemPart) fl.get(i)).getVariable() == null) {
 					return true;
 				}
 			}
@@ -226,13 +240,13 @@ public class Utils {
 
 	public static boolean areThereOtherSettedUpFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum ||  fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunctionBase || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Division)) {
-				if (fl.get(i) instanceof AnteriorFunctionBase) {
-					if (((AnteriorFunctionBase) fl.get(i)).variable == null) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum ||  fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunction || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Division)) {
+				if (fl.get(i) instanceof AnteriorFunction) {
+					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return true;
 					}
-				} else if (fl.get(i) instanceof FunctionTwoValuesBase) {
-					if (((FunctionTwoValuesBase) fl.get(i)).variable1 == null || ((FunctionTwoValuesBase) fl.get(i)).variable2 == null) {
+				} else if (fl.get(i) instanceof FunctionTwoValues) {
+					if (((FunctionTwoValues) fl.get(i)).getVariable1() == null || ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 						return true;
 					}
 				} else {

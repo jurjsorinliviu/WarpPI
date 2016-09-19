@@ -6,7 +6,7 @@ import java.math.MathContext;
 import java.security.ProviderException;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Variables;
+import org.warp.picalculator.math.Variables;
 
 /**
  * Square roots on the real line. These represent numbers which are a product of

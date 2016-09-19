@@ -1,20 +1,20 @@
 package org.warp.picalculator.screens;
 
-import static org.warp.engine.Display.Render.*;
+import static org.warp.picalculator.device.graphicengine.Display.Render.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 
-import org.warp.device.Keyboard.Key;
-import org.warp.device.PIDisplay;
-import org.warp.engine.Display;
-import org.warp.engine.Screen;
-import org.warp.picalculator.Calculator;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
-import org.warp.picalculator.Function;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.PIDisplay;
+import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.device.graphicengine.Screen;
+import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.functions.Function;
 
 public class EquationScreen extends Screen {
 
