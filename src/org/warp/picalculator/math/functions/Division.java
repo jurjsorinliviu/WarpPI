@@ -14,6 +14,7 @@ import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.device.graphicengine.Display.Render;
 import org.warp.picalculator.math.MathematicalSymbols;
 
 public class Division extends FunctionTwoValues {
@@ -27,53 +28,44 @@ public class Division extends FunctionTwoValues {
 		return MathematicalSymbols.DIVISION;
 	}
 
+
+	@Override
+	protected boolean isSolvable() throws Error {
+		if (variable1 instanceof Number & variable2 instanceof Number) {
+			if (((Number)variable2).getTerm().compareTo(NumeroAvanzatoVec.ZERO) == 0) {
+				throw new Error(Errors.DIVISION_BY_ZERO);
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	@Override
 	public List<Function> solveOneStep() throws Error {
-		if (variable1 == null || variable2 == null) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		}
 		ArrayList<Function> result = new ArrayList<>();
-		if (stepsCount == 1) {
-			if (variable2 instanceof Number && ((Number)variable2).getTerm().compareTo(NumeroAvanzatoVec.ZERO) == 0) {
-				throw new Error(Errors.DIVISION_BY_ZERO);
-			}
+		if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number) variable1).divide((Number)variable2));
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
 			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.getStepsCount() >= stepsCount - 1) {
-				l1.addAll(variable1.solveOneStep());
-			} else {
+			if (variable1.isSolved()) {
 				l1.add(variable1);
-			}
-			if (variable2.getStepsCount() >= stepsCount - 1) {
-				l2.addAll(variable2.solveOneStep());
 			} else {
+				l1.addAll(variable1.solveOneStep());
+			}
+			if (variable2.isSolved()) {
 				l2.add(variable2);
+			} else {
+				l2.addAll(variable2.solveOneStep());
 			}
+
+			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
-			int size1 = l1.size();
-			int size2 = l2.size();
-			int cur1 = 0;
-			int cur2 = 0;
-			int total = l1.size()*l2.size();
-			Function[][] results = new Function[total][2];
-			for (int i = 0; i < total; i++) {
-				results[i] = new Function[]{l1.get(cur1), l2.get(cur2)};
-				if (size1 < size2 && cur2 % size1 == 0) {
-					cur2+=1;
-				}
-				if (size2 < size1 && cur1 % size2 == 0) {
-					cur1+=1;
-				}
-				if (cur1 >= size1) cur1 = 0;
-				if (cur2 >= size1) cur2 = 0;
-			}
 			for (Function[] f : results) {
 				result.add(new Division((Function)f[0], (Function)f[1]));
 			}
 		}
-		stepsCount=-1;
 		return result;
 	}
 
@@ -125,9 +117,10 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		int h1 = 0;
+		Display.Render.setFont(Utils.getFont(small));
 		if (minus) {
 			w1 = getStringWidth(numerator);
-			h1 = Utils.getFontHeight(small);
+			h1 = Render.getFontHeight();
 		} else {
 			w1 = ((Function) var1).getWidth();
 			h1 = ((Function) var1).getHeight();
@@ -141,12 +134,7 @@ public class Division extends FunctionTwoValues {
 		}
 		if (minus && drawMinus) {
 			minusw = getStringWidth("-") + 1;
-			minush = Utils.getFontHeight(small);
-			if (small) {
-				Display.Render.setFont(PIDisplay.fonts[1]);
-			} else {
-				Display.Render.setFont(PIDisplay.fonts[0]);
-			}
+			minush = Render.getFontHeight();
 			glDrawStringLeft(x+1, y + h1 + 1 + 1 - (minush / 2), "-");
 			glDrawStringLeft((int) (x+1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
 		} else {

@@ -3,6 +3,7 @@ package org.warp.picalculator.math.functions.equations;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3f;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
@@ -22,8 +23,18 @@ public class EquationsSystemPart extends AnteriorFunction {
 	}
 
 	@Override
+	protected boolean isSolvable() throws Error {
+		return variable.isSolved()==false;
+	}
+
+	@Override
 	public List<Function> solveOneStep() throws NumberFormatException, Error {
 		// TODO implementare il calcolo dei sistemi
+		if (variable.isSolved()) {
+			List<Function> ret = new ArrayList<>();
+			ret.add(variable);
+			return ret;
+		}
 		return variable.solveOneStep();
 	}
 

@@ -1,6 +1,7 @@
 package org.warp.picalculator.device;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.graphicengine.Display;
 
@@ -26,16 +28,18 @@ public class PIFrame extends JFrame {
 		c = new CustomCanvas();
 		c.setDoubleBuffered(true);
 		this.add(c);
-		this.setExtendedState(Frame.MAXIMIZED_BOTH);
+//		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		Toolkit.getDefaultToolkit().setDynamicLayout(false);
 		// Transparent 16 x 16 pixel cursor image.
 		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+		
+		if (!Utils.debugOn) {
+			// Create a new blank cursor.
+			Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 
-		// Create a new blank cursor.
-		Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
-
-		// Set the blank cursor to the JFrame.
-		getContentPane().setCursor(blankCursor);
+			// Set the blank cursor to the JFrame.
+			getContentPane().setCursor(blankCursor);
+		}
 		this.addComponentListener(new ComponentListener() {
 			@Override
 			public void componentHidden(ComponentEvent e) {
@@ -403,8 +407,24 @@ public class PIFrame extends JFrame {
 
 	@Override
 	public void setSize(int width, int height) {
-		super.setSize(width, height);
 		c.setSize(width, height);
+		super.getContentPane().setPreferredSize(new Dimension(width, height));
+		super.pack();
+	}
+
+	@Override
+	public Dimension getSize() {
+		return c.getSize();
+	}
+
+	@Override
+	public int getWidth() {
+		return c.getWidth();
+	}
+
+	@Override
+	public int getHeight() {
+		return c.getHeight();
 	}
 
 	public static class CustomCanvas extends JPanel {

@@ -2,7 +2,9 @@ package org.warp.picalculator;
 
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.PIDisplay;
+import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.screens.EquationScreen;
+import org.warp.picalculator.screens.LoadingScreen;
 
 import com.pi4j.wiringpi.Gpio;
 
@@ -10,6 +12,7 @@ public class Main {
 	public static int[] screenPos = new int[] { 55, 0 };
 	public static final int[] screenSize = new int[] { 480, 320 };
 	public static final int screenScale = 1;
+	public static final boolean zoomed = true;
 	public static PIDisplay d;
 	public static Main instance;
 
@@ -17,8 +20,8 @@ public class Main {
 		instance = this;
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		beforeStart();
-		d = new PIDisplay(new EquationScreen());
-		d.run("Calculator");
+		d = new PIDisplay(new LoadingScreen());
+		d.run("Raspberry PI Calculator by XDrake99 (Andrea Cavalli)");
 		Utils.debug.println("Shutdown...");
 		beforeShutdown();
 		Utils.debug.println("");
@@ -47,6 +50,13 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
+		if (test()) {
+			return;
+		}
 		new Main();
+	}
+	
+	private static boolean test() {
+		return false;
 	}
 }

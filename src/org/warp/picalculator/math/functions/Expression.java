@@ -260,7 +260,10 @@ public class Expression extends FunctionMultipleValues {
 								// Fallback
 								NumeroAvanzato na = NumeroAvanzato.ONE;
 								Variables iy = na.getVariableY();
-								iy.getVariablesList().add(new Variable(charI.charAt(0), 1, 1));
+								Variable var1 = new Variable(charI.charAt(0), 1, 1);
+								List<Variable> newVariableList = iy.getVariablesList();
+								newVariableList.add(var1);
+								iy = new Variables(newVariableList.toArray(new Variable[newVariableList.size()]));
 								na = na.setVariableY(iy);
 								f = new Number(na);
 							} else {
@@ -557,13 +560,21 @@ public class Expression extends FunctionMultipleValues {
 	}
 
 	@Override
+	protected boolean isSolvable() {
+		if (variables.length >= 1) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public List<Function> solveOneStep() throws Error {
 		List<Function> ret = new ArrayList<>();
-		if (variables.length == 0) {
-			stepsCount = -1;
-			return ret;
-		} else if (variables.length == 1) {
-			if (variables[0].getStepsCount() > 0) {
+		if (variables.length == 1) {
+			if (variables[0].isSolved()) {
+				ret.add(variables[0]);
+				return ret;
+			} else {
 				List<Function> l = variables[0].solveOneStep();
 				for (Function f : l) {
 					if (f instanceof Number) {
@@ -572,23 +583,17 @@ public class Expression extends FunctionMultipleValues {
 						ret.add(new Expression(new Function[]{(Function) f}));
 					}
 				}
-				stepsCount = -1;
-				return ret;
-			} else {
-				ret.add(variables[0]);
-				stepsCount = -1;
 				return ret;
 			}
 		} else {
 			for (Function f : variables) {
-				if (f.getStepsCount() >= stepsCount - 1) {
+				if (f.isSolved() == false) {
 					List<Function> partial = f.solveOneStep();
 					for (Function fnc : partial) {
 						ret.add(new Expression(new Function[]{(Function) fnc}));
 					}
 				}
 			}
-			stepsCount = -1;
 			return ret;
 		}
 	}

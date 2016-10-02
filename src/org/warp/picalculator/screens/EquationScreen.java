@@ -4,6 +4,7 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
@@ -12,6 +13,7 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.device.graphicengine.Display.Render;
 import org.warp.picalculator.device.graphicengine.Screen;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
@@ -24,7 +26,7 @@ public class EquationScreen extends Screen {
 	public volatile int caretPos = 0;
 	public volatile boolean showCaret = true;
 	public volatile float showCaretDelta = 0f;
-	public Function f;
+	public List<Function> f;
 	public List<Function> f2;
 	public int ew1;
 	public int ew2;
@@ -52,77 +54,71 @@ public class EquationScreen extends Screen {
 
 	@Override
 	public void init() throws InterruptedException {
-		try {
-			/* Fine caricamento */
+		/* Fine caricamento */
 
-			// Parentesi f = new
-			// Parentesi("(Ⓐ(2X)*3Y)/(5Z^2)+(Ⓐ(11A)*13B)/(7CZ)=19XZ");
-			// PARENTESI CON CALCOLI
-			// Funzione f = new Sottrazione(new Somma(new Parentesi("Ⓐ9/2+Ⓐ7/2",
-			// "").calcola(), new Termine("3.5")), new
-			// Parentesi("3*2√14","").calcola());
-			// PARENTESI CON DUE NUMERI FRAZIONALI COMPLETI CON INCOGNITE:
-			// Funzione f = new
-			// Parentesi("(Ⓐ(2X)*3Y)/(5Z^2)+(Ⓐ(11A)*13B)/(7CZ)", "");
-			// PARENTESI CON DUE NUMERI FRAZIONALI DISALLINEATI GRAFICAMENTE:
-			// Funzione f = new Parentesi("((5^2-1)/2)/5-5/(5/2)=2", "");
-			// TERMINE DI PROVA COMPLETO:
-			// Funzione f = new Termine(new NumeroAvanzato(new Rational(3, 2),
-			// new Rational(7, 1), new Incognite(new Incognita('X',
-			// Rational.ONE)), new Incognite(new Incognita('Y', Rational.ONE)),
-			// new Incognite(new Incognita('z', Rational.ONE))));
-			// PARENTESI REALISTICA CON INCOGNITE:
-			// Funzione f = new Equazione(new
-			// Parentesi("X^2+(MX-M+4)^2-4X-4(MX-M+4)^2+7", ""), new
-			// Termine("0"));
-			// POTENZA:
-			// Funzione f = new Parentesi("(MX-M+4)^2", "");
-			// NUMERO SEMPLICE LUNGO:
-			// Funzione f = new Parentesi("-1219999799999996934.42229", "");
-			// :
-			// Funzione f = new Parentesi("5Y+XY=2", "")
+		// Parentesi f = new
+		// Parentesi("(Ⓐ(2X)*3Y)/(5Z^2)+(Ⓐ(11A)*13B)/(7CZ)=19XZ");
+		// PARENTESI CON CALCOLI
+		// Funzione f = new Sottrazione(new Somma(new Parentesi("Ⓐ9/2+Ⓐ7/2",
+		// "").calcola(), new Termine("3.5")), new
+		// Parentesi("3*2√14","").calcola());
+		// PARENTESI CON DUE NUMERI FRAZIONALI COMPLETI CON INCOGNITE:
+		// Funzione f = new
+		// Parentesi("(Ⓐ(2X)*3Y)/(5Z^2)+(Ⓐ(11A)*13B)/(7CZ)", "");
+		// PARENTESI CON DUE NUMERI FRAZIONALI DISALLINEATI GRAFICAMENTE:
+		// Funzione f = new Parentesi("((5^2-1)/2)/5-5/(5/2)=2", "");
+		// TERMINE DI PROVA COMPLETO:
+		// Funzione f = new Termine(new NumeroAvanzato(new Rational(3, 2),
+		// new Rational(7, 1), new Incognite(new Incognita('X',
+		// Rational.ONE)), new Incognite(new Incognita('Y', Rational.ONE)),
+		// new Incognite(new Incognita('z', Rational.ONE))));
+		// PARENTESI REALISTICA CON INCOGNITE:
+		// Funzione f = new Equazione(new
+		// Parentesi("X^2+(MX-M+4)^2-4X-4(MX-M+4)^2+7", ""), new
+		// Termine("0"));
+		// POTENZA:
+		// Funzione f = new Parentesi("(MX-M+4)^2", "");
+		// NUMERO SEMPLICE LUNGO:
+		// Funzione f = new Parentesi("-1219999799999996934.42229", "");
+		// :
+		// Funzione f = new Parentesi("5Y+XY=2", "")
 
 //			calcola("((5^2+3√(100/0.1))+Ⓐ(7)+9/15*2√(26/2))/21");
-			interpreta("0");
+		f = new ArrayList<Function>();
+		f2 = new ArrayList<Function>();
 //			interpreta("{(5X*(15X/3X))+(25X/(5X*(15X/3X)))=15{X=5"); //TODO RIMUOVERE
 
-			// long start = System.nanoTime();
-			// Termine result =
-			// Calculator.calcolarisultato("((5Ⓑ2+3√(100/0.1))*Ⓐ7+9/15*2√(26/2))/21");
-			// long end = System.nanoTime();
-			// long timeElapsed = end-start;
-			// System.out.println("RESULT: " + result);
-			// System.out.println("DECIMAl RESULT: " +
-			// result.getTerm().toBigDecimal());
-			// System.out.println("Time elapsed: " + (double) timeElapsed /
-			// 1000000 + " milliseconds\n");
-			//
-			//
-			// start = System.nanoTime();
-			// RisultatoEquazione eresult =
-			// Calculator.calcolaequazione("((5Ⓑ2+3√(100/0.1))*Ⓐ7+9/15*2√(26/2))/21=(175*(2√7)+3*(2√13))/105");
-			// end = System.nanoTime();
-			// timeElapsed = end-start;
-			// System.out.println("Is an equation: " + eresult.isAnEquation);
-			// System.out.println("L-R: " + eresult.LR);
-			// System.out.println("Time elapsed: " + (double) timeElapsed /
-			// 1000000 + " milliseconds\n");
-
-		} catch (Error e) {
-			glClearColor(0xFFDC3C32);
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
-			e.printStackTrace(pw);
-			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			PIDisplay.error = e.id.toString();
-			System.err.println(e.id);
-		}
+		// long start = System.nanoTime();
+		// Termine result =
+		// Calculator.calcolarisultato("((5Ⓑ2+3√(100/0.1))*Ⓐ7+9/15*2√(26/2))/21");
+		// long end = System.nanoTime();
+		// long timeElapsed = end-start;
+		// System.out.println("RESULT: " + result);
+		// System.out.println("DECIMAl RESULT: " +
+		// result.getTerm().toBigDecimal());
+		// System.out.println("Time elapsed: " + (double) timeElapsed /
+		// 1000000 + " milliseconds\n");
+		//
+		//
+		// start = System.nanoTime();
+		// RisultatoEquazione eresult =
+		// Calculator.calcolaequazione("((5Ⓑ2+3√(100/0.1))*Ⓐ7+9/15*2√(26/2))/21=(175*(2√7)+3*(2√13))/105");
+		// end = System.nanoTime();
+		// timeElapsed = end-start;
+		// System.out.println("Is an equation: " + eresult.isAnEquation);
+		// System.out.println("L-R: " + eresult.LR);
+		// System.out.println("Time elapsed: " + (double) timeElapsed /
+		// 1000000 + " milliseconds\n");
 	}
 
 	public void interpreta(String eqn) throws Error {
 		equazioneCorrente = eqn;
-		f = Calculator.parseString(equazioneCorrente.replace("sqrt", "Ⓐ").replace("^", "Ⓑ"));
-		f.generateGraphics();
+		List<Function> fncs = new ArrayList<Function>();
+		fncs.add(Calculator.parseString(equazioneCorrente.replace("sqrt", "Ⓐ").replace("^", "Ⓑ")));
+		f = fncs;
+		for (Function f : f) {
+			f.generateGraphics();
+		}
 	}
 	
 	public void solve() throws Error {
@@ -131,10 +127,6 @@ public class EquationScreen extends Screen {
 
 	@Override
 	public void beforeRender(float dt) {
-		endLoading += dt;
-		if (endLoading >= 1) {
-			PIDisplay.loading = false;
-		}
 		showCaretDelta += dt;
 		if (showCaretDelta >= 0.5f) {
 			mustRefresh = true;
@@ -145,12 +137,17 @@ public class EquationScreen extends Screen {
 
 	@Override
 	public void render() {
-		setFont(PIDisplay.fonts[0]);
+		Display.Render.setFont(Utils.getFont(false));
 		glClearColor(0xFFCCE7D4);
 		glColor3f(0, 0, 0);
 		glDrawStringLeft(2, 22, nuovaEquazione.substring(0, caretPos)+(showCaret?"|":"")+nuovaEquazione.substring(((showCaret==false||nuovaEquazione.length()<=caretPos)?caretPos:caretPos+1), nuovaEquazione.length()));
-		if (f != null)
-			f.draw(2, 22+1+9+1);
+		if (f != null) {
+			int topSpacing = 0;
+			for (Function f : f) {
+				f.draw(2, 22+1+getFontHeight()+1+topSpacing);
+				topSpacing += f.getHeight() + 2;
+			}
+		}
 		if (f2 != null) {
 			int bottomSpacing = 0;
 			for (Function f : f2) {
@@ -330,6 +327,7 @@ public class EquationScreen extends Screen {
 		caretPos+=1;
 		showCaret = true;
 		showCaretDelta = 0L;
+		f.clear();
 	}
 
 	@Override

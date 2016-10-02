@@ -37,15 +37,13 @@ public abstract class AnteriorFunction implements Function {
 
 	@Override
 	public abstract List<Function> solveOneStep() throws Error;
-
-	protected int stepsCount = -1;
+	
 	@Override
-	public int getStepsCount() {
-		if (stepsCount == -1) {
-			stepsCount = variable.getStepsCount()+1;
-		}
-		return stepsCount;
+	public boolean isSolved() throws Error {
+		return variable.isSolved() ? !isSolvable() : false;
 	}
+	
+	protected abstract boolean isSolvable() throws Error;
 	
 	@Override
 	public void generateGraphics() {
@@ -63,11 +61,7 @@ public abstract class AnteriorFunction implements Function {
 		int wsegno = getStringWidth(getSymbol());
 		float hsegno = Utils.getFontHeight(small);
 		float maxh = getHeight();
-		if (small) {
-			Display.Render.setFont(PIDisplay.fonts[1]);
-		} else {
-			Display.Render.setFont(PIDisplay.fonts[0]);
-		}
+		Display.Render.setFont(Utils.getFont(small));
 		
 		glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), getSymbol());
 		getVariable().draw(x + wsegno + 1, (int) Math.floor(y + (maxh - h1) / 2));

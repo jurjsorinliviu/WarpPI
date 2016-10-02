@@ -77,7 +77,7 @@ public class Display {
 
 	@Deprecated()
 	public static void refresh() {
-		if (PIDisplay.screen == null || PIDisplay.loading || (PIDisplay.error != null && PIDisplay.error.length() > 0) || PIDisplay.screen == null || PIDisplay.screen.mustBeRefreshed()) {
+		if (PIDisplay.screen == null || (PIDisplay.error != null && PIDisplay.error.length() > 0) || PIDisplay.screen == null || PIDisplay.screen.mustBeRefreshed()) {
 			Display.INSTANCE.c.repaint(false);
 		}
 	}
@@ -303,6 +303,10 @@ public class Display {
 
 		public static int getWidth(FontMetrics fm, String text) {
 			return fm.stringWidth(text);
+		}
+
+		public static int getFontHeight() {
+			return currentFont.charH;
 		}
 
 	}

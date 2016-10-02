@@ -59,47 +59,48 @@ public class Calculator {
 	public static void solve() throws Error {
 		if (Calculator.currentSession == 0 && Calculator.sessions[0] instanceof EquationScreen) {
 			EquationScreen es = (EquationScreen) Calculator.sessions[0];
-			Function f = es.f;
-			if (f instanceof Equation) {
-				PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(es));
-			} else {
-				List<Function> results = new ArrayList<>();
-				List<Function> partialResults = new ArrayList<>();
-				results.add(es.f);
-				while (Utils.allSolved(results) == false) {
-					for (Function itm : results) {
-						if (itm.getStepsCount() != 0) {
-							List<Function> dt = itm.solveOneStep();
-							partialResults.addAll(dt);
-						} else {
-							partialResults.add(itm);
-						}
-					}
-					results = new ArrayList<Function>(partialResults);
-					partialResults.clear();
-				}
-				if (results.size() == 0) {
-					
+			List<Function> results = new ArrayList<>();
+			List<Function> partialResults = new ArrayList<>();
+			for (Function f : es.f) {
+				if (f instanceof Equation) {
+					PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(es));
 				} else {
-					Collections.reverse(results);
-					// add elements to al, including duplicates
-					Set<Function> hs = new LinkedHashSet<>();
-					hs.addAll(results);
-					results.clear();
-					results.addAll(hs);
-					es.f2 = results;
-					for (Function rf : es.f2) {
-						rf.generateGraphics();
+					results.add(f);
+					while (Utils.allSolved(results) == false) {
+						for (Function itm : results) {
+							if (itm.isSolved() == false) {
+								List<Function> dt = itm.solveOneStep();
+								partialResults.addAll(dt);
+							} else {
+								partialResults.add(itm);
+							}
+						}
+						results = new ArrayList<Function>(partialResults);
+						partialResults.clear();
 					}
+				}
+			}
+			if (results.size() == 0) {
+				
+			} else {
+				Collections.reverse(results);
+//				// add elements to al, including duplicates
+//				Set<Function> hs = new LinkedHashSet<>();
+//				hs.addAll(results);
+//				results.clear();
+//				results.addAll(hs);
+				es.f2 = results;
+				for (Function rf : es.f2) {
+					rf.generateGraphics();
 				}
 			}
 		}
 	}
-
+	
 	public static void solve(char letter) throws Error {
 		if (Calculator.currentSession == 0 && Calculator.sessions[0] instanceof EquationScreen) {
 			EquationScreen es = (EquationScreen) Calculator.sessions[0];
-			Function f = es.f;
+			List<Function> f = es.f;
 			if (f instanceof Equation) {
 				List<Function> results = ((Equation)f).solve(letter);
 				Collections.reverse(results);

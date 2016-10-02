@@ -46,20 +46,12 @@ public abstract class FunctionTwoValues implements Function {
 	@Override
 	public abstract String getSymbol();
 	
-	protected int stepsCount = -1;
 	@Override
-	public int getStepsCount() {
-		if (stepsCount == -1) {
-			int val1 = variable1.getStepsCount();
-			int val2 = variable2.getStepsCount();
-			if (val1 > val2) {
-				stepsCount = val1+1;
-			} else {
-				stepsCount = val2+1;
-			}
-		}
-		return stepsCount;
+	public boolean isSolved() throws Error {
+		return (variable1.isSolved() & variable2.isSolved()) ? !isSolvable() : false;
 	}
+	
+	protected abstract boolean isSolvable() throws Error;
 	
 	@Override
 	public abstract List<Function> solveOneStep() throws Error;
@@ -84,11 +76,7 @@ public abstract class FunctionTwoValues implements Function {
 		variable1.draw(dx + x, ln - variable1.getLine() + y);
 		dx += 1+variable1.getWidth();
 		if (drawSignum()) {
-			if (small) {
-				Display.Render.setFont(PIDisplay.fonts[1]);
-			} else {
-				Display.Render.setFont(PIDisplay.fonts[1]);
-			}
+			Display.Render.setFont(Utils.getFont(small));
 			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
 			dx += getStringWidth(getSymbol());
 		}

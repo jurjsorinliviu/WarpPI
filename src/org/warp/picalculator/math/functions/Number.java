@@ -130,11 +130,7 @@ public class Number implements Function {
 	public void draw(int x, int y) {
 		
 		if (getTerm().isBigInteger(false)) {
-			if (small) {
-				Display.Render.setFont(PIDisplay.fonts[1]);
-			} else {
-				Display.Render.setFont(PIDisplay.fonts[0]);
-			}
+			Display.Render.setFont(Utils.getFont(small));
 			String t = toString();
 
 			if (t.startsWith("-")) {
@@ -147,7 +143,7 @@ public class Number implements Function {
 			glDrawStringLeft(x+1, y, t);
 		} else if (getTerm().isRational(false)) {
 			small = true;
-			Display.Render.setFont(PIDisplay.fonts[1]);
+			Display.Render.setFont(Utils.getFont(true));
 			Rational r = getTerm().toRational(false);
 			boolean minus = false;
 			int minusw = 0;
@@ -180,7 +176,7 @@ public class Number implements Function {
 			glFillRect(x + minusw + 1, y + h1 + 1, maxw, 1);
 		} else if (getTerm().toFancyString().contains("/")) {
 			small = true;
-			Display.Render.setFont(PIDisplay.fonts[1]);
+			Display.Render.setFont(Utils.getFont(true));
 			String r = getTerm().toFancyString();
 			String numer = r.substring(0, r.lastIndexOf("/"));
 			String denom = r.substring(numer.length() + 1, r.length());
@@ -216,11 +212,7 @@ public class Number implements Function {
 			glColor3f(0, 0, 0);
 			glFillRect(x + minusw + 1, y + h1 + 1, maxw, 1);
 		} else {
-			if (small) {
-				Display.Render.setFont(PIDisplay.fonts[1]);
-			} else {
-				Display.Render.setFont(PIDisplay.fonts[0]);
-			}
+			Display.Render.setFont(Utils.getFont(small));
 			String r = getTerm().toFancyString();
 
 			if (r.startsWith("-")) {
@@ -387,8 +379,8 @@ public class Number implements Function {
 	}
 
 	@Override
-	public int getStepsCount() {
-		return 0;
+	public boolean isSolved() {
+		return true;
 	}
 
 	@Override

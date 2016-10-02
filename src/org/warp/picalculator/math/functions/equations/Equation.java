@@ -29,12 +29,20 @@ public class Equation extends FunctionTwoValues {
 	}
 	
 	@Override
+	protected boolean isSolvable() throws Error {
+		if (variable1 instanceof Number & variable2 instanceof Number) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
 	public List<Function> solveOneStep() throws Error {
 		if (variable1 == null || variable2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
 		ArrayList<Function> result = new ArrayList<>();
-		if (stepsCount == 1) {
+		if (variable1.isSolved() & variable2.isSolved()) {
 			if (((Number)variable2).getTerm().isBigInteger(false) && ((Number)variable2).getTerm().toBigInteger(false).compareTo(new BigInteger("0")) == 0) {
 				result.add(this);
 			} else {
@@ -43,12 +51,12 @@ public class Equation extends FunctionTwoValues {
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
 			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.getStepsCount() >= stepsCount - 1) {
+			if (variable1.isSolved() == false) {
 				l1.addAll(variable1.solveOneStep());
 			} else {
 				l1.add(variable1);
 			}
-			if (variable2.getStepsCount() >= stepsCount - 1) {
+			if (variable2.isSolved() == false) {
 				l2.addAll(variable2.solveOneStep());
 			} else {
 				l2.add(variable2);
@@ -73,24 +81,8 @@ public class Equation extends FunctionTwoValues {
 			for (Function[] f : results) {
 				result.add(new Equation(f[0], f[1]));
 			}
-			stepsCount=-1;
 		}
 		return result;
-	}
-
-	private int stepsCount = -1;
-	@Override
-	public int getStepsCount() {
-		if (stepsCount == -1) {
-			int val1 = variable1.getStepsCount();
-			int val2 = variable2.getStepsCount();
-			if (val1 > val2) {
-				stepsCount = val1+1;
-			} else {
-				stepsCount = val2+1;
-			}
-		}
-		return stepsCount;
 	}
 	
 	public List<Function> solve(char variableCharacter) {

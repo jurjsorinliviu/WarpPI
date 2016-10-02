@@ -7,9 +7,9 @@ import org.warp.picalculator.Error;
 public interface Function {
 	public String getSymbol();
 
-	public int getStepsCount();
-
 	public List<Function> solveOneStep() throws Error;
+
+	public boolean isSolved() throws Error;
 
 	public void generateGraphics();
 

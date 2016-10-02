@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
+import org.warp.picalculator.device.PIDisplay;
+import org.warp.picalculator.device.graphicengine.RAWFont;
 import org.warp.picalculator.math.Variable;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Division;
@@ -33,7 +35,7 @@ import org.warp.picalculator.math.functions.equations.EquationsSystemPart;
 public class Utils {
 
 	public static final int scale = 24;
-	public static final int resultScale = 8;
+	public static final int resultScale = 8*5;
 
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;
@@ -351,19 +353,43 @@ public class Utils {
 		return getFontHeight(false);
 	}
 
-	public static final int getFontHeight(boolean small) {
+	public static final RAWFont getFont(boolean small) {
+		return getFont(small, Main.zoomed);
+	}
+
+	public static final RAWFont getFont(boolean small, boolean zoomed) {
 		if (small) {
-			return 6;
+			if (zoomed) {
+				return PIDisplay.fonts[3];
+			} else {
+				return PIDisplay.fonts[1];
+			}
 		} else {
-			return 9;
+			if (zoomed) {
+				return PIDisplay.fonts[2];
+			} else {
+				return PIDisplay.fonts[0];
+			}
 		}
 	}
 
-	public static int getFontHeight(Font font) {
-		if (font.getFontName().contains("Big")) {
-			return 9;
+	public static final int getFontHeight(boolean small) {
+		return getFontHeight(small, Main.zoomed);
+	}
+	
+	public static final int getFontHeight(boolean small, boolean zoomed) {
+		if (small) {
+			if (zoomed) {
+				return PIDisplay.glyphsHeight[3];
+			} else {
+				return PIDisplay.glyphsHeight[1];
+			}
 		} else {
-			return 6;
+			if (zoomed) {
+				return PIDisplay.glyphsHeight[2];
+			} else {
+				return PIDisplay.glyphsHeight[0];
+			}
 		}
 	}
 	
@@ -398,12 +424,33 @@ public class Utils {
 		return realbytes;
 	}
 	
-	public static boolean allSolved(List<Function> expressions) {
+	public static boolean allSolved(List<Function> expressions) throws Error {
 		for (Function itm : expressions) {
-			if (itm.getStepsCount() > 0) {
+			if (itm.isSolved() == false) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	public static Function[][] joinFunctionsResults(List<Function> l1, List<Function> l2) {
+		int size1 = l1.size();
+		int size2 = l2.size();
+		int cur1 = 0;
+		int cur2 = 0;
+		int total = l1.size()*l2.size();
+		Function[][] results = new Function[total][2];
+		for (int i = 0; i < total; i++) {
+			results[i] = new Function[]{l1.get(cur1), l2.get(cur2)};
+			if (i % size2 == 0) {
+				cur1+=1;
+			}
+			if (i % size1 == 0) {
+				cur2+=1;
+			}
+			if (cur1 >= size1) cur1 = 0;
+			if (cur2 >= size2) cur2 = 0;
+		}
+		return results;
 	}
 }

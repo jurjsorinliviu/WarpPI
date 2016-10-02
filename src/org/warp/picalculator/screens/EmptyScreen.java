@@ -29,10 +29,7 @@ public class EmptyScreen extends Screen {
 
 	@Override
 	public void beforeRender(float dt) {
-		endLoading += dt;
-		if (PIDisplay.loading & endLoading >= 2.5) {
-			PIDisplay.loading = false;
-		}
+		
 	}
 
 	@Override

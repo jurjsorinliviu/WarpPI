@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionMultipleValues;
+import org.warp.picalculator.math.functions.Number;
 
 public class EquationsSystem extends FunctionMultipleValues {
 	static final int spacing = 2;
@@ -30,14 +32,42 @@ public class EquationsSystem extends FunctionMultipleValues {
 	}
 
 	@Override
-	public List<Function> solveOneStep() throws NumberFormatException, Error {
-		// TODO implementare il calcolo dei sistemi
-		if (stepsCount == 1) {
-			List<Function> l = new ArrayList<Function>();
-			l.add(variables[0]);
-			return l;
+	protected boolean isSolvable() {
+		if (variables.length >= 1) {
+			return true;
 		}
-		return variables[0].solveOneStep();
+		return false;
+	}
+	
+	@Override
+	public List<Function> solveOneStep() throws Error {
+		List<Function> ret = new ArrayList<>();
+		if (variables.length == 1) {
+			if (variables[0].isSolved()) {
+				ret.add(variables[0]);
+				return ret;
+			} else {
+				List<Function> l = variables[0].solveOneStep();
+				for (Function f : l) {
+					if (f instanceof Number) {
+						ret.add(f);
+					} else {
+						ret.add(new Expression(new Function[]{(Function) f}));
+					}
+				}
+				return ret;
+			}
+		} else {
+			for (Function f : variables) {
+				if (f.isSolved() == false) {
+					List<Function> partial = f.solveOneStep();
+					for (Function fnc : partial) {
+						ret.add(new Expression(new Function[]{(Function) fnc}));
+					}
+				}
+			}
+			return ret;
+		}
 	}
 
 	@Override

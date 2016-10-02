@@ -8,6 +8,7 @@ import java.util.List;
 import org.nevec.rjm.NumeroAvanzatoVec;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
 
 public class Root extends FunctionTwoValues {
@@ -33,52 +34,44 @@ public class Root extends FunctionTwoValues {
 		height = variable1.getHeight() + variable2.getHeight() - 2;
 		line = variable1.getHeight() + variable2.getLine() - 2;
 	}
+
+	@Override
+	protected boolean isSolvable() throws Error {
+		if (variable1 instanceof Number & variable2 instanceof Number) {
+			if ((((Number)variable2).pow(new Number(NumeroAvanzatoVec.ONE).divide((Number) variable1)).getTerm().isBigInteger(true))) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	@Override
 	public List<Function> solveOneStep() throws Error {
-		if (variable1 == null || variable2 == null) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		}
 		ArrayList<Function> result = new ArrayList<>();
-		if (stepsCount == 1) {
+		if (variable1.isSolved() & variable2.isSolved()) {
 			Number exponent = new Number(NumeroAvanzatoVec.ONE);
-			exponent = exponent.divide((Number) getVariable1());
-			result.add(((Number)variable1).pow(exponent));
+			exponent = exponent.divide((Number) variable1);
+			result.add(((Number)variable2).pow(exponent));
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
 			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.getStepsCount() >= stepsCount - 1) {
-				l1.addAll(variable1.solveOneStep());
-			} else {
+			if (variable1.isSolved()) {
 				l1.add(variable1);
-			}
-			if (variable2.getStepsCount() >= stepsCount - 1) {
-				l2.addAll(variable2.solveOneStep());
 			} else {
+				l1.addAll(variable1.solveOneStep());
+			}
+			if (variable2.isSolved()) {
 				l2.add(variable2);
+			} else {
+				l2.addAll(variable2.solveOneStep());
 			}
+
+			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
-			int size1 = l1.size();
-			int size2 = l2.size();
-			int cur1 = 0;
-			int cur2 = 0;
-			int total = l1.size()*l2.size();
-			Function[][] results = new Function[total][2];
-			for (int i = 0; i < total; i++) {
-				results[i] = new Function[]{l1.get(cur1), l2.get(cur2)};
-				if (cur1 < cur2 && cur2 % size1 == 0) {
-					cur2+=1;
-				} else if (cur2 < cur1 && cur1 % size2 == 0) {
-					cur1+=1;
-				}
-				if (cur1 >= size1) cur1 = 0;
-				if (cur2 >= size1) cur2 = 0;
-			}
 			for (Function[] f : results) {
 				result.add(new Root((Function)f[0], (Function)f[1]));
 			}
 		}
-		stepsCount=-1;
 		return result;
 	}
 

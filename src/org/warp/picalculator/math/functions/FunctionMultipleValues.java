@@ -3,6 +3,8 @@ package org.warp.picalculator.math.functions;
 import java.util.Arrays;
 import java.util.List;
 
+import org.warp.picalculator.Error;
+
 import com.rits.cloning.Cloner;
 
 public abstract class FunctionMultipleValues implements Function {
@@ -62,23 +64,17 @@ public abstract class FunctionMultipleValues implements Function {
 	@Override
 	public abstract String getSymbol();
 	
-	protected int stepsCount = -1;
 	@Override
-	public int getStepsCount() {
-		if (stepsCount == -1) {
-			int max = 0;
-			int cur = 0;
-			for (Function f : variables) {
-				cur = f.getStepsCount();
-				if (max < cur) {
-					max = cur;
-				}
+	public boolean isSolved() throws Error {
+		for (Function variable : variables) {
+			if (!variable.isSolved()) {
+				return false;
 			}
-			return max+1;
-		} else {
-			return stepsCount;
 		}
+		return !isSolvable();
 	}
+	
+	protected abstract boolean isSolvable() throws Error;
 
 	@Override
 	public abstract void generateGraphics();

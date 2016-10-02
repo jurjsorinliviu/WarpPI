@@ -33,14 +33,11 @@ public final class PIDisplay {
 
 	private int[] skin;
 	private int[] skinSize;
-	public static RAWFont[] fonts = new RAWFont[2];
+	public static RAWFont[] fonts = new RAWFont[4];
 
-	public static boolean loading = true;
 	public static String error = null;
 	public String[] errorStackTrace = null;
-	public final int[] glyphsHeight = new int[] { 9, 6 };
-	public float loadingTextTranslation = 0.0f;
-	public boolean loadingTextTranslationTopToBottom = true;
+	public final static int[] glyphsHeight = new int[] { 9, 6, 18, 12 };
 
 	public static Screen screen;
 	public static String displayDebugString = "";
@@ -182,6 +179,10 @@ public final class PIDisplay {
 		fonts[0].create("big");
 		fonts[1] = new RAWFont();
 		fonts[1].create("small");
+		fonts[2] = new RAWFont();
+		fonts[2].create("big_2x");
+		fonts[3] = new RAWFont();
+		fonts[3].create("small_2x");
 		setFont(fonts[0]);
 	}
 
@@ -278,7 +279,7 @@ public final class PIDisplay {
 		glColor3f(255, 255, 255);
 
 		if (error != null) {
-			setFont(fonts[1]);
+			setFont(Utils.getFont(false, false));
 			glColor3f(129, 28, 22);
 			glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1]- this.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
 			glColor3f(149, 32, 26);
@@ -292,23 +293,6 @@ public final class PIDisplay {
 			setFont(fonts[0]);
 			glColor3f(129, 28, 22);
 			glDrawStringCenter((Main.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
-		} else if (loading) {
-			setFont(fonts[0]);
-			colore(1.0f, 1.0f, 1.0f, 1.0f);
-			glDrawStringCenter((Main.screenSize[0] / 2) - 1,(int) ((Main.screenSize[1]/ 2) - 25 + loadingTextTranslation), "ANDREA CAVALLI'S CALCULATOR");
-			colore(1.0f, 1.0f, 1.0f, 1.0f);
-			glDrawStringCenter((Main.screenSize[0] / 2) + 1,(int) ((Main.screenSize[1]/ 2) - 25 + loadingTextTranslation), "ANDREA CAVALLI'S CALCULATOR");
-			colore(1.0f, 1.0f, 1.0f, 1.0f);
-			glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1]/ 2) - 25 - 1 + loadingTextTranslation), "ANDREA CAVALLI'S CALCULATOR");
-			colore(1.0f, 1.0f, 1.0f, 1.0f);
-			glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1]/ 2) - 25 + 1 + loadingTextTranslation), "ANDREA CAVALLI'S CALCULATOR");
-			colore(1.0f, 0.5f, 0.0f, 1.0f);
-			glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1]/ 2) - 25 + loadingTextTranslation), "ANDREA CAVALLI'S CALCULATOR");
-			colore(0.0f, 0.0f, 0.0f, 0.75f);
-			glDrawStringCenter((Main.screenSize[0] / 2), (Main.screenSize[1]/ 2) + 11, "LOADING");
-			setFont(fonts[1]);
-			colore(0.0f, 0.0f, 0.0f, 0.5f);
-			glDrawStringCenter((Main.screenSize[0] / 2), (Main.screenSize[1]/ 2) + 22, "PLEASE WAIT...");
 		} else {
 			draw_screen();
 			draw_status();
@@ -340,25 +324,9 @@ public final class PIDisplay {
 		 */
 		checkDisplayResized();
 
-		if (loading) {
-			if (loadingTextTranslation >= 10.0f) {
-				loadingTextTranslation = 10.0f;
-				loadingTextTranslationTopToBottom = false;
-			} else if (loadingTextTranslation <= -10.0f) {
-				loadingTextTranslation = -10.0f;
-				loadingTextTranslationTopToBottom = true;
-			}
-
-			if (loadingTextTranslationTopToBottom) {
-				loadingTextTranslation += dt * 15;
-			} else {
-				loadingTextTranslation -= dt * 15;
-			}
-		}
-
 		screen.beforeRender(dt);
 		
-		if(forced==true || screen.mustBeRefreshed() || loading) {
+		if(forced==true || screen.mustBeRefreshed()) {
 			draw();
 		}
 
@@ -380,7 +348,7 @@ public final class PIDisplay {
 
 	private void createWindow(String title) {
 		Display.setTitle(title);
-		Display.setResizable(false);
+		Display.setResizable(Utils.debugOn);
 		Display.setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		Display.create();
 	}
@@ -458,8 +426,8 @@ public final class PIDisplay {
 
 	public float[] colore = new float[] { 0.0f, 0.0f, 0.0f, 1.0f };
 	
-	public void colore(float f1, float f2, float f3, float f4) {
-		colore = new float[] { f1, f2, f3, f4 };
+	public static void colore(float f1, float f2, float f3, float f4) {
+		PIDisplay.INSTANCE.colore = new float[] { f1, f2, f3, f4 };
 		glColor4f((int) (f1 * 255), (int) (f2 * 255), (int) (f3 * 255), (int) (f4 * 255));
 	}
 }
