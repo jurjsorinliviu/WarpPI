@@ -4,6 +4,7 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.*;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Main;
+import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.graphicengine.Screen;
 import org.warp.picalculator.math.Calculator;
@@ -51,11 +52,11 @@ public class SolveEquationScreen extends Screen {
 	public boolean keyPressed(Key k) {
 		switch (k) {
 			case LETTER_X:
-				Main.d.goBack();
+				PIDisplay.INSTANCE.goBack();
 				try {
 					Calculator.solve('X');
 				} catch (Error e) {
-					Screen scr = Main.d.getScreen();
+					Screen scr = PIDisplay.INSTANCE.getScreen();
 					if (scr instanceof EquationScreen) {
 						EquationScreen escr = (EquationScreen) scr;
 						escr.errorLevel = 1;

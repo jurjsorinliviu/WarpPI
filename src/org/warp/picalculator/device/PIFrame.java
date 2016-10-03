@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.graphicengine.Display;
@@ -40,6 +41,10 @@ public class PIFrame extends JFrame {
 			// Set the blank cursor to the JFrame.
 			getContentPane().setCursor(blankCursor);
 		}
+		
+		this.setTitle("Raspberry PI Calculator by XDrake99 (Andrea Cavalli)");
+		this.setResizable(Utils.debugOn);
+		
 		this.addComponentListener(new ComponentListener() {
 			@Override
 			public void componentHidden(ComponentEvent e) {
@@ -445,11 +450,6 @@ public class PIFrame extends JFrame {
 			super.repaint();
 		}
 
-		private boolean forcerefresh = false;
-
-		public void repaint(boolean force) {
-			forcerefresh = force;
-			super.repaint();
-		}
+		public boolean forcerefresh = false;
 	}
 }

@@ -370,8 +370,8 @@ public class Keyboard {
 	}
 
 	public static void keyPressed(Key k) {
-		if (Main.d != null) {
-			Screen scr = Main.d.getScreen();
+		if (PIDisplay.INSTANCE != null) {
+			Screen scr = PIDisplay.INSTANCE.getScreen();
 			boolean refresh = false;
 			if(scr != null && scr.initialized && scr.keyPressed(k)) {
 				refresh = true;
@@ -454,7 +454,7 @@ public class Keyboard {
 				refresh = true;
 			}
 			if (refresh) {
-				Display.refresh(true);
+				Display.repaint(true);
 			}
 		}
 	}
@@ -465,8 +465,8 @@ public class Keyboard {
 
 	public static void keyReleased(Key k) {
 		boolean refresh = false;
-		if (Main.d != null) {
-			Screen scr = Main.d.getScreen();
+		if (PIDisplay.INSTANCE != null) {
+			Screen scr = PIDisplay.INSTANCE.getScreen();
 			if(scr != null && scr.initialized && scr.keyReleased(k)) {
 				refresh = true;
 			} else {
@@ -478,7 +478,7 @@ public class Keyboard {
 				}
 			}
 			if (refresh) {
-				Display.refresh(true);
+				Display.repaint(true);
 			}
 		}
 	}

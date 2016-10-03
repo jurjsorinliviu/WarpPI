@@ -4,6 +4,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.device.PIDisplay;
@@ -14,10 +15,9 @@ public class Display {
 	private static PIFrame INSTANCE = new PIFrame();
 	public static int[] size = new int[] { 1, 1 };
 	public static BufferedImage g = new BufferedImage(size[0], size[1], BufferedImage.TYPE_INT_ARGB);
-	public static int[] canvas2d = new int[1];
+	private static int[] canvas2d = new int[1];
 	public static int color = 0xFF000000;
-	private static volatile Startable refresh;
-	private static boolean initialized = false;
+	public static boolean initialized = false;
 
 	public static void setTitle(String title) {
 		INSTANCE.setTitle(title);
@@ -38,12 +38,9 @@ public class Display {
 	}
 
 	public static void create() {
+		Display.setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		INSTANCE.setVisible(true);
 		initialized = true;
-	}
-
-	public static boolean initialized() {
-		return initialized;
 	}
 	
 	public static boolean wasResized() {
@@ -71,31 +68,42 @@ public class Display {
 		INSTANCE.dispose();
 	}
 
-	public static void start(Startable refresh) {
-		Display.refresh = refresh;
+	public static void start() {
 	}
 
 	@Deprecated()
 	public static void refresh() {
 		if (PIDisplay.screen == null || (PIDisplay.error != null && PIDisplay.error.length() > 0) || PIDisplay.screen == null || PIDisplay.screen.mustBeRefreshed()) {
-			Display.INSTANCE.c.repaint(false);
+			Display.INSTANCE.c.forcerefresh = false;
+			Display.INSTANCE.c.repaint();
 		}
 	}
 
-	public static void refresh(boolean force) {
-		Display.INSTANCE.c.repaint(force);
+	public static void repaint(boolean force) {
+		Display.INSTANCE.c.forcerefresh = force;
+		Display.INSTANCE.c.repaint();
 	}
+
+//	private static ArrayList<Double> mediaValori = new ArrayList<Double>();
 	
 	public static void update(Graphics g, boolean forcerefresh) {
-		if (refresh != null) {
-			refresh.force = forcerefresh;
-			refresh.run();
+//		long time1 = System.nanoTime();
+		PIDisplay.INSTANCE.refresh(forcerefresh);
 
-	        final int[] a = ((DataBufferInt) Display.g.getRaster().getDataBuffer()).getData();
-	        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
-			g.clearRect(0, 0, size[0], size[1]);
-			g.drawImage(Display.g, 0, 0, null);
-		}
+        final int[] a = ((DataBufferInt) Display.g.getRaster().getDataBuffer()).getData();
+//	        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
+        canvas2d = a;
+		g.clearRect(0, 0, size[0], size[1]);
+		g.drawImage(Display.g, 0, 0, null);
+//		long time2 = System.nanoTime();
+//		double timeDelta = ((double)(time2-time1))/1000000000d;
+//		double mediaAttuale = timeDelta;
+//		mediaValori.add(mediaAttuale);
+//		double somma = 0;
+//		for (Double val : mediaValori) {
+//			somma+=val;
+//		}
+//		System.out.println(somma/((double)mediaValori.size()));
 	}
 
 	public static abstract class Startable {

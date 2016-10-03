@@ -45,6 +45,7 @@ public final class PIDisplay {
 	public PIDisplay(Screen screen) {
 		setScreen(screen);
 		INSTANCE = this;
+		run();
 	}
 	/*
 	 * private void load_skin() {
@@ -91,7 +92,7 @@ public final class PIDisplay {
 		try {
 			screen.create();
 			PIDisplay.screen = screen;
-			if (initialized == true && screen.initialized == false) {
+			if (screen.initialized == false) {
 				screen.initialize();
 			}
 		} catch (Exception e) {
@@ -307,7 +308,7 @@ public final class PIDisplay {
 
 	private long precTime = -1;
 
-	private void refresh(boolean forced) {
+	public void refresh(boolean forced) {
 		float dt = 0;
 		long newtime = System.nanoTime();
 		if (precTime == -1) {
@@ -332,36 +333,18 @@ public final class PIDisplay {
 
 	}
 
-	private volatile Startable refresh = new Startable() {
-		@Override
-		public void run() {
-			PIDisplay.this.refresh(this.force);
-		}
-	};
-
 	private void checkDisplayResized() {
 		if (Display.wasResized()) {
 			Main.screenSize[0] = Display.getWidth();
 			Main.screenSize[1]= Display.getHeight();
 		}
 	};
-
-	private void createWindow(String title) {
-		Display.setTitle(title);
-		Display.setResizable(Utils.debugOn);
-		Display.setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
-		Display.create();
-	}
-
-	private boolean initialized = false;
 	
-	public void run(String title) {
+	public void run() {
 		try {
-			createWindow(title);
 			load_skin();
 			load_fonts();
-			
-			initialized = true;
+			Display.create();
 			
 			try {
 				screen.initialize();
@@ -370,14 +353,14 @@ public final class PIDisplay {
 				System.exit(0);
 			}
 
-			Display.start(this.refresh);
+			Display.start();
 			
 			Main.instance.afterStart();
 
 			double extratime = 0;
-			while (Display.initialized()) {
+			while (Display.initialized) {
 				long start = System.nanoTime();
-				Display.refresh(false);
+				Display.repaint(false);
 				long end = System.nanoTime();
 				double delta = (end - start) / 1000000000;
 				int deltaInt = (int) Math.floor(delta);

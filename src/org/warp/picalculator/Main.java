@@ -13,15 +13,13 @@ public class Main {
 	public static final int[] screenSize = new int[] { 480, 320 };
 	public static final int screenScale = 1;
 	public static final boolean zoomed = true;
-	public static PIDisplay d;
 	public static Main instance;
 
 	public Main() throws InterruptedException {
 		instance = this;
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		beforeStart();
-		d = new PIDisplay(new LoadingScreen());
-		d.run("Raspberry PI Calculator by XDrake99 (Andrea Cavalli)");
+		new PIDisplay(new LoadingScreen());
 		Utils.debug.println("Shutdown...");
 		beforeShutdown();
 		Utils.debug.println("");
