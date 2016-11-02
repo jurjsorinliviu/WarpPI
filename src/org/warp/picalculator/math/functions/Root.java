@@ -13,8 +13,8 @@ import org.warp.picalculator.math.MathematicalSymbols;
 
 public class Root extends FunctionTwoValues {
 
-	public Root(Function value1, Function value2) {
-		super(value1, value2);
+	public Root(Function parent, Function value1, Function value2) {
+		super(parent, value1, value2);
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class Root extends FunctionTwoValues {
 	@Override
 	protected boolean isSolvable() throws Error {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
-			if ((((Number)variable2).pow(new Number(NumeroAvanzatoVec.ONE).divide((Number) variable1)).getTerm().isBigInteger(true))) {
+			if ((((Number)variable2).pow(new Number(this.parent, NumeroAvanzatoVec.ONE).divide((Number) variable1)).getTerm().isBigInteger(true))) {
 				return true;
 			}
 		}
@@ -49,7 +49,7 @@ public class Root extends FunctionTwoValues {
 	public List<Function> solveOneStep() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
 		if (variable1.isSolved() & variable2.isSolved()) {
-			Number exponent = new Number(NumeroAvanzatoVec.ONE);
+			Number exponent = new Number(this.parent, NumeroAvanzatoVec.ONE);
 			exponent = exponent.divide((Number) variable1);
 			result.add(((Number)variable2).pow(exponent));
 		} else {
@@ -69,7 +69,11 @@ public class Root extends FunctionTwoValues {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(new Root((Function)f[0], (Function)f[1]));
+				if (f[0] instanceof Number && ((Number)f[0]).equals(new Number(null, "2"))) {
+					result.add(new RootSquare(this.parent, (Function)f[1]));
+				} else {
+					result.add(new Root(this.parent, (Function)f[0], (Function)f[1]));
+				}
 			}
 		}
 		return result;

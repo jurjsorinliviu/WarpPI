@@ -33,7 +33,7 @@ public final class PIDisplay {
 
 	private int[] skin;
 	private int[] skinSize;
-	public static RAWFont[] fonts = new RAWFont[4];
+	public static RAWFont[] fonts;
 
 	public static String error = null;
 	public String[] errorStackTrace = null;
@@ -45,7 +45,7 @@ public final class PIDisplay {
 	public PIDisplay(Screen screen) {
 		setScreen(screen);
 		INSTANCE = this;
-		run();
+		loop();
 	}
 	/*
 	 * private void load_skin() {
@@ -86,6 +86,30 @@ public final class PIDisplay {
 				Calculator.sessions[0] = screen;
 			} else {
 				Calculator.currentSession = -1;
+			}
+		}
+		screen.d = this;
+		try {
+			screen.create();
+			PIDisplay.screen = screen;
+			if (screen.initialized == false) {
+				screen.initialize();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+	}
+	
+	public void replaceScreen(Screen screen) {
+		if (screen.initialized == false) {
+			if (screen.canBeInHistory) {
+				Calculator.sessions[Calculator.currentSession] = screen;
+			} else {
+				Calculator.currentSession = -1;
+				for (int i = 0; i < Calculator.sessions.length - 2; i++) {
+					Calculator.sessions[i] = Calculator.sessions[i + 1];
+				}
 			}
 		}
 		screen.d = this;
@@ -176,6 +200,7 @@ public final class PIDisplay {
 	}
 
 	private void load_fonts() {
+		fonts = new RAWFont[7];
 		fonts[0] = new RAWFont();
 		fonts[0].create("big");
 		fonts[1] = new RAWFont();
@@ -184,7 +209,11 @@ public final class PIDisplay {
 		fonts[2].create("big_2x");
 		fonts[3] = new RAWFont();
 		fonts[3].create("small_2x");
-		setFont(fonts[0]);
+		fonts[4] = new RAWFont();
+		fonts[4].create("32");
+		fonts[5] = new RAWFont();
+		fonts[5].create("square");
+		glSetFont(fonts[0]);
 	}
 
 	private void draw_init() {
@@ -280,7 +309,7 @@ public final class PIDisplay {
 		glColor3f(255, 255, 255);
 
 		if (error != null) {
-			setFont(Utils.getFont(false, false));
+			glSetFont(Utils.getFont(false, false));
 			glColor3f(129, 28, 22);
 			glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1]- this.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
 			glColor3f(149, 32, 26);
@@ -291,7 +320,7 @@ public final class PIDisplay {
 				glDrawStringLeft(2, 22 + i, stackPart);
 				i += 11;
 			}
-			setFont(fonts[0]);
+			glSetFont(fonts[0]);
 			glColor3f(129, 28, 22);
 			glDrawStringCenter((Main.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
 		} else {
@@ -308,16 +337,13 @@ public final class PIDisplay {
 
 	private long precTime = -1;
 
-	public void refresh(boolean forced) {
+	public void refresh() {
 		float dt = 0;
 		long newtime = System.nanoTime();
 		if (precTime == -1) {
 			dt = 0;
 		} else {
 			dt = (float) ((newtime - precTime) / 1000000000d);
-			if (dt < 0.03 && !forced) {
-				return;
-			}
 		}
 		precTime = newtime;
 		/*
@@ -327,7 +353,7 @@ public final class PIDisplay {
 
 		screen.beforeRender(dt);
 		
-		if(forced==true || screen.mustBeRefreshed()) {
+		if(dt >= 0.03 | screen.mustBeRefreshed()) {
 			draw();
 		}
 
@@ -340,7 +366,7 @@ public final class PIDisplay {
 		}
 	};
 	
-	public void run() {
+	public void loop() {
 		try {
 			load_skin();
 			load_fonts();
@@ -359,10 +385,10 @@ public final class PIDisplay {
 
 			double extratime = 0;
 			while (Display.initialized) {
-				long start = System.nanoTime();
-				Display.repaint(false);
-				long end = System.nanoTime();
-				double delta = (end - start) / 1000000000;
+				long start = System.currentTimeMillis();
+				Display.repaint();
+				long end = System.currentTimeMillis();
+				double delta = (end - start) / 1000d;
 				int deltaInt = (int) Math.floor(delta);
 				int extraTimeInt = (int) Math.floor(extratime);
 				if (extraTimeInt + deltaInt < 50) {

@@ -1,10 +1,6 @@
 package org.warp.picalculator.screens;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.getMatrixOfImage;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glClearColor;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawSkin;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
-import static org.warp.picalculator.device.graphicengine.Display.Render.setFont;
+import static org.warp.picalculator.device.graphicengine.Display.Render.*;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -142,7 +138,7 @@ public class MarioScreen extends Screen {
 		if (errored) {
 			glDrawStringLeft(0, 20, "ERROR");
 		} else {
-			setFont(PIDisplay.fonts[0]);
+			glSetFont(PIDisplay.fonts[0]);
 			glClearColor(0xff9290ff);
 			glDrawSkin(groundSize[0], ground, 0, 25+25, 0, 0, 16, 16, false);
 			glDrawSkin(groundSize[0], ground, 16, 25+25, 0, 0, 16, 16, false);
@@ -162,6 +158,23 @@ public class MarioScreen extends Screen {
 			glDrawSkin(groundSize[0], ground, 16*6, 25+25+16, 0, 0, 16, 16, false);
 			glDrawSkin(groundSize[0], ground, 16*7, 25+25+16, 0, 0, 16, 16, false);
 			glDrawSkin(groundSize[0], ground, 16*8, 25+25+16, 0, 0, 16, 16, false);
+			
+//		EASTER EGG
+//			glSetFont(PIDisplay.fonts[4]);
+//			glColor(0xFF000000);
+//			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "A");
+//			glColor(0xFF800000);
+//			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "B");
+//			glColor(0xFFeea28e);
+//			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "C");
+//			glColor(0xFFee7255);
+//			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "D");
+//			glColor(0xFFeac0b0);
+//			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "E");
+//			glColor(0xFFf3d8ce);
+//			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "F");
+//			glColor(0xffede7);
+//			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "G");
 			
 			//DRAW MARIO
 			glDrawSkin(skinSize[0], skin, getPosX()-18, 25+getPosY(), 35*(marioSkinPos[0]+(flipped?2:1)), 27*marioSkinPos[1], 35*(marioSkinPos[0]+(flipped?1:2)), 27*(marioSkinPos[1]+1), true);

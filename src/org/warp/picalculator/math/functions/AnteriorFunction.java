@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.getStringWidth;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 
 import java.util.List;
@@ -14,22 +14,33 @@ import org.warp.picalculator.device.graphicengine.Display;
 import com.rits.cloning.Cloner;
 
 public abstract class AnteriorFunction implements Function {
-	public AnteriorFunction(Function value) {
+	public AnteriorFunction(Function parent, Function value) {
+		setParent(parent);
 		setVariable(value);
 	}
 
-	protected Function variable = new Number(NumeroAvanzatoVec.ZERO);
+	protected Function parent;
+	protected Function variable = new Number(null, NumeroAvanzatoVec.ZERO);
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
-	
+
 	public Function getVariable() {
 		return variable;
 	}
 
 	public void setVariable(Function value) {
 		variable = value;
+	}
+
+	public Function getParent() {
+		return parent;
+	}
+
+	public Function setParent(Function value) {
+		parent = value;
+		return this;
 	}
 
 	@Override
@@ -50,7 +61,7 @@ public abstract class AnteriorFunction implements Function {
 		variable.setSmall(small);
 		variable.generateGraphics();
 		
-		width = getStringWidth(getSymbol()) + 1 + getVariable().getWidth();
+		width = glGetStringWidth(getSymbol()) + 1 + getVariable().getWidth();
 		height = variable.getHeight();
 		line = variable.getLine();
 	}
@@ -58,10 +69,10 @@ public abstract class AnteriorFunction implements Function {
 	@Override
 	public void draw(int x, int y) {
 		float h1 = getVariable().getHeight();
-		int wsegno = getStringWidth(getSymbol());
+		int wsegno = glGetStringWidth(getSymbol());
 		float hsegno = Utils.getFontHeight(small);
 		float maxh = getHeight();
-		Display.Render.setFont(Utils.getFont(small));
+		Display.Render.glSetFont(Utils.getFont(small));
 		
 		glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), getSymbol());
 		getVariable().draw(x + wsegno + 1, (int) Math.floor(y + (maxh - h1) / 2));

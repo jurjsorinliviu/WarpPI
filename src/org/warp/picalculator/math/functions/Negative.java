@@ -8,17 +8,21 @@ import org.nevec.rjm.Rational;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.rules.NumberRule1;
+import org.warp.picalculator.math.rules.ExpandRule1;
+import org.warp.picalculator.math.rules.ExpandRule5;
 
-public class RootSquare extends AnteriorFunction {
+public class Negative extends AnteriorFunction {
 
-	public RootSquare(Function parent, Function value) {
+	public Negative(Function parent, Function value) {
 		super(parent, value);
 	}
 
 	@Override
 	public String getSymbol() {
-		return MathematicalSymbols.SQUARE_ROOT;
+		return MathematicalSymbols.MINUS;
 	}
 	
 	@Override
@@ -26,18 +30,16 @@ public class RootSquare extends AnteriorFunction {
 		variable.setSmall(small);
 		variable.generateGraphics();
 		
-		height = getVariable().getHeight() + 2;
-		width = 1 + 4 + getVariable().getWidth() + 1;
-		line = getVariable().getLine() + 2;
+		height = getVariable().getHeight();
+		width = Display.Render.glGetStringWidth("-") + getVariable().getWidth();
+		line = getVariable().getLine();
 	}
 
 	@Override
 	protected boolean isSolvable() throws Error {
-		if (variable instanceof Number) {
-			if ((((Number)variable).pow(new Number(this.parent, new Rational(1, 2))).getTerm().isBigInteger(true))) {
-				return true;
-			}
-		}
+		if (variable instanceof Number) return true;
+		if (ExpandRule1.compare(this)) return true;
+		if (ExpandRule5.compare(this)) return true;
 		return false;
 	}
 	
@@ -47,10 +49,14 @@ public class RootSquare extends AnteriorFunction {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable.isSolved()) {
+		if (ExpandRule1.compare(this)) {
+			result = ExpandRule1.execute(this);
+		} else if (ExpandRule5.compare(this)) {
+			result = ExpandRule5.execute(this);
+		} else if (variable.isSolved()) {
 			try {
 				Number var = (Number) getVariable();
-				result.add(var.pow(new Number(this.parent, new Rational(1, 2))));
+				result.add(var.multiply(new Number(null, "-1")));
 			} catch(NullPointerException ex) {
 				throw new Error(Errors.ERROR);
 			} catch(NumberFormatException ex) {
@@ -67,19 +73,10 @@ public class RootSquare extends AnteriorFunction {
 			}
 			
 			for (Function f : l1) {
-				result.add(new RootSquare(this.parent, (Function)f));
+				result.add(new Negative(this.parent, (Function)f));
 			}
 		}
 		return result;
-	}
-
-	@Override
-	public void draw(int x, int y) {
-//		glColor3f(0, 255, 0);
-//		glFillRect(x,y,width,height);
-//		glColor3f(0, 0, 0);
-		
-		Utils.writeSquareRoot(getVariable(), x, y, small);
 	}
 
 	@Override

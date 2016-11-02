@@ -8,14 +8,17 @@ import org.warp.picalculator.Error;
 import com.rits.cloning.Cloner;
 
 public abstract class FunctionMultipleValues implements Function {
-	public FunctionMultipleValues() {
+	public FunctionMultipleValues(Function parent) {
+		setParent(parent);
 		setVariables(new Function[] {});
 	}
 
-	public FunctionMultipleValues(Function[] values) {
+	public FunctionMultipleValues(Function parent, Function[] values) {
+		setParent(parent);
 		setVariables(values);
 	}
 
+	protected Function parent;
 	protected Function[] variables;
 	protected int width;
 	protected int height;
@@ -27,6 +30,9 @@ public abstract class FunctionMultipleValues implements Function {
 	}
 
 	public void setVariables(Function[] value) {
+		for (Function f : value) {
+			f.setParent(this);
+		}
 		variables = value;
 	}
 
@@ -35,6 +41,7 @@ public abstract class FunctionMultipleValues implements Function {
 		Function[] tmp = new Function[vsize];
 		for (int i = 0; i < vsize; i++) {
 			tmp[i] = value.get(i);
+			tmp[i].setParent(this);
 		}
 		variables = tmp;
 	}
@@ -44,10 +51,12 @@ public abstract class FunctionMultipleValues implements Function {
 	}
 
 	public void setVariable(int index, Function value) {
+		value.setParent(this);
 		variables[index] = value;
 	}
 
 	public void addVariableToEnd(Function value) {
+		value.setParent(this);
 		int index = variables.length;
 		setVariablesLength(index + 1);
 		variables[index] = value;
@@ -76,6 +85,16 @@ public abstract class FunctionMultipleValues implements Function {
 	
 	protected abstract boolean isSolvable() throws Error;
 
+
+	public Function setParent(Function value) {
+		parent = value;
+		return this;
+	}
+	
+	public Function getParent() {
+		return parent;
+	}
+	
 	@Override
 	public abstract void generateGraphics();
 	

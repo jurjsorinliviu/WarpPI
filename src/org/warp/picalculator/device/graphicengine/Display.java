@@ -7,15 +7,15 @@ import java.awt.image.DataBufferInt;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Main;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.PIDisplay;
-import org.warp.picalculator.device.PIFrame;
 
 public class Display {
 
-	private static PIFrame INSTANCE = new PIFrame();
+	private static Frame INSTANCE = new Frame();
 	public static int[] size = new int[] { 1, 1 };
-	public static BufferedImage g = new BufferedImage(size[0], size[1], BufferedImage.TYPE_INT_ARGB);
-	private static int[] canvas2d = new int[1];
+	public static BufferedImage g = new BufferedImage(size[0], size[1], BufferedImage.TYPE_INT_RGB);
+	static int[] canvas2d = new int[1];
 	public static int color = 0xFF000000;
 	public static boolean initialized = false;
 
@@ -38,6 +38,7 @@ public class Display {
 	}
 
 	public static void create() {
+		Display.setResizable(Utils.debugOn);
 		Display.setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		INSTANCE.setVisible(true);
 		initialized = true;
@@ -74,36 +75,12 @@ public class Display {
 	@Deprecated()
 	public static void refresh() {
 		if (PIDisplay.screen == null || (PIDisplay.error != null && PIDisplay.error.length() > 0) || PIDisplay.screen == null || PIDisplay.screen.mustBeRefreshed()) {
-			Display.INSTANCE.c.forcerefresh = false;
 			Display.INSTANCE.c.repaint();
 		}
 	}
 
-	public static void repaint(boolean force) {
-		Display.INSTANCE.c.forcerefresh = force;
+	public static void repaint() {
 		Display.INSTANCE.c.repaint();
-	}
-
-//	private static ArrayList<Double> mediaValori = new ArrayList<Double>();
-	
-	public static void update(Graphics g, boolean forcerefresh) {
-//		long time1 = System.nanoTime();
-		PIDisplay.INSTANCE.refresh(forcerefresh);
-
-        final int[] a = ((DataBufferInt) Display.g.getRaster().getDataBuffer()).getData();
-//	        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
-        canvas2d = a;
-		g.clearRect(0, 0, size[0], size[1]);
-		g.drawImage(Display.g, 0, 0, null);
-//		long time2 = System.nanoTime();
-//		double timeDelta = ((double)(time2-time1))/1000000000d;
-//		double mediaAttuale = timeDelta;
-//		mediaValori.add(mediaAttuale);
-//		double somma = 0;
-//		for (Double val : mediaValori) {
-//			somma+=val;
-//		}
-//		System.out.println(somma/((double)mediaValori.size()));
 	}
 
 	public static abstract class Startable {
@@ -286,20 +263,20 @@ public class Display {
 		}
 
 		public static void glDrawStringCenter(int x, int y, String text) {
-			glDrawStringLeft(x - (getStringWidth(text) / 2), y, text);
+			glDrawStringLeft(x - (glGetStringWidth(text) / 2), y, text);
 		}
 
 		public static void glDrawStringRight(int x, int y, String text) {
-			glDrawStringLeft(x - getStringWidth(text), y, text);
+			glDrawStringLeft(x - glGetStringWidth(text), y, text);
 		}
 
-		public static void setFont(RAWFont font) {
+		public static void glSetFont(RAWFont font) {
 			if (currentFont != font) {
 				currentFont = font;
 			}
 		}
 
-		public static int getStringWidth(String text) {
+		public static int glGetStringWidth(String text) {
 			int w =(currentFont.charW+1)*text.length();
 			if (text.length() > 0) {
 				return w-1;
@@ -309,11 +286,21 @@ public class Display {
 			// return text.length()*6;
 		}
 
-		public static int getWidth(FontMetrics fm, String text) {
+		public static int glGetStringWidth(RAWFont rf, String text) {
+			int w =(rf.charW+1)*text.length();
+			if (text.length() > 0) {
+				return w-1;
+			} else {
+				return 0;
+			}
+			// return text.length()*6;
+		}
+
+		public static int glGetFontWidth(FontMetrics fm, String text) {
 			return fm.stringWidth(text);
 		}
 
-		public static int getFontHeight() {
+		public static int glGetCurrentFontHeight() {
 			return currentFont.charH;
 		}
 

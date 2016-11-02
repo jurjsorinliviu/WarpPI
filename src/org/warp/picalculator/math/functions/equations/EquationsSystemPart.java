@@ -13,8 +13,8 @@ import org.warp.picalculator.math.functions.Function;
 
 public class EquationsSystemPart extends AnteriorFunction {
 
-	public EquationsSystemPart(Equation equazione) {
-		super(equazione);
+	public EquationsSystemPart(Function parent, Equation equazione) {
+		super(parent, equazione);
 	}
 
 	@Override

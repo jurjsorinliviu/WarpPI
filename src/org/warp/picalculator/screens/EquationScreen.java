@@ -18,6 +18,9 @@ import org.warp.picalculator.device.graphicengine.Screen;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
 
+import com.rits.cloning.Cloner;
+import com.rits.cloning.FastClonerArrayList;
+
 public class EquationScreen extends Screen {
 
 	public float endLoading;
@@ -28,6 +31,7 @@ public class EquationScreen extends Screen {
 	public volatile float showCaretDelta = 0f;
 	public List<Function> f;
 	public List<Function> f2;
+	public int resultsCount;
 	public int ew1;
 	public int ew2;
 	public int eh2;
@@ -84,8 +88,11 @@ public class EquationScreen extends Screen {
 		// Funzione f = new Parentesi("5Y+XY=2", "")
 
 //			calcola("((5^2+3√(100/0.1))+Ⓐ(7)+9/15*2√(26/2))/21");
-		f = new ArrayList<Function>();
-		f2 = new ArrayList<Function>();
+		if (f == null & f2 == null) {
+			f = new ArrayList<Function>();
+			f2 = new ArrayList<Function>();
+			resultsCount = 0;
+		}
 //			interpreta("{(5X*(15X/3X))+(25X/(5X*(15X/3X)))=15{X=5"); //TODO RIMUOVERE
 
 		// long start = System.nanoTime();
@@ -122,7 +129,7 @@ public class EquationScreen extends Screen {
 	}
 	
 	public void solve() throws Error {
-		Calculator.solve();
+		Calculator.solve(this);
 	}
 
 	@Override
@@ -137,14 +144,14 @@ public class EquationScreen extends Screen {
 
 	@Override
 	public void render() {
-		Display.Render.setFont(Utils.getFont(false));
+		Display.Render.glSetFont(Utils.getFont(false));
 		glClearColor(0xFFCCE7D4);
 		glColor3f(0, 0, 0);
 		glDrawStringLeft(2, 22, nuovaEquazione.substring(0, caretPos)+(showCaret?"|":"")+nuovaEquazione.substring(((showCaret==false||nuovaEquazione.length()<=caretPos)?caretPos:caretPos+1), nuovaEquazione.length()));
 		if (f != null) {
 			int topSpacing = 0;
 			for (Function f : f) {
-				f.draw(2, 22+1+getFontHeight()+1+topSpacing);
+				f.draw(2, 22+1+glGetCurrentFontHeight()+1+topSpacing);
 				topSpacing += f.getHeight() + 2;
 			}
 		}
@@ -153,6 +160,13 @@ public class EquationScreen extends Screen {
 			for (Function f : f2) {
 				bottomSpacing += f.getHeight()+2;
 				f.draw(Display.getWidth() - 2 - f.getWidth(), Display.getHeight() - bottomSpacing);
+			}
+			if (resultsCount > 1 && resultsCount != f2.size()) {
+				String resultsCountText = resultsCount+" total results".toUpperCase();
+				glColor(0xFF9AAEA0);
+				glSetFont(Utils.getFont(true));
+				bottomSpacing += glGetCurrentFontHeight()+2;
+				glDrawStringRight(Display.getWidth() - 2, Display.getHeight() - bottomSpacing, resultsCountText);
 			}
 		}
 	}
@@ -172,7 +186,7 @@ public class EquationScreen extends Screen {
 		switch (k) {
 			case SIMPLIFY:
 				if (nuovaEquazione.length() > 0) {
-					Calculator.simplify();
+					Calculator.simplify(this);
 				}
 				return true;
 			case SOLVE:
@@ -184,6 +198,7 @@ public class EquationScreen extends Screen {
 					if (nuovaEquazione != equazioneCorrente && nuovaEquazione.length() > 0) {
 						try {
 							try {
+								changeEquationScreen();
 								interpreta(nuovaEquazione);
 								solve();
 							} catch (Exception ex) {
@@ -322,18 +337,59 @@ public class EquationScreen extends Screen {
 		}
 	}
 	
+	private void changeEquationScreen() {
+		if (equazioneCorrente != null && equazioneCorrente.length() > 0) {
+			EquationScreen cloned = clone();
+			cloned.caretPos = cloned.equazioneCorrente.length();
+			cloned.nuovaEquazione = cloned.equazioneCorrente;
+			PIDisplay.INSTANCE.replaceScreen(cloned);
+			this.initialized = false;
+			PIDisplay.INSTANCE.setScreen(this);
+			
+		}
+	}
+
 	public void typeChar(String chr) {
 		nuovaEquazione=nuovaEquazione.substring(0, caretPos)+chr+nuovaEquazione.substring(caretPos, nuovaEquazione.length());
 		caretPos+=1;
 		showCaret = true;
 		showCaretDelta = 0L;
-		f.clear();
+//		f.clear(); //TODO: I removed this line to prevent input blanking when pressing EQUALS button and cloning this screen, but I must see why I created this part of code.
 	}
 
 	@Override
 	public boolean keyReleased(Key k) {
 		
 		return false;
+	}
+	
+	@Override
+	public EquationScreen clone() {
+		EquationScreen es = this;
+		EquationScreen es2 = new EquationScreen();
+		es2.endLoading = es.endLoading;
+		es2.nuovaEquazione = es.nuovaEquazione;
+		es2.equazioneCorrente = es.equazioneCorrente;
+		es2.showCaret = es.showCaret;
+		es2.showCaretDelta = es.showCaretDelta;
+		es2.caretPos = es.caretPos;
+		es2.f = Utils.cloner.deepClone(es.f);
+		es2.f2 = Utils.cloner.deepClone(es.f2);
+		es2.resultsCount = es.resultsCount;
+		es2.ew1 = es.ew1;
+		es2.ew2 = es.ew2;
+		es2.eh2 = es.eh2;
+		es2.x1 = es.x1;
+		es2.x2 = es.x2;
+		es2.requiresleep1 = es.requiresleep1;
+		es2.requiresleep2 = es.requiresleep2;
+		es2.autoscroll = es.autoscroll;
+		es2.errorLevel = es.errorLevel;
+		es2.err1 = es.err1;
+		es2.err2 = es.err2;
+		es2.mustRefresh = es.mustRefresh;
+		es2.aftersleep = es.aftersleep;
+		return es2;
 	}
 
 }

@@ -454,7 +454,7 @@ public class Keyboard {
 				refresh = true;
 			}
 			if (refresh) {
-				Display.repaint(true);
+				Display.repaint();
 			}
 		}
 	}
@@ -478,7 +478,7 @@ public class Keyboard {
 				}
 			}
 			if (refresh) {
-				Display.repaint(true);
+				Display.repaint();
 			}
 		}
 	}

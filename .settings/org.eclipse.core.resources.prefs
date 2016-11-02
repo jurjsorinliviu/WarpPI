@@ -8,5 +8,6 @@ encoding//src/org/warp/picalculator/math/MathematicalSymbols.java=UTF-8
 encoding//src/org/warp/picalculator/math/functions/Expression.java=UTF-8
 encoding//src/org/warp/picalculator/math/functions/Root.java=UTF-8
 encoding//src/org/warp/picalculator/math/functions/RootSquare.java=UTF-8
+encoding//src/org/warp/picalculator/math/functions/Sum.java=UTF-8
 encoding//src/org/warp/picalculator/screens/EquationScreen.java=UTF-8
 encoding/<project>=UTF-8

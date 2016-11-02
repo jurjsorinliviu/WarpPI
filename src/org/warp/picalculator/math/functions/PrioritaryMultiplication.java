@@ -10,8 +10,8 @@ import org.warp.picalculator.math.MathematicalSymbols;
 
 public class PrioritaryMultiplication extends FunctionTwoValues {
 
-	public PrioritaryMultiplication(Function value1, Function value2) {
-		super(value1, value2);
+	public PrioritaryMultiplication(Function parent, Function value1, Function value2) {
+		super(parent, value1, value2);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class PrioritaryMultiplication extends FunctionTwoValues {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(new PrioritaryMultiplication((Function)f[0], (Function)f[1]));
+				result.add(new PrioritaryMultiplication(this.parent, (Function)f[0], (Function)f[1]));
 			}
 		}
 		return result;

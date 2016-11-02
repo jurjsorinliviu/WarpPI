@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.getStringWidth;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 
 import java.math.BigInteger;
@@ -19,8 +19,8 @@ import org.warp.picalculator.math.Variables;
 
 public class Sum extends FunctionTwoValues {
 
-	public Sum(Function value1, Function value2) {
-		super(value1, value2);
+	public Sum(Function parent, Function value1, Function value2) {
+		super(parent, value1, value2);
 	}
 
 	@Override
@@ -43,15 +43,15 @@ public class Sum extends FunctionTwoValues {
 		}
 		ArrayList<Function> result = new ArrayList<>();
 		if (variable1.isSolved() & variable2.isSolved()) {
-			if (((Number)variable1).term.isBigInteger(false) & ((Number)variable2).term.isBigInteger(false)) {
+			if ((parent == null || parent.getParent() == null) && ((Number)variable1).term.isBigInteger(false) & ((Number)variable2).term.isBigInteger(false)) {
 				if (((Number)variable1).term.toBigInteger(false).compareTo(new BigInteger("2")) == 0 && ((Number)variable2).term.toBigInteger(false).compareTo(new BigInteger("2")) == 0) {
-					NumeroAvanzato na = NumeroAvanzato.ONE;
-					Variables iy = na.getVariableY();
-					List<Variable> newVariableList = iy.getVariablesList();
-					newVariableList.add(new Variable('♓', 1, 1));
-					iy = new Variables(newVariableList.toArray(new Variable[newVariableList.size()]));
-					na = na.setVariableY(iy);
-					result.add(new Number(na));
+					result.add(new Joke(Joke.FISH));
+					return result;
+				} else if (((Number)variable1).term.toBigInteger(false).compareTo(new BigInteger("20")) == 0 && ((Number)variable2).term.toBigInteger(false).compareTo(new BigInteger("20")) == 0) {
+					result.add(new Joke(Joke.TORNADO));
+					return result;
+				} else if (((Number)variable1).term.toBigInteger(false).compareTo(new BigInteger("29")) == 0 && ((Number)variable2).term.toBigInteger(false).compareTo(new BigInteger("29")) == 0) {
+					result.add(new Joke(Joke.SHARKNADO));
 					return result;
 				}
 			}
@@ -73,7 +73,7 @@ public class Sum extends FunctionTwoValues {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(new Sum((Function)f[0], (Function)f[1]));
+				result.add(new Sum(this.parent, (Function)f[0], (Function)f[1]));
 			}
 		}
 		return result;
@@ -102,10 +102,10 @@ public class Sum extends FunctionTwoValues {
 		int dx = 0;
 		variable1.draw(dx + x, ln - variable1.getLine() + y);
 		dx += variable1.getWidth();
-		Display.Render.setFont(Utils.getFont(small));
+		Display.Render.glSetFont(Utils.getFont(small));
 		dx += 1;
 		glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-		dx += getStringWidth(getSymbol());
+		dx += glGetStringWidth(getSymbol());
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
 
@@ -119,7 +119,7 @@ public class Sum extends FunctionTwoValues {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += getStringWidth(getSymbol());
+		dx += glGetStringWidth(getSymbol());
 		return dx += variable2.getWidth();
 	}
 }

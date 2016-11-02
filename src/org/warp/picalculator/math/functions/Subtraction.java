@@ -14,8 +14,8 @@ import org.warp.picalculator.math.Variables;
 
 public class Subtraction extends FunctionTwoValues {
 
-	public Subtraction(Function value1, Function value2) {
-		super(value1, value2);
+	public Subtraction(Function parent, Function value1, Function value2) {
+		super(parent, value1, value2);
 	}
 
 	@Override
@@ -38,19 +38,7 @@ public class Subtraction extends FunctionTwoValues {
 		}
 		ArrayList<Function> result = new ArrayList<>();
 		if (variable1.isSolved() & variable2.isSolved()) {
-			if (((Number)variable1).term.isBigInteger(false) & ((Number)variable2).term.isBigInteger(false)) {
-				if (((Number)variable1).term.toBigInteger(false).compareTo(new BigInteger("2")) == 0 && ((Number)variable2).term.toBigInteger(false).compareTo(new BigInteger("2")) == 0) {
-					NumeroAvanzato na = NumeroAvanzato.ONE;
-					Variables iy = na.getVariableY();
-					List<Variable> newVariableList = iy.getVariablesList();
-					newVariableList.add(new Variable('♓', 1, 1));
-					iy = new Variables(newVariableList.toArray(new Variable[newVariableList.size()]));
-					na = na.setVariableY(iy);
-					result.add(new Number(na));
-					return result;
-				}
-			}
-			result.add(((Number)variable1).add((Number)variable2).multiply(new Number("-1")));
+			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(this.parent, "-1"))));
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
 			List<Function> l2 = new ArrayList<Function>();
@@ -68,7 +56,7 @@ public class Subtraction extends FunctionTwoValues {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(new Sum((Function)f[0], (Function)f[1]));
+				result.add(new Subtraction(this.parent, (Function)f[0], (Function)f[1]));
 			}
 		}
 		return result;

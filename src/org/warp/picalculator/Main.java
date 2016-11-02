@@ -48,13 +48,6 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		if (test()) {
-			return;
-		}
 		new Main();
-	}
-	
-	private static boolean test() {
-		return false;
 	}
 }

@@ -7,7 +7,8 @@ import org.warp.picalculator.Utils;
 public class MathematicalSymbols {
 	public static final String SUM = "+";
 	public static final String SUM_SUBTRACTION = "±";
-	public static final String SUBTRACTION = "-";
+	public static final String SUBTRACTION = "−";
+	public static final String MINUS = "-";
 	public static final String MULTIPLICATION = "*";
 	public static final String PRIORITARY_MULTIPLICATION = "▪";
 	public static final String DIVISION = "/";
@@ -28,11 +29,11 @@ public class MathematicalSymbols {
 	}
 
 	public static final String[] functionsSN() {
-		return new String[] { SQUARE_ROOT };
+		return new String[] { SQUARE_ROOT, MINUS };
 	}
 
 	public static final String[] signums(boolean withMultiplication, boolean withPrioritaryMultiplication) {
-		String[] ret = new String[] { SUM, SUM_SUBTRACTION, DIVISION };
+		String[] ret = new String[] { SUM, SUM_SUBTRACTION, SUBTRACTION, DIVISION };
 		if (withMultiplication) {
 			ret = Utils.add(ret, MULTIPLICATION);
 		}
@@ -47,7 +48,7 @@ public class MathematicalSymbols {
 	}
 
 	public static String[] variables() {
-		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "♓"};
+		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 	}
 
 	public static String[] genericSyntax() {

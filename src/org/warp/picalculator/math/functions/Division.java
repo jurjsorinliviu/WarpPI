@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.getStringWidth;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3f;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glFillRect;
@@ -16,11 +16,17 @@ import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.Display.Render;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.rules.FractionsRule1;
+import org.warp.picalculator.math.rules.FractionsRule2;
+import org.warp.picalculator.math.rules.FractionsRule3;
+import org.warp.picalculator.math.rules.NumberRule1;
+import org.warp.picalculator.math.rules.NumberRule2;
+import org.warp.picalculator.math.rules.UndefinedRule2;
 
 public class Division extends FunctionTwoValues {
 
-	public Division(Function value1, Function value2) {
-		super(value1, value2);
+	public Division(Function parent, Function value1, Function value2) {
+		super(parent, value1, value2);
 	}
 
 	@Override
@@ -31,21 +37,24 @@ public class Division extends FunctionTwoValues {
 
 	@Override
 	protected boolean isSolvable() throws Error {
-		if (variable1 instanceof Number & variable2 instanceof Number) {
-			if (((Number)variable2).getTerm().compareTo(NumeroAvanzatoVec.ZERO) == 0) {
-				throw new Error(Errors.DIVISION_BY_ZERO);
-			} else {
-				return true;
-			}
-		}
+		if (FractionsRule1.compare(this)) return true;
+		if (FractionsRule2.compare(this)) return true;
+		if (FractionsRule3.compare(this)) return true;
+		if (UndefinedRule2.compare(this)) return true;
 		return false;
 	}
 	
 	@Override
 	public List<Function> solveOneStep() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable1.isSolved() & variable2.isSolved()) {
-			result.add(((Number) variable1).divide((Number)variable2));
+		if (FractionsRule1.compare(this)) {
+			result = FractionsRule1.execute(this);
+		} else if (FractionsRule2.compare(this)) {
+			result = FractionsRule2.execute(this);
+		} else if (FractionsRule3.compare(this)) {
+			result = FractionsRule3.execute(this);
+		} else if (UndefinedRule2.compare(this)) {
+			result = UndefinedRule2.execute(this);
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
 			List<Function> l2 = new ArrayList<Function>();
@@ -63,7 +72,7 @@ public class Division extends FunctionTwoValues {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(new Division((Function)f[0], (Function)f[1]));
+				result.add(new Division(this.parent, (Function)f[0], (Function)f[1]));
 			}
 		}
 		return result;
@@ -117,10 +126,10 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		int h1 = 0;
-		Display.Render.setFont(Utils.getFont(small));
+		Display.Render.glSetFont(Utils.getFont(small));
 		if (minus) {
-			w1 = getStringWidth(numerator);
-			h1 = Render.getFontHeight();
+			w1 = glGetStringWidth(numerator);
+			h1 = Render.glGetCurrentFontHeight();
 		} else {
 			w1 = ((Function) var1).getWidth();
 			h1 = ((Function) var1).getHeight();
@@ -133,8 +142,8 @@ public class Division extends FunctionTwoValues {
 			maxw = 1 + w2;
 		}
 		if (minus && drawMinus) {
-			minusw = getStringWidth("-") + 1;
-			minush = Render.getFontHeight();
+			minusw = glGetStringWidth("-") + 1;
+			minush = Render.glGetCurrentFontHeight();
 			glDrawStringLeft(x+1, y + h1 + 1 + 1 - (minush / 2), "-");
 			glDrawStringLeft((int) (x+1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
 		} else {
@@ -189,7 +198,7 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		if (minus) {
-			w1 = getStringWidth(numerator);
+			w1 = glGetStringWidth(numerator);
 		} else {
 			w1 = variable1.getWidth();
 		}
@@ -201,7 +210,7 @@ public class Division extends FunctionTwoValues {
 			maxw = w2+1;
 		}
 		if (minus && drawMinus) {
-			return 1 + getStringWidth("-") + 1 + maxw;
+			return 1 + glGetStringWidth("-") + 1 + maxw;
 		} else {
 			return 1 + maxw;
 		}

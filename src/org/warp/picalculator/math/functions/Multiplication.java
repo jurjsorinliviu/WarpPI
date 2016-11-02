@@ -9,11 +9,13 @@ import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.Variable;
+import org.warp.picalculator.math.rules.NumberRule1;
+import org.warp.picalculator.math.rules.NumberRule2;
 
 public class Multiplication extends FunctionTwoValues {
 
-	public Multiplication(Function value1, Function value2) {
-		super(value1, value2);
+	public Multiplication(Function parent, Function value1, Function value2) {
+		super(parent, value1, value2);
 	}
 
 	@Override
@@ -26,13 +28,19 @@ public class Multiplication extends FunctionTwoValues {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
+		if (NumberRule1.compare(this)) return true;
+		if (NumberRule2.compare(this)) return true;
 		return false;
 	}
 
 	@Override
 	public List<Function> solveOneStep() throws Error {
-		ArrayList<Function> result = new ArrayList<>();
-		if (variable1.isSolved() & variable2.isSolved()) {
+		List<Function> result = new ArrayList<>();
+		if (NumberRule1.compare(this)) {
+			result = NumberRule1.execute(this);
+		} else if (NumberRule2.compare(this)) {
+			result = NumberRule2.execute(this);
+		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).multiply((Number)variable2));
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
@@ -51,7 +59,7 @@ public class Multiplication extends FunctionTwoValues {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(new Multiplication(f[0], f[1]));
+				result.add(new Multiplication(this.parent, f[0], f[1]));
 			}
 		}
 		return result;
@@ -93,9 +101,19 @@ public class Multiplication extends FunctionTwoValues {
 				} else if (tmpVar[val] instanceof Power) {
 					tmpVar[val] = ((Power) tmpVar[val]).variable1;
 				} else if (tmpVar[val] instanceof Root) {
+					if (val == 0) {
+						break;
+					}
 					ok[val] = true;
 				} else if (tmpVar[val] instanceof RootSquare) {
+					if (val == 0) {
+						break;
+					}
 					ok[val] = true;
+				} else if (tmpVar[val] instanceof Undefined) {
+					break;
+				} else if (tmpVar[val] instanceof Joke) {
+					break;
 				} else if (tmpVar[val] instanceof Expression) {
 					ok[0] = true;
 					ok[1] = true;

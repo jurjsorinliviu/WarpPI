@@ -52,9 +52,6 @@ public class RAWFont {
         			currentBit += 1;
             	}
             } else {
-            	if (charIndex == 65 && name == "big_2x") {
-            		System.out.println("test");
-            	}
             	int currentInt = 0;
             	int currentBit = 0;
             	for (int i = 0; i < charS; i++) {
@@ -81,18 +78,18 @@ public class RAWFont {
 		int[] file = Utils.realBytes(Utils.convertStreamToByteArray(res.openStream(), res.getFile().length()));
 		int filelength = file.length;
 		if (filelength >= 16) {
-			if (file[0x0] == 114 && file[0x1] == 97 && file[0x2] == 119 && file[0x3] == 0xFF && file[0x6] == 0xFF && file[0xB] == 0xFF) {
-				charW = file[0x4];
-				charH = file[0x5];
+			if (file[0x0] == 114 && file[0x1] == 97 && file[0x2] == 119 && file[0x3] == 0xFF && file[0x8] == 0xFF && file[0xD] == 0xFF) {
+				charW = file[0x4] << 8 | file[0x5];
+				charH = file[0x6] << 8 | file[0x7];
 				charS = charW*charH;
 				charIntCount = (int) Math.ceil(((double)charS)/((double)intBits));
-				minBound = file[0x7] << 24 | file[0x8] << 16 | file[0x9] << 8 | file[0xA];
-				maxBound = file[0xC] << 24 | file[0xD] << 16 | file[0xE] << 8 | file[0xF];
+				minBound = file[0x9] << 24 | file[0xA] << 16 | file[0xB] << 8 | file[0xC];
+				maxBound = file[0xE] << 24 | file[0xF] << 16 | file[0x10] << 8 | file[0x11];
 				if (maxBound <= minBound) {
 					maxBound = 10000; //TODO remove it: temp fix
 				}
 		        rawchars = new boolean[maxBound-minBound][];
-		        int index = 0x10;
+		        int index = 0x12;
 		        while (index < filelength) {
 		        	try {
 			        	int charIndex = file[index] << 8 | file[index+1];

@@ -21,6 +21,10 @@ public interface Function {
 
 	public int getLine();
 	
+	public Function setParent(Function parent);
+	
+	public Function getParent();
+	
 	public void setSmall(boolean small);
 	
 	@Override

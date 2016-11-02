@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.getStringWidth;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 
 import java.util.List;
@@ -14,12 +14,16 @@ import org.warp.picalculator.device.graphicengine.Display;
 import com.rits.cloning.Cloner;
 
 public abstract class FunctionTwoValues implements Function {
-	public FunctionTwoValues(Function value1, Function value2) {
-		setVariable1(value1);
-		setVariable2(value2);
+	public FunctionTwoValues(Function parent, Function value1, Function value2) {
+		this.parent = parent;
+		variable1 = value1;
+		variable2 = value2;
 	}
 
-	protected Function variable1 = (Function) new Number(Rational.ZERO);
+	protected Function parent;
+	
+	protected Function variable1 = (Function) new Number(null, Rational.ZERO);
+	protected Function variable2 = (Function) new Number(null, Rational.ZERO);
 	protected int width;
 	protected int height;
 	protected int line;
@@ -30,16 +34,25 @@ public abstract class FunctionTwoValues implements Function {
 	}
 
 	public void setVariable1(Function value) {
+		value.setParent(this);
 		variable1 = value;
 	}
 
-	protected Function variable2 = (Function) new Number(Rational.ZERO);
+	public Function getParent() {
+		return parent;
+	}
+
+	public Function setParent(Function value) {
+		parent = value;
+		return this;
+	}
 
 	public Function getVariable2() {
 		return variable2;
 	}
 
 	public void setVariable2(Function value) {
+		value.setParent(this);
 		variable2 = value;
 	}
 
@@ -76,9 +89,9 @@ public abstract class FunctionTwoValues implements Function {
 		variable1.draw(dx + x, ln - variable1.getLine() + y);
 		dx += 1+variable1.getWidth();
 		if (drawSignum()) {
-			Display.Render.setFont(Utils.getFont(small));
+			Display.Render.glSetFont(Utils.getFont(small));
 			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-			dx += getStringWidth(getSymbol());
+			dx += glGetStringWidth(getSymbol());
 		}
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
@@ -124,7 +137,7 @@ public abstract class FunctionTwoValues implements Function {
 	}	
 
 	protected int calcWidth() {
-		return variable1.getWidth() + 1 + (drawSignum() ? getStringWidth(getSymbol()) : 0) + variable2.getWidth();
+		return variable1.getWidth() + 1 + (drawSignum() ? glGetStringWidth(getSymbol()) : 0) + variable2.getWidth();
 	}
 	
 	protected int calcHeight() {

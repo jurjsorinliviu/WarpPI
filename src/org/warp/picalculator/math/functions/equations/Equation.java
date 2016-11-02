@@ -19,8 +19,8 @@ import com.rits.cloning.Cloner;
 
 public class Equation extends FunctionTwoValues {
 
-	public Equation(Function value1, Function value2) {
-		super(value1,value2);
+	public Equation(Function parent, Function value1, Function value2) {
+		super(parent, value1,value2);
 	}
 
 	@Override
@@ -46,7 +46,10 @@ public class Equation extends FunctionTwoValues {
 			if (((Number)variable2).getTerm().isBigInteger(false) && ((Number)variable2).getTerm().toBigInteger(false).compareTo(new BigInteger("0")) == 0) {
 				result.add(this);
 			} else {
-				result.add(new Equation(new Subtraction(variable1, variable2), new Number("0")));
+				Equation e = new Equation(this.parent, null, null);
+				e.setVariable1(new Subtraction(e, variable1, variable2));
+				e.setVariable2(new Number(e, "0"));
+				result.add(e);
 			}
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
@@ -79,7 +82,7 @@ public class Equation extends FunctionTwoValues {
 				if (cur2 >= size1) cur2 = 0;
 			}
 			for (Function[] f : results) {
-				result.add(new Equation(f[0], f[1]));
+				result.add(new Equation(this.parent, f[0], f[1]));
 			}
 		}
 		return result;

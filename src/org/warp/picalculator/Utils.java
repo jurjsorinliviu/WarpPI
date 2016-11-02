@@ -2,6 +2,8 @@ package org.warp.picalculator;
 
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
+import com.rits.cloning.Cloner;
+
 import java.awt.Font;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,6 +46,8 @@ public class Utils {
 
 	public static boolean debugOn;
 
+	public static Cloner cloner = new Cloner();
+	
 	public static final class DebugStream extends StringWriter {
 
 		public void println(String str) {
@@ -68,13 +72,30 @@ public class Utils {
 		return contains;
 	}
 
+	private static final String[] regexNormalSymbols = new String[]{"\\", ".", "[", "]", "{", "}", "(", ")", "*", "+", "-", "?", "^", "$", "|"};
+	
 	public static String ArrayToRegex(String[] array) {
 		String regex = null;
 		for (String symbol : array) {
-			if (regex != null) {
-				regex += "|\\" + symbol;
+			boolean contained = false;
+			for (String smb : regexNormalSymbols) {
+				if (smb.equals(symbol)) {
+					contained = true;
+					break;
+				}
+			}
+			if (contained) {
+				if (regex != null) {
+					regex += "|\\" + symbol;
+				} else {
+					regex = "\\" + symbol;
+				}
 			} else {
-				regex = "\\" + symbol;
+				if (regex != null) {
+					regex += "|" + symbol;
+				} else {
+					regex = symbol;
+				}
 			}
 		}
 		return regex;
@@ -99,7 +120,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsSumsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
@@ -118,7 +139,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
@@ -220,7 +241,7 @@ public class Utils {
 
 	public static boolean areThereEmptySums(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction) {
+			if (fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction) {
 				if (((FunctionTwoValues) fl.get(i)).getVariable1() == null && ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
 					return true;
 				}
@@ -358,17 +379,21 @@ public class Utils {
 	}
 
 	public static final RAWFont getFont(boolean small, boolean zoomed) {
+		return PIDisplay.fonts[getFontIndex(small, zoomed)];
+	}
+
+	public static final int getFontIndex(boolean small, boolean zoomed) {
 		if (small) {
 			if (zoomed) {
-				return PIDisplay.fonts[3];
+				return 3;
 			} else {
-				return PIDisplay.fonts[1];
+				return 1;
 			}
 		} else {
 			if (zoomed) {
-				return PIDisplay.fonts[2];
+				return 2;
 			} else {
-				return PIDisplay.fonts[0];
+				return 0;
 			}
 		}
 	}

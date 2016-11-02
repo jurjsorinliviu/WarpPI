@@ -7,11 +7,13 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.rules.FractionsRule4;
+import org.warp.picalculator.math.rules.FractionsRule5;
 
 public class Power extends FunctionTwoValues {
 
-	public Power(Function value1, Function value2) {
-		super(value1, value2);
+	public Power(Function parent, Function value1, Function value2) {
+		super(parent, value1, value2);
 	}
 
 	@Override
@@ -22,8 +24,13 @@ public class Power extends FunctionTwoValues {
 	@Override
 	protected boolean isSolvable() throws Error {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
+			if (((Number)variable2).getTerm().hasVariables()) {
+				return false;
+			}
 			return true;
 		}
+		if (FractionsRule4.compare(this)) return true;
+		if (FractionsRule5.compare(this)) return true;
 		return false;
 	}
 	
@@ -43,8 +50,12 @@ public class Power extends FunctionTwoValues {
 	@Override
 	public List<Function> solveOneStep() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable1.isSolved() & variable2.isSolved()) {
+		if (variable1 instanceof Number & variable2 instanceof Number) {
 			result.add((Function) ((Number)variable1).pow((Number)variable2));
+		} else if (FractionsRule4.compare(this)) {
+			result.addAll(FractionsRule4.execute(this));
+		} else if (FractionsRule5.compare(this)) {
+			result.addAll(FractionsRule5.execute(this));
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
 			List<Function> l2 = new ArrayList<Function>();
@@ -62,7 +73,7 @@ public class Power extends FunctionTwoValues {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(new Power((Function)f[0], (Function)f[1]));
+				result.add(new Power(this.parent, (Function)f[0], (Function)f[1]));
 			}
 		}
 		return result;

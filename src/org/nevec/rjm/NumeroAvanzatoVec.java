@@ -512,6 +512,17 @@ public class NumeroAvanzatoVec implements Comparable<NumeroAvanzatoVec> {
 		return (this.terms.size() <= 1);
 	}
 
+
+
+	public boolean hasVariables() {
+		for (NumeroAvanzato s : terms) {
+			if ((s.getVariableX().count() | s.getVariableY().count() | s.getVariableZ().count()) != 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * True if the value is BigInteger. Equivalent to the indication whether a
 	 * conversion to a BigInteger can be exact.

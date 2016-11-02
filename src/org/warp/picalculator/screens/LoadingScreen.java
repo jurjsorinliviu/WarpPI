@@ -69,7 +69,7 @@ public class LoadingScreen extends Screen {
 
 	@Override
 	public void render() {
-		setFont(fonts[2]);
+		glSetFont(fonts[2]);
 		colore(1.0f, 1.0f, 1.0f, 1.0f);
 		glDrawStringCenter((Main.screenSize[0] / 2) - 1,(int) ((Main.screenSize[1]/ 2) - 25 + loadingTextTranslation), "ANDREA CAVALLI'S CALCULATOR");
 		colore(1.0f, 1.0f, 1.0f, 1.0f);
@@ -81,9 +81,9 @@ public class LoadingScreen extends Screen {
 		colore(1.0f, 0.5f, 0.0f, 1.0f);
 		glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1]/ 2) - 25 + loadingTextTranslation), "ANDREA CAVALLI'S CALCULATOR");
 		colore(0.0f, 0.0f, 0.0f, 0.75f);
-		setFont(fonts[0]);
+		glSetFont(fonts[0]);
 		glDrawStringCenter((Main.screenSize[0] / 2), (Main.screenSize[1]/ 2) + 11, "LOADING");
-		setFont(fonts[1]);
+		glSetFont(fonts[1]);
 		colore(0.0f, 0.0f, 0.0f, 0.5f);
 		glDrawStringCenter((Main.screenSize[0] / 2), (Main.screenSize[1]/ 2) + 22, "PLEASE WAIT...");
 	

@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.getStringWidth;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3f;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glFillRect;
@@ -25,33 +25,40 @@ import com.rits.cloning.Cloner;
 
 public class Number implements Function {
 
+	private Function parent;
 	protected NumeroAvanzatoVec term = NumeroAvanzatoVec.ZERO;
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 
-	public Number(NumeroAvanzatoVec val) {
+	public Number(Function parent, NumeroAvanzatoVec val) {
+		this.parent = parent;
 		term = val;
 	}
 
-	public Number(String s) throws Error {
+	public Number(Function parent, String s) throws Error {
+		this.parent = parent;
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(Utils.getRational(s), Rational.ONE));
 	}
 
-	public Number(Rational r) {
+	public Number(Function parent, Rational r) {
+		this.parent = parent;
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(r, Rational.ONE));
 	}
 
-	public Number(BigInteger r) {
+	public Number(Function parent, BigInteger r) {
+		this.parent = parent;
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(new Rational(r, BigInteger.ONE), Rational.ONE));
 	}
 
-	public Number(BigDecimal r) {
+	public Number(Function parent, BigDecimal r) {
+		this.parent = parent;
 		term = new NumeroAvanzatoVec(new NumeroAvanzato(Utils.getRational(r), Rational.ONE));
 	}
 
-	public Number(NumeroAvanzato numeroAvanzato) {
+	public Number(Function parent, NumeroAvanzato numeroAvanzato) {
+		this.parent = parent;
 		term = new NumeroAvanzatoVec(numeroAvanzato);
 	}
 
@@ -76,25 +83,25 @@ public class Number implements Function {
 	}
 
 	public Number add(Number f) throws Error {
-		Number ret = new Number(getTerm().add(f.getTerm()));
+		Number ret = new Number(this.parent, getTerm().add(f.getTerm()));
 		return ret;
 	}
 
 	public Number multiply(Number f) throws Error {
-		Number ret = new Number(getTerm().multiply(f.getTerm()));
+		Number ret = new Number(this.parent, getTerm().multiply(f.getTerm()));
 		return ret;
 	}
 
 	public Number divide(Number f) throws Error {
-		Number ret = new Number(getTerm().divide(f.getTerm()));
+		Number ret = new Number(this.parent, getTerm().divide(f.getTerm()));
 		return ret;
 	}
 
 	public Number pow(Number f) throws Error {
-		Number ret = new Number(NumeroAvanzatoVec.ONE);
+		Number ret = new Number(this.parent, NumeroAvanzatoVec.ONE);
 		if (f.getTerm().isBigInteger(true)) {
 			for (BigInteger i = BigInteger.ZERO; i.compareTo(f.getTerm().toBigInteger(true)) < 0; i = i.add(BigInteger.ONE)) {
-				ret = ret.multiply(new Number(getTerm()));
+				ret = ret.multiply(new Number(this.parent, getTerm()));
 			}
 		} else if (getTerm().isRational(true) && f.getTerm().isRational(false) && f.getTerm().toRational(false).compareTo(Rational.HALF) == 0) {
 			// Rational originalExponent = f.getTerm().toRational();
@@ -105,9 +112,9 @@ public class Number implements Function {
 			na = na.setVariableX(getTerm().toNumeroAvanzato().getVariableY().multiply(getTerm().toNumeroAvanzato().getVariableZ()));
 			na = na.setVariableY(new Variables());
 			na = na.setVariableZ(getTerm().toNumeroAvanzato().getVariableZ());
-			ret = new Number(na);
+			ret = new Number(this.parent, na);
 		} else {
-			ret = new Number(BigDecimalMath.pow(getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)), f.getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2))));
+			ret = new Number(this.parent, BigDecimalMath.pow(getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)), f.getTerm().BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2))));
 		}
 		return ret;
 	}
@@ -130,7 +137,7 @@ public class Number implements Function {
 	public void draw(int x, int y) {
 		
 		if (getTerm().isBigInteger(false)) {
-			Display.Render.setFont(Utils.getFont(small));
+			Display.Render.glSetFont(Utils.getFont(small));
 			String t = toString();
 
 			if (t.startsWith("-")) {
@@ -143,7 +150,7 @@ public class Number implements Function {
 			glDrawStringLeft(x+1, y, t);
 		} else if (getTerm().isRational(false)) {
 			small = true;
-			Display.Render.setFont(Utils.getFont(true));
+			Display.Render.glSetFont(Utils.getFont(true));
 			Rational r = getTerm().toRational(false);
 			boolean minus = false;
 			int minusw = 0;
@@ -153,9 +160,9 @@ public class Number implements Function {
 				minus = true;
 				numerator = numerator.substring(1);
 			}
-			int w1 = getStringWidth(numerator);
+			int w1 = glGetStringWidth(numerator);
 			int h1 = Utils.getFontHeight(small);
-			int w2 = getStringWidth(r.denom().toString());
+			int w2 = glGetStringWidth(r.denom().toString());
 			int maxw;
 			if (w1 > w2) {
 				maxw = 1 + w1 + 1;
@@ -164,7 +171,7 @@ public class Number implements Function {
 			}
 			if (minus) {
 				if (drawMinus) {
-					minusw = getStringWidth("-");
+					minusw = glGetStringWidth("-");
 					minush = Utils.getFontHeight(small);
 					maxw += minusw;
 					glDrawStringLeft(x, y + h1 + 1 + 1 - (minush / 2), "-");
@@ -176,7 +183,7 @@ public class Number implements Function {
 			glFillRect(x + minusw + 1, y + h1 + 1, maxw, 1);
 		} else if (getTerm().toFancyString().contains("/")) {
 			small = true;
-			Display.Render.setFont(Utils.getFont(true));
+			Display.Render.glSetFont(Utils.getFont(true));
 			String r = getTerm().toFancyString();
 			String numer = r.substring(0, r.lastIndexOf("/"));
 			String denom = r.substring(numer.length() + 1, r.length());
@@ -188,9 +195,9 @@ public class Number implements Function {
 				minus = true;
 				numer = numer.substring(1);
 			}
-			int w1 = getStringWidth(numer.toString());
+			int w1 = glGetStringWidth(numer.toString());
 			int h1 = Utils.getFontHeight(small);
-			int w2 = getStringWidth(denom.toString());
+			int w2 = glGetStringWidth(denom.toString());
 			int maxw;
 			if (w1 > w2) {
 				maxw = w1 + 2;
@@ -201,7 +208,7 @@ public class Number implements Function {
 			int minush = 0;
 			if (minus) {
 				if (drawMinus) {
-					minusw = getStringWidth("-") + 1;
+					minusw = glGetStringWidth("-") + 1;
 					minush = Utils.getFontHeight(small);
 					maxw += minusw;
 					glDrawStringLeft(x, y + h1 + 1 + 1 - (minush / 2), "-");
@@ -212,7 +219,7 @@ public class Number implements Function {
 			glColor3f(0, 0, 0);
 			glFillRect(x + minusw + 1, y + h1 + 1, maxw, 1);
 		} else {
-			Display.Render.setFont(Utils.getFont(small));
+			Display.Render.glSetFont(Utils.getFont(small));
 			String r = getTerm().toFancyString();
 
 			if (r.startsWith("-")) {
@@ -274,7 +281,7 @@ public class Number implements Function {
 					t = t.substring(1);
 				}
 			}
-			return getStringWidth(t)+1;
+			return glGetStringWidth(t)+1;
 		} else if (getTerm().isRational(false)) {
 			Rational r = getTerm().toRational(false);
 			boolean minus = false;
@@ -283,8 +290,8 @@ public class Number implements Function {
 				minus = true;
 				numerator = numerator.substring(1);
 			}
-			int w1 = getStringWidth(numerator);
-			int w2 = getStringWidth(r.denom().toString());
+			int w1 = glGetStringWidth(numerator);
+			int w2 = glGetStringWidth(r.denom().toString());
 			int maxw;
 			if (w1 > w2) {
 				maxw = 1 + w1 + 1;
@@ -293,7 +300,7 @@ public class Number implements Function {
 			}
 			if (minus) {
 				if (drawMinus) {
-					maxw += getStringWidth("-");
+					maxw += glGetStringWidth("-");
 				}
 			}
 			return maxw + 1;
@@ -309,8 +316,8 @@ public class Number implements Function {
 				minus = true;
 				numer = numer.substring(1);
 			}
-			int w1 = getStringWidth(numer.toString());
-			int w2 = getStringWidth(denom.toString());
+			int w1 = glGetStringWidth(numer.toString());
+			int w2 = glGetStringWidth(denom.toString());
 			int maxw;
 			if (w1 > w2) {
 				maxw = w1 + 1;
@@ -319,7 +326,7 @@ public class Number implements Function {
 			}
 			if (minus) {
 				if (drawMinus) {
-					maxw += getStringWidth("-");
+					maxw += glGetStringWidth("-");
 				}
 			}
 			return maxw + 2;
@@ -332,7 +339,7 @@ public class Number implements Function {
 					r = r.substring(1);
 				}
 			}
-			return getStringWidth(r.toString())+1;
+			return glGetStringWidth(r.toString())+1;
 		}
 	}
 
@@ -344,7 +351,7 @@ public class Number implements Function {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public int getLine() {
 		return line;
@@ -397,7 +404,34 @@ public class Number implements Function {
 	
 	@Override
 	public boolean equals(Object o) {
-		return o != null && o.hashCode() == this.hashCode();
+		if (o != null & term != null) {
+			if (o instanceof Number) {
+				NumeroAvanzatoVec nav = ((Number) o).getTerm();
+				if (term.isBigInteger(true) & nav.isBigInteger(true)) {
+					boolean na1 = term.toBigInteger(true).compareTo(BigInteger.ZERO) == 0;
+					boolean na2 = nav.toBigInteger(true).compareTo(BigInteger.ZERO) == 0;
+					if (na1 == na2) {
+						if (na1 == true) {
+							return true;
+						}
+					} else {
+						return false;
+					}
+				}
+				return nav.compareTo(term) == 0;
+			}
+		}
+		return false;
+	}
+
+	public Function setParent(Function value) {
+		parent = value;
+		return this;
+	}
+
+	@Override
+	public Function getParent() {
+		return parent;
 	}
 
 	/*

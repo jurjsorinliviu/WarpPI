@@ -1,9 +1,10 @@
-package org.warp.picalculator.device;
+package org.warp.picalculator.device.graphicengine;
 
+import java.awt.AlphaComposite;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
@@ -11,23 +12,26 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.Keyboard.Key;
-import org.warp.picalculator.device.graphicengine.Display;
 
-public class PIFrame extends JFrame {
+public class Frame extends JFrame {
 	private static final long serialVersionUID = 2945898937634075491L;
 	public CustomCanvas c;
 	public boolean wasResized = false;
 
-	public PIFrame() {
+	public Frame() {
 		c = new CustomCanvas();
-		c.setDoubleBuffered(true);
+		c.setDoubleBuffered(false);
 		this.add(c);
 //		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		Toolkit.getDefaultToolkit().setDynamicLayout(false);
@@ -432,6 +436,8 @@ public class PIFrame extends JFrame {
 		return c.getHeight();
 	}
 
+//	private static ArrayList<Double> mediaValori = new ArrayList<Double>();
+
 	public static class CustomCanvas extends JPanel {
 
 		/**
@@ -440,16 +446,24 @@ public class PIFrame extends JFrame {
 		private static final long serialVersionUID = 605243927485370885L;
 
 		@Override
-		public void paintComponent(Graphics graphics) {
-			Display.update(graphics, forcerefresh);
-		}
+		public void paintComponent(Graphics g) {
+//			long time1 = System.nanoTime();
+			PIDisplay.INSTANCE.refresh();
 
-		@Override
-		public void repaint() {
-			forcerefresh = false;
-			super.repaint();
+	        final int[] a = ((DataBufferInt) Display.g.getRaster().getDataBuffer()).getData();
+//		        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
+	        Display.canvas2d = a;
+			g.clearRect(0, 0, Display.size[0], Display.size[1]);
+			g.drawImage(Display.g, 0, 0, null);
+//			long time2 = System.nanoTime();
+//			double timeDelta = ((double)(time2-time1))/1000000000d;
+//			double mediaAttuale = timeDelta;
+//			mediaValori.add(mediaAttuale);
+//			double somma = 0;
+//			for (Double val : mediaValori) {
+//				somma+=val;
+//			}
+//			System.out.println(somma/((double)mediaValori.size()));
 		}
-
-		public boolean forcerefresh = false;
 	}
 }
