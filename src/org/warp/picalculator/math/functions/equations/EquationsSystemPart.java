@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions.equations;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3f;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3i;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
 import java.util.ArrayList;
@@ -55,7 +55,6 @@ public class EquationsSystemPart extends AnteriorFunction {
 		final int spazioSotto = (h - 3 - 2) / 2 + paddingTop;
 		final int spazioSopra = h - spazioSotto;
 		variable.draw(x + 5, y + paddingTop);
-		glColor3f(0, 0, 0);
 		glDrawLine(x + 2, y + 0, x + 3, y + 0);
 		glDrawLine(x + 1, y + 1, x + 1, y + spazioSotto / 2);
 		glDrawLine(x + 2, y + spazioSotto / 2 + 1, x + 2, y + spazioSotto - 1);

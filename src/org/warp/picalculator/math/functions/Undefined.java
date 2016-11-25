@@ -23,7 +23,7 @@ public class Undefined implements Function {
 	}
 
 	@Override
-	public boolean isSolved() throws Error {
+	public boolean isSolved() {
 		return true;
 	}
 
@@ -33,7 +33,7 @@ public class Undefined implements Function {
 	
 	@Override
 	public void generateGraphics() {
-		width = Display.Render.glGetStringWidth("UNDEFINED");
+		width = Display.Render.glGetStringWidth(Utils.getFont(small), "UNDEFINED");
 		height = Utils.getFontHeight(small);
 		line = height/2;
 	}
@@ -73,6 +73,14 @@ public class Undefined implements Function {
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Undefined) {
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -3,14 +3,11 @@ package org.warp.picalculator.math.functions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nevec.rjm.NumeroAvanzatoVec;
-import org.nevec.rjm.Rational;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.rules.NumberRule1;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.ExpandRule5;
 
@@ -31,12 +28,12 @@ public class Negative extends AnteriorFunction {
 		variable.generateGraphics();
 		
 		height = getVariable().getHeight();
-		width = Display.Render.glGetStringWidth("-") + getVariable().getWidth();
+		width = Display.Render.glGetStringWidth(Utils.getFont(small), "-") + getVariable().getWidth();
 		line = getVariable().getLine();
 	}
 
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (variable instanceof Number) return true;
 		if (ExpandRule1.compare(this)) return true;
 		if (ExpandRule5.compare(this)) return true;
@@ -92,5 +89,13 @@ public class Negative extends AnteriorFunction {
 	@Override
 	public int getLine() {
 		return line;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Negative) {
+			return ((Negative)o).variable.equals(variable);
+		}
+		return false;
 	}
 }

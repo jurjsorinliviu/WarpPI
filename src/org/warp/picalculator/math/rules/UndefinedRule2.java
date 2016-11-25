@@ -1,13 +1,12 @@
 package org.warp.picalculator.math.rules;
 
+import java.util.ArrayList;
+
+import org.warp.picalculator.Error;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Undefined;
-
-import java.util.ArrayList;
-
-import org.warp.picalculator.Error;
 
 /**
  * Undefined rule<br>
@@ -18,18 +17,12 @@ import org.warp.picalculator.Error;
 public class UndefinedRule2 {
 
 	public static boolean compare(Function f) {
-		try {
-			if (f instanceof Division) {
-				Division fnc = (Division) f;
-				if (fnc.getVariable2() instanceof Number) {
-					Number numb = (Number) fnc.getVariable2();
-					if (numb.equals(new Number(null, "0"))) {
-						return true;
-					}
-				}
+		Division fnc = (Division) f;
+		if (fnc.getVariable2() instanceof Number) {
+			Number numb = (Number) fnc.getVariable2();
+			if (numb.equals(new Number(null, 0))) {
+				return true;
 			}
-		} catch (Error e) {
-			e.printStackTrace();
 		}
 		return false;
 	}

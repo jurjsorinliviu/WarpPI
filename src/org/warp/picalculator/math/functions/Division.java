@@ -1,26 +1,21 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3f;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3i;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glFillRect;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nevec.rjm.NumeroAvanzatoVec;
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.Display.Render;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
 import org.warp.picalculator.math.rules.FractionsRule2;
 import org.warp.picalculator.math.rules.FractionsRule3;
-import org.warp.picalculator.math.rules.NumberRule1;
-import org.warp.picalculator.math.rules.NumberRule2;
 import org.warp.picalculator.math.rules.UndefinedRule2;
 
 public class Division extends FunctionTwoValues {
@@ -36,7 +31,7 @@ public class Division extends FunctionTwoValues {
 
 
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (FractionsRule1.compare(this)) return true;
 		if (FractionsRule2.compare(this)) return true;
 		if (FractionsRule3.compare(this)) return true;
@@ -97,10 +92,8 @@ public class Division extends FunctionTwoValues {
 
 	@Override
 	public void generateGraphics() {
-		variable1.setSmall(true);
 		variable1.generateGraphics();
 		
-		variable2.setSmall(true);
 		variable2.generateGraphics();
 		
 		width = calcWidth();
@@ -120,7 +113,7 @@ public class Division extends FunctionTwoValues {
 		int minusw = 0;
 		int minush = 0;
 		String numerator = ((Function) var1).toString();
-		if (numerator.startsWith("-") && ((Function) var1) instanceof Number && ((Number) var1).term.isBigInteger(true)) {
+		if (numerator.startsWith("-") && ((Function) var1) instanceof Number) {
 			minus = true;
 			numerator = numerator.substring(1);
 		}
@@ -128,8 +121,8 @@ public class Division extends FunctionTwoValues {
 		int h1 = 0;
 		Display.Render.glSetFont(Utils.getFont(small));
 		if (minus) {
-			w1 = glGetStringWidth(numerator);
-			h1 = Render.glGetCurrentFontHeight();
+			w1 = glGetStringWidth(Utils.getFont(small), numerator);
+			h1 = Utils.getFont(small).charH;
 		} else {
 			w1 = ((Function) var1).getWidth();
 			h1 = ((Function) var1).getHeight();
@@ -142,15 +135,14 @@ public class Division extends FunctionTwoValues {
 			maxw = 1 + w2;
 		}
 		if (minus && drawMinus) {
-			minusw = glGetStringWidth("-") + 1;
-			minush = Render.glGetCurrentFontHeight();
+			minusw = glGetStringWidth(Utils.getFont(small), "-") + 1;
+			minush = Utils.getFont(small).charH;
 			glDrawStringLeft(x+1, y + h1 + 1 + 1 - (minush / 2), "-");
 			glDrawStringLeft((int) (x+1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
 		} else {
 			((Function) var1).draw((int) (x+1 + minusw + (maxw - w1) / 2d), y);
 		}
 		((Function) var2).draw((int) (x+1 + minusw + (maxw - w2) / 2d), y + h1 + 1 + 1 + 1);
-		glColor3f(0, 0, 0);
 		glFillRect(x+1+ minusw, y + h1 + 1, maxw, 1);
 	}
 
@@ -164,7 +156,7 @@ public class Division extends FunctionTwoValues {
 
 		boolean minus = false;
 		String numerator = variable1.toString();
-		if (numerator.startsWith("-") && variable1 instanceof Number && ((Number) variable1).term.isBigInteger(true)) {
+		if (numerator.startsWith("-") && variable1 instanceof Number) {
 			minus = true;
 			numerator = numerator.substring(1);
 		}
@@ -192,13 +184,13 @@ public class Division extends FunctionTwoValues {
 	protected int calcWidth() {
 		boolean minus = false;
 		String numerator = variable1.toString();
-		if (numerator.startsWith("-") && variable1 instanceof Number && ((Number) variable1).term.isBigInteger(true)) {
+		if (numerator.startsWith("-") && variable1 instanceof Number) {
 			minus = true;
 			numerator = numerator.substring(1);
 		}
 		int w1 = 0;
 		if (minus) {
-			w1 = glGetStringWidth(numerator);
+			w1 = glGetStringWidth(Utils.getFont(small), numerator);
 		} else {
 			w1 = variable1.getWidth();
 		}
@@ -210,9 +202,18 @@ public class Division extends FunctionTwoValues {
 			maxw = w2+1;
 		}
 		if (minus && drawMinus) {
-			return 1 + glGetStringWidth("-") + 1 + maxw;
+			return 1 + glGetStringWidth(Utils.getFont(small), "-") + 1 + maxw;
 		} else {
 			return 1 + maxw;
 		}
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Division) {
+			FunctionTwoValues f = (FunctionTwoValues) o;
+			return variable1.equals(f.variable1) && variable2.equals(f.variable2);
+		}
+		return false;
 	}
 }

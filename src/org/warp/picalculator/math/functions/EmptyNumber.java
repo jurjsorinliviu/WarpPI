@@ -3,10 +3,13 @@ package org.warp.picalculator.math.functions;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
 
 public class EmptyNumber implements Function {
 
+	public static EmptyNumber emptyNumber = new EmptyNumber();
+	
 	@Override
 	public String getSymbol() {
 		return " ";
@@ -19,7 +22,7 @@ public class EmptyNumber implements Function {
 	}
 
 	@Override
-	public boolean isSolved() throws Error {
+	public boolean isSolved() {
 		return false;
 	}
 
@@ -30,22 +33,22 @@ public class EmptyNumber implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		Display.Render.glDrawStringLeft(x, y, " ");
+		Display.Render.glDrawStringLeft(x, y, "␀");
 	}
 
 	@Override
 	public int getWidth() {
-		return Display.Render.glGetStringWidth(" ");
+		return Display.Render.glGetStringWidth(Utils.getFont(small), "␀");
 	}
 
 	@Override
 	public int getHeight() {
-		return Display.Render.glGetCurrentFontHeight();
+		return Utils.getFont(small).charH;
 	}
 
 	@Override
 	public int getLine() {
-		return Display.Render.glGetCurrentFontHeight()/2;
+		return Utils.getFont(small).charH/2;
 	}
 
 	@Override
@@ -58,9 +61,15 @@ public class EmptyNumber implements Function {
 		return null;
 	}
 
+	private boolean small = false;
+	
 	@Override
 	public void setSmall(boolean small) {
-
+		this.small = small;
 	}
-
+	
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof EmptyNumber;
+	}
 }

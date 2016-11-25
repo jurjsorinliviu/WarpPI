@@ -1,14 +1,11 @@
 package org.warp.picalculator.math.rules;
 
-import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Number;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.functions.Number;
 
 /**
  * Fractions rule<br>
@@ -19,18 +16,12 @@ import org.warp.picalculator.Error;
 public class FractionsRule2 {
 
 	public static boolean compare(Function f) {
-		try {
-			if (f instanceof Division) {
-				Division fnc = (Division) f;
-				if (fnc.getVariable2() instanceof Number) {
-					Number numb = (Number) fnc.getVariable2();
-					if (numb.equals(new Number(null, "1"))) {
-						return true;
-					}
-				}
+		Division fnc = (Division) f;
+		if (fnc.getVariable2() instanceof Number) {
+			Number numb = (Number) fnc.getVariable2();
+			if (numb.equals(new Number(null, 1))) {
+				return true;
 			}
-		} catch (Error e) {
-			e.printStackTrace();
 		}
 		return false;
 	}

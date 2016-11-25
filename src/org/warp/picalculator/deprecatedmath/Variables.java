@@ -1,4 +1,4 @@
-package org.warp.picalculator.math;
+package org.warp.picalculator.deprecatedmath;
 
 import java.math.BigInteger;
 import java.util.Comparator;

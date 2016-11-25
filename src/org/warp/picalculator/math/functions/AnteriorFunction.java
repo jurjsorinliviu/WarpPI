@@ -1,14 +1,13 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
+import java.math.BigInteger;
 import java.util.List;
 
-import org.nevec.rjm.NumeroAvanzatoVec;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
 
 import com.rits.cloning.Cloner;
@@ -20,7 +19,7 @@ public abstract class AnteriorFunction implements Function {
 	}
 
 	protected Function parent;
-	protected Function variable = new Number(null, NumeroAvanzatoVec.ZERO);
+	protected Function variable = new Number(null, BigInteger.ZERO);
 	protected int width;
 	protected int height;
 	protected int line;
@@ -50,18 +49,18 @@ public abstract class AnteriorFunction implements Function {
 	public abstract List<Function> solveOneStep() throws Error;
 	
 	@Override
-	public boolean isSolved() throws Error {
+	public boolean isSolved() {
 		return variable.isSolved() ? !isSolvable() : false;
 	}
 	
-	protected abstract boolean isSolvable() throws Error;
+	protected abstract boolean isSolvable();
 	
 	@Override
 	public void generateGraphics() {
 		variable.setSmall(small);
 		variable.generateGraphics();
 		
-		width = glGetStringWidth(getSymbol()) + 1 + getVariable().getWidth();
+		width = glGetStringWidth(Utils.getFont(small), getSymbol()) + 1 + getVariable().getWidth();
 		height = variable.getHeight();
 		line = variable.getLine();
 	}
@@ -69,7 +68,7 @@ public abstract class AnteriorFunction implements Function {
 	@Override
 	public void draw(int x, int y) {
 		float h1 = getVariable().getHeight();
-		int wsegno = glGetStringWidth(getSymbol());
+		int wsegno = glGetStringWidth(Utils.getFont(small), getSymbol());
 		float hsegno = Utils.getFontHeight(small);
 		float maxh = getHeight();
 		Display.Render.glSetFont(Utils.getFont(small));
@@ -97,7 +96,11 @@ public abstract class AnteriorFunction implements Function {
 	public String toString() {
 //		try {
 //			return solve().toString();
-		return "TODO: fare una nuova alternativa a solve().toString()";
+		String val1 = "null";
+		if (variable != null) {
+			val1 = variable.toString();
+		}
+		return getSymbol()+val1;
 //		} catch (Error e) {
 //			return e.id.toString();
 //		}
@@ -120,7 +123,5 @@ public abstract class AnteriorFunction implements Function {
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		return o != null && o.hashCode() == this.hashCode();
-	}
+	public abstract boolean equals(Object o);
 }

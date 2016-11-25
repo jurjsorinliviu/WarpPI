@@ -1,13 +1,11 @@
 package org.warp.picalculator.math.rules;
 
+import java.util.ArrayList;
+
+import org.warp.picalculator.Error;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.warp.picalculator.Error;
 
 /**
  * Number rule<br>
@@ -18,24 +16,18 @@ import org.warp.picalculator.Error;
 public class NumberRule2 {
 
 	public static boolean compare(Function f) {
-		try {
-			if (f instanceof Multiplication) {
-				Multiplication mult = (Multiplication) f;
-				if (mult.getVariable1() instanceof Number) {
-					Number numb = (Number) mult.getVariable1();
-					if (numb.equals(new Number(null, "1"))) {
-						return true;
-					}
-				}
-				if (mult.getVariable2() instanceof Number) {
-					Number numb = (Number) mult.getVariable2();
-					if (numb.equals(new Number(null, "1"))) {
-						return true;
-					}
-				}
+		Multiplication mult = (Multiplication) f;
+		if (mult.getVariable1() instanceof Number) {
+			Number numb = (Number) mult.getVariable1();
+			if (numb.equals(new Number(null, 1))) {
+				return true;
 			}
-		} catch (Error e) {
-			e.printStackTrace();
+		}
+		if (mult.getVariable2() instanceof Number) {
+			Number numb = (Number) mult.getVariable2();
+			if (numb.equals(new Number(null, 1))) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -47,14 +39,14 @@ public class NumberRule2 {
 		Multiplication mult = (Multiplication) f;
 		if (aFound == false & mult.getVariable1() instanceof Number) {
 			Number numb = (Number) mult.getVariable1();
-			if (numb.equals(new Number(null, "1"))) {
+			if (numb.equals(new Number(null, 1))) {
 				a = mult.getVariable2();
 				aFound = true;
 			}
 		}
 		if (aFound == false && mult.getVariable2() instanceof Number) {
 			Number numb = (Number) mult.getVariable2();
-			if (numb.equals(new Number(null, "1"))) {
+			if (numb.equals(new Number(null, 1))) {
 				a = mult.getVariable1();
 				aFound = true;
 			}

@@ -1,6 +1,5 @@
 package org.warp.picalculator.screens;
 
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.graphicengine.Screen;
 

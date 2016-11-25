@@ -12,7 +12,6 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.RAWFont;
 import org.warp.picalculator.device.graphicengine.Screen;
-import org.warp.picalculator.device.graphicengine.Display.Startable;
 import org.warp.picalculator.math.Calculator;
 
 import com.pi4j.wiringpi.Gpio;
@@ -31,13 +30,13 @@ public final class PIDisplay {
 	public static PIDisplay INSTANCE;
 	private static float brightness;
 
-	private int[] skin;
-	private int[] skinSize;
+	private static int[] skin;
+	private static int[] skinSize;
 	public static RAWFont[] fonts;
 
 	public static String error = null;
 	public String[] errorStackTrace = null;
-	public final static int[] glyphsHeight = new int[] { 9, 6, 18, 12 };
+	public final static int[] glyphsHeight = new int[] { 9, 6, 12, 9 };
 
 	public static Screen screen;
 	public static String displayDebugString = "";
@@ -153,7 +152,6 @@ public final class PIDisplay {
 				Calculator.currentSession += 1;
 			}
 			PIDisplay.screen = Calculator.sessions[Calculator.currentSession];
-			Utils.debug.println("Current session: " + Calculator.currentSession);
 		}
 	}
 
@@ -206,9 +204,9 @@ public final class PIDisplay {
 		fonts[1] = new RAWFont();
 		fonts[1].create("small");
 		fonts[2] = new RAWFont();
-		fonts[2].create("big_2x");
+		fonts[2].create("ex");
 		fonts[3] = new RAWFont();
-		fonts[3].create("small_2x");
+		fonts[3].create("big");
 		fonts[4] = new RAWFont();
 		fonts[4].create("32");
 		fonts[5] = new RAWFont();
@@ -220,16 +218,16 @@ public final class PIDisplay {
 		glClear();
 	}
 	
-	public void drawSkinPart(int x, int y, int sx1, int sy1, int sx2, int sy2) {
+	public static void drawSkinPart(int x, int y, int sx1, int sy1, int sx2, int sy2) {
 		glDrawSkin(skinSize[0], skin, x, y, sx1, sy1, sx2, sy2, false);
 	}
 
 	private void draw_status() {
-		glColor3f(204, 231, 212);
+		glColor(0xFFc5c2af);
 		glFillRect(0, 0, Main.screenSize[0], 20);
-		glColor3f(0, 0, 0);
+		glColor3i(0, 0, 0);
 		glDrawLine(0, 20, Main.screenSize[0]-1, 20);
-		glColor3f(0, 0, 0);
+		glColor3i(0, 0, 0);
 		if (Keyboard.shift) {
 			drawSkinPart(2 + 18 * 0, 2, 16 * 2, 16 * 0, 16 + 16 * 2, 16 + 16 * 0);
 		} else {
@@ -306,22 +304,22 @@ public final class PIDisplay {
 	}
 
 	private void draw_world() {
-		glColor3f(255, 255, 255);
+		glColor3i(255, 255, 255);
 
 		if (error != null) {
 			glSetFont(Utils.getFont(false, false));
-			glColor3f(129, 28, 22);
+			glColor3i(129, 28, 22);
 			glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1]- this.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
-			glColor3f(149, 32, 26);
+			glColor3i(149, 32, 26);
 			glDrawStringCenter((Main.screenSize[0] / 2), 22, error);
-			glColor3f(164, 34, 28);
+			glColor3i(164, 34, 28);
 			int i = 22;
 			for (String stackPart : errorStackTrace) {
 				glDrawStringLeft(2, 22 + i, stackPart);
 				i += 11;
 			}
 			glSetFont(fonts[0]);
-			glColor3f(129, 28, 22);
+			glColor3i(129, 28, 22);
 			glDrawStringCenter((Main.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
 		} else {
 			draw_screen();
@@ -353,7 +351,7 @@ public final class PIDisplay {
 
 		screen.beforeRender(dt);
 		
-		if(dt >= 0.03 | screen.mustBeRefreshed()) {
+		if(dt >= 0.03 || screen.mustBeRefreshed()) {
 			draw();
 		}
 
@@ -437,6 +435,6 @@ public final class PIDisplay {
 	
 	public static void colore(float f1, float f2, float f3, float f4) {
 		PIDisplay.INSTANCE.colore = new float[] { f1, f2, f3, f4 };
-		glColor4f((int) (f1 * 255), (int) (f2 * 255), (int) (f3 * 255), (int) (f4 * 255));
+		glColor4i((int) (f1 * 255), (int) (f2 * 255), (int) (f3 * 255), (int) (f4 * 255));
 	}
 }

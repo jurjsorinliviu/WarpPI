@@ -1,16 +1,13 @@
 package org.warp.picalculator.math.rules;
 
-import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.Power;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import org.nevec.rjm.NumeroAvanzato;
-import org.nevec.rjm.NumeroAvanzatoVec;
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Power;
 
 /**
  * Fractions rule<br>
@@ -20,14 +17,12 @@ import org.warp.picalculator.Error;
  */
 public class FractionsRule5 {
 
-	public static boolean compare(Function f) throws Error {
-		if (f instanceof Power) {
-			Power fnc = (Power) f;
-			if (fnc.getVariable1() instanceof Division && fnc.getVariable2() instanceof Number) {
-				Number n2 = (Number) fnc.getVariable2();
-				if (n2.getTerm().compareTo(new NumeroAvanzatoVec(NumeroAvanzato.ZERO)) < 0) {
-					return true;
-				}
+	public static boolean compare(Function f) {
+		Power fnc = (Power) f;
+		if (fnc.getVariable1() instanceof Division && fnc.getVariable2() instanceof Number) {
+			Number n2 = (Number) fnc.getVariable2();
+			if (n2.getTerm().compareTo(BigInteger.ZERO) < 0) {
+				return true;
 			}
 		}
 		return false;

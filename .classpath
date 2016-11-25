@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="org/warp/picalculator/deprecatedmath/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="lib" path="D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4.jar" sourcepath="D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4-sources.jar">

@@ -1,16 +1,19 @@
 package org.warp.picalculator.math.functions;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nevec.rjm.NumeroAvanzato;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.Variable;
-import org.warp.picalculator.math.Variables;
+import org.warp.picalculator.math.rules.ExpandRule1;
+import org.warp.picalculator.math.rules.ExpandRule5;
+import org.warp.picalculator.math.rules.NumberRule3;
+import org.warp.picalculator.math.rules.NumberRule5;
+import org.warp.picalculator.math.rules.VariableRule1;
+import org.warp.picalculator.math.rules.VariableRule2;
+import org.warp.picalculator.math.rules.VariableRule3;
 
 public class Subtraction extends FunctionTwoValues {
 
@@ -24,10 +27,17 @@ public class Subtraction extends FunctionTwoValues {
 	}
 
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
+		if (VariableRule1.compare(this)) return true;
+		if (VariableRule2.compare(this)) return true;
+		if (VariableRule3.compare(this)) return true;
+		if (NumberRule3.compare(this)) return true;
+		if (ExpandRule1.compare(this)) return true;
+		if (ExpandRule5.compare(this)) return true;
+		if (NumberRule5.compare(this)) return true;
 		return false;
 	}
 	
@@ -37,7 +47,21 @@ public class Subtraction extends FunctionTwoValues {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable1.isSolved() & variable2.isSolved()) {
+		if (VariableRule1.compare(this)) {
+			result = VariableRule1.execute(this);
+		} else if (VariableRule2.compare(this)) {
+			result = VariableRule2.execute(this);
+		} else if (VariableRule3.compare(this)) {
+			result = VariableRule3.execute(this);
+		} else if (NumberRule3.compare(this)) {
+			result = NumberRule3.execute(this);
+		} else if (ExpandRule1.compare(this)) {
+			result = ExpandRule1.execute(this);
+		} else if (ExpandRule5.compare(this)) {
+			result = ExpandRule5.execute(this);
+		} else if (NumberRule5.compare(this)) {
+			result = NumberRule5.execute(this);
+		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(this.parent, "-1"))));
 		} else {
 			List<Function> l1 = new ArrayList<Function>();
@@ -61,5 +85,13 @@ public class Subtraction extends FunctionTwoValues {
 		}
 		return result;
 	}
-
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Subtraction) {
+			FunctionTwoValues f = (FunctionTwoValues) o;
+			return variable1.equals(f.variable1) && variable2.equals(f.variable2);
+		}
+		return false;
+	}
 }

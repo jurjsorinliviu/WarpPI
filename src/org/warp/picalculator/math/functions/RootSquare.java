@@ -3,8 +3,7 @@ package org.warp.picalculator.math.functions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nevec.rjm.NumeroAvanzatoVec;
-import org.nevec.rjm.Rational;
+import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
@@ -32,9 +31,9 @@ public class RootSquare extends AnteriorFunction {
 	}
 
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (variable instanceof Number) {
-			if ((((Number)variable).pow(new Number(this.parent, new Rational(1, 2))).getTerm().isBigInteger(true))) {
+			if (BigIntegerMath.isqrt(((Number) variable).term).pow(2).compareTo(((Number) variable).term) == 0) {
 				return true;
 			}
 		}
@@ -50,7 +49,7 @@ public class RootSquare extends AnteriorFunction {
 		if (variable.isSolved()) {
 			try {
 				Number var = (Number) getVariable();
-				result.add(var.pow(new Number(this.parent, new Rational(1, 2))));
+				result.add(new Number(this.getParent(), BigIntegerMath.isqrt(var.term)));
 			} catch(NullPointerException ex) {
 				throw new Error(Errors.ERROR);
 			} catch(NumberFormatException ex) {
@@ -95,5 +94,13 @@ public class RootSquare extends AnteriorFunction {
 	@Override
 	public int getLine() {
 		return line;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof RootSquare) {
+			return ((RootSquare) o).variable.equals(variable);
+		}
+		return false;
 	}
 }

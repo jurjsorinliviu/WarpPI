@@ -1,17 +1,16 @@
 package org.warp.picalculator.math;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.nevec.rjm.NumeroAvanzato;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.PIDisplay;
-import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.Screen;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
@@ -27,6 +26,7 @@ public class Calculator {
 	public static Screen[] sessions = new Screen[5];
 	public static int currentSession = 0;
 	public static boolean haxMode = true;
+	public static boolean surdMode = true;
 
 	public static Function parseString(String string) throws Error {
 		if (string.contains("{")) {
@@ -36,7 +36,7 @@ public class Calculator {
 			String[] parts = string.substring(1).split("\\{");
 			EquationsSystem s = new EquationsSystem(null);
 			for (String part : parts) {
-				s.addVariableToEnd(parseEquationString(part));
+				s.addFunctionToEnd(parseEquationString(part));
 			}
 			return s;
 		} else if (string.contains("=")) {
@@ -51,7 +51,7 @@ public class Calculator {
 		if (parts.length == 1) {
 			Equation e = new Equation(null, null, null);
 			e.setVariable1(new Expression(e, parts[0]));
-			e.setVariable2(new Number(e, NumeroAvanzato.ZERO));
+			e.setVariable2(new Number(e, BigInteger.ZERO));
 			return e;
 		} else if (parts.length == 2) {
 			Equation e = new Equation(null, null, null);
@@ -63,12 +63,12 @@ public class Calculator {
 		}
 	}
 
-	public static void solve(EquationScreen es) throws Error {
-		List<Function> results = new ArrayList<>();
-		List<Function> partialResults = new ArrayList<>();
-		for (Function f : es.f) {
+	public static ArrayList<Function> solveExpression(ArrayList<Function> input) throws Error {
+		ArrayList<Function> results = new ArrayList<>();
+		ArrayList<Function> partialResults = new ArrayList<>();
+		for (Function f : input) {
 			if (f instanceof Equation) {
-				PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(es));
+				throw new IllegalArgumentException("Not an expression!");
 			} else {
 				results.add(f);
 				while (Utils.allSolved(results) == false) {
@@ -85,6 +85,18 @@ public class Calculator {
 				}
 			}
 		}
+		return results;
+	}
+	
+	public static void solve(EquationScreen es) throws Error {
+		for (Function f : es.f) {
+			if (f instanceof Equation) {
+				PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(es));
+				return;
+			}
+		}
+		
+		ArrayList<Function> results = solveExpression(es.f);
 		if (results.size() == 0) {
 			es.resultsCount = 0;
 		} else {
@@ -102,10 +114,10 @@ public class Calculator {
 		}
 	}
 	
-	public static void solve(EquationScreen equationScreen, char letter) throws Error {
+	/*public static void solve(EquationScreen equationScreen, char letter) throws Error {
 		if (Calculator.currentSession == 0 && Calculator.sessions[0] instanceof EquationScreen) {
 			EquationScreen es = (EquationScreen) Calculator.sessions[0];
-			List<Function> f = es.f;
+			ArrayList<Function> f = es.f;
 			if (f instanceof Equation) {
 				List<Function> results = ((Equation)f).solve(letter);
 				Collections.reverse(results);
@@ -120,10 +132,43 @@ public class Calculator {
 				}
 			}
 		}
-	}
+	}*/
 
-	public static void simplify(EquationScreen equationScreen) {
-		
+	public static void simplify(EquationScreen es) throws Error {
+		ArrayList<Function> results = new ArrayList<>();
+		ArrayList<Function> partialResults = new ArrayList<>();
+		for (Function f : es.f2) {
+			if (f instanceof Equation) {
+				PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(es));
+			} else {
+				results.add(f);
+				for (Function itm : results) {
+					if (itm.isSolved() == false) {
+						List<Function> dt = itm.solveOneStep();
+						partialResults.addAll(dt);
+					} else {
+						partialResults.add(itm);
+					}
+				}
+				results = new ArrayList<Function>(partialResults);
+				partialResults.clear();
+			}
+		}
+		if (results.size() == 0) {
+			es.resultsCount = 0;
+		} else {
+			es.resultsCount = results.size();
+			Collections.reverse(results);
+			// add elements to al, including duplicates
+			Set<Function> hs = new LinkedHashSet<>();
+			hs.addAll(results);
+			results.clear();
+			results.addAll(hs);
+			es.f2 = results;
+			for (Function rf : es.f2) {
+				rf.generateGraphics();
+			}
+		}
 	}
 
 }

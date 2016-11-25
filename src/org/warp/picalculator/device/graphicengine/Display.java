@@ -1,10 +1,7 @@
 package org.warp.picalculator.device.graphicengine;
 
 import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
@@ -98,11 +95,11 @@ public class Display {
 	}
 
 	public static class Render {
-		public static int clearcolor = 0xFFCCE7D4;
+		public static int clearcolor = 0xFFc5c2af;
 		public static RAWFont currentFont;
 
-		public static void glColor3f(int r, int gg, int b) {
-			glColor4f(r, gg, b, 255);
+		public static void glColor3i(int r, int gg, int b) {
+			glColor4i(r, gg, b, 255);
 		}
 
 		public static void glColor(int c) {
@@ -113,7 +110,7 @@ public class Display {
 			clearcolor = c & 0xFFFFFFFF;
 		}
 
-		public static void glColor4f(int red, int green, int blue, int alpha) {
+		public static void glColor4i(int red, int green, int blue, int alpha) {
 			color = (alpha << 24) + (red << 16) + (green << 8) + (blue);
 		}
 
@@ -263,27 +260,17 @@ public class Display {
 		}
 
 		public static void glDrawStringCenter(int x, int y, String text) {
-			glDrawStringLeft(x - (glGetStringWidth(text) / 2), y, text);
+			glDrawStringLeft(x - (glGetStringWidth(Display.Render.currentFont, text) / 2), y, text);
 		}
 
 		public static void glDrawStringRight(int x, int y, String text) {
-			glDrawStringLeft(x - glGetStringWidth(text), y, text);
+			glDrawStringLeft(x - glGetStringWidth(Display.Render.currentFont, text), y, text);
 		}
 
 		public static void glSetFont(RAWFont font) {
 			if (currentFont != font) {
 				currentFont = font;
 			}
-		}
-
-		public static int glGetStringWidth(String text) {
-			int w =(currentFont.charW+1)*text.length();
-			if (text.length() > 0) {
-				return w-1;
-			} else {
-				return 0;
-			}
-			// return text.length()*6;
 		}
 
 		public static int glGetStringWidth(RAWFont rf, String text) {
@@ -300,6 +287,7 @@ public class Display {
 			return fm.stringWidth(text);
 		}
 
+		@Deprecated
 		public static int glGetCurrentFontHeight() {
 			return currentFont.charH;
 		}

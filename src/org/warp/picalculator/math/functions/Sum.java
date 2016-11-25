@@ -1,21 +1,24 @@
 package org.warp.picalculator.math.functions;
 
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nevec.rjm.NumeroAvanzato;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.PIDisplay;
-import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.Variable;
-import org.warp.picalculator.math.Variables;
+import org.warp.picalculator.math.rules.NumberRule3;
+import org.warp.picalculator.math.rules.NumberRule5;
+import org.warp.picalculator.math.rules.NumberRule7;
+import org.warp.picalculator.math.rules.SyntaxRule1;
+import org.warp.picalculator.math.rules.SyntaxRule2;
+import org.warp.picalculator.math.rules.VariableRule1;
+import org.warp.picalculator.math.rules.VariableRule2;
+import org.warp.picalculator.math.rules.VariableRule3;
+import org.warp.picalculator.math.rules.methods.SumMethod1;
 
 public class Sum extends FunctionTwoValues {
 
@@ -29,10 +32,18 @@ public class Sum extends FunctionTwoValues {
 	}
 	
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
+		if (SyntaxRule2.compare(this)) return true;
+		if (VariableRule1.compare(this)) return true;
+		if (VariableRule2.compare(this)) return true;
+		if (VariableRule3.compare(this)) return true;
+		if (NumberRule3.compare(this)) return true;
+		if (NumberRule5.compare(this)) return true;
+		if (NumberRule7.compare(this)) return true;
+		if (SumMethod1.compare(this)) return true;
 		return false;
 	}
 
@@ -42,15 +53,31 @@ public class Sum extends FunctionTwoValues {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable1.isSolved() & variable2.isSolved()) {
-			if ((parent == null || parent.getParent() == null) && ((Number)variable1).term.isBigInteger(false) & ((Number)variable2).term.isBigInteger(false)) {
-				if (((Number)variable1).term.toBigInteger(false).compareTo(new BigInteger("2")) == 0 && ((Number)variable2).term.toBigInteger(false).compareTo(new BigInteger("2")) == 0) {
+		if (SyntaxRule2.compare(this)) {
+			result = SyntaxRule2.execute(this);
+		} else if (VariableRule1.compare(this)) {
+			result = VariableRule1.execute(this);
+		} else if (VariableRule2.compare(this)) {
+			result = VariableRule2.execute(this);
+		} else if (VariableRule3.compare(this)) {
+			result = VariableRule3.execute(this);
+		} else if (NumberRule3.compare(this)) {
+			result = NumberRule3.execute(this);
+		} else if (NumberRule5.compare(this)) {
+			result = NumberRule5.execute(this);
+		} else if (NumberRule7.compare(this)) {
+			result = NumberRule7.execute(this);
+		} else if (SumMethod1.compare(this)) {
+			result = SumMethod1.execute(this);
+		} else if (variable1.isSolved() & variable2.isSolved()) {
+			if ((parent == null || parent.getParent() == null)) {
+				if (((Number)variable1).term.compareTo(new BigInteger("2")) == 0 && ((Number)variable2).term.compareTo(new BigInteger("2")) == 0) {
 					result.add(new Joke(Joke.FISH));
 					return result;
-				} else if (((Number)variable1).term.toBigInteger(false).compareTo(new BigInteger("20")) == 0 && ((Number)variable2).term.toBigInteger(false).compareTo(new BigInteger("20")) == 0) {
+				} else if (((Number)variable1).term.compareTo(new BigInteger("20")) == 0 && ((Number)variable2).term.compareTo(new BigInteger("20")) == 0) {
 					result.add(new Joke(Joke.TORNADO));
 					return result;
-				} else if (((Number)variable1).term.toBigInteger(false).compareTo(new BigInteger("29")) == 0 && ((Number)variable2).term.toBigInteger(false).compareTo(new BigInteger("29")) == 0) {
+				} else if (((Number)variable1).term.compareTo(new BigInteger("29")) == 0 && ((Number)variable2).term.compareTo(new BigInteger("29")) == 0) {
 					result.add(new Joke(Joke.SHARKNADO));
 					return result;
 				}
@@ -91,23 +118,6 @@ public class Sum extends FunctionTwoValues {
 		height = calcHeight();
 		line = calcLine();
 	}
-	
-	@Override
-	public void draw(int x, int y) {
-//		glColor3f(127, 127-50+new Random().nextInt(50), 255);
-//		glFillRect(x,y,width,height);
-//		glColor3f(0, 0, 0);
-		
-		int ln = getLine();
-		int dx = 0;
-		variable1.draw(dx + x, ln - variable1.getLine() + y);
-		dx += variable1.getWidth();
-		Display.Render.glSetFont(Utils.getFont(small));
-		dx += 1;
-		glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-		dx += glGetStringWidth(getSymbol());
-		variable2.draw(dx + x, ln - variable2.getLine() + y);
-	}
 
 	@Override
 	public int getWidth() {
@@ -119,7 +129,20 @@ public class Sum extends FunctionTwoValues {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += glGetStringWidth(getSymbol());
+		dx += glGetStringWidth(Utils.getFont(small), getSymbol());
 		return dx += variable2.getWidth();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Sum) {
+			FunctionTwoValues f = (FunctionTwoValues) o;
+			if (variable1.equals(f.variable1) && variable2.equals(f.variable2)) {
+				return true;
+			} else if (variable1.equals(f.variable2) && variable2.equals(f.variable1)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -9,9 +9,9 @@ public interface Function {
 
 	public List<Function> solveOneStep() throws Error;
 
-	public boolean isSolved() throws Error;
+	public boolean isSolved();
 
-	public void generateGraphics();
+	public void generateGraphics() throws NullPointerException;
 
 	public void draw(int x, int y);
 

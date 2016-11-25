@@ -1,21 +1,25 @@
 package org.warp.picalculator.math.functions;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.Variable;
+import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.NumberRule1;
 import org.warp.picalculator.math.rules.NumberRule2;
+import org.warp.picalculator.math.rules.NumberRule6;
+import org.warp.picalculator.math.rules.SyntaxRule1;
 
 public class Multiplication extends FunctionTwoValues {
 
 	public Multiplication(Function parent, Function value1, Function value2) {
 		super(parent, value1, value2);
+		if (value1 instanceof Variable && value2 instanceof Variable == false) {
+			variable1 = value2;
+			variable2 = value1;
+		}
 	}
 
 	@Override
@@ -24,22 +28,31 @@ public class Multiplication extends FunctionTwoValues {
 	}
 
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
+		if (SyntaxRule1.compare(this)) return true;
 		if (NumberRule1.compare(this)) return true;
 		if (NumberRule2.compare(this)) return true;
+		if (NumberRule6.compare(this)) return true;
+		if (ExponentRule15.compare(this)) return true;
 		return false;
 	}
 
 	@Override
 	public List<Function> solveOneStep() throws Error {
 		List<Function> result = new ArrayList<>();
-		if (NumberRule1.compare(this)) {
+		if (SyntaxRule1.compare(this)) {
+			result = SyntaxRule1.execute(this);
+		} else if (NumberRule1.compare(this)) {
 			result = NumberRule1.execute(this);
 		} else if (NumberRule2.compare(this)) {
 			result = NumberRule2.execute(this);
+		} else if (NumberRule6.compare(this)) {
+			result = NumberRule6.execute(this);
+		} else if (ExponentRule15.compare(this)) {
+			result = ExponentRule15.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).multiply((Number)variable2));
 		} else {
@@ -83,19 +96,7 @@ public class Multiplication extends FunctionTwoValues {
 						if (!(tmpVar[0] instanceof Number)) {
 							ok[val] = true;
 						} else {
-							if (((Number) tmpVar[val]).term.isBigInteger(false)) { // TODO: prima era tmpVar[0], ma crashava. RICONTROLLARE! La logica potrebbe essere sbagliata
-								if (((Number) tmpVar[val]).term.toBigInteger(true).compareTo(new BigInteger("1")) == 0) {
-									if (((Number) tmpVar[val]).term.toNumeroAvanzato().getVariableY().count() > 0) {
-										ok[val] = true;
-									} else {
-										break;
-									}
-								} else {
-									break;
-								}
-							} else {
-								ok[val] = true;
-							}
+							break;
 						}
 					}
 				} else if (tmpVar[val] instanceof Power) {
@@ -114,6 +115,11 @@ public class Multiplication extends FunctionTwoValues {
 					break;
 				} else if (tmpVar[val] instanceof Joke) {
 					break;
+				} else if (tmpVar[val] instanceof Negative) {
+					if (val == 1) {
+						break;
+					}
+					ok[val] = true;
 				} else if (tmpVar[val] instanceof Expression) {
 					ok[0] = true;
 					ok[1] = true;
@@ -125,6 +131,8 @@ public class Multiplication extends FunctionTwoValues {
 					}
 				} else if (tmpVar[val] instanceof AnteriorFunction) {
 					tmpVar[val] = ((AnteriorFunction) tmpVar[val]).variable;
+				} else {
+					ok[val] = true;
 				}
 			}
 		}
@@ -134,5 +142,18 @@ public class Multiplication extends FunctionTwoValues {
 		} else {
 			return true;
 		}
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Multiplication) {
+			FunctionTwoValues f = (FunctionTwoValues) o;
+			if (variable1.equals(f.variable1) && variable2.equals(f.variable2)) {
+				return true;
+			} else if (variable1.equals(f.variable2) && variable2.equals(f.variable1)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

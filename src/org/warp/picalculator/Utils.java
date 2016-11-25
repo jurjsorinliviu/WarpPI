@@ -2,9 +2,6 @@ package org.warp.picalculator;
 
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
-import com.rits.cloning.Cloner;
-
-import java.awt.Font;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,20 +16,23 @@ import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
 import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.RAWFont;
-import org.warp.picalculator.math.Variable;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.EmptyNumber;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionTwoValues;
 import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Negative;
 import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.PrioritaryMultiplication;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
+import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystemPart;
+
+import com.rits.cloning.Cloner;
 
 public class Utils {
 
@@ -120,7 +120,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsSumsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
@@ -139,7 +139,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Multiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
@@ -158,7 +158,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsEquationsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
@@ -177,7 +177,7 @@ public class Utils {
 
 	public static boolean areThereOnlySettedUpFunctionsAndSystems(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return false;
@@ -207,20 +207,8 @@ public class Utils {
 
 	public static boolean areThereOnlyEmptyNSNFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (fl.get(i) instanceof FunctionTwoValues && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof SumSubtraction) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof PrioritaryMultiplication) && !(fl.get(i) instanceof Division)) {
+			if (fl.get(i) instanceof FunctionTwoValues && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof SumSubtraction) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof Division)) {
 				if (((FunctionTwoValues) fl.get(i)).getVariable1() == null && ((FunctionTwoValues) fl.get(i)).getVariable2() == null) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-
-	public static boolean areThereEmptyPrioritaryMultiplications(ArrayList<Function> funzioniOLD) {
-		for (int i = 0; i < funzioniOLD.size(); i++) {
-			if (funzioniOLD.get(i) instanceof PrioritaryMultiplication) {
-				if (((FunctionTwoValues) funzioniOLD.get(i)).getVariable1() == null && ((FunctionTwoValues) funzioniOLD.get(i)).getVariable2() == null) {
 					return true;
 				}
 			}
@@ -263,7 +251,7 @@ public class Utils {
 
 	public static boolean areThereOtherSettedUpFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Sum ||  fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunction || fl.get(i) instanceof Multiplication || fl.get(i) instanceof PrioritaryMultiplication || fl.get(i) instanceof Division)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Sum ||  fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunction || fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return true;
@@ -477,5 +465,14 @@ public class Utils {
 			if (cur2 >= size2) cur2 = 0;
 		}
 		return results;
+	}
+
+	public static boolean isNegative(Function b) {
+		if (b instanceof Negative) {
+			return true;
+		} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigInteger.ZERO) < 0) {
+			return true;
+		}
+		return false;
 	}
 }

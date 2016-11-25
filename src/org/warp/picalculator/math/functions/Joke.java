@@ -32,7 +32,7 @@ public class Joke implements Function {
 	}
 
 	@Override
-	public boolean isSolved() throws Error {
+	public boolean isSolved() {
 		return true;
 	}
 
@@ -58,7 +58,7 @@ public class Joke implements Function {
 		if (jokesFont[joke] >= 0) {
 			return Display.Render.glGetStringWidth(PIDisplay.fonts[jokesFont[joke]], jokes[joke]);
 		} else {
-			return Display.Render.glGetStringWidth(jokes[joke]);
+			return Display.Render.glGetStringWidth(Utils.getFont(small), jokes[joke]);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class Joke implements Function {
 		if (jokesFont[joke] >= 0) {
 			return PIDisplay.fonts[jokesFont[joke]].charH;
 		} else {
-			return Display.Render.glGetCurrentFontHeight();
+			return Utils.getFont(small).charH;
 		}
 	}
 
@@ -86,8 +86,11 @@ public class Joke implements Function {
 		return null;
 	}
 
+	private boolean small = false;
+	
 	@Override
 	public void setSmall(boolean small) {
+		this.small = small;
 	}
 
 }

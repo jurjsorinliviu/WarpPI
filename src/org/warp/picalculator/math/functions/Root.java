@@ -2,12 +2,11 @@ package org.warp.picalculator.math.functions;
 
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nevec.rjm.NumeroAvanzatoVec;
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
 
@@ -36,11 +35,9 @@ public class Root extends FunctionTwoValues {
 	}
 
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
-			if ((((Number)variable2).pow(new Number(this.parent, NumeroAvanzatoVec.ONE).divide((Number) variable1)).getTerm().isBigInteger(true))) {
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -49,7 +46,7 @@ public class Root extends FunctionTwoValues {
 	public List<Function> solveOneStep() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
 		if (variable1.isSolved() & variable2.isSolved()) {
-			Number exponent = new Number(this.parent, NumeroAvanzatoVec.ONE);
+			Number exponent = new Number(this.parent, BigInteger.ONE);
 			exponent = exponent.divide((Number) variable1);
 			result.add(((Number)variable2).pow(exponent));
 		} else {
@@ -114,5 +111,14 @@ public class Root extends FunctionTwoValues {
 	@Override
 	public int getLine() {
 		return line;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Root) {
+			FunctionTwoValues f = (FunctionTwoValues) o;
+			return variable1.equals(f.variable1) && variable2.equals(f.variable2);
+		}
+		return false;
 	}
 }

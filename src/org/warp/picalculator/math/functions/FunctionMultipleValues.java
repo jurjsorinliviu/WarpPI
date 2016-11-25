@@ -19,21 +19,21 @@ public abstract class FunctionMultipleValues implements Function {
 	}
 
 	protected Function parent;
-	protected Function[] variables;
+	protected Function[] functions;
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 
 	public Function[] getVariables() {
-		return variables;
+		return functions;
 	}
 
 	public void setVariables(Function[] value) {
 		for (Function f : value) {
 			f.setParent(this);
 		}
-		variables = value;
+		functions = value;
 	}
 
 	public void setVariables(final List<Function> value) {
@@ -43,39 +43,39 @@ public abstract class FunctionMultipleValues implements Function {
 			tmp[i] = value.get(i);
 			tmp[i].setParent(this);
 		}
-		variables = tmp;
+		functions = tmp;
 	}
 
 	public Function getVariable(int index) {
-		return variables[index];
+		return functions[index];
 	}
 
 	public void setVariable(int index, Function value) {
 		value.setParent(this);
-		variables[index] = value;
+		functions[index] = value;
 	}
 
-	public void addVariableToEnd(Function value) {
+	public void addFunctionToEnd(Function value) {
 		value.setParent(this);
-		int index = variables.length;
+		int index = functions.length;
 		setVariablesLength(index + 1);
-		variables[index] = value;
+		functions[index] = value;
 	}
 
 	public int getVariablesLength() {
-		return variables.length;
+		return functions.length;
 	}
 
 	public void setVariablesLength(int length) {
-		variables = Arrays.copyOf(variables, length);
+		functions = Arrays.copyOf(functions, length);
 	}
 
 	@Override
 	public abstract String getSymbol();
 	
 	@Override
-	public boolean isSolved() throws Error {
-		for (Function variable : variables) {
+	public boolean isSolved() {
+		for (Function variable : functions) {
 			if (!variable.isSolved()) {
 				return false;
 			}
@@ -83,7 +83,7 @@ public abstract class FunctionMultipleValues implements Function {
 		return !isSolvable();
 	}
 	
-	protected abstract boolean isSolvable() throws Error;
+	protected abstract boolean isSolvable();
 
 
 	public Function setParent(Function value) {
@@ -121,11 +121,11 @@ public abstract class FunctionMultipleValues implements Function {
 	
 	@Override
 	public int hashCode() {
-		return variables.hashCode()+883*getSymbol().hashCode();
+		return functions.hashCode()+883*getSymbol().hashCode();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
-		return o != null && o.hashCode() == this.hashCode();
+		return false;
 	}
 }

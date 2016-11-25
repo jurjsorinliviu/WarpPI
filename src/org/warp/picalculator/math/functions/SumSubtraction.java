@@ -1,7 +1,7 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +9,12 @@ import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.rules.ExpandRule1;
+import org.warp.picalculator.math.rules.NumberRule3;
+import org.warp.picalculator.math.rules.NumberRule4;
+import org.warp.picalculator.math.rules.NumberRule5;
 
 public class SumSubtraction extends FunctionTwoValues {
 
@@ -25,10 +28,14 @@ public class SumSubtraction extends FunctionTwoValues {
 	}
 
 	@Override
-	protected boolean isSolvable() throws Error {
+	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
+		if (NumberRule3.compare(this)) return true;
+		if (ExpandRule1.compare(this)) return true;
+		if (NumberRule4.compare(this)) return true;
+		if (NumberRule5.compare(this)) return true;
 		return false;
 	}
 	
@@ -38,7 +45,15 @@ public class SumSubtraction extends FunctionTwoValues {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable1.isSolved() & variable2.isSolved()) {
+		if (NumberRule3.compare(this)) {
+			result = NumberRule3.execute(this);
+		} else if (ExpandRule1.compare(this)) {
+			result = ExpandRule1.execute(this);
+		} else if (NumberRule4.compare(this)) {
+			result = NumberRule4.execute(this);
+		} else if (NumberRule5.compare(this)) {
+			result = NumberRule5.execute(this);
+		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).add((Number)variable2));
 			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(this.parent, "-1"))));
 		} else {
@@ -90,7 +105,7 @@ public class SumSubtraction extends FunctionTwoValues {
 		Display.Render.glSetFont(Utils.getFont(small));
 		dx += 1;
 		glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-		dx += glGetStringWidth(getSymbol());
+		dx += glGetStringWidth(Utils.getFont(small), getSymbol());
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
 
@@ -104,7 +119,16 @@ public class SumSubtraction extends FunctionTwoValues {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += glGetStringWidth(getSymbol());
+		dx += glGetStringWidth(Utils.getFont(small), getSymbol());
 		return dx += variable2.getWidth();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof SumSubtraction) {
+			FunctionTwoValues f = (FunctionTwoValues) o;
+			return variable1.equals(f.variable1) && variable2.equals(f.variable2);
+		}
+		return false;
 	}
 }

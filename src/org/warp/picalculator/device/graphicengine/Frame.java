@@ -1,10 +1,8 @@
 package org.warp.picalculator.device.graphicengine;
 
-import java.awt.AlphaComposite;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
@@ -13,16 +11,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.PIDisplay;
 
 public class Frame extends JFrame {
 	private static final long serialVersionUID = 2945898937634075491L;
@@ -118,7 +114,9 @@ public class Frame extends JFrame {
 						}
 						break;
 					case KeyEvent.VK_ENTER:
-						if (!Keyboard.shift && !Keyboard.alpha) {
+						if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.SIMPLIFY);
+						} else if (!Keyboard.shift && !Keyboard.alpha) {
 							Keyboard.keyPressed(Key.SOLVE);
 						} else {
 							Keyboard.keyPressed(Key.NONE);
@@ -199,6 +197,15 @@ public class Frame extends JFrame {
 							Keyboard.keyPressed(Key.NUM0);
 						} else if (Keyboard.shift) {
 							Keyboard.keyPressed(Key.EQUAL);
+						} else {
+							Keyboard.keyPressed(Key.NONE);
+						}
+						break;
+					case KeyEvent.VK_S:
+						if (!Keyboard.shift && !Keyboard.alpha) {
+							Keyboard.keyPressed(Key.SURD_MODE);
+						} else if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.NONE);
 						} else {
 							Keyboard.keyPressed(Key.NONE);
 						}

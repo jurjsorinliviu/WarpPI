@@ -10,7 +10,6 @@ public class MathematicalSymbols {
 	public static final String SUBTRACTION = "−";
 	public static final String MINUS = "-";
 	public static final String MULTIPLICATION = "*";
-	public static final String PRIORITARY_MULTIPLICATION = "▪";
 	public static final String DIVISION = "/";
 	public static final String NTH_ROOT = "√";
 	public static final String SQUARE_ROOT = "Ⓐ";
@@ -32,13 +31,10 @@ public class MathematicalSymbols {
 		return new String[] { SQUARE_ROOT, MINUS };
 	}
 
-	public static final String[] signums(boolean withMultiplication, boolean withPrioritaryMultiplication) {
+	public static final String[] signums(boolean withMultiplication) {
 		String[] ret = new String[] { SUM, SUM_SUBTRACTION, SUBTRACTION, DIVISION };
 		if (withMultiplication) {
 			ret = Utils.add(ret, MULTIPLICATION);
-		}
-		if (withPrioritaryMultiplication) {
-			ret = Utils.add(ret, PRIORITARY_MULTIPLICATION);
 		}
 		return ret;
 	}
@@ -48,7 +44,7 @@ public class MathematicalSymbols {
 	}
 
 	public static String[] variables() {
-		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
+		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "ⓧ", "Ⓨ", "Z"};
 	}
 
 	public static String[] genericSyntax() {

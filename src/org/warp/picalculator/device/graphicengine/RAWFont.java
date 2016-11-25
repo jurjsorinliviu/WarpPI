@@ -155,19 +155,25 @@ public class RAWFont {
         int currentInt;
         int currentIntBitPosition;
         int bitData;
+        int cpos;
+        int j;
         final int l = text.length;
         for (int i = 0; i < l; i++) {
+        	cpos = (i * (charW + 1));
             final int charIndex = text[i];
             for (int dy = 0; dy < charH; dy++) {
             	for (int dx = 0; dx < charW; dx++) {
-                    int bit = dx + dy * charW;
-                    currentInt = (int) (Math.floor((double)bit)/((double)intBits));
-                    currentIntBitPosition = bit-(currentInt*intBits);
-                    bitData = (chars32[charIndex*charIntCount+currentInt] >> currentIntBitPosition) & 1;
-                    screenPos = x + (i * (charW + 1)) + dx + (y + dy) * screenSize[0];
-                    if (bitData == 1 & screenLength > screenPos) {
-                        screen[screenPos] = color;
-                    }
+            		j = x + cpos + dx;
+            		if (j > 0 & j < screenSize[0]) {
+                        int bit = dx + dy * charW;
+                        currentInt = (int) (Math.floor((double)bit)/((double)intBits));
+                        currentIntBitPosition = bit-(currentInt*intBits);
+                        bitData = (chars32[charIndex*charIntCount+currentInt] >> currentIntBitPosition) & 1;
+                        screenPos = x + cpos + dx + (y + dy) * screenSize[0];
+                        if (bitData == 1 & screenLength > screenPos) {
+                            screen[screenPos] = color;
+                        }
+            		}
                 }
             }
         }

@@ -78,7 +78,7 @@ public class ExpandRule1 {
 		if (fnc instanceof Sum) {
 			Function a = ((Sum) fnc).getVariable1();
 			Function b = ((Sum) fnc).getVariable2();
-			Subtraction fnc2 = new Subtraction(((Negative) f).getParent(), null, b);
+			Subtraction fnc2 = new Subtraction(f.getParent(), null, b);
 			fnc2.setVariable1(new Negative(fnc2, a));
 			if (fromSubtraction > 0) {
 				subtraction = new Subtraction(f.getParent(), null, null);
@@ -102,11 +102,11 @@ public class ExpandRule1 {
 				result.add(fnc2);
 			}
 		} else if (fnc instanceof SumSubtraction) {
-			Function a = ((Subtraction) fnc).getVariable1();
-			Function b = ((Subtraction) fnc).getVariable2();
-			Sum fnc2 = new Sum(((Negative) f).getParent(), null, b);
+			Function a = ((SumSubtraction) fnc).getVariable1();
+			Function b = ((SumSubtraction) fnc).getVariable2();
+			Sum fnc2 = new Sum(f.getParent(), null, b);
 			fnc2.setVariable1(new Negative(fnc2, a));
-			Subtraction fnc3 = new Subtraction(((Negative) f).getParent(), null, b);
+			Subtraction fnc3 = new Subtraction(f.getParent(), null, b);
 			fnc3.setVariable1(new Negative(fnc2, a));
 			if (fromSubtraction > 0) {
 				subtraction = new SumSubtraction(f.getParent(), null, null);
@@ -117,7 +117,9 @@ public class ExpandRule1 {
 				subtraction.setVariable1(((FunctionTwoValues)f).getVariable1());
 				subtraction.setVariable2(fnc3);
 				result.add(subtraction);
+				result.add(subtraction);
 			} else {
+				result.add(fnc2);
 				result.add(fnc2);
 			}
 		}

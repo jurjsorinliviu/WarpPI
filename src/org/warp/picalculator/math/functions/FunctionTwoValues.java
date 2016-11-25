@@ -1,14 +1,13 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
+import java.math.BigInteger;
 import java.util.List;
 
-import org.nevec.rjm.Rational;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
 
 import com.rits.cloning.Cloner;
@@ -22,8 +21,8 @@ public abstract class FunctionTwoValues implements Function {
 
 	protected Function parent;
 	
-	protected Function variable1 = (Function) new Number(null, Rational.ZERO);
-	protected Function variable2 = (Function) new Number(null, Rational.ZERO);
+	protected Function variable1 = null;
+	protected Function variable2 = null;
 	protected int width;
 	protected int height;
 	protected int line;
@@ -60,11 +59,11 @@ public abstract class FunctionTwoValues implements Function {
 	public abstract String getSymbol();
 	
 	@Override
-	public boolean isSolved() throws Error {
+	public boolean isSolved() {
 		return (variable1.isSolved() & variable2.isSolved()) ? !isSolvable() : false;
 	}
 	
-	protected abstract boolean isSolvable() throws Error;
+	protected abstract boolean isSolvable();
 	
 	@Override
 	public abstract List<Function> solveOneStep() throws Error;
@@ -91,7 +90,7 @@ public abstract class FunctionTwoValues implements Function {
 		if (drawSignum()) {
 			Display.Render.glSetFont(Utils.getFont(small));
 			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-			dx += glGetStringWidth(getSymbol());
+			dx += glGetStringWidth(Utils.getFont(small), getSymbol());
 		}
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
@@ -113,12 +112,15 @@ public abstract class FunctionTwoValues implements Function {
 
 	@Override
 	public String toString() {
-//		try {
-//			return solve().toString();
-			return "TODO: fare una nuova alternativa a solve().toString()";
-//		} catch (Error e) {
-//			return e.id.toString();
-//		}
+		String val1 = "null";
+		String val2 = "null";
+		if (variable1 != null) {
+			val1 = variable1.toString();
+		}
+		if (variable2 != null) {
+			val2 = variable2.toString();
+		}
+		return val1+getSymbol()+val2;
 	}
 
 	@Override
@@ -137,7 +139,7 @@ public abstract class FunctionTwoValues implements Function {
 	}	
 
 	protected int calcWidth() {
-		return variable1.getWidth() + 1 + (drawSignum() ? glGetStringWidth(getSymbol()) : 0) + variable2.getWidth();
+		return variable1.getWidth() + 1 + (drawSignum() ? glGetStringWidth(Utils.getFont(small), getSymbol()) : 0) + variable2.getWidth();
 	}
 	
 	protected int calcHeight() {
@@ -167,7 +169,5 @@ public abstract class FunctionTwoValues implements Function {
 	}
 	
 	@Override
-	public boolean equals(Object o) {
-		return o != null && o.hashCode() == this.hashCode();
-	}
+	public abstract boolean equals(Object o);
 }

@@ -1,6 +1,10 @@
 package org.warp.picalculator.screens;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.*;
+import static org.warp.picalculator.device.graphicengine.Display.Render.getMatrixOfImage;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glClearColor;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawSkin;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glSetFont;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -9,8 +13,8 @@ import javax.imageio.ImageIO;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Screen;
 
 public class MarioScreen extends Screen {
@@ -33,7 +37,7 @@ public class MarioScreen extends Screen {
 	
 	public MarioScreen() {
 		super();
-		canBeInHistory = true;
+		canBeInHistory = false;
 	}
 
 	@Override
@@ -71,7 +75,7 @@ public class MarioScreen extends Screen {
 			boolean rightPressed = Keyboard.isKeyDown(2, 5);
 			boolean leftPressed = Keyboard.isKeyDown(2, 3);
 			boolean jumpPressed = Keyboard.isKeyDown(2, 1);
-			if ((leftPressed | rightPressed) == (leftPressed & rightPressed)) {
+			if ((leftPressed || rightPressed) == (leftPressed & rightPressed)) {
 				walking = false;
 				walkAnimation = 0;
 			} else {
@@ -130,6 +134,8 @@ public class MarioScreen extends Screen {
 				marioPos[1] -= dt*marioForces[1];
 			}
 			marioForces[0] *= 0.75;
+
+			glClearColor(0xff9290ff);
 		}
 	}
 
@@ -139,7 +145,6 @@ public class MarioScreen extends Screen {
 			glDrawStringLeft(0, 20, "ERROR");
 		} else {
 			glSetFont(PIDisplay.fonts[0]);
-			glClearColor(0xff9290ff);
 			glDrawSkin(groundSize[0], ground, 0, 25+25, 0, 0, 16, 16, false);
 			glDrawSkin(groundSize[0], ground, 16, 25+25, 0, 0, 16, 16, false);
 			glDrawSkin(groundSize[0], ground, 16*2, 25+25, 0, 0, 16, 16, false);

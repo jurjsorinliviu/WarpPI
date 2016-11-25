@@ -1,7 +1,7 @@
 package org.warp.picalculator.device.graphicengine;
 
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.PIDisplay;
 
 public abstract class Screen {
 	public PIDisplay d;

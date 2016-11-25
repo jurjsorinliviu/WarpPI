@@ -33,7 +33,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 
 	@Override
 	protected boolean isSolvable() {
-		if (variables.length >= 1) {
+		if (functions.length >= 1) {
 			return true;
 		}
 		return false;
@@ -42,12 +42,12 @@ public class EquationsSystem extends FunctionMultipleValues {
 	@Override
 	public List<Function> solveOneStep() throws Error {
 		List<Function> ret = new ArrayList<>();
-		if (variables.length == 1) {
-			if (variables[0].isSolved()) {
-				ret.add(variables[0]);
+		if (functions.length == 1) {
+			if (functions[0].isSolved()) {
+				ret.add(functions[0]);
 				return ret;
 			} else {
-				List<Function> l = variables[0].solveOneStep();
+				List<Function> l = functions[0].solveOneStep();
 				for (Function f : l) {
 					if (f instanceof Number) {
 						ret.add(f);
@@ -58,7 +58,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 				return ret;
 			}
 		} else {
-			for (Function f : variables) {
+			for (Function f : functions) {
 				if (f.isSolved() == false) {
 					List<Function> partial = f.solveOneStep();
 					for (Function fnc : partial) {
@@ -72,13 +72,13 @@ public class EquationsSystem extends FunctionMultipleValues {
 
 	@Override
 	public void generateGraphics() {
-		for (Function f : variables) {
+		for (Function f : functions) {
 			f.setSmall(false);
 			f.generateGraphics();
 		}
 		
 		width = 0;
-		for (Function f : variables) {
+		for (Function f : functions) {
 			if (f.getWidth() > width) {
 				width = f.getWidth();
 			}
@@ -86,7 +86,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 		width += 5;
 		
 		height = 3;
-		for (Function f : variables) {
+		for (Function f : functions) {
 			height += f.getHeight()+spacing;
 		}
 		height = height - spacing + 2;
@@ -102,7 +102,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 		final int marginBottom = (h - 3 - 2) / 2 + marginTop;
 		final int spazioSopra = h - marginBottom;
 		int dy = marginTop;
-		for (Function f : variables) {
+		for (Function f : functions) {
 			f.draw(x + 5, y + dy);
 			dy+=f.getHeight()+spacing;
 		}

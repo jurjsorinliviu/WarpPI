@@ -43,7 +43,7 @@ public class Equation extends FunctionTwoValues {
 		}
 		ArrayList<Function> result = new ArrayList<>();
 		if (variable1.isSolved() & variable2.isSolved()) {
-			if (((Number)variable2).getTerm().isBigInteger(false) && ((Number)variable2).getTerm().toBigInteger(false).compareTo(new BigInteger("0")) == 0) {
+			if (((Number)variable2).getTerm().compareTo(new BigInteger("0")) == 0) {
 				result.add(this);
 			} else {
 				Equation e = new Equation(this.parent, null, null);

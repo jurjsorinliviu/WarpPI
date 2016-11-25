@@ -1,4 +1,4 @@
-package org.warp.picalculator.math;
+package org.warp.picalculator.deprecatedmath;
 
 import org.nevec.rjm.Rational;
 

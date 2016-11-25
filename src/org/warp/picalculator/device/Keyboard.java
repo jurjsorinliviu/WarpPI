@@ -1,6 +1,5 @@
 package org.warp.picalculator.device;
 
-import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
@@ -326,6 +325,14 @@ public class Keyboard {
 			} else {
 				keyPressed(Key.PARENTHESIS_CLOSE);
 			}
+		} else if (row == 5 && col == 6) {
+			if (shift) {
+				keyPressed(Key.NONE);
+			} else if (alpha) {
+				keyPressed(Key.NONE);
+			} else {
+				keyPressed(Key.SURD_MODE);
+			}
 		} else if (row == 2 && col == 1) {
 			if (shift) {
 				keyPressed(Key.NONE);
@@ -484,7 +491,7 @@ public class Keyboard {
 	}
 
 	public static enum Key {
-		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, DRG_CYCLE, LETTER_X, LETTER_Y, SIMPLIFY, SOLVE, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x
+		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, SURD_MODE, DRG_CYCLE, LETTER_X, LETTER_Y, SIMPLIFY, SOLVE, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x
 	}
 }
 
@@ -509,7 +516,7 @@ public class Keyboard {
 |      |      |      |      |      |      |      |
 |      |      |      |      |      |      |      |
 |5,1---|5,2---|5,3---|5,4---|5,5---|5,6---|5,7---|
-|      |      |      |      |      |      |      |
+|      |      |      |      |      |S<=>D |      |
 |      |      |      |      |      |      |      |
 |      |      |      |      |      |      |      |
 |6,1---|6,2---|6,3---|6,4---|6,5---|6,6---|6,7---|
