@@ -157,7 +157,7 @@ public class EquationScreen extends Screen {
 		final int textColor = 0xFF000000;
 		final int padding = 4;
 		glColor(textColor);
-		final String inputText = nuovaEquazione.substring(0, caretPos)+(showCaret?"|":"")+nuovaEquazione.substring(((showCaret==false||nuovaEquazione.length()<=caretPos)?caretPos:caretPos+1), nuovaEquazione.length());
+		final String inputText = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione.substring(0, caretPos)+(showCaret?"|":"")+nuovaEquazione.substring(((showCaret==false||nuovaEquazione.length()<=caretPos)?caretPos:caretPos+1), nuovaEquazione.length()));
 		final boolean tooLongI = padding+glGetStringWidth(fontBig, nuovaEquazione)+padding >= Main.screenSize[0];
 		int scrollI = 0;
 		if (tooLongI) {
@@ -415,7 +415,9 @@ public class EquationScreen extends Screen {
 					caretPos = 0;
 					nuovaEquazione="";
 					afterDoNextStep = false;
-					f.clear();
+					if (f != null) {
+						f.clear();
+					}
 					return true;
 				}
 			case SURD_MODE:

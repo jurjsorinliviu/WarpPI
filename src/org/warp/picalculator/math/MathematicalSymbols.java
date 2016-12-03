@@ -50,4 +50,15 @@ public class MathematicalSymbols {
 	public static String[] genericSyntax() {
 		return new String[] { SYSTEM, EQUATION };
 	}
+
+	public static String getGraphicRepresentation(String string) {
+		return string
+				.replace("Ⓑ", "^")
+				.replace("Ⓒ", "SIN")
+				.replace("Ⓓ", "COS")
+				.replace("Ⓔ", "TAN")
+				.replace("Ⓕ", "SIN-1")
+				.replace("Ⓖ", "COS-1")
+				.replace("Ⓗ", "TAN-1");
+	}
 }
