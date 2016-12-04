@@ -15,9 +15,14 @@ import org.warp.picalculator.math.rules.FractionsRule5;
 import org.warp.picalculator.math.rules.UndefinedRule1;
 
 public class Power extends FunctionTwoValues {
-
+	
 	public Power(Function parent, Function value1, Function value2) {
 		super(parent, value1, value2);
+	}
+	
+	@Override
+	protected Function NewInstance(Function parent2, Function value1, Function value2) {
+		return new Power(parent, value1, value2);
 	}
 
 	@Override
@@ -54,7 +59,7 @@ public class Power extends FunctionTwoValues {
 	}
 
 	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
 		if (UndefinedRule1.compare(this)) {
 			result.addAll(UndefinedRule1.execute(this));
@@ -72,25 +77,6 @@ public class Power extends FunctionTwoValues {
 			result.addAll(FractionsRule5.execute(this));
 		} else if (variable1 instanceof Number & variable2 instanceof Number) {
 			result.add((Function) ((Number)variable1).pow((Number)variable2));
-		} else {
-			List<Function> l1 = new ArrayList<Function>();
-			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.isSolved()) {
-				l1.add(variable1);
-			} else {
-				l1.addAll(variable1.solveOneStep());
-			}
-			if (variable2.isSolved()) {
-				l2.add(variable2);
-			} else {
-				l2.addAll(variable2.solveOneStep());
-			}
-
-			Function[][] results = Utils.joinFunctionsResults(l1, l2);
-			
-			for (Function[] f : results) {
-				result.add(new Power(this.parent, (Function)f[0], (Function)f[1]));
-			}
 		}
 		return result;
 	}

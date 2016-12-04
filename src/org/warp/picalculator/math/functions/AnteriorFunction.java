@@ -4,9 +4,11 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawSt
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
 
@@ -18,6 +20,8 @@ public abstract class AnteriorFunction implements Function {
 		setVariable(value);
 	}
 
+	protected abstract Function NewInstance(Function parent2, Function f);
+	
 	protected Function parent;
 	protected Function variable = new Number(null, BigInteger.ZERO);
 	protected int width;
@@ -46,7 +50,29 @@ public abstract class AnteriorFunction implements Function {
 	public abstract String getSymbol();
 
 	@Override
-	public abstract List<Function> solveOneStep() throws Error;
+	public final ArrayList<Function> solveOneStep() throws Error {
+		final boolean solved = variable.isSolved();
+		ArrayList<Function> result = solved?solve():null;
+		
+		if (result == null || result.isEmpty()) {
+			result = new ArrayList<>();
+			
+			ArrayList<Function> l1 = new ArrayList<Function>();
+			if (variable.isSolved()) {
+				l1.add(variable);
+			} else {
+				l1.addAll(variable.solveOneStep());
+			}
+			
+			for (Function f : l1) {
+				result.add(NewInstance(this.parent, (Function)f));
+			}
+		}
+		
+		return result;
+	}
+
+	protected abstract ArrayList<Function> solve() throws Error;
 	
 	@Override
 	public boolean isSolved() {

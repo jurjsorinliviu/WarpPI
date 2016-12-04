@@ -25,6 +25,11 @@ public class Division extends FunctionTwoValues {
 	}
 
 	@Override
+	protected Function NewInstance(Function parent2, Function value1, Function value2) {
+		return new Division(parent, value1, value2);
+	}
+
+	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.DIVISION;
 	}
@@ -40,7 +45,7 @@ public class Division extends FunctionTwoValues {
 	}
 	
 	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
 		if (FractionsRule1.compare(this)) {
 			result = FractionsRule1.execute(this);
@@ -50,25 +55,6 @@ public class Division extends FunctionTwoValues {
 			result = FractionsRule3.execute(this);
 		} else if (UndefinedRule2.compare(this)) {
 			result = UndefinedRule2.execute(this);
-		} else {
-			List<Function> l1 = new ArrayList<Function>();
-			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.isSolved()) {
-				l1.add(variable1);
-			} else {
-				l1.addAll(variable1.solveOneStep());
-			}
-			if (variable2.isSolved()) {
-				l2.add(variable2);
-			} else {
-				l2.addAll(variable2.solveOneStep());
-			}
-
-			Function[][] results = Utils.joinFunctionsResults(l1, l2);
-			
-			for (Function[] f : results) {
-				result.add(new Division(this.parent, (Function)f[0], (Function)f[1]));
-			}
 		}
 		return result;
 	}

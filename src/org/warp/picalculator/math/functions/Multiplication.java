@@ -1,7 +1,6 @@
 package org.warp.picalculator.math.functions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
@@ -20,6 +19,11 @@ public class Multiplication extends FunctionTwoValues {
 			variable1 = value2;
 			variable2 = value1;
 		}
+	}
+	
+	@Override
+	protected Function NewInstance(Function parent2, Function value1, Function value2) {
+		return new Multiplication(parent, value1, value2);
 	}
 
 	@Override
@@ -41,8 +45,8 @@ public class Multiplication extends FunctionTwoValues {
 	}
 
 	@Override
-	public List<Function> solveOneStep() throws Error {
-		List<Function> result = new ArrayList<>();
+	public ArrayList<Function> solve() throws Error {
+		ArrayList<Function> result = new ArrayList<>();
 		if (SyntaxRule1.compare(this)) {
 			result = SyntaxRule1.execute(this);
 		} else if (NumberRule1.compare(this)) {
@@ -55,25 +59,6 @@ public class Multiplication extends FunctionTwoValues {
 			result = ExponentRule15.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).multiply((Number)variable2));
-		} else {
-			List<Function> l1 = new ArrayList<Function>();
-			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.isSolved()) {
-				l1.add(variable1);
-			} else {
-				l1.addAll(variable1.solveOneStep());
-			}
-			if (variable2.isSolved()) {
-				l2.add(variable2);
-			} else {
-				l2.addAll(variable2.solveOneStep());
-			}
-
-			Function[][] results = Utils.joinFunctionsResults(l1, l2);
-			
-			for (Function[] f : results) {
-				result.add(new Multiplication(this.parent, f[0], f[1]));
-			}
 		}
 		return result;
 	}

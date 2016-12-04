@@ -18,6 +18,12 @@ public class MathematicalSymbols {
 	public static final String POWER = "Ⓑ";
 	public static final String EQUATION = "=";
 	public static final String SYSTEM = "{";
+	public static final String SINE = "Ⓒ";
+	public static final String COSINE = "Ⓓ";
+	public static final String TANGENT = "Ⓔ";
+	public static final String ARC_SINE = "Ⓕ";
+	public static final String ARC_COSINE = "Ⓖ";
+	public static final String ARC_TANGENT = "Ⓗ";
 
 	public static final String[] functions() {
 		return concat(functionsNSN(), functionsSN());
@@ -28,7 +34,7 @@ public class MathematicalSymbols {
 	}
 
 	public static final String[] functionsSN() {
-		return new String[] { SQUARE_ROOT, MINUS };
+		return new String[] { SQUARE_ROOT, MINUS, SINE, COSINE, TANGENT, ARC_SINE, ARC_COSINE, ARC_TANGENT };
 	}
 
 	public static final String[] signums(boolean withMultiplication) {
@@ -57,8 +63,8 @@ public class MathematicalSymbols {
 				.replace("Ⓒ", "SIN")
 				.replace("Ⓓ", "COS")
 				.replace("Ⓔ", "TAN")
-				.replace("Ⓕ", "SIN-1")
-				.replace("Ⓖ", "COS-1")
-				.replace("Ⓗ", "TAN-1");
+				.replace("Ⓕ", "ASIN")
+				.replace("Ⓖ", "ACOS")
+				.replace("Ⓗ", "ATAN");
 	}
 }

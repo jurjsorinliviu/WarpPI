@@ -3,8 +3,7 @@ package org.warp.picalculator.math.functions;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
-import java.math.BigInteger;
-import java.util.List;
+import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
@@ -18,6 +17,8 @@ public abstract class FunctionTwoValues implements Function {
 		variable1 = value1;
 		variable2 = value2;
 	}
+	
+	protected abstract Function NewInstance(Function parent2, Function value1, Function value2);
 
 	protected Function parent;
 	
@@ -66,7 +67,37 @@ public abstract class FunctionTwoValues implements Function {
 	protected abstract boolean isSolvable();
 	
 	@Override
-	public abstract List<Function> solveOneStep() throws Error;
+	public final ArrayList<Function> solveOneStep() throws Error {
+		final boolean solved = variable1.isSolved() & variable2.isSolved();
+		ArrayList<Function> result = solved?solve():null;;
+		
+		if (result == null || result.isEmpty()) {
+			result = new ArrayList<>();
+			
+			ArrayList<Function> l1 = new ArrayList<Function>();
+			ArrayList<Function> l2 = new ArrayList<Function>();
+			if (variable1.isSolved()) {
+				l1.add(variable1);
+			} else {
+				l1.addAll(variable1.solveOneStep());
+			}
+			if (variable2.isSolved()) {
+				l2.add(variable2);
+			} else {
+				l2.addAll(variable2.solveOneStep());
+			}
+			
+			Function[][] results = Utils.joinFunctionsResults(l1, l2);
+			
+			for (Function[] f : results) {
+				result.add(NewInstance(this.parent, (Function)f[0], (Function)f[1]));
+			}
+		}
+		
+		return result;
+	}
+	
+	protected abstract ArrayList<Function> solve() throws Error;
 	
 	@Override
 	public void generateGraphics() {

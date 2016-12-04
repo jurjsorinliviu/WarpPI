@@ -15,7 +15,12 @@ public class Root extends FunctionTwoValues {
 	public Root(Function parent, Function value1, Function value2) {
 		super(parent, value1, value2);
 	}
-
+	
+	@Override
+	protected Function NewInstance(Function parent2, Function value1, Function value2) {
+		return new Root(parent, value1, value2);
+	}
+	
 	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.NTH_ROOT;
@@ -37,41 +42,31 @@ public class Root extends FunctionTwoValues {
 	@Override
 	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
+			try {
+				Number exponent = new Number(this.parent, BigInteger.ONE);
+				exponent = exponent.divide((Number) variable1);
+				if (((Number)variable2).pow(exponent).pow((Number)variable1).equals(variable2)) {
+					return true;
+				}
+			} catch (Exception | Error ex) {
+				
+			}
+		}
+		if (variable1 instanceof Number && ((Number)variable1).equals(new Number(null, 2))) {
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable1.isSolved() & variable2.isSolved()) {
+		if (variable1 instanceof Number && ((Number)variable1).equals(new Number(null, 2))) {
+			result.add(new RootSquare(parent, variable2));
+		} else {
 			Number exponent = new Number(this.parent, BigInteger.ONE);
 			exponent = exponent.divide((Number) variable1);
 			result.add(((Number)variable2).pow(exponent));
-		} else {
-			List<Function> l1 = new ArrayList<Function>();
-			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.isSolved()) {
-				l1.add(variable1);
-			} else {
-				l1.addAll(variable1.solveOneStep());
-			}
-			if (variable2.isSolved()) {
-				l2.add(variable2);
-			} else {
-				l2.addAll(variable2.solveOneStep());
-			}
-
-			Function[][] results = Utils.joinFunctionsResults(l1, l2);
-			
-			for (Function[] f : results) {
-				if (f[0] instanceof Number && ((Number)f[0]).equals(new Number(null, "2"))) {
-					result.add(new RootSquare(this.parent, (Function)f[1]));
-				} else {
-					result.add(new Root(this.parent, (Function)f[0], (Function)f[1]));
-				}
-			}
 		}
 		return result;
 	}

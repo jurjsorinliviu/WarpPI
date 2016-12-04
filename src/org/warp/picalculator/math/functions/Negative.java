@@ -1,7 +1,6 @@
 package org.warp.picalculator.math.functions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -15,6 +14,11 @@ public class Negative extends AnteriorFunction {
 
 	public Negative(Function parent, Function value) {
 		super(parent, value);
+	}
+	
+	@Override
+	public Function NewInstance(Function parent, Function value) {
+		return new Negative(parent, value);
 	}
 
 	@Override
@@ -40,8 +44,7 @@ public class Negative extends AnteriorFunction {
 		return false;
 	}
 	
-	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> solve() throws Error {
 		if (variable == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
@@ -62,7 +65,7 @@ public class Negative extends AnteriorFunction {
 				throw new Error(Errors.NUMBER_TOO_SMALL);
 			}
 		} else {
-			List<Function> l1 = new ArrayList<Function>();
+			ArrayList<Function> l1 = new ArrayList<Function>();
 			if (variable.isSolved()) {
 				l1.add(variable);
 			} else {

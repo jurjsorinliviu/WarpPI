@@ -475,4 +475,12 @@ public class Utils {
 		}
 		return false;
 	}
+
+	public static CharSequence multipleChars(String string, int i) {
+		String result = "";
+		for (int j = 0; j < i; j++) {
+			result+=string;
+		}
+		return result;
+	}
 }

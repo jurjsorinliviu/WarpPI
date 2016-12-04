@@ -52,7 +52,7 @@ public class LoadingScreen extends Screen {
 		endLoading += dt;
 		if (endLoading >= 2) {
 			loading = false;
-			PIDisplay.INSTANCE.setScreen(new EquationScreen());
+			PIDisplay.INSTANCE.setScreen(new MathInputScreen());
 		}
 		mustRefresh = true;
 	}

@@ -16,6 +16,11 @@ public class RootSquare extends AnteriorFunction {
 	}
 
 	@Override
+	public Function NewInstance(Function parent, Function value) {
+		return new RootSquare(parent, value);
+	}
+	
+	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.SQUARE_ROOT;
 	}
@@ -41,33 +46,17 @@ public class RootSquare extends AnteriorFunction {
 	}
 	
 	@Override
-	public List<Function> solveOneStep() throws Error {
-		if (variable == null) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		}
+	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable.isSolved()) {
-			try {
-				Number var = (Number) getVariable();
-				result.add(new Number(this.getParent(), BigIntegerMath.isqrt(var.term)));
-			} catch(NullPointerException ex) {
-				throw new Error(Errors.ERROR);
-			} catch(NumberFormatException ex) {
-				throw new Error(Errors.SYNTAX_ERROR);
-			} catch(ArithmeticException ex) {
-				throw new Error(Errors.NUMBER_TOO_SMALL);
-			}
-		} else {
-			List<Function> l1 = new ArrayList<Function>();
-			if (variable.isSolved()) {
-				l1.add(variable);
-			} else {
-				l1.addAll(variable.solveOneStep());
-			}
-			
-			for (Function f : l1) {
-				result.add(new RootSquare(this.parent, (Function)f));
-			}
+		try {
+			Number var = (Number) getVariable();
+			result.add(new Number(this.getParent(), BigIntegerMath.isqrt(var.term)));
+		} catch(NullPointerException ex) {
+			throw new Error(Errors.ERROR);
+		} catch(NumberFormatException ex) {
+			throw new Error(Errors.SYNTAX_ERROR);
+		} catch(ArithmeticException ex) {
+			throw new Error(Errors.NUMBER_TOO_SMALL);
 		}
 		return result;
 	}

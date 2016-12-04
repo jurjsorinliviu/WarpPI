@@ -23,7 +23,7 @@ import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Expression;
 
-public class EquationScreen extends Screen {
+public class MathInputScreen extends Screen {
 
 	public volatile String equazioneCorrente = "";
 	public volatile String nuovaEquazione = "";
@@ -39,7 +39,7 @@ public class EquationScreen extends Screen {
 	boolean mustRefresh = true;
 	boolean afterDoNextStep = false;
 
-	public EquationScreen() {
+	public MathInputScreen() {
 		super();
 		canBeInHistory = true;
 	}
@@ -118,7 +118,11 @@ public class EquationScreen extends Screen {
 		}
 		ArrayList<Function> fncs = new ArrayList<Function>();
 		if (eqn.length() > 0) {
-			fncs.add(Calculator.parseString(eqn.replace("sqrt", "Ⓐ").replace("^", "Ⓑ")));
+			try {
+				fncs.add(Calculator.parseString(eqn.replace("sqrt", "Ⓐ").replace("^", "Ⓑ")));
+			} catch (Exception ex) {
+				
+			}
 		}
 		f = fncs;
 		for (Function f : f) {
@@ -157,7 +161,8 @@ public class EquationScreen extends Screen {
 		final int textColor = 0xFF000000;
 		final int padding = 4;
 		glColor(textColor);
-		final String inputText = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione.substring(0, caretPos)+(showCaret?"|":"")+nuovaEquazione.substring(((showCaret==false||nuovaEquazione.length()<=caretPos)?caretPos:caretPos+1), nuovaEquazione.length()));
+		final int caretRealPos = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione.substring(0, caretPos)).length()*(fontBig.charW+1);
+		final String inputTextWithoutCaret = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione);
 		final boolean tooLongI = padding+glGetStringWidth(fontBig, nuovaEquazione)+padding >= Main.screenSize[0];
 		int scrollI = 0;
 		if (tooLongI) {
@@ -168,7 +173,10 @@ public class EquationScreen extends Screen {
 				scrollI = 0;
 			}
 		}
-		glDrawStringLeft(padding+scrollI, padding+20, inputText);
+		glDrawStringLeft(padding+scrollI, padding+20, inputTextWithoutCaret);
+		if (showCaret) {
+			glDrawStringLeft(padding+scrollI+caretRealPos, padding+20, "|");
+		}
 		if (tooLongI) {
 			glColor(clearcolor);
 			glFillRect(Main.screenSize[0]-16-2, padding+20, fontBig.charH, Main.screenSize[0]);
@@ -363,16 +371,34 @@ public class EquationScreen extends Screen {
 				typeChar("√");
 				return true;
 			case POWER_OF_2:
-				typeChar("^2");
+				typeChar(MathematicalSymbols.POWER+"2");
 				return true;
 			case POWER_OF_x:
-				typeChar("^");
+				typeChar(MathematicalSymbols.POWER);
 				return true;
 			case LETTER_X:
 				typeChar(MathematicalSymbols.variables()[23]);
 				return true;
 			case LETTER_Y:
 				typeChar(MathematicalSymbols.variables()[24]);
+				return true;
+			case SINE:
+				typeChar(MathematicalSymbols.SINE);
+				return true;
+			case COSINE:
+				typeChar(MathematicalSymbols.COSINE);
+				return true;
+			case TANGENT:
+				typeChar(MathematicalSymbols.TANGENT);
+				return true;
+			case ARCSINE:
+				typeChar(MathematicalSymbols.ARC_SINE);
+				return true;
+			case ARCCOSINE:
+				typeChar(MathematicalSymbols.ARC_COSINE);
+				return true;
+			case ARCTANGENT:
+				typeChar(MathematicalSymbols.ARC_TANGENT);
 				return true;
 			case DELETE:
 				if (nuovaEquazione.length() > 0) {
@@ -449,7 +475,7 @@ public class EquationScreen extends Screen {
 				return true;
 			case HISTORY_BACK:
 				if (PIDisplay.INSTANCE.canGoBack()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & Calculator.sessions[Calculator.currentSession+1] instanceof EquationScreen) {
+					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & Calculator.sessions[Calculator.currentSession+1] instanceof MathInputScreen) {
 						nuovaEquazione = equazioneCorrente;
 						try {
 							interpreta(true);
@@ -460,7 +486,7 @@ public class EquationScreen extends Screen {
 				return false;
 			case HISTORY_FORWARD:
 				if (PIDisplay.INSTANCE.canGoForward()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & Calculator.sessions[Calculator.currentSession-1] instanceof EquationScreen) {
+					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & Calculator.sessions[Calculator.currentSession-1] instanceof MathInputScreen) {
 						nuovaEquazione = equazioneCorrente;
 						try {
 							interpreta(true);
@@ -476,7 +502,7 @@ public class EquationScreen extends Screen {
 	
 	private void changeEquationScreen() {
 		if (equazioneCorrente != null && equazioneCorrente.length() > 0) {
-			EquationScreen cloned = clone();
+			MathInputScreen cloned = clone();
 			cloned.caretPos = cloned.equazioneCorrente.length();
 			cloned.nuovaEquazione = cloned.equazioneCorrente;
 			cloned.scrollX = glGetStringWidth(fontBig, cloned.equazioneCorrente);
@@ -510,9 +536,9 @@ public class EquationScreen extends Screen {
 	}
 	
 	@Override
-	public EquationScreen clone() {
-		EquationScreen es = this;
-		EquationScreen es2 = new EquationScreen();
+	public MathInputScreen clone() {
+		MathInputScreen es = this;
+		MathInputScreen es2 = new MathInputScreen();
 		es2.scrollX = es.scrollX;
 		es2.nuovaEquazione = es.nuovaEquazione;
 		es2.equazioneCorrente = es.equazioneCorrente;

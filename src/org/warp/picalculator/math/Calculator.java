@@ -17,7 +17,7 @@ import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystem;
-import org.warp.picalculator.screens.EquationScreen;
+import org.warp.picalculator.screens.MathInputScreen;
 import org.warp.picalculator.screens.SolveEquationScreen;
 
 public class Calculator {
@@ -88,7 +88,7 @@ public class Calculator {
 		return results;
 	}
 	
-	public static void solve(EquationScreen es) throws Error {
+	public static void solve(MathInputScreen es) throws Error {
 		for (Function f : es.f) {
 			if (f instanceof Equation) {
 				PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(es));
@@ -134,7 +134,7 @@ public class Calculator {
 		}
 	}*/
 
-	public static void simplify(EquationScreen es) throws Error {
+	public static void simplify(MathInputScreen es) throws Error {
 		ArrayList<Function> results = new ArrayList<>();
 		ArrayList<Function> partialResults = new ArrayList<>();
 		for (Function f : es.f2) {

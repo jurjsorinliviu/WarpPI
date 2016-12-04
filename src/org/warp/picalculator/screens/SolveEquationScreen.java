@@ -14,9 +14,9 @@ import org.warp.picalculator.math.Calculator;
 public class SolveEquationScreen extends Screen {
 
 	@SuppressWarnings("unused")
-	private EquationScreen es;
+	private MathInputScreen es;
 
-	public SolveEquationScreen(EquationScreen es) {
+	public SolveEquationScreen(MathInputScreen es) {
 		super();
 		canBeInHistory = false;
 		
@@ -59,8 +59,8 @@ public class SolveEquationScreen extends Screen {
 					Calculator.solveExpression('X');
 				} catch (Error e) {
 					Screen scr = PIDisplay.INSTANCE.getScreen();
-					if (scr instanceof EquationScreen) {
-						EquationScreen escr = (EquationScreen) scr;
+					if (scr instanceof MathInputScreen) {
+						MathInputScreen escr = (MathInputScreen) scr;
 						escr.errorLevel = 1;
 						escr.err2 = e;
 					} else {

@@ -27,6 +27,11 @@ public class Sum extends FunctionTwoValues {
 	}
 
 	@Override
+	protected Function NewInstance(Function parent2, Function value1, Function value2) {
+		return new Sum(parent, value1, value2);
+	}
+	
+	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.SUM;
 	}
@@ -48,7 +53,7 @@ public class Sum extends FunctionTwoValues {
 	}
 
 	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> solve() throws Error {
 		if (variable1 == null || variable2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
@@ -83,25 +88,6 @@ public class Sum extends FunctionTwoValues {
 				}
 			}
 			result.add(((Number)variable1).add((Number)variable2));
-		} else {
-			List<Function> l1 = new ArrayList<Function>();
-			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.isSolved()) {
-				l1.add(variable1);
-			} else {
-				l1.addAll(variable1.solveOneStep());
-			}
-			if (variable2.isSolved()) {
-				l2.add(variable2);
-			} else {
-				l2.addAll(variable2.solveOneStep());
-			}
-
-			Function[][] results = Utils.joinFunctionsResults(l1, l2);
-			
-			for (Function[] f : results) {
-				result.add(new Sum(this.parent, (Function)f[0], (Function)f[1]));
-			}
 		}
 		return result;
 	}

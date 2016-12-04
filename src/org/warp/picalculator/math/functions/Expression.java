@@ -16,6 +16,12 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.functions.trigonometry.ArcCosine;
+import org.warp.picalculator.math.functions.trigonometry.ArcSine;
+import org.warp.picalculator.math.functions.trigonometry.ArcTangent;
+import org.warp.picalculator.math.functions.trigonometry.Cosine;
+import org.warp.picalculator.math.functions.trigonometry.Sine;
+import org.warp.picalculator.math.functions.trigonometry.Tangent;
 
 public class Expression extends FunctionMultipleValues {
 
@@ -162,18 +168,18 @@ public class Expression extends FunctionMultipleValues {
 				Utils.debug.println(debugSpaces + "•Resolved signs:" + processExpression);
 			}
 
-			// Aggiungi le parentesi implicite per le potenze con una incognita
-			pattern = Pattern.compile("(?<!(?:\\(|^))(["+Utils.ArrayToRegex(MathematicalSymbols.variables())+"]+"+MathematicalSymbols.POWER+"[^" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functionsNSN(), concat(MathematicalSymbols.signums(true), MathematicalSymbols.genericSyntax())), ")")) + "])(?!\\))");
-			matcher = pattern.matcher(processExpression);
-			symbolsChanged = false;
-			while (matcher.find()) {
-				symbolsChanged = true;
-				String correzione = "("+matcher.group().replace(MathematicalSymbols.POWER, "⑴")+")";
-				processExpression = processExpression.substring(0, matcher.start(0)) + correzione + processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
-				matcher = pattern.matcher(processExpression);
-			}
-
-			processExpression = processExpression.replace("⑴", MathematicalSymbols.POWER);
+//			// Aggiungi le parentesi implicite per le potenze con una incognita
+//			pattern = Pattern.compile("(?<!(?:\\(|^))(["+Utils.ArrayToRegex(MathematicalSymbols.variables())+"]+"+MathematicalSymbols.POWER+"[^" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functionsNSN(), concat(MathematicalSymbols.signums(true), MathematicalSymbols.genericSyntax())), ")")) + "])(?!\\))");
+//			matcher = pattern.matcher(processExpression);
+//			symbolsChanged = false;
+//			while (matcher.find()) {
+//				symbolsChanged = true;
+//				String correzione = matcher.group().replace(MathematicalSymbols.POWER, "⑴");
+//				processExpression = processExpression.substring(0, matcher.start(0)) + correzione + processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
+//				matcher = pattern.matcher(processExpression);
+//			}
+//
+//			processExpression = processExpression.replace("⑴", MathematicalSymbols.POWER);
 
 			// Aggiungi i segni * accanto alle parentesi
 			pattern = Pattern.compile("\\([^\\(]+?\\)");
@@ -246,6 +252,24 @@ public class Expression extends FunctionMultipleValues {
 							break;
 						case MathematicalSymbols.POWER:
 							f = new Power(this, null, null);
+							break;
+						case MathematicalSymbols.SINE:
+							f = new Sine(this, null);
+							break;
+						case MathematicalSymbols.COSINE:
+							f = new Cosine(this, null);
+							break;
+						case MathematicalSymbols.TANGENT:
+							f = new Tangent(this, null);
+							break;
+						case MathematicalSymbols.ARC_SINE:
+							f = new ArcSine(this, null);
+							break;
+						case MathematicalSymbols.ARC_COSINE:
+							f = new ArcCosine(this, null);
+							break;
+						case MathematicalSymbols.ARC_TANGENT:
+							f = new ArcTangent(this, null);
 							break;
 						case MathematicalSymbols.PARENTHESIS_OPEN:
 							// Find the last closed parenthesis
@@ -557,7 +581,11 @@ public class Expression extends FunctionMultipleValues {
 					}
 				} while (((oldFunctionsList.size() != before || step != "sums") && oldFunctionsList.size() > 1));
 			}
-			setVariables(oldFunctionsList);
+			if(oldFunctionsList.isEmpty()) {
+				setVariables(new Function[]{new Number(this, 0)});
+			} else {
+				setVariables(oldFunctionsList);
+			}
 
 			dsl = debugSpaces.length();
 			debugSpaces = "";
@@ -641,7 +669,9 @@ public class Expression extends FunctionMultipleValues {
 		} else {
 			if (functions.length == 1) {
 				Function f = functions[0];
-				if (f instanceof Number || f instanceof Variable || f instanceof Expression || f instanceof Division || f instanceof Joke || f instanceof Undefined || f instanceof Power) {
+				if (f instanceof Number || f instanceof Variable || f instanceof Expression || f instanceof Division || f instanceof Joke
+						|| f instanceof Undefined || f instanceof Power || f instanceof Sine || f instanceof Cosine || f instanceof Tangent
+						 || f instanceof ArcSine || f instanceof ArcCosine || f instanceof ArcTangent) {
 					parenthesisneeded = false;
 				}
 				if (f instanceof Multiplication) {

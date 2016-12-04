@@ -21,6 +21,11 @@ public class SumSubtraction extends FunctionTwoValues {
 	public SumSubtraction(Function parent, Function value1, Function value2) {
 		super(parent, value1, value2);
 	}
+	
+	@Override
+	protected Function NewInstance(Function parent2, Function value1, Function value2) {
+		return new SumSubtraction(parent, value1, value2);
+	}
 
 	@Override
 	public String getSymbol() {
@@ -40,7 +45,7 @@ public class SumSubtraction extends FunctionTwoValues {
 	}
 	
 	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> solve() throws Error {
 		if (variable1 == null || variable2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
@@ -56,25 +61,6 @@ public class SumSubtraction extends FunctionTwoValues {
 		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).add((Number)variable2));
 			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(this.parent, "-1"))));
-		} else {
-			List<Function> l1 = new ArrayList<Function>();
-			List<Function> l2 = new ArrayList<Function>();
-			if (variable1.isSolved()) {
-				l1.add(variable1);
-			} else {
-				l1.addAll(variable1.solveOneStep());
-			}
-			if (variable2.isSolved()) {
-				l2.add(variable2);
-			} else {
-				l2.addAll(variable2.solveOneStep());
-			}
-			
-			Function[][] results = Utils.joinFunctionsResults(l1, l2);
-			
-			for (Function[] f : results) {
-				result.add(new SumSubtraction(this.parent, f[0], f[1]));
-			}
 		}
 		return result;
 	}

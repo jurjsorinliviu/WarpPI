@@ -69,6 +69,33 @@ public class Frame extends JFrame {
 					case KeyEvent.VK_ESCAPE:
 						Keyboard.keyPressed(Key.POWER);
 						break;
+					case KeyEvent.VK_S:
+						if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.ARCSINE);
+						} else if (Keyboard.alpha) {
+							Keyboard.keyPressed(Key.NONE);
+						} else {
+							Keyboard.keyPressed(Key.SINE);
+						}
+						break;
+					case KeyEvent.VK_C:
+						if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.ARCCOSINE);
+						} else if (Keyboard.alpha) {
+							Keyboard.keyPressed(Key.NONE);
+						} else {
+							Keyboard.keyPressed(Key.COSINE);
+						}
+						break;
+					case KeyEvent.VK_T:
+						if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.ARCTANGENT);
+						} else if (Keyboard.alpha) {
+							Keyboard.keyPressed(Key.NONE);
+						} else {
+							Keyboard.keyPressed(Key.TANGENT);
+						}
+						break;
 					case KeyEvent.VK_D:
 						if (!Keyboard.shift && !Keyboard.alpha) {
 							Keyboard.keyPressed(Key.debug_DEG);
@@ -197,15 +224,6 @@ public class Frame extends JFrame {
 							Keyboard.keyPressed(Key.NUM0);
 						} else if (Keyboard.shift) {
 							Keyboard.keyPressed(Key.EQUAL);
-						} else {
-							Keyboard.keyPressed(Key.NONE);
-						}
-						break;
-					case KeyEvent.VK_S:
-						if (!Keyboard.shift && !Keyboard.alpha) {
-							Keyboard.keyPressed(Key.SURD_MODE);
-						} else if (Keyboard.shift) {
-							Keyboard.keyPressed(Key.NONE);
 						} else {
 							Keyboard.keyPressed(Key.NONE);
 						}
