@@ -1,6 +1,5 @@
 package org.warp.picalculator.math.rules;
-
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
@@ -21,7 +20,7 @@ public class FractionsRule5 {
 		Power fnc = (Power) f;
 		if (fnc.getVariable1() instanceof Division && fnc.getVariable2() instanceof Number) {
 			Number n2 = (Number) fnc.getVariable2();
-			if (n2.getTerm().compareTo(BigInteger.ZERO) < 0) {
+			if (n2.getTerm().compareTo(BigDecimal.ZERO) < 0) {
 				return true;
 			}
 		}

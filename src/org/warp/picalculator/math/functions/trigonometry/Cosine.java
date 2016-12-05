@@ -1,7 +1,6 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathematicalSymbols;

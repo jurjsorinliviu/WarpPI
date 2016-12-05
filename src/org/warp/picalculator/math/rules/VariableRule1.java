@@ -7,9 +7,8 @@ import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionTwoValues;
 import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Sum;
-import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Subtraction;
+import org.warp.picalculator.math.functions.Sum;
 
 /**
  * Variable rule<br>

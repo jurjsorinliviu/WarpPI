@@ -5,10 +5,8 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStr
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
 

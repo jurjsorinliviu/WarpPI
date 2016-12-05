@@ -1,14 +1,11 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.FunctionTwoValues;
-import org.warp.picalculator.math.functions.Sum;
 
 public class Sine extends AnteriorFunction {
 	

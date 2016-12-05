@@ -1,12 +1,18 @@
 package org.warp.picalculator.screens;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.*;
+import static org.warp.picalculator.device.graphicengine.Display.Render.clearcolor;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glClearColor;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glColor;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringRight;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glFillRect;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glSetFont;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -21,7 +27,6 @@ import org.warp.picalculator.device.graphicengine.Screen;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.Expression;
 
 public class MathInputScreen extends Screen {
 
@@ -447,10 +452,10 @@ public class MathInputScreen extends Screen {
 					return true;
 				}
 			case SURD_MODE:
-				Calculator.surdMode = !Calculator.surdMode;
+				Calculator.exactMode = !Calculator.exactMode;
 				try {
 					try {
-						if (Calculator.surdMode == false) {
+						if (Calculator.exactMode == false) {
 							f2 = Calculator.solveExpression(f2);
 						} else {
 							equazioneCorrente = "";

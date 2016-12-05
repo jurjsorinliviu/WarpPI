@@ -3,28 +3,37 @@ package org.warp.picalculator.math.functions;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.device.graphicengine.RAWFont;
+import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
 
 public class Number implements Function {
 
 	private Function parent;
-	protected BigInteger term;
+	protected BigDecimal term;
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
-	
+
 	public Number(Function parent, BigInteger val) {
 		this.parent = parent;
-		term = val;
+		term = new BigDecimal(val).setScale(Utils.scale, Utils.scaleMode2);
+	}
+	
+	public Number(Function parent, BigDecimal val) {
+		this.parent = parent;
+		term = val.setScale(Utils.scale, Utils.scaleMode2);
 	}
 
 	public Number(Function parent, String s) throws Error {
@@ -32,15 +41,23 @@ public class Number implements Function {
 	}
 
 	public Number(Function parent, int s) {
-		this(parent, BigInteger.valueOf(s));
+		this(parent, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
-	public BigInteger getTerm() {
+	public Number(Function parent, float s) {
+		this(parent, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
+	}
+
+	public Number(Function parent, double s) {
+		this(parent, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
+	}
+
+	public BigDecimal getTerm() {
 		return term;
 	}
 
-	public void setTerm(BigInteger val) {
-		term = val;
+	public void setTerm(BigDecimal val) {
+		term = val.setScale(Utils.scale, Utils.scaleMode2);
 	}
 
 	@Override
@@ -66,21 +83,42 @@ public class Number implements Function {
 	}
 
 	public Number divide(Number f) throws Error {
-		Number ret = new Number(this.parent, getTerm().divide(f.getTerm()));
+		Number ret = new Number(this.parent, BigDecimalMath.divideRound(getTerm(), f.getTerm()));
 		return ret;
 	}
-
+	
 	public Number pow(Number f) throws Error {
-		Number ret = new Number(this.parent, BigInteger.ONE);
-		for (BigInteger i = BigInteger.ZERO; i.compareTo(f.getTerm()) < 0; i = i.add(BigInteger.ONE)) {
-			ret = ret.multiply(new Number(this.parent, getTerm()));
+		Number ret = new Number(this.parent, BigDecimal.ONE);
+		if (Utils.isIntegerValue(f.term)) {
+			final BigInteger bi = f.term.toBigInteger();
+			for (BigInteger i = BigInteger.ZERO; i.compareTo(bi) < 0; i = i.add(BigInteger.ONE)) {
+				ret = ret.multiply(new Number(this.parent, getTerm()));
+			}
+		} else {
+			ret.term = BigDecimalMath.pow(term, f.term);
 		}
 		return ret;
 	}
 
 	@Override
 	public String toString() {
-		return getTerm().toString();
+		String sWith0 = getTerm().setScale(Utils.displayScale, Utils.scaleMode2).toPlainString();
+		String sExtendedWith0 = getTerm().toPlainString();
+		//Remove trailing zeroes. Thanks to Kent, http://stackoverflow.com/questions/14984664/remove-trailing-zero-in-java
+		String s = sWith0.indexOf(".") < 0 ? sWith0 : sWith0.replaceAll("0*$", "").replaceAll("\\.$", "");
+		String sExtended = sExtendedWith0.indexOf(".") < 0 ? sExtendedWith0 : sExtendedWith0.replaceAll("0*$", "").replaceAll("\\.$", "");
+		
+		if (sExtended.length() > s.length()) {
+			s = s+"…";
+		}
+		
+		if (Calculator.exactMode == false) {
+			String cuttedNumber = s.split("\\.")[0];
+			if (cuttedNumber.length() > 8) {
+				return cuttedNumber.substring(0, 1)+","+cuttedNumber.substring(1, 8)+"ℯ℮"+(cuttedNumber.length()-1);
+			}
+		}
+		return s;
 	}
 
 //	public void draw(int x, int y, PIDisplay g, boolean small, boolean drawMinus) {
@@ -104,7 +142,17 @@ public class Number implements Function {
 				t = t.substring(1);
 			}
 		}
-		glDrawStringLeft(x+1, y, t);
+		if (t.contains("ℯ℮")) {
+			final RAWFont defaultf = Utils.getFont(small);
+			final RAWFont smallf = Utils.getFont(true);
+			String s = t.substring(0,  t.indexOf("ℯ℮")+2);
+			int sw = glGetStringWidth(defaultf, s);
+			glDrawStringLeft(x+1, y+smallf.charH-2, s);
+			Display.Render.glSetFont(smallf);
+			glDrawStringLeft(x+1+sw-3, y, t.substring(t.indexOf("ℯ℮")+2));
+		} else {
+			glDrawStringLeft(x+1, y, t);
+		}
 	}
 
 	public int getHeight(boolean drawMinus) {
@@ -121,8 +169,13 @@ public class Number implements Function {
 	}
 	
 	private int calcHeight() {
-		int h1 = Utils.getFontHeight(small);
-		return h1;
+		String t = toString();
+		if (t.contains("ℯ℮")) {
+			return Utils.getFontHeight(small)-2+Utils.getFontHeight(true);
+		} else {
+			int h1 = Utils.getFontHeight(small);
+			return h1;
+		}
 	}
 	@Override
 	public int getWidth() {
@@ -138,7 +191,15 @@ public class Number implements Function {
 				t = t.substring(1);
 			}
 		}
-		return glGetStringWidth(Utils.getFont(small), t)+1;
+		if (t.contains("ℯ℮")) {
+			final RAWFont defaultf = Utils.getFont(small);
+			final RAWFont smallf = Utils.getFont(true);
+			String s = t.substring(0,  t.indexOf("ℯ℮")+2);
+			int sw = glGetStringWidth(defaultf, s);
+			return 1+sw-3+glGetStringWidth(smallf, t.substring(t.indexOf("ℯ℮")+2));
+		} else {
+			return glGetStringWidth(Utils.getFont(small), t)+1;
+		}
 	}
 	
 	@Override
@@ -147,7 +208,12 @@ public class Number implements Function {
 	}
 	
 	private int calcLine() {
-		return Utils.getFontHeight(small) / 2;
+		String t = toString();
+		if (t.contains("ℯ℮")) {
+			return (Utils.getFontHeight(small) / 2)-2+Utils.getFontHeight(true);
+		} else {
+			return Utils.getFontHeight(small) / 2;
+		}
 	}
 
 	@Override
@@ -182,9 +248,9 @@ public class Number implements Function {
 	public boolean equals(Object o) {
 		if (o != null & term != null) {
 			if (o instanceof Number) {
-				BigInteger nav = ((Number) o).getTerm();
-				boolean na1 = term.compareTo(BigInteger.ZERO) == 0;
-				boolean na2 = nav.compareTo(BigInteger.ZERO) == 0;
+				BigDecimal nav = ((Number) o).getTerm();
+				boolean na1 = term.compareTo(BigDecimal.ZERO) == 0;
+				boolean na2 = nav.compareTo(BigDecimal.ZERO) == 0;
 				if (na1 == na2) {
 					if (na1 == true) {
 						return true;

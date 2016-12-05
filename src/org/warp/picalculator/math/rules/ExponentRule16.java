@@ -8,19 +8,22 @@ import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
+import org.warp.picalculator.math.functions.Root;
 
 /**
  * Exponent rule<br>
- * <b>a*a=a^2</b>
+ * <b>a√x=x^1/a</b>
  * @author Andrea Cavalli
  *
  */
-public class ExponentRule15 {
+public class ExponentRule16 {
 
 	public static boolean compare(Function f) {
-		Multiplication fnc = (Multiplication) f;
-		if (fnc.getVariable1().equals(fnc.getVariable2())) {
-			return true;
+		if (f instanceof Root) {
+			Root fnc = (Root) f;
+			if (fnc.getVariable1().equals(fnc.getVariable2())) {
+				return true;
+			}
 		}
 		return false;
 	}

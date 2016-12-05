@@ -3,7 +3,6 @@ package org.warp.picalculator.math.functions;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.NumberRule1;

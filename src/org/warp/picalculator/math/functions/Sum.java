@@ -2,9 +2,8 @@ package org.warp.picalculator.math.functions;
 
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -13,7 +12,6 @@ import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule5;
 import org.warp.picalculator.math.rules.NumberRule7;
-import org.warp.picalculator.math.rules.SyntaxRule1;
 import org.warp.picalculator.math.rules.SyntaxRule2;
 import org.warp.picalculator.math.rules.VariableRule1;
 import org.warp.picalculator.math.rules.VariableRule2;
@@ -76,13 +74,13 @@ public class Sum extends FunctionTwoValues {
 			result = SumMethod1.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
 			if ((parent == null || parent.getParent() == null)) {
-				if (((Number)variable1).term.compareTo(new BigInteger("2")) == 0 && ((Number)variable2).term.compareTo(new BigInteger("2")) == 0) {
+				if (((Number)variable1).term.compareTo(new BigDecimal(2)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(2)) == 0) {
 					result.add(new Joke(Joke.FISH));
 					return result;
-				} else if (((Number)variable1).term.compareTo(new BigInteger("20")) == 0 && ((Number)variable2).term.compareTo(new BigInteger("20")) == 0) {
+				} else if (((Number)variable1).term.compareTo(new BigDecimal(20)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(20)) == 0) {
 					result.add(new Joke(Joke.TORNADO));
 					return result;
-				} else if (((Number)variable1).term.compareTo(new BigInteger("29")) == 0 && ((Number)variable2).term.compareTo(new BigInteger("29")) == 0) {
+				} else if (((Number)variable1).term.compareTo(new BigDecimal(29)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(29)) == 0) {
 					result.add(new Joke(Joke.SHARKNADO));
 					return result;
 				}

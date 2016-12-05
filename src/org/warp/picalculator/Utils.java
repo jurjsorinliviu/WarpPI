@@ -18,7 +18,6 @@ import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.RAWFont;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.EmptyNumber;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionTwoValues;
@@ -37,7 +36,7 @@ import com.rits.cloning.Cloner;
 public class Utils {
 
 	public static final int scale = 24;
-	public static final int resultScale = 8*5;
+	public static final int displayScale = 8;
 
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;
@@ -470,7 +469,7 @@ public class Utils {
 	public static boolean isNegative(Function b) {
 		if (b instanceof Negative) {
 			return true;
-		} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigInteger.ZERO) < 0) {
+		} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigDecimal.ZERO) < 0) {
 			return true;
 		}
 		return false;
@@ -482,5 +481,9 @@ public class Utils {
 			result+=string;
 		}
 		return result;
+	}
+	
+	public static boolean isIntegerValue(BigDecimal bd) {
+		 return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
 	}
 }

@@ -1,17 +1,15 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3i;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glFillRect;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
-import org.warp.picalculator.device.graphicengine.Display.Render;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
 import org.warp.picalculator.math.rules.FractionsRule2;
@@ -41,6 +39,9 @@ public class Division extends FunctionTwoValues {
 		if (FractionsRule2.compare(this)) return true;
 		if (FractionsRule3.compare(this)) return true;
 		if (UndefinedRule2.compare(this)) return true;
+		if (variable1 instanceof Number && variable2 instanceof Number && Calculator.exactMode == false) {
+			return true;
+		}
 		return false;
 	}
 	
@@ -55,6 +56,8 @@ public class Division extends FunctionTwoValues {
 			result = FractionsRule3.execute(this);
 		} else if (UndefinedRule2.compare(this)) {
 			result = UndefinedRule2.execute(this);
+		} else if (variable1 instanceof Number && variable2 instanceof Number && Calculator.exactMode == false) {
+			result.add(((Number)variable1).divide((Number)variable2).setParent(parent));
 		}
 		return result;
 	}

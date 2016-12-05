@@ -2,11 +2,9 @@ package org.warp.picalculator.math.functions;
 
 import static org.warp.picalculator.Utils.ArrayToRegex;
 import static org.warp.picalculator.Utils.concat;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3i;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -414,7 +412,7 @@ public class Expression extends FunctionMultipleValues {
 				if (funzione != null) {
 					//Affinazione
 					if (funzione instanceof Root) {
-						if ((i - 1) >= 0 && oldFunctionsArray[i-1] instanceof Number && ((Number)oldFunctionsArray[i-1]).getTerm().compareTo(new BigInteger("2")) == 0) {
+						if ((i - 1) >= 0 && oldFunctionsArray[i-1] instanceof Number && ((Number)oldFunctionsArray[i-1]).getTerm().compareTo(new BigDecimal(2)) == 0) {
 							oldFunctionsArray[i] = null;
 							oldFunctionsArray[i-1] = null;
 							oldFunctionsList.remove(oldFunctionsList.size()-1);

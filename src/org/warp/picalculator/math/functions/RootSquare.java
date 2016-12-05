@@ -1,12 +1,11 @@
 package org.warp.picalculator.math.functions;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 
-import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 
 public class RootSquare extends AnteriorFunction {
@@ -38,8 +37,19 @@ public class RootSquare extends AnteriorFunction {
 	@Override
 	protected boolean isSolvable() {
 		if (variable instanceof Number) {
-			if (BigIntegerMath.isqrt(((Number) variable).term).pow(2).compareTo(((Number) variable).term) == 0) {
+			if (Calculator.exactMode == false) {
 				return true;
+			}
+			try {
+				Number exponent = new Number(this.parent, BigInteger.ONE);
+				exponent = exponent.divide(new Number(null, 2));
+				Number resultVal = ((Number)variable).pow(exponent);
+				Number originalVariable = resultVal.pow(new Number(null, 2));
+				if (originalVariable.equals(variable)) {
+					return true;
+				}
+			} catch (Exception | Error ex) {
+				
 			}
 		}
 		return false;
@@ -48,15 +58,15 @@ public class RootSquare extends AnteriorFunction {
 	@Override
 	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		try {
-			Number var = (Number) getVariable();
-			result.add(new Number(this.getParent(), BigIntegerMath.isqrt(var.term)));
-		} catch(NullPointerException ex) {
-			throw new Error(Errors.ERROR);
-		} catch(NumberFormatException ex) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		} catch(ArithmeticException ex) {
-			throw new Error(Errors.NUMBER_TOO_SMALL);
+		if (Calculator.exactMode) {
+			Number exponent = new Number(this.parent, BigInteger.ONE);
+			exponent = exponent.divide(new Number(null, 2));
+			result.add(((Number)variable).pow(exponent));
+		} else {
+			Number exp = new Number(null, 2);
+			Number numb = (Number) variable;
+			
+			result.add(numb.pow(new Number(null, 1).divide(exp)).setParent(parent));
 		}
 		return result;
 	}

@@ -3,8 +3,6 @@ package org.warp.picalculator.math.functions;
 import java.util.Arrays;
 import java.util.List;
 
-import org.warp.picalculator.Error;
-
 import com.rits.cloning.Cloner;
 
 public abstract class FunctionMultipleValues implements Function {

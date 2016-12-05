@@ -2,12 +2,12 @@ package org.warp.picalculator.math.functions;
 
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 
 public class Root extends FunctionTwoValues {
@@ -42,14 +42,19 @@ public class Root extends FunctionTwoValues {
 	@Override
 	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
+			if (Calculator.exactMode == false) {
+				return true;
+			}
 			try {
-				Number exponent = new Number(this.parent, BigInteger.ONE);
+				Number exponent = new Number(this.parent, BigDecimal.ONE);
 				exponent = exponent.divide((Number) variable1);
-				if (((Number)variable2).pow(exponent).pow((Number)variable1).equals(variable2)) {
+				Number resultVal = ((Number)variable2).pow(exponent);
+				Number originalVariable = resultVal.pow(new Number(null, 2));
+				if (originalVariable.equals(variable2)) {
 					return true;
-				}
+				} 
 			} catch (Exception | Error ex) {
-				
+				ex.printStackTrace();
 			}
 		}
 		if (variable1 instanceof Number && ((Number)variable1).equals(new Number(null, 2))) {
@@ -61,12 +66,19 @@ public class Root extends FunctionTwoValues {
 	@Override
 	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		if (variable1 instanceof Number && ((Number)variable1).equals(new Number(null, 2))) {
-			result.add(new RootSquare(parent, variable2));
+		if (Calculator.exactMode) {
+			if (variable1 instanceof Number && ((Number)variable1).equals(new Number(null, 2))) {
+				result.add(new RootSquare(parent, variable2));
+			} else {
+				Number exponent = new Number(this.parent, BigInteger.ONE);
+				exponent = exponent.divide((Number) variable1);
+				result.add(((Number)variable2).pow(exponent));
+			}
 		} else {
-			Number exponent = new Number(this.parent, BigInteger.ONE);
-			exponent = exponent.divide((Number) variable1);
-			result.add(((Number)variable2).pow(exponent));
+			Number exp = (Number) variable1;
+			Number numb = (Number) variable2;
+			
+			result.add(numb.pow(new Number(null, 1).divide(exp)).setParent(parent));
 		}
 		return result;
 	}

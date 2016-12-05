@@ -1,10 +1,8 @@
 package org.warp.picalculator.math.functions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule1;
 import org.warp.picalculator.math.rules.ExponentRule2;

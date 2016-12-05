@@ -1,16 +1,14 @@
 package org.warp.picalculator.math.rules.methods;
 
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionTwoValues;
 import org.warp.picalculator.math.functions.Negative;
-import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 
 /**
@@ -44,7 +42,7 @@ public class SumMethod1 {
 					prec = new Subtraction(null, a, ((Negative)b).getVariable());
 					a.setParent(prec);
 					((FunctionTwoValues)prec).getVariable2().setParent(prec);
-				} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigInteger.ZERO) < 0) {
+				} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigDecimal.ZERO) < 0) {
 					prec = new Subtraction(null, a, ((Number)b).multiply(new Number(null, -1)));
 					a.setParent(prec);
 					((FunctionTwoValues)prec).getVariable2().setParent(prec);
@@ -93,11 +91,11 @@ public class SumMethod1 {
 					Function testFunc;
 					if (b instanceof Negative) {
 						testFunc = new Subtraction(null, a, ((Negative)b).getVariable());
-					} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigInteger.ZERO) < 0) {
+					} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigDecimal.ZERO) < 0) {
 						testFunc = new Subtraction(null, a, ((Number)b).multiply(new Number(null, -1)));
 					} else if (a instanceof Negative) {
 						testFunc = new Subtraction(null, b, ((Negative)a).getVariable());
-					} else if (a instanceof Number && ((Number) a).getTerm().compareTo(BigInteger.ZERO) < 0) {
+					} else if (a instanceof Number && ((Number) a).getTerm().compareTo(BigDecimal.ZERO) < 0) {
 						testFunc = new Subtraction(null, b, ((Number)a).multiply(new Number(null, -1)));
 					} else {
 						testFunc = new Sum(null, a, b);

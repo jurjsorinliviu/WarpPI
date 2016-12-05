@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.Power;
 import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Power;
 
 /**
  * Exponent rule<br>

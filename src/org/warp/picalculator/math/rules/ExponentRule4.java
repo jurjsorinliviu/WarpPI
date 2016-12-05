@@ -6,8 +6,8 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Power;
 import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Power;
 
 /**
  * Exponent rule<br>

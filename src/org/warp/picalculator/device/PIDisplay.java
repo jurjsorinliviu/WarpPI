@@ -1,6 +1,17 @@
 package org.warp.picalculator.device;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.*;
+import static org.warp.picalculator.device.graphicengine.Display.Render.getMatrixOfImage;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glClear;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glColor;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3i;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glColor4i;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawSkin;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringCenter;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringRight;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glFillRect;
+import static org.warp.picalculator.device.graphicengine.Display.Render.glSetFont;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

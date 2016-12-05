@@ -4,7 +4,6 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawSt
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;

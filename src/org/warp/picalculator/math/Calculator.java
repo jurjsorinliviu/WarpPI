@@ -26,8 +26,7 @@ public class Calculator {
 	public static Screen[] sessions = new Screen[5];
 	public static int currentSession = 0;
 	public static boolean haxMode = true;
-	public static boolean surdMode = true;
-
+	public static boolean exactMode = false;
 	public static Function parseString(String string) throws Error {
 		if (string.contains("{")) {
 			if (!string.startsWith("{")) {
