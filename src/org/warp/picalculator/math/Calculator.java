@@ -73,7 +73,12 @@ public class Calculator {
 				while (Utils.allSolved(results) == false) {
 					for (Function itm : results) {
 						if (itm.isSolved() == false) {
+							long t1 = System.currentTimeMillis();
 							List<Function> dt = itm.solveOneStep();
+							long t2 = System.currentTimeMillis();
+							if (t2-t1 >= 3000) {
+								throw new Error(Errors.TIMEOUT);
+							}
 							partialResults.addAll(dt);
 						} else {
 							partialResults.add(itm);

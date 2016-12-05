@@ -9,6 +9,7 @@ import org.warp.picalculator.math.rules.NumberRule1;
 import org.warp.picalculator.math.rules.NumberRule2;
 import org.warp.picalculator.math.rules.NumberRule6;
 import org.warp.picalculator.math.rules.SyntaxRule1;
+import org.warp.picalculator.math.rules.methods.MultiplicationMethod1;
 
 public class Multiplication extends FunctionTwoValues {
 
@@ -40,6 +41,7 @@ public class Multiplication extends FunctionTwoValues {
 		if (NumberRule2.compare(this)) return true;
 		if (NumberRule6.compare(this)) return true;
 		if (ExponentRule15.compare(this)) return true;
+		if (MultiplicationMethod1.compare(this)) return true;
 		return false;
 	}
 
@@ -56,6 +58,8 @@ public class Multiplication extends FunctionTwoValues {
 			result = NumberRule6.execute(this);
 		} else if (ExponentRule15.compare(this)) {
 			result = ExponentRule15.execute(this);
+		} else if (MultiplicationMethod1.compare(this)) {
+			result = MultiplicationMethod1.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).multiply((Number)variable2));
 		}

@@ -6,6 +6,7 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStr
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
@@ -289,4 +290,49 @@ public class Number implements Function {
 	 * return 6*toString().length()-1;
 	 * }
 	 */
+	
+	public boolean canBeFactorized() {
+		if (Utils.isIntegerValue(getTerm())) {
+			return getTerm().toBigIntegerExact().compareTo(BigInteger.valueOf(1)) > 1;
+		}
+		return false;
+	}
+	
+	public LinkedList<BigInteger> getFactors()
+	{
+		BigInteger n = getTerm().toBigIntegerExact();
+	    BigInteger two = BigInteger.valueOf(2);
+	    LinkedList<BigInteger> fs = new LinkedList<BigInteger>();
+
+	    if (n.compareTo(two) < 0)
+	    {
+	        throw new IllegalArgumentException("must be greater than one");
+	    }
+
+	    while (n.mod(two).equals(BigInteger.ZERO))
+	    {
+	        fs.add(two);
+	        n = n.divide(two);
+	    }
+
+	    if (n.compareTo(BigInteger.ONE) > 0)
+	    {
+	        BigInteger f = BigInteger.valueOf(3);
+	        while (f.multiply(f).compareTo(n) <= 0)
+	        {
+	            if (n.mod(f).equals(BigInteger.ZERO))
+	            {
+	                fs.add(f);
+	                n = n.divide(f);
+	            }
+	            else
+	            {
+	                f = f.add(two);
+	            }
+	        }
+	        fs.add(n);
+	    }
+
+	    return fs;
+	}
 }
