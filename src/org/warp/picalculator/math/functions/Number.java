@@ -27,7 +27,7 @@ public class Number implements Function {
 	protected int line;
 	protected boolean small;
 
-	public Number(Function parent, BigInteger val) {
+	public Number(Calculator calc, Function parent, BigInteger val) {
 		this.parent = parent;
 		term = new BigDecimal(val).setScale(Utils.scale, Utils.scaleMode2);
 	}

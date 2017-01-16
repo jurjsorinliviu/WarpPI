@@ -95,6 +95,16 @@ public class Variable implements Function {
 	private int calcLine() {
 		return Utils.getFontHeight(small) / 2;
 	}
+	
+	public static class VariableValue {
+		public final Variable v;
+		public final Number n;
+		
+		public VariableValue(Variable v, Number n) {
+			this.v = v;
+			this.n = n;
+		}
+	}
 
 	@Override
 	public Variable clone() {

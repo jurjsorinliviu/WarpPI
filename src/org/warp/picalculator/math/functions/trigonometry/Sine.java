@@ -1,11 +1,19 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
+import org.nevec.rjm.BigDecimalMath;
+import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.AngleMode;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Number;
 
 public class Sine extends AnteriorFunction {
 	
@@ -24,15 +32,27 @@ public class Sine extends AnteriorFunction {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		// TODO Auto-generated method stub
-		return null;
+	protected boolean isSolvable() {
+		if (variable instanceof Number) {
+			if (Calculator.exactMode == false) {
+				return true;
+			}
+		}
+		if (Calculator.angleMode == AngleMode.DEG) {
+			Function[] solvableValues = new Function[]{new Number(null, 0), new Number(null, 30), new Number(null, 90), };
+		}
+		return false;
 	}
 
 	@Override
-	protected boolean isSolvable() {
-		// TODO Auto-generated method stub
-		return false;
+	public ArrayList<Function> solve() throws Error {
+		ArrayList<Function> results = new ArrayList<>();
+		if (variable instanceof Number) {
+			if (Calculator.exactMode == false) {
+				results.add(new Number(parent, BigDecimalMath.sin(((Number) variable).getTerm())));
+			}
+		}
+		return results;
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import org.warp.picalculator.device.PIDisplay;
 
 public class Display {
 
-	private static Frame INSTANCE = new Frame();
+	private static SwingWindow INSTANCE = new SwingWindow();
 	public static int[] size = new int[] { 1, 1 };
 	public static BufferedImage g = new BufferedImage(size[0], size[1], BufferedImage.TYPE_INT_RGB);
 	static int[] canvas2d = new int[1];
@@ -35,7 +35,7 @@ public class Display {
 	}
 
 	public static void create() {
-		Display.setResizable(Utils.debugOn);
+		Display.setResizable(Utils.debugOn&!Utils.debugThirdScreen);
 		Display.setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		INSTANCE.setVisible(true);
 		initialized = true;

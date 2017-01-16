@@ -12,7 +12,11 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.glSetFon
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -24,9 +28,17 @@ import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.RAWFont;
 import org.warp.picalculator.device.graphicengine.Screen;
+import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.functions.FunctionMultipleValues;
+import org.warp.picalculator.math.functions.FunctionTwoValues;
+import org.warp.picalculator.math.functions.Variable;
+import org.warp.picalculator.math.functions.Variable.VariableValue;
+import org.warp.picalculator.math.functions.equations.Equation;
+import org.warp.picalculator.math.functions.Number;
 
 public class MathInputScreen extends Screen {
 
@@ -37,16 +49,20 @@ public class MathInputScreen extends Screen {
 	public volatile float showCaretDelta = 0f;
 	public ArrayList<Function> f;
 	public ArrayList<Function> f2;
+	public ArrayList<VariableValue> variablesValues;
 	public int resultsCount;
 	public boolean autoscroll;
 	public int scrollX = 0;
 	public int errorLevel = 0; // 0 = nessuno, 1 = risultato, 2 = tutto
 	boolean mustRefresh = true;
 	boolean afterDoNextStep = false;
-
+	public final Calculator calc;
+	
 	public MathInputScreen() {
 		super();
 		canBeInHistory = true;
+		
+		calc = new Calculator();
 	}
 	
 	@Override
@@ -89,6 +105,7 @@ public class MathInputScreen extends Screen {
 		if (f == null & f2 == null) {
 			f = new ArrayList<Function>();
 			f2 = new ArrayList<Function>();
+			variablesValues = new ArrayList<>();
 			resultsCount = 0;
 		}
 //			interpreta("{(5X*(15X/3X))+(25X/(5X*(15X/3X)))=15{X=5"); //TODO RIMUOVERE
@@ -124,7 +141,7 @@ public class MathInputScreen extends Screen {
 		ArrayList<Function> fncs = new ArrayList<Function>();
 		if (eqn.length() > 0) {
 			try {
-				fncs.add(Calculator.parseString(eqn.replace("sqrt", "Ⓐ").replace("^", "Ⓑ")));
+				fncs.add(calc.parseString(eqn.replace("sqrt", "Ⓐ").replace("^", "Ⓑ")));
 			} catch (Exception ex) {
 				
 			}
@@ -249,29 +266,34 @@ public class MathInputScreen extends Screen {
 		switch (k) {
 			case SIMPLIFY:
 				if (nuovaEquazione.length() > 0) {
-					try {
+					if (!afterDoNextStep) {
 						try {
-							if (!afterDoNextStep) {
-								interpreta(false);
-								f2 = f;
-								afterDoNextStep = true;
-								Calculator.simplify(this);
+							try {
+								interpreta(true);
+								showVariablesDialog(new Runnable(){
+									@Override
+									public void run() {
+										equazioneCorrente = nuovaEquazione;
+										f2 = f;
+										afterDoNextStep = true;
+										simplify(MathInputScreen.this);
+									}
+								});
+							} catch (Exception ex) {
+								if (Utils.debugOn)
+									ex.printStackTrace();
+								throw new Error(Errors.SYNTAX_ERROR);
 							}
-							Calculator.simplify(this);
-						} catch (Exception ex) {
-							if (Utils.debugOn) {
-								ex.printStackTrace();
-							}
-							throw new Error(Errors.SYNTAX_ERROR);
+						} catch (Error e) {
+							StringWriter sw = new StringWriter();
+							PrintWriter pw = new PrintWriter(sw);
+							e.printStackTrace(pw);
+							d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+							PIDisplay.error = e.id.toString();
+							System.err.println(e.id);
 						}
-					} catch (Error e) {
-						glClearColor(0xFFDC3C32);
-						StringWriter sw = new StringWriter();
-						PrintWriter pw = new PrintWriter(sw);
-						e.printStackTrace(pw);
-						d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-						PIDisplay.error = e.id.toString();
-						System.err.println(e.id);
+					} else {
+						simplify(this);
 					}
 				}
 				return true;
@@ -288,12 +310,17 @@ public class MathInputScreen extends Screen {
 					try {
 						try {
 							if (afterDoNextStep) {
-								Calculator.simplify(this);
+								simplify(this);
 							} else {
 								if (nuovaEquazione != equazioneCorrente && nuovaEquazione.length() > 0) {
 									changeEquationScreen();
-									interpreta(false);
-									Calculator.solve(this);
+									interpreta(true);
+									showVariablesDialog(new Runnable(){
+										@Override
+										public void run() {
+											equazioneCorrente = nuovaEquazione;
+											solve();
+										}});
 								}
 							}
 						} catch (Exception ex) {
@@ -381,6 +408,9 @@ public class MathInputScreen extends Screen {
 			case POWER_OF_x:
 				typeChar(MathematicalSymbols.POWER);
 				return true;
+			case PI:
+				typeChar(MathematicalSymbols.PI);
+				return true;
 			case LETTER_X:
 				typeChar(MathematicalSymbols.variables()[23]);
 				return true;
@@ -452,27 +482,12 @@ public class MathInputScreen extends Screen {
 					return true;
 				}
 			case SURD_MODE:
-				Calculator.exactMode = !Calculator.exactMode;
-				try {
-					try {
-						if (Calculator.exactMode == false) {
-							f2 = Calculator.solveExpression(f2);
-						} else {
-							equazioneCorrente = "";
-							Keyboard.keyPressed(Key.SOLVE);
-						}
-					} catch (Exception ex) {
-						if (Utils.debugOn)
-							ex.printStackTrace();
-						throw new Error(Errors.SYNTAX_ERROR);
-					}
-				} catch (Error e) {
-					StringWriter sw = new StringWriter();
-					PrintWriter pw = new PrintWriter(sw);
-					e.printStackTrace(pw);
-					d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-					PIDisplay.error = e.id.toString();
-					System.err.println(e.id);
+				calc.exactMode = !calc.exactMode;
+				if (calc.exactMode == false) {
+					f2 = solveExpression(f2);
+				} else {
+					equazioneCorrente = "";
+					Keyboard.keyPressed(Key.SOLVE);
 				}
 				return true;
 			case debug1:
@@ -480,7 +495,7 @@ public class MathInputScreen extends Screen {
 				return true;
 			case HISTORY_BACK:
 				if (PIDisplay.INSTANCE.canGoBack()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & Calculator.sessions[Calculator.currentSession+1] instanceof MathInputScreen) {
+					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & PIDisplay.sessions[PIDisplay.currentSession+1] instanceof MathInputScreen) {
 						nuovaEquazione = equazioneCorrente;
 						try {
 							interpreta(true);
@@ -491,7 +506,7 @@ public class MathInputScreen extends Screen {
 				return false;
 			case HISTORY_FORWARD:
 				if (PIDisplay.INSTANCE.canGoForward()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & Calculator.sessions[Calculator.currentSession-1] instanceof MathInputScreen) {
+					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & PIDisplay.sessions[PIDisplay.currentSession-1] instanceof MathInputScreen) {
 						nuovaEquazione = equazioneCorrente;
 						try {
 							interpreta(true);
@@ -500,11 +515,156 @@ public class MathInputScreen extends Screen {
 					}
 				}
 				return false;
+			case debug_DEG:
+				if (calc.angleMode.equals(AngleMode.DEG) == false) {
+					calc.angleMode = AngleMode.DEG;
+					return true;
+				}
+				return false;
+			case debug_RAD:
+				if (calc.angleMode.equals(AngleMode.RAD) == false) {
+					calc.angleMode = AngleMode.RAD;
+					return true;
+				}
+				return false;
+			case debug_GRA:
+				if (calc.angleMode.equals(AngleMode.GRA) == false) {
+					calc.angleMode = AngleMode.GRA;
+					return true;
+				}
+				return false;
+			case DRG_CYCLE:
+				if (calc.angleMode.equals(AngleMode.DEG) == true) {
+					calc.angleMode = AngleMode.RAD;
+				} else if (calc.angleMode.equals(AngleMode.RAD) == true) {
+					calc.angleMode = AngleMode.GRA;
+				} else {
+					calc.angleMode = AngleMode.DEG;
+				}
+				return true;
 			default:
 				return false;
 		}
 	}
 	
+	private ArrayList<Function> solveExpression(ArrayList<Function> f22) {
+		try {
+			try {
+				return calc.solveExpression(f22);
+			} catch (Exception ex) {
+				if (Utils.debugOn) {
+					ex.printStackTrace();
+				}
+				throw new Error(Errors.SYNTAX_ERROR);
+			}
+		} catch (Error e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+			PIDisplay.error = e.id.toString();
+			System.err.println(e.id);
+		}
+		return null;
+	}
+
+	protected void simplify(MathInputScreen mathInputScreen) {
+		try {
+			try {
+				showVariablesDialog();
+				ArrayList<Function> results = new ArrayList<>();
+				ArrayList<Function> partialResults = new ArrayList<>();
+				for (Function f : f2) {
+					if (f instanceof Equation) {
+						PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(this));
+					} else {
+						results.add(f);
+						for (Function itm : results) {
+							if (itm.isSolved() == false) {
+								List<Function> dt = itm.solveOneStep();
+								partialResults.addAll(dt);
+							} else {
+								partialResults.add(itm);
+							}
+						}
+						results = new ArrayList<Function>(partialResults);
+						partialResults.clear();
+					}
+				}
+				
+				if (results.size() == 0) {
+					resultsCount = 0;
+				} else {
+					resultsCount = results.size();
+					Collections.reverse(results);
+					// add elements to al, including duplicates
+					Set<Function> hs = new LinkedHashSet<>();
+					hs.addAll(results);
+					results.clear();
+					results.addAll(hs);
+					f2 = results;
+					for (Function rf : f2) {
+						rf.generateGraphics();
+					}
+				}
+			} catch (Exception ex) {
+				if (Utils.debugOn) {
+					ex.printStackTrace();
+				}
+				throw new Error(Errors.SYNTAX_ERROR);
+			}
+		} catch (Error e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+			PIDisplay.error = e.id.toString();
+			System.err.println(e.id);
+		}
+	}
+
+	protected void solve() {
+		try {
+			try {
+				for (Function f : f) {
+					if (f instanceof Equation) {
+						PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(this));
+						return;
+					}
+				}
+				
+				ArrayList<Function> results = solveExpression(f);
+				if (results.size() == 0) {
+					resultsCount = 0;
+				} else {
+					resultsCount = results.size();
+					Collections.reverse(results);
+					// add elements to al, including duplicates
+					Set<Function> hs = new LinkedHashSet<>();
+					hs.addAll(results);
+					results.clear();
+					results.addAll(hs);
+					f2 = results;
+					for (Function rf : f2) {
+						rf.generateGraphics();
+					}
+				}
+			} catch (Exception ex) {
+				if (Utils.debugOn) {
+					ex.printStackTrace();
+				}
+				throw new Error(Errors.SYNTAX_ERROR);
+			}
+		} catch (Error e) {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+			PIDisplay.error = e.id.toString();
+			System.err.println(e.id);
+		}
+	}
+
 	private void changeEquationScreen() {
 		if (equazioneCorrente != null && equazioneCorrente.length() > 0) {
 			MathInputScreen cloned = clone();
@@ -536,8 +696,68 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public boolean keyReleased(Key k) {
-		
 		return false;
+	}
+	
+	public void showVariablesDialog(final Runnable runnable) {
+		Thread ct = new Thread(()->{
+			ArrayList<Function> variablesInFunctions = getVariables(f.toArray(new Function[f.size()]));
+			for (VariableValue f : variablesValues) {
+				if (variablesInFunctions.contains(f.v)) {
+					variablesInFunctions.remove(f.v);
+				}
+			}
+			
+			boolean cancelled = false;
+			for (Function f : variablesInFunctions) {
+				ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(null, 0)));
+				PIDisplay.INSTANCE.setScreen(cvs);
+				try {
+					while (PIDisplay.screen == cvs) {
+						Utils.debug.println(Thread.currentThread().getName());
+						Thread.sleep(200);
+					}
+				} catch (InterruptedException e) {}
+				if (cvs.resultNumberValue == null) {
+					cancelled = true;
+					break;
+				} else {
+					final int is = variablesValues.size();
+					for (int i = 0; i < is; i++) {
+						if (variablesValues.get(i).v == f) {
+							variablesValues.remove(i);
+						}
+					}
+					variablesValues.add(new VariableValue((Variable) f, (Number) cvs.resultNumberValue));
+				}
+			}
+			if (!cancelled)  {
+				runnable.run();
+				Utils.debug.println(f.toString());
+			}
+		});
+		ct.setName("Variables user-input queue thread");
+		ct.setPriority(Thread.MIN_PRIORITY);
+		ct.setDaemon(true);
+		ct.start();
+	}
+	
+	private ArrayList<Function> getVariables(Function[] fncs) {
+		ArrayList<Function> res = new ArrayList<>();
+		for (Function f : fncs) {
+			if (f instanceof FunctionTwoValues) {
+				res.addAll(getVariables(new Function[]{((FunctionTwoValues)f).getVariable1(), ((FunctionTwoValues)f).getVariable2()}));
+			} else if (f instanceof FunctionMultipleValues) {
+				res.addAll(getVariables(((FunctionMultipleValues)f).getVariables()));
+			} else if (f instanceof AnteriorFunction) {
+				res.addAll(getVariables(new Function[]{((AnteriorFunction)f).getVariable()}));
+			} else if (f instanceof Variable) {
+				if (!res.contains(f)) {
+					res.add(f);
+				}
+			}
+		}
+		return res;
 	}
 	
 	@Override
@@ -557,6 +777,7 @@ public class MathInputScreen extends Screen {
 		es2.errorLevel = es.errorLevel;
 		es2.mustRefresh = es.mustRefresh;
 		es2.afterDoNextStep = es.afterDoNextStep;
+		es2.variablesValues = Utils.cloner.deepClone(es.variablesValues);
 		return es2;
 	}
 

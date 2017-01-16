@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
@@ -44,6 +45,7 @@ public class Utils {
 	public static DebugStream debug = new DebugStream();
 
 	public static boolean debugOn;
+	public static boolean debugThirdScreen;
 
 	public static Cloner cloner = new Cloner();
 	
@@ -485,5 +487,21 @@ public class Utils {
 	
 	public static boolean isIntegerValue(BigDecimal bd) {
 		 return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+	}
+
+	public static <T> String arrayToString(T... data) {
+		String sdata = "";
+		for (T o : data) {
+			sdata += ","+o.toString();
+		}
+		return sdata.substring(1);
+	}
+
+	public static String arrayToString(boolean... data) {
+		String sdata = "";
+		for (boolean o : data) {
+			sdata += (o)?1:0;
+		}
+		return sdata;
 	}
 }
