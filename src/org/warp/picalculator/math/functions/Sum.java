@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule5;
@@ -20,13 +21,13 @@ import org.warp.picalculator.math.rules.methods.SumMethod1;
 
 public class Sum extends FunctionTwoValues {
 
-	public Sum(Function parent, Function value1, Function value2) {
-		super(parent, value1, value2);
+	public Sum(Calculator root, Function value1, Function value2) {
+		super(root, value1, value2);
 	}
 
 	@Override
-	protected Function NewInstance(Function parent2, Function value1, Function value2) {
-		return new Sum(parent, value1, value2);
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new Sum(root, value1, value2);
 	}
 	
 	@Override
@@ -73,15 +74,15 @@ public class Sum extends FunctionTwoValues {
 		} else if (SumMethod1.compare(this)) {
 			result = SumMethod1.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
-			if ((parent == null || parent.getParent() == null)) {
+			if ((root.getChild().equals(this))) {
 				if (((Number)variable1).term.compareTo(new BigDecimal(2)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(2)) == 0) {
-					result.add(new Joke(Joke.FISH));
+					result.add(new Joke(root, Joke.FISH));
 					return result;
 				} else if (((Number)variable1).term.compareTo(new BigDecimal(20)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(20)) == 0) {
-					result.add(new Joke(Joke.TORNADO));
+					result.add(new Joke(root, Joke.TORNADO));
 					return result;
 				} else if (((Number)variable1).term.compareTo(new BigDecimal(29)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(29)) == 0) {
-					result.add(new Joke(Joke.SHARKNADO));
+					result.add(new Joke(root, Joke.SHARKNADO));
 					return result;
 				}
 			}

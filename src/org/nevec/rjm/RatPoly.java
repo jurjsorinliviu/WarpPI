@@ -31,7 +31,7 @@ class RatPoly {
 	 * Initializes the zero-valued polynomial x=0.
 	 */
 	public RatPoly() {
-		a = new Vector<Rational>();
+		a = new Vector<>();
 	} /* ctor */
 
 	/**
@@ -42,7 +42,7 @@ class RatPoly {
 	 *            is created.
 	 */
 	public RatPoly(final Vector<Rational> L) {
-		a = new Vector<Rational>();
+		a = new Vector<>();
 		for (int i = 0; i < L.size(); i++)
 			a.add(L.elementAt(i).clone());
 		simplify();
@@ -55,7 +55,7 @@ class RatPoly {
 	 *            the string of the form a0,a1,a2,a3 with the coefficients
 	 */
 	public RatPoly(final String L) throws NumberFormatException {
-		a = new Vector<Rational>();
+		a = new Vector<>();
 		Scanner sc = new Scanner(L);
 		sc.useDelimiter(",");
 		while (sc.hasNext()) {
@@ -129,7 +129,7 @@ class RatPoly {
 	 * @since 2008-11-13
 	 */
 	protected void init(final Vector<BigInteger> A, final Vector<BigInteger> B, int nmax) throws Error {
-		a = new Vector<Rational>();
+		a = new Vector<>();
 		Factorial f = new Factorial();
 		for (int n = 0; n <= nmax; n++) {
 			Rational c = new Rational(1, 1);
@@ -888,7 +888,7 @@ class RatPoly {
 		Random rand = new Random();
 		MathContext mc = new MathContext(digits + 3, RoundingMode.DOWN);
 
-		Vector<BigComplex> res = new Vector<BigComplex>();
+		Vector<BigComplex> res = new Vector<>();
 
 		final int d = mon.degree();
 		double randRad = 0.;
@@ -918,7 +918,7 @@ class RatPoly {
 		for (; !convr;)// ORIGINAL LINE: for(int itr =0 ; ! convr ; itr++)
 		{
 			convr = true;
-			Vector<BigComplex> resPlus = new Vector<BigComplex>();
+			Vector<BigComplex> resPlus = new Vector<>();
 			for (int v = 0; v < d; v++) {
 				/*
 				 * evaluate f(x)/(x-root1)/(x-root2)/... (x-rootdegr), Newton
@@ -959,7 +959,7 @@ class RatPoly {
 	 */
 	public Vector<BigInteger> iroots() {
 		/* The vector of the roots */
-		Vector<BigInteger> res = new Vector<BigInteger>();
+		Vector<BigInteger> res = new Vector<>();
 
 		int lowd = ldegree();
 		if (lowd == 0 && a.elementAt(0).compareTo(BigInteger.ZERO) == 0) {
@@ -984,7 +984,7 @@ class RatPoly {
 		 * and eventually get the integer polynomial by ignoring the
 		 * denominators
 		 */
-		Vector<BigInteger> ipo = new Vector<BigInteger>();
+		Vector<BigInteger> ipo = new Vector<>();
 		for (int i = 0; i < a.size(); i++) {
 			BigInteger d = a.elementAt(i).a.multiply(lcmDeno).divide(a.elementAt(i).b);
 			ipo.add(d);

@@ -19,10 +19,10 @@ public class FractionsRule1 {
 			Division fnc = (Division) f;
 			if (fnc.getVariable1() instanceof Number) {
 				Number numb1 = (Number) fnc.getVariable1();
-				if (numb1.equals(new Number(null, 0))) {
+				if (numb1.equals(new Number(root, 0))) {
 					if (fnc.getVariable2() instanceof Number) {
 						Number numb2 = (Number) fnc.getVariable2();
-						if (numb2.equals(new Number(null, 0))) {
+						if (numb2.equals(new Number(root, 0))) {
 							return false;
 						}
 					}

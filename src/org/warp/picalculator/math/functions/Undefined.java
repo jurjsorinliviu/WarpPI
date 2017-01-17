@@ -5,11 +5,14 @@ import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.math.Calculator;
 
 public class Undefined implements Function {
+	
+	protected final Calculator root;
 
-	public Undefined(Function parent) {
-		setParent(parent);
+	public Undefined(Calculator root) {
+		this.root = root;
 	}
 
 	@Override
@@ -28,7 +31,6 @@ public class Undefined implements Function {
 	}
 
 	private int width, height, line;
-	private Function parent;
 	private boolean small;
 	
 	@Override
@@ -60,14 +62,8 @@ public class Undefined implements Function {
 	}
 
 	@Override
-	public Function setParent(Function parent) {
-		this.parent = parent;
-		return this;
-	}
-
-	@Override
-	public Function getParent() {
-		return parent;
+	public Calculator getRoot() {
+		return root;
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package org.warp.picalculator.math.functions;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 
 public interface Function {
 	public String getSymbol();
@@ -21,9 +22,7 @@ public interface Function {
 
 	public int getLine();
 	
-	public Function setParent(Function parent);
-	
-	public Function getParent();
+	public Calculator getRoot();
 	
 	public void setSmall(boolean small);
 	

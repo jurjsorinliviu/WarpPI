@@ -17,7 +17,7 @@ public class ExponentRule3 {
 
 	public static boolean compare(Function f) {
 		Power fnc = (Power) f;
-		if (fnc.getVariable2().equals(new Number(null, 0))) {
+		if (fnc.getVariable2().equals(new Number(root, 0))) {
 			return true;
 		}
 		return false;

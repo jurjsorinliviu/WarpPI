@@ -2,30 +2,31 @@ package org.warp.picalculator.math;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Variable;
+import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystem;
-import org.warp.picalculator.screens.MathInputScreen;
-import org.warp.picalculator.screens.SolveEquationScreen;
 
 public class Calculator {
 
 	public AngleMode angleMode = AngleMode.DEG;
 	public boolean exactMode = false;
+	public ArrayList<Function> f;
+	public ArrayList<Function> f2;
+	public ArrayList<VariableValue> variablesValues;
+	public int resultsCount;
 	
 	public Calculator() {
+		f = new ArrayList<>();
+		f2 = new ArrayList<>();
+		variablesValues = new ArrayList<>();
+		resultsCount = 0;
 	}
 
 	public Function parseString(String string) throws Error {
@@ -34,7 +35,7 @@ public class Calculator {
 				throw new Error(Errors.SYNTAX_ERROR);
 			}
 			String[] parts = string.substring(1).split("\\{");
-			EquationsSystem s = new EquationsSystem(null);
+			EquationsSystem s = new EquationsSystem(this);
 			for (String part : parts) {
 				s.addFunctionToEnd(parseEquationString(part));
 			}
@@ -42,21 +43,21 @@ public class Calculator {
 		} else if (string.contains("=")) {
 			return parseEquationString(string);
 		} else {
-			return new Expression(null, string);
+			return new Expression(this, string);
 		}
 	}
 	
 	public Function parseEquationString(String string) throws Error {
 		String[] parts = string.split("=");
 		if (parts.length == 1) {
-			Equation e = new Equation(null, null, null);
-			e.setVariable1(new Expression(e, parts[0]));
-			e.setVariable2(new Number(e, BigInteger.ZERO));
+			Equation e = new Equation(this, null, null);
+			e.setVariable1(new Expression(this, parts[0]));
+			e.setVariable2(new Number(this, BigInteger.ZERO));
 			return e;
 		} else if (parts.length == 2) {
-			Equation e = new Equation(null, null, null);
-			e.setVariable1(new Expression(e, parts[0]));
-			e.setVariable2(new Expression(e, parts[1]));
+			Equation e = new Equation(this, null, null);
+			e.setVariable1(new Expression(this, parts[0]));
+			e.setVariable2(new Expression(this, parts[1]));
 			return e;
 		} else {
 			throw new Error(Errors.SYNTAX_ERROR);
@@ -85,12 +86,44 @@ public class Calculator {
 							partialResults.add(itm);
 						}
 					}
-					results = new ArrayList<Function>(partialResults);
+					results = new ArrayList<>(partialResults);
 					partialResults.clear();
 				}
 			}
 		}
 		return results;
+	}
+
+	public Function getChild() {
+		return f.get(0);
+	}
+
+	public void init() {
+		if (f == null & f2 == null) {
+			f = new ArrayList<>();
+			f2 = new ArrayList<>();
+			variablesValues = new ArrayList<>();
+			resultsCount = 0;
+		}
+	}
+
+	public void parseInputString(String eqn) throws Error {
+		ArrayList<Function> fncs = new ArrayList<>();
+		if (eqn.length() > 0) {
+			try {
+				fncs.add(parseString(eqn.replace("sqrt", "Ⓐ").replace("^", "Ⓑ")));
+			} catch (Exception ex) {
+				
+			}
+		}
+		f = fncs;
+		for (Function f : f) {
+			try {
+				f.generateGraphics();
+			} catch (NullPointerException ex) {
+				throw new Error(Errors.SYNTAX_ERROR);
+			}
+		}
 	}
 	
 	/*public void solve(EquationScreen equationScreen, char letter) throws Error {

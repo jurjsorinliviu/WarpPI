@@ -18,7 +18,7 @@ public class UndefinedRule1 {
 
 	public static boolean compare(Function f) {
 		Power fnc = (Power) f;
-		if (fnc.getVariable1().equals(new Number(null, 0)) && fnc.getVariable2().equals(new Number(null, 0))) {
+		if (fnc.getVariable1().equals(new Number(root, 0)) && fnc.getVariable2().equals(new Number(root, 0))) {
 			return true;
 		}
 		return false;
@@ -26,7 +26,7 @@ public class UndefinedRule1 {
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		result.add(new Undefined(f.getParent()));
+		result.add(new Undefined(root));
 		return result;
 	}
 

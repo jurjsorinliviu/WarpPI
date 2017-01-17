@@ -21,7 +21,7 @@ public class Prime {
 	/**
 	 * The list of all numbers as a vector.
 	 */
-	static Vector<BigInteger> a = new Vector<BigInteger>();
+	static Vector<BigInteger> a = new Vector<>();
 
 	/**
 	 * The maximum integer covered by the high end of the list.

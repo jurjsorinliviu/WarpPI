@@ -3,25 +3,30 @@ package org.warp.picalculator.math.functions;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
 
 public abstract class AnteriorFunction implements Function {
-	public AnteriorFunction(Function parent, Function value) {
-		setParent(parent);
-		setVariable(value);
+	public AnteriorFunction(Function value) {
+		this.root = value.getRoot();
+		variable = value;
 	}
-
-	protected abstract Function NewInstance(Function parent2, Function f);
 	
-	protected Function parent;
-	protected Function variable = new Number(null, BigInteger.ZERO);
+	public AnteriorFunction(Calculator root, Function value) {
+		this.root = root;
+		variable = value;
+	}
+	
+	protected abstract Function NewInstance(Calculator root, Function value);
+	
+	protected final Calculator root;
+	protected Function variable;
 	protected int width;
 	protected int height;
 	protected int line;
@@ -35,13 +40,9 @@ public abstract class AnteriorFunction implements Function {
 		variable = value;
 	}
 
-	public Function getParent() {
-		return parent;
-	}
-
-	public Function setParent(Function value) {
-		parent = value;
-		return this;
+	@Override
+	public Calculator getRoot() {
+		return root;
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public abstract class AnteriorFunction implements Function {
 		if (result == null || result.isEmpty()) {
 			result = new ArrayList<>();
 			
-			ArrayList<Function> l1 = new ArrayList<Function>();
+			ArrayList<Function> l1 = new ArrayList<>();
 			if (variable.isSolved()) {
 				l1.add(variable);
 			} else {
@@ -63,7 +64,7 @@ public abstract class AnteriorFunction implements Function {
 			}
 			
 			for (Function f : l1) {
-				result.add(NewInstance(this.parent, (Function)f));
+				result.add(NewInstance(this.root, f));
 			}
 		}
 		

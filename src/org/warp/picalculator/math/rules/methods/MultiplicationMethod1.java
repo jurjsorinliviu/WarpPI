@@ -27,19 +27,19 @@ public class MultiplicationMethod1 {
 		Function elem2 = elements.get(workingElementCouple[1]);
 		
 		final int size = elements.size();
-		Function prec = new Multiplication(null, elem1, elem2);
+		Function prec = new Multiplication(root, elem1, elem2);
 		elem1.setParent(prec);
 		elem2.setParent(prec);
 		for (int i = size-1; i >= 0; i--) {
 			if (i != workingElementCouple[0] & i != workingElementCouple[1]) {
 				Function a = prec;
 				Function b = elements.get(i);
-				prec = new Multiplication(null, a, b);
+				prec = new Multiplication(root, a, b);
 				a.setParent(prec);
 				b.setParent(prec);
 			}
 		}
-		prec.setParent(f.getParent());
+		prec.setParent(root);
 		
 		result = prec;
 		
@@ -71,7 +71,7 @@ public class MultiplicationMethod1 {
 				b = elements.get(j);
 				if (i != j) {
 					Function testFunc;
-					testFunc = new Multiplication(null, a, b);
+					testFunc = new Multiplication(root, a, b);
 					if (!testFunc.isSolved()) {
 						return new int[]{i, j};
 					}

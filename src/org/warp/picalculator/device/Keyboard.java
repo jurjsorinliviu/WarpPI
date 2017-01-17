@@ -1,16 +1,11 @@
 package org.warp.picalculator.device;
 
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.Screen;
-import org.warp.picalculator.math.AngleMode;
-import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.screens.KeyboardDebugScreen;
 import org.warp.picalculator.screens.MarioScreen;
 

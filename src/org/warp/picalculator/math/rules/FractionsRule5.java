@@ -32,8 +32,8 @@ public class FractionsRule5 {
 		Power fnc = (Power) f;
 		Function a = ((Division)fnc.getVariable1()).getVariable1();
 		Function b = ((Division)fnc.getVariable1()).getVariable2();
-		Function c = ((Number)fnc.getVariable2()).multiply(new Number(null, "-1"));
-		Division dv = new Division(null, b, a);
+		Function c = ((Number)fnc.getVariable2()).multiply(new Number(root, "-1"));
+		Division dv = new Division(root, b, a);
 		Power pow = new Power(f.getParent(), dv, c);
 		dv.setParent(pow);
 		result.add(pow);

@@ -20,37 +20,37 @@ import com.rits.cloning.Cloner;
 
 public class Number implements Function {
 
-	private Function parent;
+	private final Calculator root;
 	protected BigDecimal term;
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
 
-	public Number(Calculator calc, Function parent, BigInteger val) {
-		this.parent = parent;
+	public Number(Calculator root, BigInteger val) {
+		this.root = root;
 		term = new BigDecimal(val).setScale(Utils.scale, Utils.scaleMode2);
 	}
 	
-	public Number(Function parent, BigDecimal val) {
-		this.parent = parent;
+	public Number(Calculator root, BigDecimal val) {
+		this.root = root;
 		term = val.setScale(Utils.scale, Utils.scaleMode2);
 	}
 
-	public Number(Function parent, String s) throws Error {
-		this(parent, new BigInteger(s));
+	public Number(Calculator root, String s) throws Error {
+		this(root, new BigDecimal(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
-	public Number(Function parent, int s) {
-		this(parent, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
+	public Number(Calculator root, int s) {
+		this(root, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
-	public Number(Function parent, float s) {
-		this(parent, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
+	public Number(Calculator root, float s) {
+		this(root, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
-	public Number(Function parent, double s) {
-		this(parent, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
+	public Number(Calculator root, double s) {
+		this(root, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
 	public BigDecimal getTerm() {
@@ -74,26 +74,26 @@ public class Number implements Function {
 	}
 
 	public Number add(Number f) {
-		Number ret = new Number(this.parent, getTerm().add(f.getTerm()));
+		Number ret = new Number(this.root, getTerm().add(f.getTerm()));
 		return ret;
 	}
 
 	public Number multiply(Number f) {
-		Number ret = new Number(this.parent, getTerm().multiply(f.getTerm()));
+		Number ret = new Number(this.root, getTerm().multiply(f.getTerm()));
 		return ret;
 	}
 
 	public Number divide(Number f) throws Error {
-		Number ret = new Number(this.parent, BigDecimalMath.divideRound(getTerm(), f.getTerm()));
+		Number ret = new Number(this.root, BigDecimalMath.divideRound(getTerm(), f.getTerm()));
 		return ret;
 	}
 	
 	public Number pow(Number f) throws Error {
-		Number ret = new Number(this.parent, BigDecimal.ONE);
+		Number ret = new Number(this.root, BigDecimal.ONE);
 		if (Utils.isIntegerValue(f.term)) {
 			final BigInteger bi = f.term.toBigInteger();
 			for (BigInteger i = BigInteger.ZERO; i.compareTo(bi) < 0; i = i.add(BigInteger.ONE)) {
-				ret = ret.multiply(new Number(this.parent, getTerm()));
+				ret = ret.multiply(new Number(this.root, getTerm()));
 			}
 		} else {
 			ret.term = BigDecimalMath.pow(term, f.term);
@@ -113,7 +113,7 @@ public class Number implements Function {
 			s = s+"…";
 		}
 		
-		if (Calculator.exactMode == false) {
+		if (root.exactMode == false) {
 			String cuttedNumber = s.split("\\.")[0];
 			if (cuttedNumber.length() > 8) {
 				return cuttedNumber.substring(0, 1)+","+cuttedNumber.substring(1, 8)+"ℯ℮"+(cuttedNumber.length()-1);
@@ -265,14 +265,9 @@ public class Number implements Function {
 		return false;
 	}
 
-	public Function setParent(Function value) {
-		parent = value;
-		return this;
-	}
-
 	@Override
-	public Function getParent() {
-		return parent;
+	public Calculator getRoot() {
+		return root;
 	}
 
 	/*
@@ -302,7 +297,7 @@ public class Number implements Function {
 	{
 		BigInteger n = getTerm().toBigIntegerExact();
 	    BigInteger two = BigInteger.valueOf(2);
-	    LinkedList<BigInteger> fs = new LinkedList<BigInteger>();
+	    LinkedList<BigInteger> fs = new LinkedList<>();
 
 	    if (n.compareTo(two) < 0)
 	    {

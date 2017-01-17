@@ -3,6 +3,7 @@ package org.warp.picalculator.math.functions;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.NumberRule1;
@@ -13,8 +14,8 @@ import org.warp.picalculator.math.rules.methods.MultiplicationMethod1;
 
 public class Multiplication extends FunctionTwoValues {
 
-	public Multiplication(Function parent, Function value1, Function value2) {
-		super(parent, value1, value2);
+	public Multiplication(Calculator root, Function value1, Function value2) {
+		super(root, value1, value2);
 		if (value1 instanceof Variable && value2 instanceof Variable == false) {
 			variable1 = value2;
 			variable2 = value1;
@@ -22,8 +23,8 @@ public class Multiplication extends FunctionTwoValues {
 	}
 	
 	@Override
-	protected Function NewInstance(Function parent2, Function value1, Function value2) {
-		return new Multiplication(parent, value1, value2);
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new Multiplication(root, value1, value2);
 	}
 
 	@Override

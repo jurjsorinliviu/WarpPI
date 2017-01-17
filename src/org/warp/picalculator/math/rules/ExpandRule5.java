@@ -39,10 +39,10 @@ public class ExpandRule5 {
 
 		if (f instanceof Negative) {
 			Negative fnc = (Negative) f;
-			result.add(((Negative)((Expression)fnc.getVariable()).getVariable(0)).getVariable().setParent(f.getParent()));
+			result.add(((Negative)((Expression)fnc.getVariable()).getVariable(0)).getVariable().setParent(root));
 		} else if (f instanceof Subtraction) {
 			Subtraction fnc = (Subtraction) f;
-			result.add(((Negative)((Expression)fnc.getVariable2()).getVariable(0)).getVariable().setParent(f.getParent()));
+			result.add(((Negative)((Expression)fnc.getVariable2()).getVariable(0)).getVariable().setParent(root));
 		}
 		return result;
 	}

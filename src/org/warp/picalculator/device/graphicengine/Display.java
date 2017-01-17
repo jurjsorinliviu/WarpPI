@@ -179,7 +179,7 @@ public class Display {
 					newColor = skin[(s0 + texx) + (t0 + texy) * skinwidth];
 					if (transparent) {
 						oldColor = canvas2d[(x0 + texx*onex + width) + (y0 + texy*oney + height) * size[0]];
-						float a2 = ((float)(newColor >> 24 & 0xFF)) / 255f;
+						float a2 = (newColor >> 24 & 0xFF) / 255f;
 						float a1 = 1f-a2;
 						int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
 						int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);

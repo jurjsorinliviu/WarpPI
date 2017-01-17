@@ -3,19 +3,20 @@ package org.warp.picalculator.math.functions.trigonometry;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
 
 public class Cosine extends AnteriorFunction {
 	
-	public Cosine(Function parent, Function value) {
-		super(parent, value);
+	public Cosine(Calculator root, Function value) {
+		super(root, value);
 	}
 	
 	@Override
-	public Function NewInstance(Function parent, Function value) {
-		return new Cosine(parent, value);
+	public Function NewInstance(Calculator root, Function value) {
+		return new Cosine(root, value);
 	}
 	
 	@Override

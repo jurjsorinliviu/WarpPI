@@ -1,29 +1,25 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.nevec.rjm.BigDecimalMath;
-import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 
 public class Sine extends AnteriorFunction {
 	
-	public Sine(Function parent, Function value) {
-		super(parent, value);
+	public Sine(Calculator root, Function value) {
+		super(root, value);
 	}
 	
 	@Override
-	public Function NewInstance(Function parent, Function value) {
-		return new Sine(parent, value);
+	public Function NewInstance(Calculator root, Function value) {
+		return new Sine(root, value);
 	}
 	
 	@Override
@@ -34,12 +30,12 @@ public class Sine extends AnteriorFunction {
 	@Override
 	protected boolean isSolvable() {
 		if (variable instanceof Number) {
-			if (Calculator.exactMode == false) {
+			if (root.exactMode == false) {
 				return true;
 			}
 		}
-		if (Calculator.angleMode == AngleMode.DEG) {
-			Function[] solvableValues = new Function[]{new Number(null, 0), new Number(null, 30), new Number(null, 90), };
+		if (root.angleMode == AngleMode.DEG) {
+			Function[] solvableValues = new Function[]{new Number(root, 0), new Number(root, 30), new Number(root, 90), };
 		}
 		return false;
 	}
@@ -48,8 +44,8 @@ public class Sine extends AnteriorFunction {
 	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> results = new ArrayList<>();
 		if (variable instanceof Number) {
-			if (Calculator.exactMode == false) {
-				results.add(new Number(parent, BigDecimalMath.sin(((Number) variable).getTerm())));
+			if (root.exactMode == false) {
+				results.add(new Number(root, BigDecimalMath.sin(((Number) variable).getTerm())));
 			}
 		}
 		return results;

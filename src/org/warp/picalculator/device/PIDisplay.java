@@ -23,9 +23,6 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.RAWFont;
 import org.warp.picalculator.device.graphicengine.Screen;
-import org.warp.picalculator.math.AngleMode;
-import org.warp.picalculator.math.Calculator;
-
 import com.pi4j.wiringpi.Gpio;
 
 /**
@@ -322,7 +319,7 @@ public final class PIDisplay {
 		if (error != null) {
 			glSetFont(Utils.getFont(false, false));
 			glColor3i(129, 28, 22);
-			glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1]- this.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
+			glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1]- PIDisplay.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
 			glColor3i(149, 32, 26);
 			glDrawStringCenter((Main.screenSize[0] / 2), 22, error);
 			glColor3i(164, 34, 28);

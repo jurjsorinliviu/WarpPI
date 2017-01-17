@@ -48,7 +48,7 @@ public class NumberRule3 {
 		ArrayList<Function> result = new ArrayList<>();
 		if (f instanceof SumSubtraction) {
 			Multiplication mul = new Multiplication(f.getParent(), null, null);
-			mul.setVariable1(new Number(null, 2));
+			mul.setVariable1(new Number(root, 2));
 			mul.setVariable2(f);
 			result.add(mul);
 		}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Number;
 
@@ -16,11 +17,12 @@ import org.warp.picalculator.math.functions.Number;
  */
 public class DivisionRule1 {
 
-	public static boolean compare(Function f) {
-		return ((Division)f).getVariable1().isSolved() && ((Division)f).getVariable2().isSolved() && !(((Division)f).getVariable1() instanceof Number && ((Division)f).getVariable2() instanceof Number) && getFirstWorkingDivisionCouple(getDivisionElements(f)) != null;
+	public static boolean compare(Division f) {
+		return f.getVariable1().isSolved() && f.getVariable2().isSolved() && !(f.getVariable1() instanceof Number && f.getVariable2() instanceof Number) && getFirstWorkingDivisionCouple(getDivisionElements(f)) != null;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
+	public static ArrayList<Function> execute(Division f) throws Error {
+		Calculator root = f.getRoot();
 		Function result;
 		ArrayList<Function> elements = getDivisionElements(f);
 		int[] workingElementCouple = getFirstWorkingDivisionCouple(elements);
@@ -28,19 +30,14 @@ public class DivisionRule1 {
 		Function elem2 = elements.get(workingElementCouple[1]);
 		
 		final int size = elements.size();
-		Function prec = new Multiplication(null, elem1, elem2);
-		elem1.setParent(prec);
-		elem2.setParent(prec);
+		Function prec = new Multiplication(root, elem1, elem2);
 		for (int i = size-1; i >= 0; i--) {
 			if (i != workingElementCouple[0] & i != workingElementCouple[1]) {
 				Function a = prec;
 				Function b = elements.get(i);
-				prec = new Multiplication(null, a, b);
-				a.setParent(prec);
-				b.setParent(prec);
+				prec = new Multiplication(root, a, b);
 			}
 		}
-		prec.setParent(f.getParent());
 		
 		result = prec;
 		
@@ -83,7 +80,7 @@ public class DivisionRule1 {
 				b = elements.get(j);
 				if (i != j) {
 					Function testFunc;
-					testFunc = new Multiplication(null, a, b);
+					testFunc = new Multiplication(root, a, b);
 					if (!testFunc.isSolved()) {
 						return new int[]{i, j};
 					}

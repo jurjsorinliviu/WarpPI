@@ -20,7 +20,7 @@ public class UndefinedRule2 {
 		Division fnc = (Division) f;
 		if (fnc.getVariable2() instanceof Number) {
 			Number numb = (Number) fnc.getVariable2();
-			if (numb.equals(new Number(null, 0))) {
+			if (numb.equals(new Number(root, 0))) {
 				return true;
 			}
 		}
@@ -29,7 +29,7 @@ public class UndefinedRule2 {
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		result.add(new Undefined(f.getParent()));
+		result.add(new Undefined(root));
 		return result;
 	}
 

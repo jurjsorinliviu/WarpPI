@@ -4,14 +4,10 @@ import static org.warp.picalculator.device.graphicengine.Display.Render.glColor3
 import static org.warp.picalculator.device.graphicengine.Display.Render.glColor4i;
 import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringCenter;
 
-import org.warp.picalculator.Error;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.device.Keyboard.Key;
-import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Screen;
-import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 
 public class ChooseVariableValueScreen extends Screen {

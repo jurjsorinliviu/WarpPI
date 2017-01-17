@@ -19,13 +19,13 @@ public class NumberRule1 {
 		Multiplication mult = (Multiplication) f;
 		if (mult.getVariable1() instanceof Number) {
 			Number numb = (Number) mult.getVariable1();
-			if (numb.equals(new Number(null, 0))) {
+			if (numb.equals(new Number(root, 0))) {
 				return true;
 			}
 		}
 		if (mult.getVariable2() instanceof Number) {
 			Number numb = (Number) mult.getVariable2();
-			if (numb.equals(new Number(null, 0))) {
+			if (numb.equals(new Number(root, 0))) {
 				return true;
 			}
 		}

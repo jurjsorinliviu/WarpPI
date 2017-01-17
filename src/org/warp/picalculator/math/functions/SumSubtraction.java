@@ -9,6 +9,7 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.NumberRule3;
@@ -17,13 +18,13 @@ import org.warp.picalculator.math.rules.NumberRule5;
 
 public class SumSubtraction extends FunctionTwoValues {
 
-	public SumSubtraction(Function parent, Function value1, Function value2) {
-		super(parent, value1, value2);
+	public SumSubtraction(Calculator root, Function value1, Function value2) {
+		super(root, value1, value2);
 	}
 	
 	@Override
-	protected Function NewInstance(Function parent2, Function value1, Function value2) {
-		return new SumSubtraction(parent, value1, value2);
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new SumSubtraction(root, value1, value2);
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class SumSubtraction extends FunctionTwoValues {
 			result = NumberRule5.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
 			result.add(((Number)variable1).add((Number)variable2));
-			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(this.parent, "-1"))));
+			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(root, "-1"))));
 		}
 		return result;
 	}

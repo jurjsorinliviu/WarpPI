@@ -17,7 +17,7 @@ public class ExponentRule2 {
 
 	public static boolean compare(Function f) {
 		Power fnc = (Power) f;
-		if (fnc.getVariable2().equals(new Number(null, 1))) {
+		if (fnc.getVariable2().equals(new Number(root, 1))) {
 			return true;
 		}
 		return false;
@@ -25,7 +25,7 @@ public class ExponentRule2 {
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		result.add(((Power)f).getVariable1().setParent(f.getParent()));
+		result.add(((Power)f).getVariable1().setParent(root));
 		return result;
 	}
 

@@ -19,13 +19,13 @@ public class NumberRule2 {
 		Multiplication mult = (Multiplication) f;
 		if (mult.getVariable1() instanceof Number) {
 			Number numb = (Number) mult.getVariable1();
-			if (numb.equals(new Number(null, 1))) {
+			if (numb.equals(new Number(root, 1))) {
 				return true;
 			}
 		}
 		if (mult.getVariable2() instanceof Number) {
 			Number numb = (Number) mult.getVariable2();
-			if (numb.equals(new Number(null, 1))) {
+			if (numb.equals(new Number(root, 1))) {
 				return true;
 			}
 		}
@@ -39,20 +39,20 @@ public class NumberRule2 {
 		Multiplication mult = (Multiplication) f;
 		if (aFound == false & mult.getVariable1() instanceof Number) {
 			Number numb = (Number) mult.getVariable1();
-			if (numb.equals(new Number(null, 1))) {
+			if (numb.equals(new Number(root, 1))) {
 				a = mult.getVariable2();
 				aFound = true;
 			}
 		}
 		if (aFound == false && mult.getVariable2() instanceof Number) {
 			Number numb = (Number) mult.getVariable2();
-			if (numb.equals(new Number(null, 1))) {
+			if (numb.equals(new Number(root, 1))) {
 				a = mult.getVariable1();
 				aFound = true;
 			}
 		}
 		
-		result.add(a.setParent(f.getParent()));
+		result.add(a.setParent(root));
 		return result;
 	}
 

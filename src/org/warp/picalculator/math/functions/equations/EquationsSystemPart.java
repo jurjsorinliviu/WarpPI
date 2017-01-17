@@ -6,35 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
 
 public class EquationsSystemPart extends AnteriorFunction {
 
-	public EquationsSystemPart(Function parent, Equation equazione) {
-		super(parent, equazione);
+	public EquationsSystemPart(Calculator root, Equation equazione) {
+		super(root, equazione);
 	}
 
+	@Override
+	protected Function NewInstance(Calculator root, Function value) {
+		return new EquationsSystemPart(root, value);
+	}
+	
 	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.SYSTEM;
-	}
-
-	@Override
-	protected boolean isSolvable() throws Error {
-		return variable.isSolved()==false;
-	}
-
-	@Override
-	public List<Function> solveOneStep() throws NumberFormatException, Error {
-		// TODO implementare il calcolo dei sistemi
-		if (variable.isSolved()) {
-			List<Function> ret = new ArrayList<>();
-			ret.add(variable);
-			return ret;
-		}
-		return variable.solveOneStep();
 	}
 
 	@Override

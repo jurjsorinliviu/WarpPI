@@ -31,7 +31,7 @@ public class SumMethod1 {
 		Function elem2 = elements.get(workingElementCouple[1]);
 		
 		final int size = elements.size();
-		Function prec = new Sum(null, elem1, elem2);
+		Function prec = new Sum(root, elem1, elem2);
 		elem1.setParent(prec);
 		elem2.setParent(prec);
 		for (int i = size-1; i >= 0; i--) {
@@ -39,21 +39,21 @@ public class SumMethod1 {
 				Function a = prec;
 				Function b = elements.get(i);
 				if (b instanceof Negative) {
-					prec = new Subtraction(null, a, ((Negative)b).getVariable());
+					prec = new Subtraction(root, a, ((Negative)b).getVariable());
 					a.setParent(prec);
 					((FunctionTwoValues)prec).getVariable2().setParent(prec);
 				} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigDecimal.ZERO) < 0) {
-					prec = new Subtraction(null, a, ((Number)b).multiply(new Number(null, -1)));
+					prec = new Subtraction(root, a, ((Number)b).multiply(new Number(root, -1)));
 					a.setParent(prec);
 					((FunctionTwoValues)prec).getVariable2().setParent(prec);
 				} else {
-					prec = new Sum(null, a, b);
+					prec = new Sum(root, a, b);
 					a.setParent(prec);
 					b.setParent(prec);
 				}
 			}
 		}
-		prec.setParent(f.getParent());
+		prec.setParent(root);
 		
 		result = prec;
 		
@@ -68,7 +68,7 @@ public class SumMethod1 {
 			if (sum instanceof Sum) {
 				elements.add(((FunctionTwoValues) sum).getVariable2());
 			} else {
-				elements.add(new Negative(null, ((FunctionTwoValues) sum).getVariable2()));
+				elements.add(new Negative(root, ((FunctionTwoValues) sum).getVariable2()));
 			}
 			sum = ((FunctionTwoValues) sum).getVariable1();
 		}
@@ -90,15 +90,15 @@ public class SumMethod1 {
 				if (i != j) {
 					Function testFunc;
 					if (b instanceof Negative) {
-						testFunc = new Subtraction(null, a, ((Negative)b).getVariable());
+						testFunc = new Subtraction(root, a, ((Negative)b).getVariable());
 					} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigDecimal.ZERO) < 0) {
-						testFunc = new Subtraction(null, a, ((Number)b).multiply(new Number(null, -1)));
+						testFunc = new Subtraction(root, a, ((Number)b).multiply(new Number(root, -1)));
 					} else if (a instanceof Negative) {
-						testFunc = new Subtraction(null, b, ((Negative)a).getVariable());
+						testFunc = new Subtraction(root, b, ((Negative)a).getVariable());
 					} else if (a instanceof Number && ((Number) a).getTerm().compareTo(BigDecimal.ZERO) < 0) {
-						testFunc = new Subtraction(null, b, ((Number)a).multiply(new Number(null, -1)));
+						testFunc = new Subtraction(root, b, ((Number)a).multiply(new Number(root, -1)));
 					} else {
-						testFunc = new Sum(null, a, b);
+						testFunc = new Sum(root, a, b);
 					}
 					if (!testFunc.isSolved()) {
 						return new int[]{i, j};

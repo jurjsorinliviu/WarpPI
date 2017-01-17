@@ -28,7 +28,7 @@ public class BigIntegerPoly implements Cloneable {
 	 * Creates the polynomial p(x)=0.
 	 */
 	public BigIntegerPoly() {
-		a = new Vector<BigInteger>();
+		a = new Vector<>();
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class BigIntegerPoly implements Cloneable {
 	 *            the string of the form a0,a1,a2,a3 with the coefficients
 	 */
 	public BigIntegerPoly(final String L) throws NumberFormatException {
-		a = new Vector<BigInteger>();
+		a = new Vector<>();
 		Scanner sc = new Scanner(L);
 		sc.useDelimiter(",");
 		while (sc.hasNextBigInteger())
@@ -537,7 +537,7 @@ public class BigIntegerPoly implements Cloneable {
 	 */
 	public Vector<BigInteger> iroots() {
 		/* The vector of the roots */
-		Vector<BigInteger> res = new Vector<BigInteger>();
+		Vector<BigInteger> res = new Vector<>();
 
 		/*
 		 * collect the zero
@@ -581,7 +581,7 @@ public class BigIntegerPoly implements Cloneable {
 		/*
 		 * The vector of the factors to be returned
 		 */
-		Vector<BigIntegerPoly> res = new Vector<BigIntegerPoly>();
+		Vector<BigIntegerPoly> res = new Vector<>();
 
 		if (degree() < 2)
 			return res;
@@ -679,7 +679,7 @@ public class BigIntegerPoly implements Cloneable {
 		/*
 		 * this ought be entirely rewritten in terms of the LLL algorithm
 		 */
-		Vector<BigIntegerPoly> fac = new Vector<BigIntegerPoly>();
+		Vector<BigIntegerPoly> fac = new Vector<>();
 
 		/* collect integer roots (polynomial factors of degree 1) */
 		Vector<BigInteger> r = iroots();

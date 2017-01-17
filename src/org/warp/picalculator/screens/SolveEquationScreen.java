@@ -56,13 +56,13 @@ public class SolveEquationScreen extends Screen {
 			case LETTER_X:
 				PIDisplay.INSTANCE.goBack();
 				try {
-					Calculator.solveExpression('X');
+					es.calc.solveExpression('X');
 				} catch (Error e) {
 					Screen scr = PIDisplay.INSTANCE.getScreen();
 					if (scr instanceof MathInputScreen) {
 						MathInputScreen escr = (MathInputScreen) scr;
 						escr.errorLevel = 1;
-						escr.err2 = e;
+						//escr.err2 = e; //TODO: What is this variable, and why it doesn't exists?
 					} else {
 						e.printStackTrace();
 					}
