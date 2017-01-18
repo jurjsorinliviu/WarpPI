@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.trigonometry.ArcCosine;
 import org.warp.picalculator.math.functions.trigonometry.ArcSine;
@@ -23,30 +24,29 @@ import org.warp.picalculator.math.functions.trigonometry.Tangent;
 
 public class Expression extends FunctionMultipleValues {
 
-	public Expression(Function parent) {
-		super(parent);
+	public Expression(Calculator root) {
+		super(root);
 	}
 	
-	public Expression(Function parent, Function[] values) {
-		super(parent, values);
+	public Expression(Calculator root, Function[] values) {
+		super(root, values);
 	}
 
 	private boolean initialParenthesis = false;
 
-	public Expression(Function parent, String string) throws Error {
-		this(parent, string, "", true);
+	public Expression(Calculator root, String string) throws Error {
+		this(root, string, "", true);
 	}
 
-	public Expression(Function parent, String string, String debugSpaces, boolean initialParenthesis) throws Error {
-		super(parent);
-		this.parent = parent;
+	public Expression(Calculator root, String string, String debugSpaces, boolean initialParenthesis) throws Error {
+		super(root);
 		this.initialParenthesis = initialParenthesis;
 		boolean isNumber = false;
 
 		// Determine if the expression is already a number:
 		// Determina se l'espressione è già un numero:
 		try {
-			new Number(this, string);
+			new Number(root, string);
 			isNumber = true;
 		} catch (NumberFormatException ex) {
 			isNumber = false;
@@ -60,7 +60,7 @@ public class Expression extends FunctionMultipleValues {
 		if (isNumber){
 			// If the expression is already a number:
 			// Se l'espressione è già un numero:
-			Number t = new Number(this, string);
+			Number t = new Number(root, string);
 			setVariables(new Function[] { t });
 			Utils.debug.println(debugSpaces + "•Result:" + t.toString());
 		} else {
@@ -211,7 +211,7 @@ public class Expression extends FunctionMultipleValues {
 			debugSpaces += "  ";
 
 			// Convert the expression to a list of objects
-			Expression imputRawParenthesis = new Expression(this);
+			Expression imputRawParenthesis = new Expression(root);
 			imputRawParenthesis.setVariables(new Function[] {});
 			String tmp = "";
 			final String[] functions = concat(concat(concat(concat(MathematicalSymbols.functions(), MathematicalSymbols.parentheses()), MathematicalSymbols.signums(true)), MathematicalSymbols.variables()), MathematicalSymbols.genericSyntax());
@@ -225,49 +225,49 @@ public class Expression extends FunctionMultipleValues {
 					Function f = null;
 					switch (charI) {
 						case MathematicalSymbols.SUM:
-							f = new Sum(this, null, null);
+							f = new Sum(root, null, null);
 							break;
 						case MathematicalSymbols.SUM_SUBTRACTION:
-							f = new SumSubtraction(this, null, null);
+							f = new SumSubtraction(root, null, null);
 							break;
 						case MathematicalSymbols.SUBTRACTION:
-							f = new Subtraction(this, null, null);
+							f = new Subtraction(root, null, null);
 							break;
 						case MathematicalSymbols.MINUS:
-							f = new Negative(this, null);
+							f = new Negative(root, null);
 							break;
 						case MathematicalSymbols.MULTIPLICATION:
-							f = new Multiplication(this, null, null);
+							f = new Multiplication(root, null, null);
 							break;
 						case MathematicalSymbols.DIVISION:
-							f = new Division(this, null, null);
+							f = new Division(root, null, null);
 							break;
 						case MathematicalSymbols.NTH_ROOT:
-							f = new Root(this, null, null);
+							f = new Root(root, null, null);
 							break;
 						case MathematicalSymbols.SQUARE_ROOT:
-							f = new RootSquare(this, null);
+							f = new RootSquare(root, null);
 							break;
 						case MathematicalSymbols.POWER:
-							f = new Power(this, null, null);
+							f = new Power(root, null, null);
 							break;
 						case MathematicalSymbols.SINE:
-							f = new Sine(this, null);
+							f = new Sine(root, null);
 							break;
 						case MathematicalSymbols.COSINE:
-							f = new Cosine(this, null);
+							f = new Cosine(root, null);
 							break;
 						case MathematicalSymbols.TANGENT:
-							f = new Tangent(this, null);
+							f = new Tangent(root, null);
 							break;
 						case MathematicalSymbols.ARC_SINE:
-							f = new ArcSine(this, null);
+							f = new ArcSine(root, null);
 							break;
 						case MathematicalSymbols.ARC_COSINE:
-							f = new ArcCosine(this, null);
+							f = new ArcCosine(root, null);
 							break;
 						case MathematicalSymbols.ARC_TANGENT:
-							f = new ArcTangent(this, null);
+							f = new ArcTangent(root, null);
 							break;
 						case MathematicalSymbols.PARENTHESIS_OPEN:
 							// Find the last closed parenthesis
@@ -300,15 +300,16 @@ public class Expression extends FunctionMultipleValues {
 								tmpExpr += processExpression.charAt(i);
 								i++;
 							}
-							f = new Expression(this, tmpExpr, debugSpaces, false);
+							f = new Expression(root, tmpExpr, debugSpaces, false);
 							break;
 						default:
 							if (Utils.isInArray(charI, MathematicalSymbols.variables())) {
-								f = new Variable(this, charI);
+								f = new Variable(root, charI);
 							} else {
 								if (charI == "(" || charI == ")") {
 									throw new Error(Errors.UNBALANCED_BRACKETS);
 								} else {
+									System.err.println("Unexpected character while parsing expression: " + charI);
 									throw new Error(Errors.SYNTAX_ERROR);
 								}
 //								throw new java.lang.RuntimeException("Il carattere " + charI + " non è tra le funzioni designate!\nAggiungerlo ad esse o rimuovere il carattere dall'espressione!");
@@ -319,28 +320,28 @@ public class Expression extends FunctionMultipleValues {
 					} else if (f instanceof Variable) {
 						if (imputRawParenthesis.getVariablesLength() == 0) {
 							if (tmp.length() > 0) {
-								imputRawParenthesis.addFunctionToEnd(new Number(this, tmp));
+								imputRawParenthesis.addFunctionToEnd(new Number(root, tmp));
 								Utils.debug.println(debugSpaces + "•Added number to expression:" + tmp);
-								imputRawParenthesis.addFunctionToEnd(new Multiplication(this, null, null));
-								Utils.debug.println(debugSpaces + "•Added multiplication to expression:" + new Multiplication(this, null, null).getSymbol());
+								imputRawParenthesis.addFunctionToEnd(new Multiplication(root, null, null));
+								Utils.debug.println(debugSpaces + "•Added multiplication to expression:" + new Multiplication(root, null, null).getSymbol());
 							}
 						} else {
 							Function precedentFunction = imputRawParenthesis.getVariable(imputRawParenthesis.getVariablesLength() - 1);
 							if (tmp.length() > 0) {
 								if (precedentFunction instanceof Number || precedentFunction instanceof Variable) {
-									imputRawParenthesis.addFunctionToEnd(new Multiplication(this, null, null));
-									Utils.debug.println(debugSpaces + "•Added multiplication to expression:" + new Multiplication(this, null, null).getSymbol());
+									imputRawParenthesis.addFunctionToEnd(new Multiplication(root, null, null));
+									Utils.debug.println(debugSpaces + "•Added multiplication to expression:" + new Multiplication(root, null, null).getSymbol());
 								}
 								if (tmp.equals("-")) {
-									imputRawParenthesis.addFunctionToEnd(new Subtraction(this, null, null));
+									imputRawParenthesis.addFunctionToEnd(new Subtraction(root, null, null));
 								} else {
-									imputRawParenthesis.addFunctionToEnd(new Number(this, tmp));
+									imputRawParenthesis.addFunctionToEnd(new Number(root, tmp));
 									Utils.debug.println(debugSpaces + "•Added number to expression:" + tmp);
 								}
 							}
 							if (tmp.length() > 0 || (precedentFunction instanceof Number || precedentFunction instanceof Variable)) {
-								imputRawParenthesis.addFunctionToEnd(new Multiplication(this, null, null));
-								Utils.debug.println(debugSpaces + "•Added multiplication to expression:" + new Multiplication(this, null, null).getSymbol());
+								imputRawParenthesis.addFunctionToEnd(new Multiplication(root, null, null));
+								Utils.debug.println(debugSpaces + "•Added multiplication to expression:" + new Multiplication(root, null, null).getSymbol());
 							}
 						}
 					} else {
@@ -350,7 +351,7 @@ public class Expression extends FunctionMultipleValues {
 									tmp = "-1";
 								}
 							}
-							imputRawParenthesis.addFunctionToEnd(new Number(this, tmp));
+							imputRawParenthesis.addFunctionToEnd(new Number(root, tmp));
 							Utils.debug.println(debugSpaces + "•Added number to expression:" + tmp);
 						}
 					}
@@ -373,7 +374,7 @@ public class Expression extends FunctionMultipleValues {
 			if (tmp.length() > 0) {
 				Utils.debug.println(debugSpaces + "•Added variable to expression:" + tmp);
 				try {
-					imputRawParenthesis.addFunctionToEnd(new Number(this, tmp));
+					imputRawParenthesis.addFunctionToEnd(new Number(root, tmp));
 				} catch (NumberFormatException ex) {
 					throw new Error(Errors.SYNTAX_ERROR);
 				}
@@ -406,7 +407,7 @@ public class Expression extends FunctionMultipleValues {
 			Utils.debug.println(debugSpaces + "•Pushing classes...");
 
 			Function[] oldFunctionsArray = imputRawParenthesis.getVariables();
-			ArrayList<Function> oldFunctionsList = new ArrayList<Function>();
+			ArrayList<Function> oldFunctionsList = new ArrayList<>();
 			for (int i = 0; i < oldFunctionsArray.length; i++) {
 				Function funzione = oldFunctionsArray[i];
 				if (funzione != null) {
@@ -417,7 +418,7 @@ public class Expression extends FunctionMultipleValues {
 							oldFunctionsArray[i-1] = null;
 							oldFunctionsList.remove(oldFunctionsList.size()-1);
 							i -= 1;
-							funzione = new RootSquare(this, null);
+							funzione = new RootSquare(root, null);
 						}
 					}
 					//Aggiunta della funzione alla lista grezza
@@ -448,7 +449,7 @@ public class Expression extends FunctionMultipleValues {
 						System.out.println("WARN: ---> POSSIBILE ERRORE????? <---");// BOH
 //						throw new Errore(Errori.SYNTAX_ERROR);
 						while (oldFunctionsList.size() > 1) {
-							oldFunctionsList.set(0, new Multiplication(this, oldFunctionsList.get(0), oldFunctionsList.remove(1)));
+							oldFunctionsList.set(0, new Multiplication(root, oldFunctionsList.get(0), oldFunctionsList.remove(1)));
 						}
 					}
 					Utils.debug.println(debugSpaces + "  •Phase: "+step);
@@ -512,8 +513,8 @@ public class Expression extends FunctionMultipleValues {
 									change = true;
 
 									if (i + 1 < oldFunctionsList.size() && i - 1 >= 0) {
-										((FunctionTwoValues) funzioneTMP).setVariable1((Function) oldFunctionsList.get(i - 1));
-										((FunctionTwoValues) funzioneTMP).setVariable2((Function) oldFunctionsList.get(i + 1));
+										((FunctionTwoValues) funzioneTMP).setVariable1(oldFunctionsList.get(i - 1));
+										((FunctionTwoValues) funzioneTMP).setVariable2(oldFunctionsList.get(i + 1));
 										oldFunctionsList.set(i, funzioneTMP);
 
 										// è importante togliere prima gli elementi
@@ -546,7 +547,7 @@ public class Expression extends FunctionMultipleValues {
 										
 									} else {
 										change = true;
-										((AnteriorFunction) funzioneTMP).setVariable((Function) nextFunc);
+										((AnteriorFunction) funzioneTMP).setVariable(nextFunc);
 										oldFunctionsList.set(i, funzioneTMP);
 
 										// è importante togliere prima gli elementi in
@@ -580,7 +581,7 @@ public class Expression extends FunctionMultipleValues {
 				} while (((oldFunctionsList.size() != before || step != "sums") && oldFunctionsList.size() > 1));
 			}
 			if(oldFunctionsList.isEmpty()) {
-				setVariables(new Function[]{new Number(this, 0)});
+				setVariables(new Function[]{new Number(root, 0)});
 			} else {
 				setVariables(oldFunctionsList);
 			}
@@ -630,7 +631,7 @@ public class Expression extends FunctionMultipleValues {
 					if (f instanceof Number || f instanceof Variable) {
 						ret.add(f);
 					} else {
-						ret.add(new Expression(this, new Function[]{(Function) f}));
+						ret.add(new Expression(root, new Function[]{f}));
 					}
 				}
 				return ret;
@@ -640,7 +641,7 @@ public class Expression extends FunctionMultipleValues {
 				if (f.isSolved() == false) {
 					List<Function> partial = f.solveOneStep();
 					for (Function fnc : partial) {
-						ret.add(new Expression(this, new Function[]{(Function) fnc}));
+						ret.add(new Expression(root, new Function[]{fnc}));
 					}
 				}
 			}
@@ -662,7 +663,7 @@ public class Expression extends FunctionMultipleValues {
 	
 	public boolean parenthesisNeeded() {
 		boolean parenthesisneeded = true;
-		if (parent == null || initialParenthesis || parent instanceof Division) {
+		if (initialParenthesis) {
 			parenthesisneeded = false;
 		} else {
 			if (functions.length == 1) {

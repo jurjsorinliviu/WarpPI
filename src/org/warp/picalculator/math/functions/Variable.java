@@ -9,25 +9,26 @@ import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
 
 public class Variable implements Function {
 
-	private Function parent;
 	protected char var;
 	protected int width;
 	protected int height;
 	protected int line;
 	protected boolean small;
+	protected final Calculator root;
 	
-	public Variable(Function parent, char val) {
-		this.parent = parent;
+	public Variable(Calculator root, char val) {
+		this.root = root;
 		var = val;
 	}
 
-	public Variable(Function parent, String s) throws Error {
-		this(parent, s.charAt(0));
+	public Variable(Calculator root, String s) throws Error {
+		this(root, s.charAt(0));
 	}
 
 	public char getChar() {
@@ -95,6 +96,16 @@ public class Variable implements Function {
 	private int calcLine() {
 		return Utils.getFontHeight(small) / 2;
 	}
+	
+	public static class VariableValue {
+		public final Variable v;
+		public final Number n;
+		
+		public VariableValue(Variable v, Number n) {
+			this.v = v;
+			this.n = n;
+		}
+	}
 
 	@Override
 	public Variable clone() {
@@ -132,13 +143,8 @@ public class Variable implements Function {
 		return false;
 	}
 
-	public Function setParent(Function value) {
-		parent = value;
-		return this;
-	}
-
 	@Override
-	public Function getParent() {
-		return parent;
+	public Calculator getRoot() {
+		return root;
 	}
 }

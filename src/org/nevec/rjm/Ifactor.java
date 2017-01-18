@@ -45,7 +45,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 */
 	public Ifactor(int number) {
 		n = new BigInteger("" + number);
-		primeexp = new Vector<Integer>();
+		primeexp = new Vector<>();
 		if (number > 1) {
 			int primindx = 0;
 			Prime primes = new Prime();
@@ -86,7 +86,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 */
 	public Ifactor(BigInteger number) {
 		n = number;
-		primeexp = new Vector<Integer>();
+		primeexp = new Vector<>();
 		if (number.compareTo(BigInteger.ONE) == 0) {
 			primeexp.add(new Integer(1));
 			primeexp.add(new Integer(0));
@@ -125,7 +125,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 *            continuous prime-smooth basis.
 	 */
 	public Ifactor(Vector<Integer> pows) {
-		primeexp = new Vector<Integer>(2 * pows.size());
+		primeexp = new Vector<>(2 * pows.size());
 		if (pows.size() > 0) {
 			n = BigInteger.ONE;
 			Prime primes = new Prime();
@@ -512,7 +512,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		 * multiplied
 		 * by 1 or by a product that contains the factors p1..py.
 		 */
-		Vector<BigInteger> d = new Vector<BigInteger>();
+		Vector<BigInteger> d = new Vector<>();
 		if (n.compareTo(BigInteger.ZERO) == 0)
 			return d;
 		d.add(BigInteger.ONE);

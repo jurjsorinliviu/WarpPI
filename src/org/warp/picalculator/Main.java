@@ -7,15 +7,17 @@ import org.warp.picalculator.screens.LoadingScreen;
 import com.pi4j.wiringpi.Gpio;
 
 public class Main {
-	public static int[] screenPos = new int[] { 55, 0 };
+	public static int[] screenPos = new int[] { 0, 0 };
 	public static final int[] screenSize = new int[] { 480, 320 };
 	public static final int screenScale = 1;
 	public static final boolean zoomed = true;
 	public static Main instance;
+	public static boolean haxMode = true;
 
 	public Main() throws InterruptedException {
 		instance = this;
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+		Thread.currentThread().setName("Main thread");
 		beforeStart();
 		new PIDisplay(new LoadingScreen());
 		Utils.debug.println("Shutdown...");
@@ -33,6 +35,7 @@ public class Main {
 			screenPos = new int[]{0,0};
 			Utils.debugOn = true;
 		}
+		Utils.debugThirdScreen = Utils.debugOn & false;
 		PIDisplay.setBrightness(0.5f);
 	}
 

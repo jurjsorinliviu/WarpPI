@@ -9,7 +9,7 @@ import org.warp.picalculator.device.PIDisplay;
 
 public class Display {
 
-	private static Frame INSTANCE = new Frame();
+	private static SwingWindow INSTANCE = new SwingWindow();
 	public static int[] size = new int[] { 1, 1 };
 	public static BufferedImage g = new BufferedImage(size[0], size[1], BufferedImage.TYPE_INT_RGB);
 	static int[] canvas2d = new int[1];
@@ -35,7 +35,7 @@ public class Display {
 	}
 
 	public static void create() {
-		Display.setResizable(Utils.debugOn);
+		Display.setResizable(Utils.debugOn&!Utils.debugThirdScreen);
 		Display.setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		INSTANCE.setVisible(true);
 		initialized = true;
@@ -179,7 +179,7 @@ public class Display {
 					newColor = skin[(s0 + texx) + (t0 + texy) * skinwidth];
 					if (transparent) {
 						oldColor = canvas2d[(x0 + texx*onex + width) + (y0 + texy*oney + height) * size[0]];
-						float a2 = ((float)(newColor >> 24 & 0xFF)) / 255f;
+						float a2 = (newColor >> 24 & 0xFF) / 255f;
 						float a1 = 1f-a2;
 						int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
 						int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);

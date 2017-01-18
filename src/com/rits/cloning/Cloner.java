@@ -34,12 +34,12 @@ import java.util.regex.Pattern;
  */
 public class Cloner {
 	private final IInstantiationStrategy instantiationStrategy;
-	private final Set<Class<?>> ignored = new HashSet<Class<?>>();
-	private final Set<Class<?>> ignoredInstanceOf = new HashSet<Class<?>>();
-	private final Set<Class<?>> nullInstead = new HashSet<Class<?>>();
-	private final Map<Class<?>, IFastCloner> fastCloners = new HashMap<Class<?>, IFastCloner>();
-	private final Map<Object, Boolean> ignoredInstances = new IdentityHashMap<Object, Boolean>();
-	private final ConcurrentHashMap<Class<?>, List<Field>> fieldsCache = new ConcurrentHashMap<Class<?>, List<Field>>();
+	private final Set<Class<?>> ignored = new HashSet<>();
+	private final Set<Class<?>> ignoredInstanceOf = new HashSet<>();
+	private final Set<Class<?>> nullInstead = new HashSet<>();
+	private final Map<Class<?>, IFastCloner> fastCloners = new HashMap<>();
+	private final Map<Object, Boolean> ignoredInstances = new IdentityHashMap<>();
+	private final ConcurrentHashMap<Class<?>, List<Field>> fieldsCache = new ConcurrentHashMap<>();
 
 	public IDumpCloned getDumpCloned() {
 		return dumpCloned;
@@ -333,7 +333,7 @@ public class Cloner {
 		if (dumpCloned != null) {
 			dumpCloned.startCloning(o.getClass());
 		}
-		final Map<Object, Object> clones = new IdentityHashMap<Object, Object>(16);
+		final Map<Object, Object> clones = new IdentityHashMap<>(16);
 		try {
 			return cloneInternal(o, clones);
 		} catch (final IllegalAccessException e) {
@@ -349,7 +349,7 @@ public class Cloner {
 		if (dumpCloned != null) {
 			dumpCloned.startCloning(o.getClass());
 		}
-		final Map<Object, Object> clones = new IdentityHashMap<Object, Object>(16);
+		final Map<Object, Object> clones = new IdentityHashMap<>(16);
 		for (final Object dc : dontCloneThese) {
 			clones.put(dc, dc);
 		}
@@ -383,7 +383,7 @@ public class Cloner {
 	}
 
 	// caches immutables for quick reference
-	private final ConcurrentHashMap<Class<?>, Boolean> immutables = new ConcurrentHashMap<Class<?>, Boolean>();
+	private final ConcurrentHashMap<Class<?>, Boolean> immutables = new ConcurrentHashMap<>();
 	private boolean cloneAnonymousParent = true;
 
 	/**
@@ -602,7 +602,7 @@ public class Cloner {
 	protected List<Field> allFields(final Class<?> c) {
 		List<Field> l = fieldsCache.get(c);
 		if (l == null) {
-			l = new LinkedList<Field>();
+			l = new LinkedList<>();
 			final Field[] fields = c.getDeclaredFields();
 			addAll(l, fields);
 			Class<?> sc = c;

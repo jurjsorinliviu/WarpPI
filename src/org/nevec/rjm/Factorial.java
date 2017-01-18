@@ -14,7 +14,7 @@ public class Factorial {
 	/**
 	 * The list of all factorials as a vector.
 	 */
-	static Vector<Ifactor> a = new Vector<Ifactor>();
+	static Vector<Ifactor> a = new Vector<>();
 
 	/**
 	 * ctor().

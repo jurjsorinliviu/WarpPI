@@ -166,7 +166,7 @@ public class RAWFont {
             		j = x + cpos + dx;
             		if (j > 0 & j < screenSize[0]) {
                         int bit = dx + dy * charW;
-                        currentInt = (int) (Math.floor((double)bit)/((double)intBits));
+                        currentInt = (int) (Math.floor(bit)/(intBits));
                         currentIntBitPosition = bit-(currentInt*intBits);
                         bitData = (chars32[charIndex*charIntCount+currentInt] >> currentIntBitPosition) & 1;
                         screenPos = x + cpos + dx + (y + dy) * screenSize[0];

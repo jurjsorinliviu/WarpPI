@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.SolveMethod;
 import org.warp.picalculator.math.functions.Function;
@@ -19,8 +20,13 @@ import com.rits.cloning.Cloner;
 
 public class Equation extends FunctionTwoValues {
 
-	public Equation(Function parent, Function value1, Function value2) {
-		super(parent, value1,value2);
+	public Equation(Calculator root, Function value1, Function value2) {
+		super(root, value1,value2);
+	}
+
+	@Override
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new Equation(root, value1, value2);
 	}
 
 	@Override
@@ -46,9 +52,9 @@ public class Equation extends FunctionTwoValues {
 			if (((Number)variable2).getTerm().compareTo(new BigDecimal(0)) == 0) {
 				result.add(this);
 			} else {
-				Equation e = new Equation(this.parent, null, null);
-				e.setVariable1(new Subtraction(e, variable1, variable2));
-				e.setVariable2(new Number(e, "0"));
+				Equation e = new Equation(root, null, null);
+				e.setVariable1(new Subtraction(root, variable1, variable2));
+				e.setVariable2(new Number(root, "0"));
 				result.add(e);
 			}
 		}
@@ -65,10 +71,10 @@ public class Equation extends FunctionTwoValues {
 	
 	//WORK IN PROGRESS
 	public ArrayList<Equation> solveStep(char charIncognita) {
-		ArrayList<Equation> result = new ArrayList<Equation>();
+		ArrayList<Equation> result = new ArrayList<>();
 		result.add(this.clone());
 		for (SolveMethod t : SolveMethod.techniques) {
-			ArrayList<Equation> newResults = new ArrayList<Equation>();
+			ArrayList<Equation> newResults = new ArrayList<>();
 			final int sz = result.size();
 			for (int n = 0; n < sz; n++) {
 				newResults.addAll(t.solve(result.get(n)));

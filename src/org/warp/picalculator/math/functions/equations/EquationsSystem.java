@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionMultipleValues;
@@ -13,17 +14,17 @@ import org.warp.picalculator.math.functions.Number;
 
 public class EquationsSystem extends FunctionMultipleValues {
 	static final int spacing = 2;
-	
-	public EquationsSystem(Function parent) {
-		super(parent);
+
+	public EquationsSystem(Calculator root) {
+		super(root);
 	}
 	
-	public EquationsSystem(Function parent, Function value) {
-		super(parent, new Function[]{value});
+	public EquationsSystem(Calculator root, Function value) {
+		super(root, new Function[]{value});
 	}
 	
-	public EquationsSystem(Function parent, Function[] value) {
-		super(parent, value);
+	public EquationsSystem(Calculator root, Function[] value) {
+		super(root, value);
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 					if (f instanceof Number) {
 						ret.add(f);
 					} else {
-						ret.add(new Expression(this.parent, new Function[]{(Function) f}));
+						ret.add(new Expression(this.root, new Function[]{f}));
 					}
 				}
 				return ret;
@@ -62,7 +63,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 				if (f.isSolved() == false) {
 					List<Function> partial = f.solveOneStep();
 					for (Function fnc : partial) {
-						ret.add(new Expression(this.parent, new Function[]{(Function) fnc}));
+						ret.add(new Expression(this.root, new Function[]{fnc}));
 					}
 				}
 			}
