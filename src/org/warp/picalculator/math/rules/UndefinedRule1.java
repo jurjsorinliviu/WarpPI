@@ -3,6 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
@@ -17,6 +18,7 @@ import org.warp.picalculator.math.functions.Undefined;
 public class UndefinedRule1 {
 
 	public static boolean compare(Function f) {
+		Calculator root = f.getRoot();
 		Power fnc = (Power) f;
 		if (fnc.getVariable1().equals(new Number(root, 0)) && fnc.getVariable2().equals(new Number(root, 0))) {
 			return true;
@@ -25,6 +27,7 @@ public class UndefinedRule1 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
+		Calculator root = f.getRoot();
 		ArrayList<Function> result = new ArrayList<>();
 		result.add(new Undefined(root));
 		return result;

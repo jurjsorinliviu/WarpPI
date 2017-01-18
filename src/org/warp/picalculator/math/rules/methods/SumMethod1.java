@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionTwoValues;
 import org.warp.picalculator.math.functions.Negative;
@@ -20,40 +21,35 @@ import org.warp.picalculator.math.functions.Sum;
 public class SumMethod1 {
 
 	public static boolean compare(Function f) {
-		return (f instanceof Sum || f instanceof Subtraction) && ((FunctionTwoValues)f).getVariable1().isSolved() && ((FunctionTwoValues)f).getVariable2().isSolved() && !(((FunctionTwoValues)f).getVariable1() instanceof Number && ((FunctionTwoValues)f).getVariable2() instanceof Number) && getFirstWorkingSumCouple(getSumElements(f)) != null;
+		Calculator root = f.getRoot();
+		return (f instanceof Sum || f instanceof Subtraction) && ((FunctionTwoValues)f).getVariable1().isSolved() && ((FunctionTwoValues)f).getVariable2().isSolved() && !(((FunctionTwoValues)f).getVariable1() instanceof Number && ((FunctionTwoValues)f).getVariable2() instanceof Number) && getFirstWorkingSumCouple(root, getSumElements(f)) != null;
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		Function result;
+		Calculator root = f.getRoot();
 		ArrayList<Function> elements = getSumElements(f);
-		int[] workingElementCouple = getFirstWorkingSumCouple(elements);
+		int[] workingElementCouple = getFirstWorkingSumCouple(root, elements);
 		Function elem1 = elements.get(workingElementCouple[0]);
 		Function elem2 = elements.get(workingElementCouple[1]);
 		
 		final int size = elements.size();
 		Function prec = new Sum(root, elem1, elem2);
-		elem1.setParent(prec);
-		elem2.setParent(prec);
 		for (int i = size-1; i >= 0; i--) {
 			if (i != workingElementCouple[0] & i != workingElementCouple[1]) {
 				Function a = prec;
 				Function b = elements.get(i);
 				if (b instanceof Negative) {
 					prec = new Subtraction(root, a, ((Negative)b).getVariable());
-					a.setParent(prec);
-					((FunctionTwoValues)prec).getVariable2().setParent(prec);
+					((FunctionTwoValues)prec).getVariable2();
 				} else if (b instanceof Number && ((Number) b).getTerm().compareTo(BigDecimal.ZERO) < 0) {
 					prec = new Subtraction(root, a, ((Number)b).multiply(new Number(root, -1)));
-					a.setParent(prec);
-					((FunctionTwoValues)prec).getVariable2().setParent(prec);
+					((FunctionTwoValues)prec).getVariable2();
 				} else {
 					prec = new Sum(root, a, b);
-					a.setParent(prec);
-					b.setParent(prec);
 				}
 			}
 		}
-		prec.setParent(root);
 		
 		result = prec;
 		
@@ -63,6 +59,7 @@ public class SumMethod1 {
 	}
 	
 	private static ArrayList<Function> getSumElements(Function sum) {
+		Calculator root = sum.getRoot();
 		ArrayList<Function> elements = new ArrayList<>();
 		while (sum instanceof Sum || sum instanceof Subtraction) {
 			if (sum instanceof Sum) {
@@ -76,7 +73,7 @@ public class SumMethod1 {
 		return elements;
 	}
 	
-	private static int[] getFirstWorkingSumCouple(ArrayList<Function> elements) {
+	private static int[] getFirstWorkingSumCouple(Calculator root, ArrayList<Function> elements) {
 		final int size = elements.size();
 		Function a;
 		Function b;

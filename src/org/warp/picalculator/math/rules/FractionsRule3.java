@@ -25,7 +25,7 @@ public class FractionsRule3 {
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		result.add(new Number(f.getParent(), 1));
+		result.add(new Number(f.getRoot(), 1));
 		return result;
 	}
 

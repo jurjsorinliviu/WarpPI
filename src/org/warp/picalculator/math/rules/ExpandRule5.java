@@ -3,6 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Negative;
@@ -39,10 +40,10 @@ public class ExpandRule5 {
 
 		if (f instanceof Negative) {
 			Negative fnc = (Negative) f;
-			result.add(((Negative)((Expression)fnc.getVariable()).getVariable(0)).getVariable().setParent(root));
+			result.add(((Negative)((Expression)fnc.getVariable()).getVariable(0)).getVariable());
 		} else if (f instanceof Subtraction) {
 			Subtraction fnc = (Subtraction) f;
-			result.add(((Negative)((Expression)fnc.getVariable2()).getVariable(0)).getVariable().setParent(root));
+			result.add(((Negative)((Expression)fnc.getVariable2()).getVariable(0)).getVariable());
 		}
 		return result;
 	}

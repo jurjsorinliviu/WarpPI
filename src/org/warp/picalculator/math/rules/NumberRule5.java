@@ -22,6 +22,7 @@ import org.warp.picalculator.math.functions.Number;
 public class NumberRule5 {
 
 	public static boolean compare(Function f) {
+		Calculator root = f.getRoot();
 		FunctionTwoValues fnc = (FunctionTwoValues) f;
 		if (fnc.getVariable1().equals(new Number(root, 0)) || fnc.getVariable2().equals(new Number(root, 0))) {
 			return true;

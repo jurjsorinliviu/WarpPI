@@ -29,6 +29,7 @@ public class SyntaxRule2 {
 	}
 
 	public static ArrayList<Function> execute(Sum f) throws Error {
+		Calculator root = f.getRoot();
 		ArrayList<Function> result = new ArrayList<>();
 		Function a = f.getVariable1();
 		Function b, c;
@@ -39,7 +40,7 @@ public class SyntaxRule2 {
 			b = ((Sum)((Expression)f.getVariable2()).getVariable(0)).getVariable1();
 			c = ((Sum)((Expression)f.getVariable2()).getVariable(0)).getVariable2();
 		}
-		Sum mIn = new Sum(f, null, null);
+		Sum mIn = new Sum(root, null, null);
 		f.setVariable1(mIn);
 		mIn.setVariable1(a);
 		mIn.setVariable2(b);

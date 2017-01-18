@@ -3,6 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Negative;
@@ -45,14 +46,15 @@ public class NumberRule3 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
+		Calculator root = f.getRoot();
 		ArrayList<Function> result = new ArrayList<>();
 		if (f instanceof SumSubtraction) {
-			Multiplication mul = new Multiplication(f.getParent(), null, null);
+			Multiplication mul = new Multiplication(root, null, null);
 			mul.setVariable1(new Number(root, 2));
 			mul.setVariable2(f);
 			result.add(mul);
 		}
-		result.add(new Number(f.getParent(), 0));
+		result.add(new Number(root, 0));
 		return result;
 	}
 

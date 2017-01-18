@@ -20,7 +20,7 @@ public class FractionsRule4 {
 		Power fnc = (Power) f;
 		if (fnc.getVariable1() instanceof Division && fnc.getVariable2() instanceof Number) {
 			Number n2 = (Number) fnc.getVariable2();
-			if (n2.equals(new Number(root, -1))) {
+			if (n2.equals(new Number(f.getRoot(), -1))) {
 				return true;
 			}
 		}
@@ -32,7 +32,7 @@ public class FractionsRule4 {
 		Power fnc = (Power) f;
 		Function a = ((Division)fnc.getVariable1()).getVariable1();
 		Function b = ((Division)fnc.getVariable1()).getVariable2();
-		Division res = new Division(f.getParent(), b, a);
+		Division res = new Division(f.getRoot(), b, a);
 		result.add(res);
 		return result;
 	}

@@ -19,7 +19,7 @@ public class FractionsRule2 {
 		Division fnc = (Division) f;
 		if (fnc.getVariable2() instanceof Number) {
 			Number numb = (Number) fnc.getVariable2();
-			if (numb.equals(new Number(root, 1))) {
+			if (numb.equals(new Number(f.getRoot(), 1))) {
 				return true;
 			}
 		}
@@ -29,7 +29,7 @@ public class FractionsRule2 {
 	public static ArrayList<Function> execute(Function f) throws Error {
 		ArrayList<Function> result = new ArrayList<>();
 		Division fnc = (Division) f;
-		result.add(fnc.getVariable1().setParent(root));
+		result.add(fnc.getVariable1());
 		return result;
 	}
 

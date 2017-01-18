@@ -3,6 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Negative;
@@ -17,6 +18,7 @@ import org.warp.picalculator.math.functions.Number;
 public class NumberRule6 {
 
 	public static boolean compare(Function f) {
+		Calculator root = f.getRoot();
 		Multiplication mult = (Multiplication) f;
 		if (mult.getVariable1() instanceof Number) {
 			Number numb = (Number) mult.getVariable1();
@@ -34,6 +36,7 @@ public class NumberRule6 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
+		Calculator root = f.getRoot();
 		ArrayList<Function> result = new ArrayList<>();
 		Function a = null;
 		boolean aFound = false;
@@ -53,7 +56,7 @@ public class NumberRule6 {
 			}
 		}
 		
-		Negative minus = new Negative(f.getParent(), null);
+		Negative minus = new Negative(root, null);
 		minus.setVariable(a);
 		
 		result.add(minus);
