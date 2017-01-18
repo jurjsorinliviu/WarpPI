@@ -10,13 +10,13 @@ import org.warp.picalculator.math.MathematicalSymbols;
 
 public class RootSquare extends AnteriorFunction {
 
-	public RootSquare(Function parent, Function value) {
-		super(parent, value);
+	public RootSquare(Calculator root, Function value) {
+		super(root, value);
 	}
 
 	@Override
-	public Function NewInstance(Function parent, Function value) {
-		return new RootSquare(parent, value);
+	public Function NewInstance(Calculator root, Function value) {
+		return new RootSquare(root, value);
 	}
 	
 	@Override
@@ -37,14 +37,14 @@ public class RootSquare extends AnteriorFunction {
 	@Override
 	protected boolean isSolvable() {
 		if (variable instanceof Number) {
-			if (Calculator.exactMode == false) {
+			if (root.exactMode == false) {
 				return true;
 			}
 			try {
-				Number exponent = new Number(this.parent, BigInteger.ONE);
-				exponent = exponent.divide(new Number(null, 2));
+				Number exponent = new Number(root, BigInteger.ONE);
+				exponent = exponent.divide(new Number(root, 2));
 				Number resultVal = ((Number)variable).pow(exponent);
-				Number originalVariable = resultVal.pow(new Number(null, 2));
+				Number originalVariable = resultVal.pow(new Number(root, 2));
 				if (originalVariable.equals(variable)) {
 					return true;
 				}
@@ -58,15 +58,15 @@ public class RootSquare extends AnteriorFunction {
 	@Override
 	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		if (Calculator.exactMode) {
-			Number exponent = new Number(this.parent, BigInteger.ONE);
-			exponent = exponent.divide(new Number(null, 2));
+		if (root.exactMode) {
+			Number exponent = new Number(root, BigInteger.ONE);
+			exponent = exponent.divide(new Number(root, 2));
 			result.add(((Number)variable).pow(exponent));
 		} else {
-			Number exp = new Number(null, 2);
+			Number exp = new Number(root, 2);
 			Number numb = (Number) variable;
 			
-			result.add(numb.pow(new Number(null, 1).divide(exp)).setParent(parent));
+			result.add(numb.pow(new Number(root, 1).divide(exp)));
 		}
 		return result;
 	}

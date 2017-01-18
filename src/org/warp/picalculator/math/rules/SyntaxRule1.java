@@ -3,6 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionTwoValues;
 import org.warp.picalculator.math.functions.Multiplication;
@@ -27,6 +28,7 @@ public class SyntaxRule1 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
+		Calculator root = f.getRoot();
 		ArrayList<Function> result = new ArrayList<>();
 		FunctionTwoValues mOut = (FunctionTwoValues) f;
 		Function a = ((FunctionTwoValues)mOut.getVariable1()).getVariable1();
@@ -34,9 +36,9 @@ public class SyntaxRule1 {
 		Function c = mOut.getVariable2();
 		FunctionTwoValues mIn;
 		if (f instanceof Multiplication) {
-			mIn = new Multiplication(mOut, null, null);
+			mIn = new Multiplication(root, null, null);
 		} else {
-			mIn = new Sum(mOut, null, null);
+			mIn = new Sum(root, null, null);
 		}
 		mOut.setVariable1(a);
 		mIn.setVariable1(b);

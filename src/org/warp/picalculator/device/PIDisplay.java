@@ -23,8 +23,6 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.RAWFont;
 import org.warp.picalculator.device.graphicengine.Screen;
-import org.warp.picalculator.math.Calculator;
-
 import com.pi4j.wiringpi.Gpio;
 
 /**
@@ -89,13 +87,13 @@ public final class PIDisplay {
 	public void setScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
-				Calculator.currentSession = 0;
-				for (int i = Calculator.sessions.length - 1; i >= 1; i--) {
-					Calculator.sessions[i] = Calculator.sessions[i - 1];
+				PIDisplay.currentSession = 0;
+				for (int i = PIDisplay.sessions.length - 1; i >= 1; i--) {
+					PIDisplay.sessions[i] = PIDisplay.sessions[i - 1];
 				}
-				Calculator.sessions[0] = screen;
+				PIDisplay.sessions[0] = screen;
 			} else {
-				Calculator.currentSession = -1;
+				PIDisplay.currentSession = -1;
 			}
 		}
 		screen.d = this;
@@ -114,11 +112,11 @@ public final class PIDisplay {
 	public void replaceScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
-				Calculator.sessions[Calculator.currentSession] = screen;
+				PIDisplay.sessions[PIDisplay.currentSession] = screen;
 			} else {
-				Calculator.currentSession = -1;
-				for (int i = 0; i < Calculator.sessions.length - 2; i++) {
-					Calculator.sessions[i] = Calculator.sessions[i + 1];
+				PIDisplay.currentSession = -1;
+				for (int i = 0; i < PIDisplay.sessions.length - 2; i++) {
+					PIDisplay.sessions[i] = PIDisplay.sessions[i + 1];
 				}
 			}
 		}
@@ -136,13 +134,13 @@ public final class PIDisplay {
 	}
 
 	public boolean canGoBack() {
-		if (Calculator.currentSession == -1) {
-			return Calculator.sessions[0] != null;
+		if (PIDisplay.currentSession == -1) {
+			return PIDisplay.sessions[0] != null;
 		}
-		if (PIDisplay.screen != Calculator.sessions[Calculator.currentSession]) {
+		if (PIDisplay.screen != PIDisplay.sessions[PIDisplay.currentSession]) {
 
-		} else if (Calculator.currentSession + 1 < Calculator.sessions.length) {
-			if (Calculator.sessions[Calculator.currentSession + 1] != null) {
+		} else if (PIDisplay.currentSession + 1 < PIDisplay.sessions.length) {
+			if (PIDisplay.sessions[PIDisplay.currentSession + 1] != null) {
 
 			} else {
 				return false;
@@ -150,7 +148,7 @@ public final class PIDisplay {
 		} else {
 			return false;
 		}
-		if (Calculator.sessions[Calculator.currentSession] != null) {
+		if (PIDisplay.sessions[PIDisplay.currentSession] != null) {
 			return true;
 		}
 		return false;
@@ -158,22 +156,22 @@ public final class PIDisplay {
 
 	public void goBack() {
 		if (canGoBack()) {
-			if (Calculator.currentSession >= 0 && PIDisplay.screen != Calculator.sessions[Calculator.currentSession]) {
+			if (PIDisplay.currentSession >= 0 && PIDisplay.screen != PIDisplay.sessions[PIDisplay.currentSession]) {
 			} else {
-				Calculator.currentSession += 1;
+				PIDisplay.currentSession += 1;
 			}
-			PIDisplay.screen = Calculator.sessions[Calculator.currentSession];
+			PIDisplay.screen = PIDisplay.sessions[PIDisplay.currentSession];
 		}
 	}
 
 	public boolean canGoForward() {
-		if (Calculator.currentSession <= 0) { // -1 e 0
+		if (PIDisplay.currentSession <= 0) { // -1 e 0
 			return false;
 		}
-		if (PIDisplay.screen != Calculator.sessions[Calculator.currentSession]) {
+		if (PIDisplay.screen != PIDisplay.sessions[PIDisplay.currentSession]) {
 
-		} else if (Calculator.currentSession > 0) {
-			if (Calculator.sessions[Calculator.currentSession - 1] != null) {
+		} else if (PIDisplay.currentSession > 0) {
+			if (PIDisplay.sessions[PIDisplay.currentSession - 1] != null) {
 
 			} else {
 				return false;
@@ -181,7 +179,7 @@ public final class PIDisplay {
 		} else {
 			return false;
 		}
-		if (Calculator.sessions[Calculator.currentSession] != null) {
+		if (PIDisplay.sessions[PIDisplay.currentSession] != null) {
 			return true;
 		}
 		return false;
@@ -189,12 +187,12 @@ public final class PIDisplay {
 
 	public void goForward() {
 		if (canGoForward()) {
-			if (PIDisplay.screen != Calculator.sessions[Calculator.currentSession]) {
+			if (PIDisplay.screen != PIDisplay.sessions[PIDisplay.currentSession]) {
 
 			} else {
-				Calculator.currentSession -= 1;
+				PIDisplay.currentSession -= 1;
 			}
-			PIDisplay.screen = Calculator.sessions[Calculator.currentSession];
+			PIDisplay.screen = PIDisplay.sessions[PIDisplay.currentSession];
 		}
 	}
 
@@ -249,15 +247,16 @@ public final class PIDisplay {
 		} else {
 			drawSkinPart(2 + 18 * 1, 2, 16 * 1, 16 * 0, 16 + 16 * 1, 16 + 16 * 0);
 		}
-		if (Calculator.angleMode == "deg") {
+		/*
+		if (Calculator.angleMode == AngleMode.DEG) {
 			drawSkinPart(8 + 18 * 2, 2, 16 * 4, 16 * 0, 16 + 16 * 4, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 3, 2, 16 * 7, 16 * 0, 16 + 16 * 7, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 4, 2, 16 * 9, 16 * 0, 16 + 16 * 9, 16 + 16 * 0);
-		} else if (Calculator.angleMode == "rad") {
+		} else if (Calculator.angleMode == AngleMode.RAD) {
 			drawSkinPart(8 + 18 * 2, 2, 16 * 5, 16 * 0, 16 + 16 * 5, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 3, 2, 16 * 6, 16 * 0, 16 + 16 * 6, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 4, 2, 16 * 9, 16 * 0, 16 + 16 * 9, 16 + 16 * 0);
-		} else if (Calculator.angleMode == "gra") {
+		} else if (Calculator.angleMode == AngleMode.GRA) {
 			drawSkinPart(8 + 18 * 2, 2, 16 * 5, 16 * 0, 16 + 16 * 5, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 3, 2, 16 * 7, 16 * 0, 16 + 16 * 7, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 4, 2, 16 * 8, 16 * 0, 16 + 16 * 8, 16 + 16 * 0);
@@ -265,7 +264,7 @@ public final class PIDisplay {
 			drawSkinPart(8 + 18 * 2, 2, 16 * 5, 16 * 0, 16 + 16 * 5, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 3, 2, 16 * 7, 16 * 0, 16 + 16 * 7, 16 + 16 * 0);
 			drawSkinPart(8 + 18 * 4, 2, 16 * 9, 16 * 0, 16 + 16 * 9, 16 + 16 * 0);
-		}
+		}*/
 
 		int padding = 2;
 
@@ -287,7 +286,7 @@ public final class PIDisplay {
 		boolean canGoBack = canGoBack();
 		boolean canGoForward = canGoForward();
 
-		if (Calculator.haxMode) {
+		if (Main.haxMode) {
 			drawSkinPart(Main.screenSize[0] - (padding + 16), 2, 16 * 18, 16 * 0, 16 + 16 * 18, 16 + 16 * 0);
 			padding += 18 + 6;
 		}
@@ -320,7 +319,7 @@ public final class PIDisplay {
 		if (error != null) {
 			glSetFont(Utils.getFont(false, false));
 			glColor3i(129, 28, 22);
-			glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1]- this.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
+			glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1]- PIDisplay.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
 			glColor3i(149, 32, 26);
 			glDrawStringCenter((Main.screenSize[0] / 2), 22, error);
 			glColor3i(164, 34, 28);
@@ -443,6 +442,8 @@ public final class PIDisplay {
 	}
 
 	public float[] colore = new float[] { 0.0f, 0.0f, 0.0f, 1.0f };
+	public static int currentSession = 0;
+	public static Screen[] sessions = new Screen[5];
 	
 	public static void colore(float f1, float f2, float f3, float f4) {
 		PIDisplay.INSTANCE.colore = new float[] { f1, f2, f3, f4 };

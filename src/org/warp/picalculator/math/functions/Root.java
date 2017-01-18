@@ -12,13 +12,13 @@ import org.warp.picalculator.math.MathematicalSymbols;
 
 public class Root extends FunctionTwoValues {
 
-	public Root(Function parent, Function value1, Function value2) {
-		super(parent, value1, value2);
+	public Root(Calculator root, Function value1, Function value2) {
+		super(root, value1, value2);
 	}
 	
 	@Override
-	protected Function NewInstance(Function parent2, Function value1, Function value2) {
-		return new Root(parent, value1, value2);
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new Root(root, value1, value2);
 	}
 	
 	@Override
@@ -42,14 +42,14 @@ public class Root extends FunctionTwoValues {
 	@Override
 	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
-			if (Calculator.exactMode == false) {
+			if (root.exactMode == false) {
 				return true;
 			}
 			try {
-				Number exponent = new Number(this.parent, BigDecimal.ONE);
+				Number exponent = new Number(root, BigDecimal.ONE);
 				exponent = exponent.divide((Number) variable1);
 				Number resultVal = ((Number)variable2).pow(exponent);
-				Number originalVariable = resultVal.pow(new Number(null, 2));
+				Number originalVariable = resultVal.pow(new Number(root, 2));
 				if (originalVariable.equals(variable2)) {
 					return true;
 				} 
@@ -57,7 +57,7 @@ public class Root extends FunctionTwoValues {
 				ex.printStackTrace();
 			}
 		}
-		if (variable1 instanceof Number && ((Number)variable1).equals(new Number(null, 2))) {
+		if (variable1 instanceof Number && ((Number)variable1).equals(new Number(root, 2))) {
 			return true;
 		}
 		return false;
@@ -66,11 +66,11 @@ public class Root extends FunctionTwoValues {
 	@Override
 	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
-		if (Calculator.exactMode) {
-			if (variable1 instanceof Number && ((Number)variable1).equals(new Number(null, 2))) {
-				result.add(new RootSquare(parent, variable2));
+		if (root.exactMode) {
+			if (variable1 instanceof Number && ((Number)variable1).equals(new Number(root, 2))) {
+				result.add(new RootSquare(root, variable2));
 			} else {
-				Number exponent = new Number(this.parent, BigInteger.ONE);
+				Number exponent = new Number(root, BigInteger.ONE);
 				exponent = exponent.divide((Number) variable1);
 				result.add(((Number)variable2).pow(exponent));
 			}
@@ -78,7 +78,7 @@ public class Root extends FunctionTwoValues {
 			Number exp = (Number) variable1;
 			Number numb = (Number) variable2;
 			
-			result.add(numb.pow(new Number(null, 1).divide(exp)).setParent(parent));
+			result.add(numb.pow(new Number(root, 1).divide(exp)));
 		}
 		return result;
 	}

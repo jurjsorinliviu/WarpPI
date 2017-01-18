@@ -18,13 +18,13 @@ import org.warp.picalculator.math.rules.UndefinedRule2;
 
 public class Division extends FunctionTwoValues {
 
-	public Division(Function parent, Function value1, Function value2) {
-		super(parent, value1, value2);
+	public Division(Calculator root, Function value1, Function value2) {
+		super(root, value1, value2);
 	}
 
 	@Override
-	protected Function NewInstance(Function parent2, Function value1, Function value2) {
-		return new Division(parent, value1, value2);
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new Division(root, value1, value2);
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class Division extends FunctionTwoValues {
 		if (FractionsRule2.compare(this)) return true;
 		if (FractionsRule3.compare(this)) return true;
 		if (UndefinedRule2.compare(this)) return true;
-		if (variable1 instanceof Number && variable2 instanceof Number && Calculator.exactMode == false) {
+		if (variable1 instanceof Number && variable2 instanceof Number && root.exactMode == false) {
 			return true;
 		}
 		return false;
@@ -56,8 +56,8 @@ public class Division extends FunctionTwoValues {
 			result = FractionsRule3.execute(this);
 		} else if (UndefinedRule2.compare(this)) {
 			result = UndefinedRule2.execute(this);
-		} else if (variable1 instanceof Number && variable2 instanceof Number && Calculator.exactMode == false) {
-			result.add(((Number)variable1).divide((Number)variable2).setParent(parent));
+		} else if (variable1 instanceof Number && variable2 instanceof Number && root.exactMode == false) {
+			result.add(((Number)variable1).divide((Number)variable2));
 		}
 		return result;
 	}

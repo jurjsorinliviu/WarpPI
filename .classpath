@@ -3,29 +3,29 @@
 	<classpathentry excluding="org/warp/picalculator/deprecatedmath/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="res"/>
-	<classpathentry kind="lib" path="D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4.jar" sourcepath="D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4-sources.jar">
+	<classpathentry kind="lib" path="libs/pi4j-1.1/pi4j-core.jar" sourcepath="libs/pi4j-1.1/pi4j-core-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/D:/Users/Andrea/Downloads/objenesis-2.4-bin/objenesis-2.4/objenesis-2.4-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/pi4j-1.1/pi4j-core-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-core.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-core-sources.jar">
+	<classpathentry kind="lib" path="libs/pi4j-1.1/pi4j-device.jar" sourcepath="libs/pi4j-1.1/pi4j-device-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-core-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/pi4j-1.1/pi4j-device-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-device.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-device-sources.jar">
+	<classpathentry kind="lib" path="libs/pi4j-1.1/pi4j-gpio-extension.jar" sourcepath="libs/pi4j-1.1/pi4j-gpio-extension-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-device-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/pi4j-1.1/pi4j-gpio-extension-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-gpio-extension.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-gpio-extension-sources.jar">
+	<classpathentry kind="lib" path="libs/pi4j-1.1/pi4j-service.jar" sourcepath="libs/pi4j-1.1/pi4j-service-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-gpio-extension-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/pi4j-1.1/pi4j-service-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-service.jar" sourcepath="G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-service-sources.jar">
+	<classpathentry kind="lib" path="libs/objenesis-2.4/objenesis-2.4.jar" sourcepath="libs/objenesis-2.4/objenesis-2.4-sources.jar">
 		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/G:/Users/Andrea/Downloads/pi4j-1.1/pi4j-1.1/lib/pi4j-service-javadoc.jar!/"/>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/objenesis-2.4/objenesis-2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

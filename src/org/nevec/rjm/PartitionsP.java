@@ -13,7 +13,7 @@ public class PartitionsP {
 	/**
 	 * The list of all partitions as a vector.
 	 */
-	static protected Vector<BigInteger> a = new Vector<BigInteger>();
+	static protected Vector<BigInteger> a = new Vector<>();
 
 	/**
 	 * The maximum integer covered by the high end of the list.

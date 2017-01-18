@@ -14,7 +14,7 @@ public class Euler {
 	/*
 	 * The list of all Euler numbers as a vector, n=0,2,4,....
 	 */
-	static protected Vector<BigInteger> a = new Vector<BigInteger>();
+	static protected Vector<BigInteger> a = new Vector<>();
 
 	/**
 	 * Ctor(). Fill the hash list initially with E_0 to E_3.

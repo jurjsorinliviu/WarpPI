@@ -7,6 +7,7 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.PIDisplay;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.RAWFont;
+import org.warp.picalculator.math.Calculator;
 
 public class Joke implements Function {
 
@@ -16,8 +17,10 @@ public class Joke implements Function {
 	private static final String[] jokes =  new String[]{"♓", "TORNADO", "SHARKNADO"};
 	private static final int[] jokesFont =  new int[]{4, -1, -1};
 	private final byte joke;
+	private final Calculator root;
 	
-	public Joke(byte joke) {
+	public Joke(Calculator root, byte joke) {
+		this.root = root;
 		this.joke = joke;
 	}
 	
@@ -75,15 +78,10 @@ public class Joke implements Function {
 	public int getLine() {
 		return getHeight()/2;
 	}
-	
-	@Override
-	public Function setParent(Function value) {
-		return this;
-	}
 
 	@Override
-	public Function getParent() {
-		return null;
+	public Calculator getRoot() {
+		return root;
 	}
 
 	private boolean small = false;

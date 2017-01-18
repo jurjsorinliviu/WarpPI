@@ -3,6 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
@@ -26,6 +27,7 @@ public class ExponentRule4 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
+		Calculator root = f.getRoot();
 		ArrayList<Function> result = new ArrayList<>();
 		Power fnc = (Power) f;
 		Expression expr = (Expression) fnc.getVariable1();
@@ -33,14 +35,14 @@ public class ExponentRule4 {
 		Function a = mult.getVariable1();
 		Function b = mult.getVariable2();
 		Number n = (Number) fnc.getVariable2();
-		Multiplication retMult = new Multiplication(f.getParent(), null, null);
-		Power p1 = new Power(retMult, null, null);
-		Expression e1 = new Expression(p1);
+		Multiplication retMult = new Multiplication(root, null, null);
+		Power p1 = new Power(root, null, null);
+		Expression e1 = new Expression(root);
 		e1.addFunctionToEnd(a);
 		p1.setVariable1(e1);
 		p1.setVariable2(n);
-		Power p2 = new Power(retMult, null, null);
-		Expression e2 = new Expression(p2);
+		Power p2 = new Power(root, null, null);
+		Expression e2 = new Expression(root);
 		e2.addFunctionToEnd(b);
 		p2.setVariable1(e2);
 		p2.setVariable2(n);

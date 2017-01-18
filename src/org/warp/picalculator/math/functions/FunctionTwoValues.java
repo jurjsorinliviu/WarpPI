@@ -8,19 +8,20 @@ import java.util.ArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
 
 public abstract class FunctionTwoValues implements Function {
-	public FunctionTwoValues(Function parent, Function value1, Function value2) {
-		this.parent = parent;
+	public FunctionTwoValues(Calculator root, Function value1, Function value2) {
+		this.root = root;
 		variable1 = value1;
 		variable2 = value2;
 	}
 	
-	protected abstract Function NewInstance(Function parent2, Function value1, Function value2);
+	protected abstract Function NewInstance(Calculator root, Function value1, Function value2);
 
-	protected Function parent;
+	protected final Calculator root;
 	
 	protected Function variable1 = null;
 	protected Function variable2 = null;
@@ -34,25 +35,19 @@ public abstract class FunctionTwoValues implements Function {
 	}
 
 	public void setVariable1(Function value) {
-		value.setParent(this);
 		variable1 = value;
 	}
 
-	public Function getParent() {
-		return parent;
+	@Override
+	public Calculator getRoot() {
+		return root;
 	}
-
-	public Function setParent(Function value) {
-		parent = value;
-		return this;
-	}
-
+	
 	public Function getVariable2() {
 		return variable2;
 	}
 
 	public void setVariable2(Function value) {
-		value.setParent(this);
 		variable2 = value;
 	}
 
@@ -74,8 +69,8 @@ public abstract class FunctionTwoValues implements Function {
 		if (result == null || result.isEmpty()) {
 			result = new ArrayList<>();
 			
-			ArrayList<Function> l1 = new ArrayList<Function>();
-			ArrayList<Function> l2 = new ArrayList<Function>();
+			ArrayList<Function> l1 = new ArrayList<>();
+			ArrayList<Function> l2 = new ArrayList<>();
 			if (variable1.isSolved()) {
 				l1.add(variable1);
 			} else {
@@ -90,7 +85,7 @@ public abstract class FunctionTwoValues implements Function {
 			Function[][] results = Utils.joinFunctionsResults(l1, l2);
 			
 			for (Function[] f : results) {
-				result.add(NewInstance(this.parent, (Function)f[0], (Function)f[1]));
+				result.add(NewInstance(this.root, f[0], f[1]));
 			}
 		}
 		

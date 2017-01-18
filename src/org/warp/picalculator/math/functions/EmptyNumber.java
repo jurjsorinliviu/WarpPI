@@ -5,10 +5,15 @@ import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.math.Calculator;
 
 public class EmptyNumber implements Function {
 
-	public static EmptyNumber emptyNumber = new EmptyNumber();
+	public EmptyNumber(Calculator root) {
+		this.root = root;
+	}
+	
+	private final Calculator root;
 	
 	@Override
 	public String getSymbol() {
@@ -52,13 +57,8 @@ public class EmptyNumber implements Function {
 	}
 
 	@Override
-	public Function setParent(Function parent) {
-		return null;
-	}
-
-	@Override
-	public Function getParent() {
-		return null;
+	public Calculator getRoot() {
+		return root;
 	}
 
 	private boolean small = false;

@@ -3,6 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.FunctionTwoValues;
@@ -55,6 +56,7 @@ public class ExpandRule1 {
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		ArrayList<Function> result = new ArrayList<>();
+		Calculator root = f.getRoot();
 		
 		Expression expr = null;
 		int fromSubtraction = 0;
@@ -78,10 +80,10 @@ public class ExpandRule1 {
 		if (fnc instanceof Sum) {
 			Function a = ((Sum) fnc).getVariable1();
 			Function b = ((Sum) fnc).getVariable2();
-			Subtraction fnc2 = new Subtraction(f.getParent(), null, b);
-			fnc2.setVariable1(new Negative(fnc2, a));
+			Subtraction fnc2 = new Subtraction(root, null, b);
+			fnc2.setVariable1(new Negative(root, a));
 			if (fromSubtraction > 0) {
-				subtraction = new Subtraction(f.getParent(), null, null);
+				subtraction = new Subtraction(root, null, null);
 				subtraction.setVariable1(((FunctionTwoValues)f).getVariable1());
 				subtraction.setVariable2(fnc2);
 				result.add(subtraction);
@@ -91,10 +93,10 @@ public class ExpandRule1 {
 		} else if (fnc instanceof Subtraction) {
 			Function a = ((Subtraction) fnc).getVariable1();
 			Function b = ((Subtraction) fnc).getVariable2();
-			Sum fnc2 = new Sum(((Negative) f).getParent(), null, b);
-			fnc2.setVariable1(new Negative(fnc2, a));
+			Sum fnc2 = new Sum(root, null, b);
+			fnc2.setVariable1(new Negative(root, a));
 			if (fromSubtraction > 0) {
-				subtraction = new Subtraction(f.getParent(), null, null);
+				subtraction = new Subtraction(root, null, null);
 				subtraction.setVariable1(((FunctionTwoValues)f).getVariable1());
 				subtraction.setVariable2(fnc2);
 				result.add(subtraction);
@@ -104,16 +106,16 @@ public class ExpandRule1 {
 		} else if (fnc instanceof SumSubtraction) {
 			Function a = ((SumSubtraction) fnc).getVariable1();
 			Function b = ((SumSubtraction) fnc).getVariable2();
-			Sum fnc2 = new Sum(f.getParent(), null, b);
-			fnc2.setVariable1(new Negative(fnc2, a));
-			Subtraction fnc3 = new Subtraction(f.getParent(), null, b);
-			fnc3.setVariable1(new Negative(fnc2, a));
+			Sum fnc2 = new Sum(root, null, b);
+			fnc2.setVariable1(new Negative(root, a));
+			Subtraction fnc3 = new Subtraction(root, null, b);
+			fnc3.setVariable1(new Negative(root, a));
 			if (fromSubtraction > 0) {
-				subtraction = new SumSubtraction(f.getParent(), null, null);
+				subtraction = new SumSubtraction(root, null, null);
 				subtraction.setVariable1(((FunctionTwoValues)f).getVariable1());
 				subtraction.setVariable2(fnc2);
 				result.add(subtraction);
-				subtraction = new SumSubtraction(f.getParent(), null, null);
+				subtraction = new SumSubtraction(root, null, null);
 				subtraction.setVariable1(((FunctionTwoValues)f).getVariable1());
 				subtraction.setVariable2(fnc3);
 				result.add(subtraction);

@@ -1,11 +1,12 @@
 package org.warp.picalculator.device;
 
+import java.awt.event.KeyEvent;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
 import org.warp.picalculator.device.graphicengine.Display;
 import org.warp.picalculator.device.graphicengine.Screen;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.screens.KeyboardDebugScreen;
 import org.warp.picalculator.screens.MarioScreen;
 
 import com.pi4j.wiringpi.Gpio;
@@ -26,25 +27,40 @@ public class Keyboard {
 
 	private static volatile boolean[][] precedentStates = new boolean[8][8];
 	public static volatile boolean[][] debugKeysDown = new boolean[8][8];
+	public static volatile KeyEvent debugKeyEvent;
 	
 	public static void startKeyboard() {
-		if (Utils.debugOn == false) {
-			Gpio.pinMode(CLK_INH_pin, Gpio.OUTPUT);
-			Gpio.pinMode(RCK_pin, Gpio.OUTPUT);
-			Gpio.pinMode(SER_pin, Gpio.OUTPUT);
-			Gpio.pinMode(SH_LD_pin, Gpio.OUTPUT);
-			Gpio.pinMode(SCK_and_CLK_pin, Gpio.OUTPUT);
-			Gpio.pinMode(QH_pin, Gpio.INPUT);
-
-			Gpio.digitalWrite(CLK_INH_pin, false);
-			Gpio.digitalWrite(RCK_pin, false);
-			Gpio.digitalWrite(SER_pin, false);
-			Gpio.digitalWrite(SH_LD_pin, false);
-			Gpio.digitalWrite(SCK_and_CLK_pin, false);
-			Gpio.digitalWrite(QH_pin, false);
-			Thread kt = new Thread(()->{
+		Thread kt = new Thread(()->{
+			if (Utils.debugOn) {
+				try {
+					while(true) {
+						if (debugKeyEvent != null) {
+							debugKeyPressed(debugKeyEvent);
+							debugKeyEvent = null;
+						}
+						Thread.sleep(50);
+					}
+				} catch (InterruptedException e) {
+				}
+			} else {
+				Gpio.pinMode(CLK_INH_pin, Gpio.OUTPUT);
+				Gpio.pinMode(RCK_pin, Gpio.OUTPUT);
+				Gpio.pinMode(SER_pin, Gpio.OUTPUT);
+				Gpio.pinMode(SH_LD_pin, Gpio.OUTPUT);
+				Gpio.pinMode(SCK_and_CLK_pin, Gpio.OUTPUT);
+				Gpio.pinMode(QH_pin, Gpio.INPUT);
+	
+				Gpio.digitalWrite(CLK_INH_pin, false);
+				Gpio.digitalWrite(RCK_pin, false);
+				Gpio.digitalWrite(SER_pin, false);
+				Gpio.digitalWrite(SH_LD_pin, false);
+				Gpio.digitalWrite(SCK_and_CLK_pin, false);
+				Gpio.digitalWrite(QH_pin, false);
 				SerialToParallel chip1 = new SerialToParallel(RCK_pin, SCK_and_CLK_pin /*SCK*/, SER_pin);
 				ParallelToSerial chip2 = new ParallelToSerial(SH_LD_pin, CLK_INH_pin, QH_pin, SCK_and_CLK_pin/*CLK*/);
+				
+				KeyboardDebugScreen.log("Started keyboard system");
+				
 				while(true) {
 					boolean[] data;
 					for (int col = 0; col < 8; col++) {
@@ -52,25 +68,306 @@ public class Keyboard {
 						data[col] = true;
 						chip1.write(data);
 						
-						data = new boolean[8];
 						data = chip2.read();
+						KeyboardDebugScreen.ks[col] = data;
 						
 						for (int row = 0; row < 8; row++) {
 							if (data[row] == true && precedentStates[row][col] == false) {
 								System.out.println("Pressed button at "+(row+1) +", "+(col+1));
+								KeyboardDebugScreen.log("Pressed button at "+(row+1) +", "+(col+1));
 								keyPressedRaw(row+1, col+1);
 							} else if (data[row] == false && precedentStates[row][col] == true) {
 								keyReleasedRaw(row+1, col+1);
+								KeyboardDebugScreen.log("Released button at "+(row+1) +", "+(col+1));
 							}
 							precedentStates[row][col] = data[row];
 						}
 					}
 				}
-			});
-			kt.setName("Keyboard thread");
-			kt.setPriority(Thread.MIN_PRIORITY);
-			kt.setDaemon(true);
-			kt.start();
+			}
+		});
+		kt.setName("Keyboard thread");
+		kt.setPriority(Thread.MIN_PRIORITY);
+		kt.setDaemon(true);
+		kt.start();
+	}
+
+	private static void debugKeyPressed(KeyEvent arg0) {
+		switch (arg0.getKeyCode()) {
+			case KeyEvent.VK_ESCAPE:
+				Keyboard.keyPressed(Key.POWER);
+				break;
+			case KeyEvent.VK_S:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.ARCSINE);
+				} else if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.SINE);
+				}
+				break;
+			case KeyEvent.VK_C:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.ARCCOSINE);
+				} else if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.COSINE);
+				}
+				break;
+			case KeyEvent.VK_T:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.ARCTANGENT);
+				} else if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.TANGENT);
+				}
+				break;
+			case KeyEvent.VK_D:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.debug_DEG);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_R:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.debug_RAD);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_G:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.debug_GRA);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_X:
+				if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.LETTER_X);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_P:
+				if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.PI);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_Y:
+				if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.LETTER_Y);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_B:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.BRIGHTNESS_CYCLE_REVERSE);
+				} else if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.BRIGHTNESS_CYCLE);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_ENTER:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.SIMPLIFY);
+				} else if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.SOLVE);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				int row = 2;
+				int col = 1;
+				Keyboard.debugKeysDown[row-1][col-1] = true;
+				break;
+			case KeyEvent.VK_1:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM1);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_2:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM2);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_3:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM3);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_4:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM4);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_5:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM5);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_6:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM6);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_7:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM7);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_8:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM8);
+				} else if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.PARENTHESIS_OPEN);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_9:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM9);
+				} else if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.PARENTHESIS_CLOSE);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_0:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NUM0);
+				} else if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.EQUAL);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_ADD:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.PLUS);
+				} else if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.PLUS_MINUS);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_SUBTRACT:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.MINUS);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_MULTIPLY:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.MULTIPLY);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_DIVIDE:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.DIVIDE);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_BACK_SPACE:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.DELETE);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_DELETE:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.RESET);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_LEFT:
+				//LEFT
+				row = 2;
+				col = 3;
+				Keyboard.debugKeysDown[row-1][col-1] = true;
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.LEFT);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_RIGHT:
+				//RIGHT
+				row = 2;
+				col = 5;
+				Keyboard.debugKeysDown[row-1][col-1] = true;
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.RIGHT);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_NUMPAD4:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.HISTORY_BACK);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_NUMPAD6:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.HISTORY_FORWARD);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_PERIOD:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.DOT);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case KeyEvent.VK_SHIFT:
+				Keyboard.keyPressed(Key.SHIFT);
+				break;
+			case KeyEvent.VK_A:
+				Keyboard.keyPressed(Key.ALPHA);
+				break;
+			case KeyEvent.VK_NUMPAD1:
+				Keyboard.keyPressed(Key.SQRT);
+				break;
+			case KeyEvent.VK_NUMPAD2:
+				Keyboard.keyPressed(Key.ROOT);
+				break;
+			case KeyEvent.VK_NUMPAD3:
+				Keyboard.keyPressed(Key.POWER_OF_2);
+				break;
+			case KeyEvent.VK_NUMPAD5:
+				Keyboard.keyPressed(Key.POWER_OF_x);
+				break;
 		}
 	}
 
@@ -83,12 +380,16 @@ public class Keyboard {
 	}
 	
 	private static void keyReleasedRaw(int row, int col) {
+		KeyboardDebugScreen.keyX = row;
+		KeyboardDebugScreen.keyY = col;
 		if (row == 1 && col == 1) {
-			keyReleased(Key.BRIGHTNESS_CYCLE);
+			//keyReleased(Key.BRIGHTNESS_CYCLE);
 		}
 	}
 
 	static void keyPressedRaw(int row, int col) {
+		KeyboardDebugScreen.keyX = row;
+		KeyboardDebugScreen.keyY = col;
 		if (row == 1 && col == 1) {
 			keyPressed(Key.SHIFT);
 		} else if (row == 1 && col == 2) {
@@ -111,7 +412,7 @@ public class Keyboard {
 			}
 		} else if (row == 2 && col == 8) {
 			if (shift) {
-				keyPressed(Key.NONE);
+				keyPressed(Key.PI);
 			} else if (alpha) {
 				keyPressed(Key.DRG_CYCLE);
 			} else {
@@ -389,34 +690,6 @@ public class Keyboard {
 						break;
 					case NONE:
 						break;
-					case debug_DEG:
-						if (Calculator.angleMode.equals("deg") == false) {
-							refresh = true;
-						}
-						Calculator.angleMode = "deg";
-						break;
-					case debug_RAD:
-						if (Calculator.angleMode.equals("rad") == false) {
-							refresh = true;
-						}
-						Calculator.angleMode = "rad";
-						break;
-					case debug_GRA:
-						if (Calculator.angleMode.equals("gra") == false) {
-							refresh = true;
-						}
-						Calculator.angleMode = "gra";
-						break;
-					case DRG_CYCLE:
-						if (Calculator.angleMode.equals("deg") == true) {
-							Calculator.angleMode = "rad";
-						} else if (Calculator.angleMode.equals("rad") == true) {
-							Calculator.angleMode = "gra";
-						} else {
-							Calculator.angleMode = "deg";
-						}
-						refresh = true;
-						break;
 					case LETTER_X:
 						letterPressed('X');
 						break;
@@ -498,13 +771,21 @@ public class Keyboard {
 		PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL,
 		DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5,
 		SQRT, ROOT, POWER_OF_2, POWER_OF_x,
-		SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT
+		SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT, PI
 	}
+
 }
 
 
 
 /*
+
+
+-coord-
+ NORMAL
+ SHIFT
+ ALPHA
+-------
 
 |1,1---|1,2---|------|1,4---|------|------|1,7---|
 |SHIFT |ALPHA |------|  ^   |------|------|+BRIGH|
@@ -540,7 +821,7 @@ public class Keyboard {
 |      |      |      |      |                    |
 |5,8---|4,8---|3,8---|2,8---|1,8-----------------|
 | 0    | .    |      |      | SOLVE              |
-|      |      |      |      | SIMPLIFY           |
+|      |      |      |PI    | SIMPLIFY           |
 | X    | Y    | Z    |DRGCYCL|                   |
 |------|------|------|------|--------------------|
 

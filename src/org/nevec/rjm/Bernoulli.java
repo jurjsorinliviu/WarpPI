@@ -15,7 +15,7 @@ public class Bernoulli {
 	/*
 	 * The list of all Bernoulli numbers as a vector, n=0,2,4,....
 	 */
-	static Vector<Rational> a = new Vector<Rational>();
+	static Vector<Rational> a = new Vector<>();
 
 	public Bernoulli() {
 		if (a.size() == 0) {

@@ -39,7 +39,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @since 2012-02-15
 	 */
 	public BigSurdVec() {
-		terms = new Vector<BigSurd>();
+		terms = new Vector<>();
 	} /* ctor */
 
 	/**
@@ -50,7 +50,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @since 2012-02-15
 	 */
 	public BigSurdVec(BigSurd a) {
-		terms = new Vector<BigSurd>(1);
+		terms = new Vector<>(1);
 		terms.add(a);
 	} /* ctor */
 
@@ -64,7 +64,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @since 2012-02-15
 	 */
 	public BigSurdVec(BigSurd a, BigSurd b) {
-		terms = new Vector<BigSurd>(2);
+		terms = new Vector<>(2);
 		terms.add(a);
 		terms.add(b);
 		try {
@@ -90,7 +90,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		if (terms.size() <= 1)
 			return;
 
-		Vector<BigSurd> newter = new Vector<BigSurd>();
+		Vector<BigSurd> newter = new Vector<>();
 		newter.add(terms.firstElement());
 		/*
 		 * add j-th element to the existing vector and combine were possible

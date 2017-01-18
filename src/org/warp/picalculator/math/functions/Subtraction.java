@@ -3,6 +3,7 @@ package org.warp.picalculator.math.functions;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.ExpandRule5;
@@ -11,16 +12,17 @@ import org.warp.picalculator.math.rules.NumberRule5;
 import org.warp.picalculator.math.rules.VariableRule1;
 import org.warp.picalculator.math.rules.VariableRule2;
 import org.warp.picalculator.math.rules.VariableRule3;
+import org.warp.picalculator.math.rules.methods.SumMethod1;
 
 public class Subtraction extends FunctionTwoValues {
 
-	public Subtraction(Function parent, Function value1, Function value2) {
-		super(parent, value1, value2);
+	public Subtraction(Calculator root, Function value1, Function value2) {
+		super(root, value1, value2);
 	}
 	
 	@Override
-	protected Function NewInstance(Function parent2, Function value1, Function value2) {
-		return new Subtraction(parent, value1, value2);
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new Subtraction(root, value1, value2);
 	}
 	
 	@Override
@@ -40,6 +42,7 @@ public class Subtraction extends FunctionTwoValues {
 		if (ExpandRule1.compare(this)) return true;
 		if (ExpandRule5.compare(this)) return true;
 		if (NumberRule5.compare(this)) return true;
+		if (SumMethod1.compare(this)) return true;
 		return false;
 	}
 	
@@ -60,8 +63,10 @@ public class Subtraction extends FunctionTwoValues {
 			result = ExpandRule5.execute(this);
 		} else if (NumberRule5.compare(this)) {
 			result = NumberRule5.execute(this);
+		} else if (SumMethod1.compare(this)) {
+			result = SumMethod1.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
-			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(this.parent, "-1"))));
+			result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(root, "-1"))));
 		}
 		return result;
 	}

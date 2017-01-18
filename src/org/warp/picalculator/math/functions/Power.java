@@ -3,6 +3,7 @@ package org.warp.picalculator.math.functions;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule1;
 import org.warp.picalculator.math.rules.ExponentRule2;
@@ -14,13 +15,13 @@ import org.warp.picalculator.math.rules.UndefinedRule1;
 
 public class Power extends FunctionTwoValues {
 	
-	public Power(Function parent, Function value1, Function value2) {
-		super(parent, value1, value2);
+	public Power(Calculator root, Function value1, Function value2) {
+		super(root, value1, value2);
 	}
 	
 	@Override
-	protected Function NewInstance(Function parent2, Function value1, Function value2) {
-		return new Power(parent, value1, value2);
+	protected Function NewInstance(Calculator root, Function value1, Function value2) {
+		return new Power(root, value1, value2);
 	}
 
 	@Override
@@ -74,7 +75,7 @@ public class Power extends FunctionTwoValues {
 		} else if (FractionsRule5.compare(this)) {
 			result.addAll(FractionsRule5.execute(this));
 		} else if (variable1 instanceof Number & variable2 instanceof Number) {
-			result.add((Function) ((Number)variable1).pow((Number)variable2));
+			result.add(((Number)variable1).pow((Number)variable2));
 		}
 		return result;
 	}

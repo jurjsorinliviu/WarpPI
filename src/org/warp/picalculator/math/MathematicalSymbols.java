@@ -24,6 +24,7 @@ public class MathematicalSymbols {
 	public static final String ARC_SINE = "Ⓕ";
 	public static final String ARC_COSINE = "Ⓖ";
 	public static final String ARC_TANGENT = "Ⓗ";
+	public static final String PI = "π";
 
 	public static final String[] functions() {
 		return concat(functionsNSN(), functionsSN());
@@ -50,7 +51,7 @@ public class MathematicalSymbols {
 	}
 
 	public static String[] variables() {
-		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "ⓧ", "Ⓨ", "Z"};
+		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "ⓧ", "Ⓨ", "Z", PI};
 	}
 
 	public static String[] genericSyntax() {
