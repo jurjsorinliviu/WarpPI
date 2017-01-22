@@ -28,5 +28,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/objenesis-2.4/objenesis-2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JOGL"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

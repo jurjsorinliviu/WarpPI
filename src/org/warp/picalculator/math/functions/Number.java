@@ -1,8 +1,5 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -12,8 +9,9 @@ import java.util.List;
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
-import org.warp.picalculator.device.graphicengine.RAWFont;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
@@ -133,7 +131,7 @@ public class Number implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		Display.Render.glSetFont(Utils.getFont(small));
+		PIDisplay.renderer.glSetFont(Utils.getFont(small));
 		String t = toString();
 
 		if (t.startsWith("-")) {
@@ -147,12 +145,12 @@ public class Number implements Function {
 			final RAWFont defaultf = Utils.getFont(small);
 			final RAWFont smallf = Utils.getFont(true);
 			String s = t.substring(0,  t.indexOf("ℯ℮")+2);
-			int sw = glGetStringWidth(defaultf, s);
-			glDrawStringLeft(x+1, y+smallf.charH-2, s);
-			Display.Render.glSetFont(smallf);
-			glDrawStringLeft(x+1+sw-3, y, t.substring(t.indexOf("ℯ℮")+2));
+			int sw = PIDisplay.renderer.glGetStringWidth(defaultf, s);
+			PIDisplay.renderer.glDrawStringLeft(x+1, y+smallf.charH-2, s);
+			PIDisplay.renderer.glSetFont(smallf);
+			PIDisplay.renderer.glDrawStringLeft(x+1+sw-3, y, t.substring(t.indexOf("ℯ℮")+2));
 		} else {
-			glDrawStringLeft(x+1, y, t);
+			PIDisplay.renderer.glDrawStringLeft(x+1, y, t);
 		}
 	}
 
@@ -196,10 +194,10 @@ public class Number implements Function {
 			final RAWFont defaultf = Utils.getFont(small);
 			final RAWFont smallf = Utils.getFont(true);
 			String s = t.substring(0,  t.indexOf("ℯ℮")+2);
-			int sw = glGetStringWidth(defaultf, s);
-			return 1+sw-3+glGetStringWidth(smallf, t.substring(t.indexOf("ℯ℮")+2));
+			int sw = PIDisplay.renderer.glGetStringWidth(defaultf, s);
+			return 1+sw-3+PIDisplay.renderer.glGetStringWidth(smallf, t.substring(t.indexOf("ℯ℮")+2));
 		} else {
-			return glGetStringWidth(Utils.getFont(small), t)+1;
+			return PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), t)+1;
 		}
 	}
 	

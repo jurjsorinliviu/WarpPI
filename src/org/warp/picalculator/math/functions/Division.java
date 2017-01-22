@@ -1,14 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glFillRect;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
@@ -108,9 +105,9 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		int h1 = 0;
-		Display.Render.glSetFont(Utils.getFont(small));
+		PIDisplay.renderer.glSetFont(Utils.getFont(small));
 		if (minus) {
-			w1 = glGetStringWidth(Utils.getFont(small), numerator);
+			w1 = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), numerator);
 			h1 = Utils.getFont(small).charH;
 		} else {
 			w1 = ((Function) var1).getWidth();
@@ -124,15 +121,15 @@ public class Division extends FunctionTwoValues {
 			maxw = 1 + w2;
 		}
 		if (minus && drawMinus) {
-			minusw = glGetStringWidth(Utils.getFont(small), "-") + 1;
+			minusw = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "-") + 1;
 			minush = Utils.getFont(small).charH;
-			glDrawStringLeft(x+1, y + h1 + 1 + 1 - (minush / 2), "-");
-			glDrawStringLeft((int) (x+1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
+			PIDisplay.renderer.glDrawStringLeft(x+1, y + h1 + 1 + 1 - (minush / 2), "-");
+			PIDisplay.renderer.glDrawStringLeft((int) (x+1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
 		} else {
 			((Function) var1).draw((int) (x+1 + minusw + (maxw - w1) / 2d), y);
 		}
 		((Function) var2).draw((int) (x+1 + minusw + (maxw - w2) / 2d), y + h1 + 1 + 1 + 1);
-		glFillRect(x+1+ minusw, y + h1 + 1, maxw, 1);
+		PIDisplay.renderer.glFillRect(x+1+ minusw, y + h1 + 1, maxw, 1);
 	}
 
 	@Override
@@ -179,7 +176,7 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		if (minus) {
-			w1 = glGetStringWidth(Utils.getFont(small), numerator);
+			w1 = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), numerator);
 		} else {
 			w1 = variable1.getWidth();
 		}
@@ -191,7 +188,7 @@ public class Division extends FunctionTwoValues {
 			maxw = w2+1;
 		}
 		if (minus && drawMinus) {
-			return 1 + glGetStringWidth(Utils.getFont(small), "-") + 1 + maxw;
+			return 1 + PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "-") + 1 + maxw;
 		} else {
 			return 1 + maxw;
 		}

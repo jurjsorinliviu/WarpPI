@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 public class Undefined implements Function {
@@ -35,15 +36,15 @@ public class Undefined implements Function {
 	
 	@Override
 	public void generateGraphics() {
-		width = Display.Render.glGetStringWidth(Utils.getFont(small), "UNDEFINED");
+		width = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "UNDEFINED");
 		height = Utils.getFontHeight(small);
 		line = height/2;
 	}
 
 	@Override
 	public void draw(int x, int y) {
-		Display.Render.glSetFont(Utils.getFont(small));
-		Display.Render.glDrawStringLeft(x, y, "UNDEFINED");
+		PIDisplay.renderer.glSetFont(Utils.getFont(small));
+		PIDisplay.renderer.glDrawStringLeft(x, y, "UNDEFINED");
 	}
 
 	@Override

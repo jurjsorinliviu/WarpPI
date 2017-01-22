@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 public class EmptyNumber implements Function {
@@ -38,12 +39,12 @@ public class EmptyNumber implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		Display.Render.glDrawStringLeft(x, y, "␀");
+		PIDisplay.renderer.glDrawStringLeft(x, y, "␀");
 	}
 
 	@Override
 	public int getWidth() {
-		return Display.Render.glGetStringWidth(Utils.getFont(small), "␀");
+		return PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "␀");
 	}
 
 	@Override

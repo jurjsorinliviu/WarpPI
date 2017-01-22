@@ -2,7 +2,6 @@ package org.warp.picalculator.math.functions;
 
 import static org.warp.picalculator.Utils.ArrayToRegex;
 import static org.warp.picalculator.Utils.concat;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import java.util.regex.Pattern;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.gui.PIDisplay;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.trigonometry.ArcCosine;
@@ -696,9 +696,9 @@ public class Expression extends FunctionMultipleValues {
 			float maxy = y + getHeight();
 			int h = getHeight();
 			x += 1;
-			glDrawLine(x, y + 2, x + 2, y);
-			glDrawLine(x, y + 2, x, y + h - 3);
-			glDrawLine(x, y + h - 3, x + 2, y + h - 1);
+			PIDisplay.renderer.glDrawLine(x, y + 2, x + 2, y);
+			PIDisplay.renderer.glDrawLine(x, y + 2, x, y + h - 3);
+			PIDisplay.renderer.glDrawLine(x, y + h - 3, x + 2, y + h - 1);
 			x += 4;
 			for (Function f : functions) {
 				float fheight = f.getHeight();
@@ -707,9 +707,9 @@ public class Expression extends FunctionMultipleValues {
 				x += f.getWidth();
 			}
 			x += 2;
-			glDrawLine(x, y, x + 2, y + 2);
-			glDrawLine(x + 2, y + 2, x + 2, y + h - 3);
-			glDrawLine(x, y + h - 1, x + 2, y + h - 3);
+			PIDisplay.renderer.glDrawLine(x, y, x + 2, y + 2);
+			PIDisplay.renderer.glDrawLine(x + 2, y + 2, x + 2, y + h - 3);
+			PIDisplay.renderer.glDrawLine(x, y + h - 1, x + 2, y + h - 3);
 			x += 4;
 		}
 	}

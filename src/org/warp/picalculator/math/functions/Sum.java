@@ -1,13 +1,12 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.gui.PIDisplay;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.NumberRule3;
@@ -114,7 +113,7 @@ public class Sum extends FunctionTwoValues {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += glGetStringWidth(Utils.getFont(small), getSymbol());
+		dx += PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
 		return dx += variable2.getWidth();
 	}
 	

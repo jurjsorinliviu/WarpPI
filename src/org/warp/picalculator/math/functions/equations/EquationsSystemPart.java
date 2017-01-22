@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions.equations;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
+import static org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay.Render.glDrawLine;
 
 import java.util.ArrayList;
 import java.util.List;

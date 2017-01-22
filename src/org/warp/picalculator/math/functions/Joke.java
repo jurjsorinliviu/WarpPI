@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.PIDisplay;
-import org.warp.picalculator.device.graphicengine.Display;
-import org.warp.picalculator.device.graphicengine.RAWFont;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 public class Joke implements Function {
@@ -46,22 +46,22 @@ public class Joke implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		RAWFont rf = Display.Render.currentFont;
+		RAWFont rf = PIDisplay.renderer.getCurrentFont();
 		if (jokesFont[joke] >= 0) {
-			Display.Render.glSetFont(PIDisplay.fonts[jokesFont[joke]]);
+			PIDisplay.renderer.glSetFont(PIDisplay.fonts[jokesFont[joke]]);
 		}
-		Display.Render.glDrawStringLeft(x, y, jokes[joke]);
+		PIDisplay.renderer.glDrawStringLeft(x, y, jokes[joke]);
 		if (jokesFont[joke] >= 0) {
-			Display.Render.glSetFont(rf);
+			PIDisplay.renderer.glSetFont(rf);
 		}
 	}
 
 	@Override
 	public int getWidth() {
 		if (jokesFont[joke] >= 0) {
-			return Display.Render.glGetStringWidth(PIDisplay.fonts[jokesFont[joke]], jokes[joke]);
+			return PIDisplay.renderer.glGetStringWidth(PIDisplay.fonts[jokesFont[joke]], jokes[joke]);
 		} else {
-			return Display.Render.glGetStringWidth(Utils.getFont(small), jokes[joke]);
+			return PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), jokes[joke]);
 		}
 	}
 

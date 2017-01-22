@@ -1,15 +1,14 @@
 package org.warp.picalculator;
 
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.PIDisplay;
-import org.warp.picalculator.screens.LoadingScreen;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.screens.LoadingScreen;
 
 import com.pi4j.wiringpi.Gpio;
 
 public class Main {
 	public static int[] screenPos = new int[] { 0, 0 };
 	public static final int[] screenSize = new int[] { 480, 320 };
-	public static final int screenScale = 1;
 	public static final boolean zoomed = true;
 	public static Main instance;
 	public static boolean haxMode = true;

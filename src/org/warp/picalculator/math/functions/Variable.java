@@ -1,14 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.PIDisplay;
 import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
@@ -65,8 +62,8 @@ public class Variable implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		Display.Render.glSetFont(Utils.getFont(small));
-		glDrawStringLeft(x+1, y, toString());
+		PIDisplay.renderer.glSetFont(Utils.getFont(small));
+		PIDisplay.renderer.glDrawStringLeft(x+1, y, toString());
 	}
 
 	@Override
@@ -85,7 +82,7 @@ public class Variable implements Function {
 	}
 	
 	public int calcWidth() {
-		return glGetStringWidth(Utils.getFont(small), toString())+1;
+		return PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), toString())+1;
 	}
 	
 	@Override

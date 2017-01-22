@@ -1,11 +1,10 @@
 package org.warp.picalculator.math.functions.equations;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.PIDisplay;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Function;
@@ -109,13 +108,13 @@ public class EquationsSystem extends FunctionMultipleValues {
 		}
 		
 		
-		glDrawLine(x + 2, y + 0, x + 3, y + 0);
-		glDrawLine(x + 1, y + 1, x + 1, y + marginBottom / 2);
-		glDrawLine(x + 2, y + marginBottom / 2 + 1, x + 2, y + marginBottom - 1);
-		glDrawLine(x + 0, y + marginBottom, x + 1, y + marginBottom);
-		glDrawLine(x + 2, y + marginBottom + 1, x + 2, y + marginBottom + spazioSopra / 2 - 1);
-		glDrawLine(x + 1, y + marginBottom + spazioSopra / 2, x + 1, y + h - 1);
-		glDrawLine(x + 2, y + h, x + 3, y + h);
+		PIDisplay.renderer.glDrawLine(x + 2, y + 0, x + 3, y + 0);
+		PIDisplay.renderer.glDrawLine(x + 1, y + 1, x + 1, y + marginBottom / 2);
+		PIDisplay.renderer.glDrawLine(x + 2, y + marginBottom / 2 + 1, x + 2, y + marginBottom - 1);
+		PIDisplay.renderer.glDrawLine(x + 0, y + marginBottom, x + 1, y + marginBottom);
+		PIDisplay.renderer.glDrawLine(x + 2, y + marginBottom + 1, x + 2, y + marginBottom + spazioSopra / 2 - 1);
+		PIDisplay.renderer.glDrawLine(x + 1, y + marginBottom + spazioSopra / 2, x + 1, y + h - 1);
+		PIDisplay.renderer.glDrawLine(x + 2, y + h, x + 3, y + h);
 	}
 
 	@Override

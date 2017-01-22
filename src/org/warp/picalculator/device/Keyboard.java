@@ -1,13 +1,15 @@
 package org.warp.picalculator.device;
 
 import java.awt.event.KeyEvent;
+
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
-import org.warp.picalculator.device.graphicengine.Display;
-import org.warp.picalculator.device.graphicengine.Screen;
-import org.warp.picalculator.screens.KeyboardDebugScreen;
-import org.warp.picalculator.screens.MarioScreen;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
+import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
+import org.warp.picalculator.gui.screens.MarioScreen;
+import org.warp.picalculator.gui.screens.Screen;
 
 import com.pi4j.wiringpi.Gpio;
 
@@ -686,7 +688,7 @@ public class Keyboard {
 			} else {
 				switch (k) {
 					case POWER:
-						Display.destroy();
+						PIDisplay.display.destroy();
 						break;
 					case NONE:
 						break;
@@ -734,7 +736,7 @@ public class Keyboard {
 				refresh = true;
 			}
 			if (refresh) {
-				Display.repaint();
+				PIDisplay.display.repaint();
 			}
 		}
 	}
@@ -758,7 +760,7 @@ public class Keyboard {
 				}
 			}
 			if (refresh) {
-				Display.repaint();
+				PIDisplay.display.repaint();
 			}
 		}
 	}

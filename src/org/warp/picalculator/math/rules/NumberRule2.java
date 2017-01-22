@@ -55,7 +55,7 @@ public class NumberRule2 {
 			}
 		}
 		
-		result.add(a.setParent(root));
+		result.add(a);
 		return result;
 	}
 

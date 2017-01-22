@@ -1,7 +1,5 @@
 package org.warp.picalculator;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +12,8 @@ import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
-import org.warp.picalculator.device.PIDisplay;
-import org.warp.picalculator.device.graphicengine.RAWFont;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.RAWFont;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Expression;
@@ -352,10 +350,10 @@ public class Utils {
 		
 		var.draw(x + wsegno, y + (hsegno - h1));
 
-		glDrawLine(x + 1, y + hsegno - 3, x + 3, y + hsegno - 1);
-		glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
-		glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
-		glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
+		PIDisplay.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 3, y + hsegno - 1);
+		PIDisplay.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
+		PIDisplay.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
+		PIDisplay.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
 	}
 
 	public static final int getFontHeight() {

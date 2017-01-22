@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
@@ -33,7 +34,7 @@ public class Negative extends AnteriorFunction {
 		variable.generateGraphics();
 		
 		height = getVariable().getHeight();
-		width = Display.Render.glGetStringWidth(Utils.getFont(small), "-") + getVariable().getWidth();
+		width = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "-") + getVariable().getWidth();
 		line = getVariable().getLine();
 	}
 

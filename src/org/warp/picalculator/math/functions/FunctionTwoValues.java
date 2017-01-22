@@ -1,13 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
@@ -114,9 +112,9 @@ public abstract class FunctionTwoValues implements Function {
 		variable1.draw(dx + x, ln - variable1.getLine() + y);
 		dx += 1+variable1.getWidth();
 		if (drawSignum()) {
-			Display.Render.glSetFont(Utils.getFont(small));
-			glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-			dx += glGetStringWidth(Utils.getFont(small), getSymbol());
+			PIDisplay.renderer.glSetFont(Utils.getFont(small));
+			PIDisplay.renderer.glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
+			dx += PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
 		}
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
@@ -165,7 +163,7 @@ public abstract class FunctionTwoValues implements Function {
 	}	
 
 	protected int calcWidth() {
-		return variable1.getWidth() + 1 + (drawSignum() ? glGetStringWidth(Utils.getFont(small), getSymbol()) : 0) + variable2.getWidth();
+		return variable1.getWidth() + 1 + (drawSignum() ? PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol()) : 0) + variable2.getWidth();
 	}
 	
 	protected int calcHeight() {

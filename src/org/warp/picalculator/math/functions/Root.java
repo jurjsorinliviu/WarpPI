@@ -1,12 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawLine;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.PIDisplay;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 
@@ -99,10 +98,10 @@ public class Root extends FunctionTwoValues {
 		getVariable1().draw(x + 1, y);
 		getVariable2().draw(x + 1 + w2 + 2, y + h2 - 2);
 
-		glDrawLine(x + 1 + w2 - 2, y + height - 3, x + 1 + w2, y + height);
-		glDrawLine(x + 1 + w2, y + height - 1 - hh, x + 1 + w2, y + height - 1);
-		glDrawLine(x + 1 + w2 + 1, y + height - 2 - h1, x + 1 + w2 + 1, y + height - 1 - hh - 1);
-		glDrawLine(x + 1 + w2 + 1, y + height - h1 - 2, x + 1 + w2 + 2 + w1 + 1, y + height - h1 - 2);
+		PIDisplay.renderer.glDrawLine(x + 1 + w2 - 2, y + height - 3, x + 1 + w2, y + height);
+		PIDisplay.renderer.glDrawLine(x + 1 + w2, y + height - 1 - hh, x + 1 + w2, y + height - 1);
+		PIDisplay.renderer.glDrawLine(x + 1 + w2 + 1, y + height - 2 - h1, x + 1 + w2 + 1, y + height - 1 - hh - 1);
+		PIDisplay.renderer.glDrawLine(x + 1 + w2 + 1, y + height - h1 - 2, x + 1 + w2 + 2 + w1 + 1, y + height - h1 - 2);
 	}
 
 	@Override

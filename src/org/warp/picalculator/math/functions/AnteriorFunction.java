@@ -1,13 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import static org.warp.picalculator.device.graphicengine.Display.Render.glDrawStringLeft;
-import static org.warp.picalculator.device.graphicengine.Display.Render.glGetStringWidth;
-
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
@@ -85,7 +83,7 @@ public abstract class AnteriorFunction implements Function {
 		variable.setSmall(small);
 		variable.generateGraphics();
 		
-		width = glGetStringWidth(Utils.getFont(small), getSymbol()) + 1 + getVariable().getWidth();
+		width = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol()) + 1 + getVariable().getWidth();
 		height = variable.getHeight();
 		line = variable.getLine();
 	}
@@ -93,12 +91,12 @@ public abstract class AnteriorFunction implements Function {
 	@Override
 	public void draw(int x, int y) {
 		float h1 = getVariable().getHeight();
-		int wsegno = glGetStringWidth(Utils.getFont(small), getSymbol());
+		int wsegno = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
 		float hsegno = Utils.getFontHeight(small);
 		float maxh = getHeight();
-		Display.Render.glSetFont(Utils.getFont(small));
+		PIDisplay.renderer.glSetFont(Utils.getFont(small));
 		
-		glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), getSymbol());
+		PIDisplay.renderer.glDrawStringLeft(x, (int) Math.floor(y + (maxh - hsegno) / 2), getSymbol());
 		getVariable().draw(x + wsegno + 1, (int) Math.floor(y + (maxh - h1) / 2));
 	}
 
