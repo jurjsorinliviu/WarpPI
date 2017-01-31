@@ -17,6 +17,7 @@ import org.warp.picalculator.math.functions.SumSubtraction;
  * <b>a - a = 0</b><br>
  * <b>-a + a = 0</b><br>
  * <b>a ± a = {0, 2a}</b>
+ * 
  * @author Andrea Cavalli
  *
  */
@@ -24,20 +25,20 @@ public class NumberRule3 {
 
 	public static boolean compare(Function f) {
 		if (f instanceof Subtraction) {
-			Subtraction sub = (Subtraction) f;
+			final Subtraction sub = (Subtraction) f;
 			if (sub.getVariable1().equals(sub.getVariable2())) {
 				return true;
 			}
 		} else if (f instanceof Sum) {
-			Sum sub = (Sum) f;
+			final Sum sub = (Sum) f;
 			if (sub.getVariable1() instanceof Negative) {
-				Negative neg = (Negative) sub.getVariable1();
+				final Negative neg = (Negative) sub.getVariable1();
 				if (neg.getVariable().equals(sub.getVariable2())) {
 					return true;
 				}
 			}
 		} else if (f instanceof SumSubtraction) {
-			SumSubtraction sub = (SumSubtraction) f;
+			final SumSubtraction sub = (SumSubtraction) f;
 			if (sub.getVariable1().equals(sub.getVariable2())) {
 				return true;
 			}
@@ -46,10 +47,10 @@ public class NumberRule3 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
 		if (f instanceof SumSubtraction) {
-			Multiplication mul = new Multiplication(root, null, null);
+			final Multiplication mul = new Multiplication(root, null, null);
 			mul.setVariable1(new Number(root, 2));
 			mul.setVariable2(f);
 			result.add(mul);

@@ -10,7 +10,7 @@ public class EmptyScreen extends Screen {
 		super();
 		canBeInHistory = false;
 	}
-	
+
 	@Override
 	public void created() throws InterruptedException {
 		endLoading = 0;
@@ -27,7 +27,7 @@ public class EmptyScreen extends Screen {
 
 	@Override
 	public void beforeRender(float dt) {
-		
+
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class EmptyScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(Key k) {
-		
+
 		return false;
 	}
 

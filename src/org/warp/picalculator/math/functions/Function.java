@@ -21,14 +21,14 @@ public interface Function {
 	public int getHeight();
 
 	public int getLine();
-	
+
 	public Calculator getRoot();
-	
+
 	public void setSmall(boolean small);
-	
+
 	@Override
 	public int hashCode();
-	
+
 	@Override
 	public boolean equals(Object o);
 }

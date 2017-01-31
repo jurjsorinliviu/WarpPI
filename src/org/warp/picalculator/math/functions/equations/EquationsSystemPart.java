@@ -1,7 +1,5 @@
 package org.warp.picalculator.math.functions.equations;
 
-import static org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay.Render.glDrawLine;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,7 @@ public class EquationsSystemPart extends AnteriorFunction {
 	protected Function NewInstance(Calculator root, Function value) {
 		return new EquationsSystemPart(root, value);
 	}
-	
+
 	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.SYSTEM;
@@ -31,15 +29,15 @@ public class EquationsSystemPart extends AnteriorFunction {
 	public void generateGraphics() {
 		variable.setSmall(false);
 		variable.generateGraphics();
-		
+
 		width = 5 + getVariable().getWidth();
 		height = 3 + getVariable().getHeight() + 2;
 		line = 3 + getVariable().getLine();
 	}
-	
+
 	@Override
 	public void draw(int x, int y) {
-		final int h = this.getHeight() - 1;
+		final int h = getHeight() - 1;
 		final int paddingTop = 3;
 		final int spazioSotto = (h - 3 - 2) / 2 + paddingTop;
 		final int spazioSopra = h - spazioSotto;
@@ -66,5 +64,23 @@ public class EquationsSystemPart extends AnteriorFunction {
 	@Override
 	public int getLine() {
 		return line;
+	}
+
+	@Override
+	protected ArrayList<Function> solve() throws Error {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected boolean isSolvable() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

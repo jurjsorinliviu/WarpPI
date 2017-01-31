@@ -1,10 +1,10 @@
 package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.device.Keyboard.Key;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 
 public abstract class Screen {
-	public PIDisplay d;
+	public DisplayManager d;
 	public boolean created = false;
 	public boolean initialized = false;
 	public boolean canBeInHistory = false;
@@ -30,9 +30,9 @@ public abstract class Screen {
 	public abstract void init() throws InterruptedException;
 
 	public abstract void render();
-	
+
 	public void renderStatusbar() {
-		
+
 	}
 
 	public abstract void beforeRender(float dt);
@@ -40,6 +40,6 @@ public abstract class Screen {
 	public abstract boolean mustBeRefreshed();
 
 	public abstract boolean keyPressed(Key k);
-	
+
 	public abstract boolean keyReleased(Key k);
 }

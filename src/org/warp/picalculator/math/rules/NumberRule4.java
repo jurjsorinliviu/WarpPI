@@ -12,6 +12,7 @@ import org.warp.picalculator.math.functions.SumSubtraction;
 /**
  * Number rule<br>
  * <b>a ± b = {a+b, a-b}</b>
+ * 
  * @author Andrea Cavalli
  *
  */
@@ -25,9 +26,9 @@ public class NumberRule4 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
-		SumSubtraction ss = (SumSubtraction) f;
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
+		final SumSubtraction ss = (SumSubtraction) f;
 		result.add(new Sum(root, ss.getVariable1(), ss.getVariable2()));
 		result.add(new Subtraction(root, ss.getVariable1(), ss.getVariable2()));
 		return result;

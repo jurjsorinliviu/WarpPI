@@ -12,14 +12,15 @@ import org.warp.picalculator.math.functions.Undefined;
 /**
  * Undefined rule<br>
  * <b>0^0=undefined</b>
+ * 
  * @author Andrea Cavalli
  *
  */
 public class UndefinedRule1 {
 
 	public static boolean compare(Function f) {
-		Calculator root = f.getRoot();
-		Power fnc = (Power) f;
+		final Calculator root = f.getRoot();
+		final Power fnc = (Power) f;
 		if (fnc.getVariable1().equals(new Number(root, 0)) && fnc.getVariable2().equals(new Number(root, 0))) {
 			return true;
 		}
@@ -27,8 +28,8 @@ public class UndefinedRule1 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
 		result.add(new Undefined(root));
 		return result;
 	}

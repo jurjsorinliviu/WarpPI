@@ -5,8 +5,7 @@ import java.awt.event.KeyEvent;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
-import org.warp.picalculator.gui.PIDisplay;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
 import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.gui.screens.Screen;
@@ -16,7 +15,7 @@ import com.pi4j.wiringpi.Gpio;
 public class Keyboard {
 	public static volatile boolean alpha = false;
 	public static volatile boolean shift = false;
-	
+
 	//From Serial
 	private static final int RCK_pin = 35;
 	private static final int SCK_and_CLK_pin = 38;
@@ -29,21 +28,20 @@ public class Keyboard {
 
 	private static volatile boolean[][] precedentStates = new boolean[8][8];
 	public static volatile boolean[][] debugKeysDown = new boolean[8][8];
-	public static volatile KeyEvent debugKeyEvent;
-	
+	public static volatile int debugKeyCode = -1;
+
 	public static void startKeyboard() {
-		Thread kt = new Thread(()->{
+		final Thread kt = new Thread(() -> {
 			if (Utils.debugOn) {
 				try {
-					while(true) {
-						if (debugKeyEvent != null) {
-							debugKeyPressed(debugKeyEvent);
-							debugKeyEvent = null;
+					while (true) {
+						if (debugKeyCode != -1) {
+							debugKeyPressed(debugKeyCode);
+							debugKeyCode = -1;
 						}
 						Thread.sleep(50);
 					}
-				} catch (InterruptedException e) {
-				}
+				} catch (final InterruptedException e) {}
 			} else {
 				Gpio.pinMode(CLK_INH_pin, Gpio.OUTPUT);
 				Gpio.pinMode(RCK_pin, Gpio.OUTPUT);
@@ -51,36 +49,36 @@ public class Keyboard {
 				Gpio.pinMode(SH_LD_pin, Gpio.OUTPUT);
 				Gpio.pinMode(SCK_and_CLK_pin, Gpio.OUTPUT);
 				Gpio.pinMode(QH_pin, Gpio.INPUT);
-	
+
 				Gpio.digitalWrite(CLK_INH_pin, false);
 				Gpio.digitalWrite(RCK_pin, false);
 				Gpio.digitalWrite(SER_pin, false);
 				Gpio.digitalWrite(SH_LD_pin, false);
 				Gpio.digitalWrite(SCK_and_CLK_pin, false);
 				Gpio.digitalWrite(QH_pin, false);
-				SerialToParallel chip1 = new SerialToParallel(RCK_pin, SCK_and_CLK_pin /*SCK*/, SER_pin);
-				ParallelToSerial chip2 = new ParallelToSerial(SH_LD_pin, CLK_INH_pin, QH_pin, SCK_and_CLK_pin/*CLK*/);
-				
+				final SerialToParallel chip1 = new SerialToParallel(RCK_pin, SCK_and_CLK_pin /*SCK*/, SER_pin);
+				final ParallelToSerial chip2 = new ParallelToSerial(SH_LD_pin, CLK_INH_pin, QH_pin, SCK_and_CLK_pin/*CLK*/);
+
 				KeyboardDebugScreen.log("Started keyboard system");
-				
-				while(true) {
+
+				while (true) {
 					boolean[] data;
 					for (int col = 0; col < 8; col++) {
 						data = new boolean[8];
 						data[col] = true;
 						chip1.write(data);
-						
+
 						data = chip2.read();
 						KeyboardDebugScreen.ks[col] = data;
-						
+
 						for (int row = 0; row < 8; row++) {
 							if (data[row] == true && precedentStates[row][col] == false) {
-								System.out.println("Pressed button at "+(row+1) +", "+(col+1));
-								KeyboardDebugScreen.log("Pressed button at "+(row+1) +", "+(col+1));
-								keyPressedRaw(row+1, col+1);
+								System.out.println("Pressed button at " + (row + 1) + ", " + (col + 1));
+								KeyboardDebugScreen.log("Pressed button at " + (row + 1) + ", " + (col + 1));
+								keyPressedRaw(row + 1, col + 1);
 							} else if (data[row] == false && precedentStates[row][col] == true) {
-								keyReleasedRaw(row+1, col+1);
-								KeyboardDebugScreen.log("Released button at "+(row+1) +", "+(col+1));
+								keyReleasedRaw(row + 1, col + 1);
+								KeyboardDebugScreen.log("Released button at " + (row + 1) + ", " + (col + 1));
 							}
 							precedentStates[row][col] = data[row];
 						}
@@ -94,8 +92,8 @@ public class Keyboard {
 		kt.start();
 	}
 
-	private static void debugKeyPressed(KeyEvent arg0) {
-		switch (arg0.getKeyCode()) {
+	private static void debugKeyPressed(int keyCode) {
+		switch (keyCode) {
 			case KeyEvent.VK_ESCAPE:
 				Keyboard.keyPressed(Key.POWER);
 				break;
@@ -177,6 +175,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_ENTER:
 			case KeyEvent.VK_ENTER:
 				if (Keyboard.shift) {
 					Keyboard.keyPressed(Key.SIMPLIFY);
@@ -187,7 +186,7 @@ public class Keyboard {
 				}
 				int row = 2;
 				int col = 1;
-				Keyboard.debugKeysDown[row-1][col-1] = true;
+				Keyboard.debugKeysDown[row - 1][col - 1] = true;
 				break;
 			case KeyEvent.VK_1:
 				if (!Keyboard.shift && !Keyboard.alpha) {
@@ -265,6 +264,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_ADD:
 			case KeyEvent.VK_ADD:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.PLUS);
@@ -274,6 +274,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_SUBTRACT:
 			case KeyEvent.VK_SUBTRACT:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.MINUS);
@@ -281,6 +282,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_MULTIPLY:
 			case KeyEvent.VK_MULTIPLY:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.MULTIPLY);
@@ -288,6 +290,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_DIVIDE:
 			case KeyEvent.VK_DIVIDE:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.DIVIDE);
@@ -302,6 +305,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_DELETE:
 			case KeyEvent.VK_DELETE:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.RESET);
@@ -309,28 +313,31 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_LEFT:
 			case KeyEvent.VK_LEFT:
 				//LEFT
 				row = 2;
 				col = 3;
-				Keyboard.debugKeysDown[row-1][col-1] = true;
+				Keyboard.debugKeysDown[row - 1][col - 1] = true;
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.LEFT);
 				} else {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_RIGHT:
 			case KeyEvent.VK_RIGHT:
 				//RIGHT
 				row = 2;
 				col = 5;
-				Keyboard.debugKeysDown[row-1][col-1] = true;
+				Keyboard.debugKeysDown[row - 1][col - 1] = true;
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.RIGHT);
 				} else {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD4:
 			case KeyEvent.VK_NUMPAD4:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.HISTORY_BACK);
@@ -338,6 +345,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD6:
 			case KeyEvent.VK_NUMPAD6:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.HISTORY_FORWARD);
@@ -352,21 +360,26 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_SHIFT:
 			case KeyEvent.VK_SHIFT:
 				Keyboard.keyPressed(Key.SHIFT);
 				break;
 			case KeyEvent.VK_A:
 				Keyboard.keyPressed(Key.ALPHA);
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD1:
 			case KeyEvent.VK_NUMPAD1:
 				Keyboard.keyPressed(Key.SQRT);
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD2:
 			case KeyEvent.VK_NUMPAD2:
 				Keyboard.keyPressed(Key.ROOT);
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD3:
 			case KeyEvent.VK_NUMPAD3:
 				Keyboard.keyPressed(Key.POWER_OF_2);
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD5:
 			case KeyEvent.VK_NUMPAD5:
 				Keyboard.keyPressed(Key.POWER_OF_x);
 				break;
@@ -375,12 +388,12 @@ public class Keyboard {
 
 	public static boolean isKeyDown(int row, int col) {
 		if (Utils.debugOn == false) {
-			return precedentStates[row-1][col-1];
+			return precedentStates[row - 1][col - 1];
 		} else {
-			return debugKeysDown[row-1][col-1];
+			return debugKeysDown[row - 1][col - 1];
 		}
 	}
-	
+
 	private static void keyReleasedRaw(int row, int col) {
 		KeyboardDebugScreen.keyX = row;
 		KeyboardDebugScreen.keyY = col;
@@ -395,7 +408,7 @@ public class Keyboard {
 		if (row == 1 && col == 1) {
 			keyPressed(Key.SHIFT);
 		} else if (row == 1 && col == 2) {
-				keyPressed(Key.ALPHA);
+			keyPressed(Key.ALPHA);
 		} else if (row == 1 && col == 7) {
 			if (shift) {
 				keyPressed(Key.BRIGHTNESS_CYCLE_REVERSE);
@@ -580,7 +593,7 @@ public class Keyboard {
 			} else {
 				keyPressed(Key.LEFT);
 			}
-		} else if (row ==2 && col == 5) {
+		} else if (row == 2 && col == 5) {
 			if (shift) {
 				keyPressed(Key.NONE);
 			} else if (alpha) {
@@ -664,8 +677,7 @@ public class Keyboard {
 				System.out.println("PREMUTO >");
 				keyPressed(Key.HISTORY_FORWARD);
 			}
-		} else {
-		}
+		} else {}
 	}
 
 	public static void stopKeyboard() {
@@ -680,15 +692,15 @@ public class Keyboard {
 	}
 
 	public static void keyPressed(Key k) {
-		if (PIDisplay.INSTANCE != null) {
-			Screen scr = PIDisplay.INSTANCE.getScreen();
+		if (DisplayManager.INSTANCE != null) {
+			final Screen scr = DisplayManager.INSTANCE.getScreen();
 			boolean refresh = false;
-			if(scr != null && scr.initialized && scr.keyPressed(k)) {
+			if (scr != null && scr.initialized && scr.keyPressed(k)) {
 				refresh = true;
 			} else {
 				switch (k) {
 					case POWER:
-						PIDisplay.display.destroy();
+						DisplayManager.display.destroy();
 						break;
 					case NONE:
 						break;
@@ -696,20 +708,20 @@ public class Keyboard {
 						letterPressed('X');
 						break;
 					case BRIGHTNESS_CYCLE:
-						PIDisplay.cycleBrightness(false);
+						DisplayManager.cycleBrightness(false);
 						refresh = true;
 						break;
 					case BRIGHTNESS_CYCLE_REVERSE:
-						PIDisplay.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
-						PIDisplay.cycleBrightness(true);
+						DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
+						DisplayManager.cycleBrightness(true);
 						refresh = true;
 						break;
 					case HISTORY_BACK:
-						PIDisplay.INSTANCE.goBack();
+						DisplayManager.INSTANCE.goBack();
 						refresh = true;
 						break;
 					case HISTORY_FORWARD:
-						PIDisplay.INSTANCE.goForward();
+						DisplayManager.INSTANCE.goForward();
 						refresh = true;
 						break;
 					default:
@@ -736,20 +748,20 @@ public class Keyboard {
 				refresh = true;
 			}
 			if (refresh) {
-				PIDisplay.display.repaint();
+//				PIDisplay.display.repaint();
 			}
 		}
 	}
 
 	private static void letterPressed(char L) {
-		
+
 	}
 
 	public static void keyReleased(Key k) {
 		boolean refresh = false;
-		if (PIDisplay.INSTANCE != null) {
-			Screen scr = PIDisplay.INSTANCE.getScreen();
-			if(scr != null && scr.initialized && scr.keyReleased(k)) {
+		if (DisplayManager.INSTANCE != null) {
+			final Screen scr = DisplayManager.INSTANCE.getScreen();
+			if (scr != null && scr.initialized && scr.keyReleased(k)) {
 				refresh = true;
 			} else {
 				switch (k) {
@@ -760,25 +772,16 @@ public class Keyboard {
 				}
 			}
 			if (refresh) {
-				PIDisplay.display.repaint();
+//				PIDisplay.display.repaint();
 			}
 		}
 	}
 
 	public static enum Key {
-		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE,
-		HISTORY_BACK, HISTORY_FORWARD, SURD_MODE, DRG_CYCLE,
-		LETTER_X, LETTER_Y, SIMPLIFY, SOLVE, BRIGHTNESS_CYCLE,
-		BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9,
-		PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL,
-		DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5,
-		SQRT, ROOT, POWER_OF_2, POWER_OF_x,
-		SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT, PI
+		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, SURD_MODE, DRG_CYCLE, LETTER_X, LETTER_Y, SIMPLIFY, SOLVE, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x, SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT, PI
 	}
 
 }
-
-
 
 /*
 

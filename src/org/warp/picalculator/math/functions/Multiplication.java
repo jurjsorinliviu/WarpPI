@@ -21,7 +21,7 @@ public class Multiplication extends FunctionTwoValues {
 			variable2 = value1;
 		}
 	}
-	
+
 	@Override
 	protected Function NewInstance(Calculator root, Function value1, Function value2) {
 		return new Multiplication(root, value1, value2);
@@ -37,12 +37,24 @@ public class Multiplication extends FunctionTwoValues {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
-		if (SyntaxRule1.compare(this)) return true;
-		if (NumberRule1.compare(this)) return true;
-		if (NumberRule2.compare(this)) return true;
-		if (NumberRule6.compare(this)) return true;
-		if (ExponentRule15.compare(this)) return true;
-		if (MultiplicationMethod1.compare(this)) return true;
+		if (SyntaxRule1.compare(this)) {
+			return true;
+		}
+		if (NumberRule1.compare(this)) {
+			return true;
+		}
+		if (NumberRule2.compare(this)) {
+			return true;
+		}
+		if (NumberRule6.compare(this)) {
+			return true;
+		}
+		if (ExponentRule15.compare(this)) {
+			return true;
+		}
+		if (MultiplicationMethod1.compare(this)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -62,15 +74,15 @@ public class Multiplication extends FunctionTwoValues {
 		} else if (MultiplicationMethod1.compare(this)) {
 			result = MultiplicationMethod1.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
-			result.add(((Number)variable1).multiply((Number)variable2));
+			result.add(((Number) variable1).multiply((Number) variable2));
 		}
 		return result;
 	}
 
 	@Override
 	public boolean drawSignum() {
-		Function[] tmpVar = new Function[] { variable1, variable2 };
-		boolean[] ok = new boolean[] { false, false };
+		final Function[] tmpVar = new Function[] { variable1, variable2 };
+		final boolean[] ok = new boolean[] { false, false };
 		for (int val = 0; val < 2; val++) {
 			while (!ok[val]) {
 				if (tmpVar[val] instanceof Division) {
@@ -132,11 +144,11 @@ public class Multiplication extends FunctionTwoValues {
 			return true;
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Multiplication) {
-			FunctionTwoValues f = (FunctionTwoValues) o;
+			final FunctionTwoValues f = (FunctionTwoValues) o;
 			if (variable1.equals(f.variable1) && variable2.equals(f.variable2)) {
 				return true;
 			} else if (variable1.equals(f.variable2) && variable2.equals(f.variable1)) {

@@ -1,23 +1,28 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.Drawable;
-import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.RAWSkin;
+
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.egl.EGL;
 
 public class GPUDisplay implements org.warp.picalculator.gui.graphicengine.Display {
 
-	private boolean initialized = false;
-	private CalculatorWindow wnd;
+	private volatile boolean initialized = false;
+	private volatile boolean created = false;
+	private NEWTWindow wnd;
 	private Drawable d;
 	private GPURenderer r;
-	
+	int[] size = new int[]{Main.screenSize[0], Main.screenSize[1]};
+
 	@Override
 	public int[] getSize() {
-		// TODO Auto-generated method stub
-		return null;
+		return size;
 	}
 
 	@Override
@@ -27,8 +32,7 @@ public class GPUDisplay implements org.warp.picalculator.gui.graphicengine.Displ
 
 	@Override
 	public void setTitle(String title) {
-		// TODO Auto-generated method stub
-		
+		wnd.window.setTitle(title);
 	}
 
 	@Override
@@ -38,65 +42,91 @@ public class GPUDisplay implements org.warp.picalculator.gui.graphicengine.Displ
 		}
 		wnd.window.setResizable(r);
 		wnd.window.setUndecorated(!r);
-        wnd.window.setPointerVisible(r);
+		wnd.window.setPointerVisible(r);
 	}
 
 	@Override
 	public void setDisplayMode(int ww, int wh) {
+		this.size[0] = ww;
+		this.size[1] = wh;
 		wnd.window.setSize(ww, wh);
 	}
 
 	@Override
 	public void create() {
+		created = true;
 		r = new GPURenderer();
-		wnd = new CalculatorWindow(this);
+		wnd = new NEWTWindow(this);
 		wnd.create();
 		setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
-		setResizable(Utils.debugOn&!Utils.debugThirdScreen);
+		setResizable(Utils.debugOn & !Utils.debugThirdScreen);
 		initialized = true;
 	}
 
 	@Override
 	public boolean wasResized() {
-		// TODO Auto-generated method stub
-		return false;
+		return Main.screenSize[0] != size[0] | Main.screenSize[1] != size[1];
 	}
 
 	@Override
 	public int getWidth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return size[0];
 	}
 
 	@Override
 	public int getHeight() {
-		// TODO Auto-generated method stub
-		return 0;
+		return size[1];
 	}
 
 	@Override
 	public void destroy() {
-//		EGL.destroy(); (Automatic)
+		initialized = false;
+		created = false;
+		wnd.window.destroy();
 	}
 
 	@Override
 	public void start(Drawable d) {
-        this.d = d;
-        wnd.window.setVisible(true);
+		this.d = d;
+		wnd.window.setVisible(true);
 	}
 
 	@Override
 	public void repaint() {
-		if (d != null) {
-			r.gl.glClearColor(red, green, blue, alpha);
+		if (d != null & r != null && r.gl != null) {
 			d.refresh();
-			r.glFlush();
 		}
 	}
 
 	@Override
 	public GPURenderer getRenderer() {
 		return r;
+	}
+
+	@Override
+	public RAWFont loadFont(String file) throws IOException {
+		return new GPUFont(file);
+	}
+
+	@Override
+	public RAWSkin loadSkin(String file) throws IOException {
+		return new GPUSkin(file);
+	}
+
+	@Override
+	public void waitUntilExit() {
+		try {
+			do {
+				Thread.sleep(500);
+			} while(initialized | created);
+		} catch (InterruptedException e) {
+			
+		}
+	}
+
+	@Override
+	public boolean isSupported() {
+		return GLProfile.isAnyAvailable() == false;
 	}
 
 }

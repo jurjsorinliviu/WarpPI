@@ -43,10 +43,12 @@ public class Perspectives {
 	 * @return the E perspective of o
 	 */
 	public <T, E extends T> E viewAs(final Class<E> c, final T o) {
-		if (o == null)
+		if (o == null) {
 			return null;
-		if (o instanceof Collection<?>)
+		}
+		if (o instanceof Collection<?>) {
 			throw new IllegalArgumentException("for collections please use viewCollectionAs() method. Invalid object " + o);
+		}
 		final E newInstance = cloner.fastCloneOrNewInstance(c);
 		cloner.copyPropertiesOfInheritedClass(o, newInstance);
 		return newInstance;
@@ -81,8 +83,9 @@ public class Perspectives {
 	 */
 	public <I, NI extends I, T extends Collection<I>, E extends Collection<NI>> E viewCollectionAs(
 			final E newCollection, final Class<NI> perspectiveCollectionItemClass, final T currentCollection) {
-		if (currentCollection == null)
+		if (currentCollection == null) {
 			return null;
+		}
 		for (final I item : currentCollection) {
 			final NI newItem = viewAs(perspectiveCollectionItemClass, item);
 			newCollection.add(newItem);

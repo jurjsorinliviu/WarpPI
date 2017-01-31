@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
@@ -29,19 +29,26 @@ public class Division extends FunctionTwoValues {
 		return MathematicalSymbols.DIVISION;
 	}
 
-
 	@Override
 	protected boolean isSolvable() {
-		if (FractionsRule1.compare(this)) return true;
-		if (FractionsRule2.compare(this)) return true;
-		if (FractionsRule3.compare(this)) return true;
-		if (UndefinedRule2.compare(this)) return true;
+		if (FractionsRule1.compare(this)) {
+			return true;
+		}
+		if (FractionsRule2.compare(this)) {
+			return true;
+		}
+		if (FractionsRule3.compare(this)) {
+			return true;
+		}
+		if (UndefinedRule2.compare(this)) {
+			return true;
+		}
 		if (variable1 instanceof Number && variable2 instanceof Number && root.exactMode == false) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	@Override
 	public ArrayList<Function> solve() throws Error {
 		ArrayList<Function> result = new ArrayList<>();
@@ -54,13 +61,13 @@ public class Division extends FunctionTwoValues {
 		} else if (UndefinedRule2.compare(this)) {
 			result = UndefinedRule2.execute(this);
 		} else if (variable1 instanceof Number && variable2 instanceof Number && root.exactMode == false) {
-			result.add(((Number)variable1).divide((Number)variable2));
+			result.add(((Number) variable1).divide((Number) variable2));
 		}
 		return result;
 	}
 
 	public boolean hasMinus() {
-		String numerator = variable1.toString();
+		final String numerator = variable1.toString();
 		if (numerator.startsWith("-")) {
 			return true;
 		}
@@ -68,7 +75,7 @@ public class Division extends FunctionTwoValues {
 	}
 
 	public void draw(int x, int y, boolean small, boolean drawMinus) {
-		boolean beforedrawminus = this.drawMinus;
+		final boolean beforedrawminus = this.drawMinus;
 		this.drawMinus = drawMinus;
 		draw(x, y);
 		this.drawMinus = beforedrawminus;
@@ -79,22 +86,22 @@ public class Division extends FunctionTwoValues {
 	@Override
 	public void generateGraphics() {
 		variable1.generateGraphics();
-		
+
 		variable2.generateGraphics();
-		
+
 		width = calcWidth();
 		height = calcHeight();
 		line = variable1.getHeight() + 1;
 	}
-	
+
 	@Override
 	public void draw(int x, int y) {
 //		glColor3f(255, 127-50+new Random().nextInt(50), 0);
 //		glFillRect(x,y,width,height);
 //		glColor3f(0, 0, 0);
-		
-		Object var1 = variable1;
-		Object var2 = variable2;
+
+		final Object var1 = variable1;
+		final Object var2 = variable2;
 		boolean minus = false;
 		int minusw = 0;
 		int minush = 0;
@@ -105,15 +112,15 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		int h1 = 0;
-		PIDisplay.renderer.glSetFont(Utils.getFont(small));
+		Utils.getFont(small).use(DisplayManager.display);
 		if (minus) {
-			w1 = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), numerator);
-			h1 = Utils.getFont(small).charH;
+			w1 = Utils.getFont(small).getStringWidth(numerator);
+			h1 = Utils.getFont(small).getCharacterHeight();
 		} else {
 			w1 = ((Function) var1).getWidth();
 			h1 = ((Function) var1).getHeight();
 		}
-		int w2 = ((Function) var2).getWidth();
+		final int w2 = ((Function) var2).getWidth();
 		int maxw;
 		if (w1 > w2) {
 			maxw = 1 + w1;
@@ -121,22 +128,22 @@ public class Division extends FunctionTwoValues {
 			maxw = 1 + w2;
 		}
 		if (minus && drawMinus) {
-			minusw = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "-") + 1;
-			minush = Utils.getFont(small).charH;
-			PIDisplay.renderer.glDrawStringLeft(x+1, y + h1 + 1 + 1 - (minush / 2), "-");
-			PIDisplay.renderer.glDrawStringLeft((int) (x+1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
+			minusw = Utils.getFont(small).getCharacterWidth() /* Width of minus */ + 1;
+			minush = Utils.getFont(small).getCharacterHeight();
+			DisplayManager.renderer.glDrawStringLeft(x + 1, y + h1 + 1 + 1 - (minush / 2), "-");
+			DisplayManager.renderer.glDrawStringLeft((int) (x + 1 + minusw + 1 + (maxw - w1) / 2d), y, numerator);
 		} else {
-			((Function) var1).draw((int) (x+1 + minusw + (maxw - w1) / 2d), y);
+			((Function) var1).draw((int) (x + 1 + minusw + (maxw - w1) / 2d), y);
 		}
-		((Function) var2).draw((int) (x+1 + minusw + (maxw - w2) / 2d), y + h1 + 1 + 1 + 1);
-		PIDisplay.renderer.glFillRect(x+1+ minusw, y + h1 + 1, maxw, 1);
+		((Function) var2).draw((int) (x + 1 + minusw + (maxw - w2) / 2d), y + h1 + 1 + 1 + 1);
+		DisplayManager.renderer.glFillColor(x + 1 + minusw, y + h1 + 1, maxw, 1);
 	}
 
 	@Override
 	public int getHeight() {
 		return height;
 	}
-	
+
 	@Override
 	protected int calcHeight() {
 
@@ -152,7 +159,7 @@ public class Division extends FunctionTwoValues {
 		} else {
 			h1 = variable1.getHeight();
 		}
-		int h2 = variable2.getHeight();
+		final int h2 = variable2.getHeight();
 		return h1 + 3 + h2;
 	}
 
@@ -160,12 +167,12 @@ public class Division extends FunctionTwoValues {
 	public int getLine() {
 		return line;
 	}
-	
+
 	@Override
 	public int getWidth() {
 		return width;
 	}
-	
+
 	@Override
 	protected int calcWidth() {
 		boolean minus = false;
@@ -176,28 +183,28 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		if (minus) {
-			w1 = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), numerator);
+			w1 = Utils.getFont(small).getStringWidth(numerator);
 		} else {
 			w1 = variable1.getWidth();
 		}
-		int w2 = variable2.getWidth();
+		final int w2 = variable2.getWidth();
 		int maxw = 0;
 		if (w1 > w2) {
-			maxw = w1+1;
+			maxw = w1 + 1;
 		} else {
-			maxw = w2+1;
+			maxw = w2 + 1;
 		}
 		if (minus && drawMinus) {
-			return 1 + PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "-") + 1 + maxw;
+			return 1 + Utils.getFont(small).getCharacterWidth() /* Width of minus */ + 1 + maxw;
 		} else {
 			return 1 + maxw;
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Division) {
-			FunctionTwoValues f = (FunctionTwoValues) o;
+			final FunctionTwoValues f = (FunctionTwoValues) o;
 			return variable1.equals(f.variable1) && variable2.equals(f.variable2);
 		}
 		return false;

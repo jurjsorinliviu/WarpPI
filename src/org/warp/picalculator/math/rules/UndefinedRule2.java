@@ -12,16 +12,17 @@ import org.warp.picalculator.math.functions.Undefined;
 /**
  * Undefined rule<br>
  * <b>a / 0 = undefined</b>
+ * 
  * @author Andrea Cavalli
  *
  */
 public class UndefinedRule2 {
 
 	public static boolean compare(Function f) {
-		Calculator root = f.getRoot();
-		Division fnc = (Division) f;
+		final Calculator root = f.getRoot();
+		final Division fnc = (Division) f;
 		if (fnc.getVariable2() instanceof Number) {
-			Number numb = (Number) fnc.getVariable2();
+			final Number numb = (Number) fnc.getVariable2();
 			if (numb.equals(new Number(root, 0))) {
 				return true;
 			}
@@ -30,8 +31,8 @@ public class UndefinedRule2 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
 		result.add(new Undefined(root));
 		return result;
 	}

@@ -48,7 +48,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		primeexp = new Vector<>();
 		if (number > 1) {
 			int primindx = 0;
-			Prime primes = new Prime();
+			final Prime primes = new Prime();
 			/*
 			 * Test division against all primes.
 			 */
@@ -57,12 +57,13 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 				/*
 				 * primindx=0 refers to 2, =1 to 3, =2 to 5, =3 to 7 etc
 				 */
-				int p = primes.at(primindx).intValue();
+				final int p = primes.at(primindx).intValue();
 				while (number % p == 0) {
 					ex++;
 					number /= p;
-					if (number == 1)
+					if (number == 1) {
 						break;
+					}
 				}
 				if (ex > 0) {
 					primeexp.add(new Integer(p));
@@ -92,18 +93,19 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 			primeexp.add(new Integer(0));
 		} else {
 			int primindx = 0;
-			Prime primes = new Prime();
+			final Prime primes = new Prime();
 			/*
 			 * Test for division against all primes.
 			 */
 			while (number.compareTo(BigInteger.ONE) == 1) {
 				int ex = 0;
-				BigInteger p = primes.at(primindx);
+				final BigInteger p = primes.at(primindx);
 				while (number.remainder(p).compareTo(BigInteger.ZERO) == 0) {
 					ex++;
 					number = number.divide(p);
-					if (number.compareTo(BigInteger.ONE) == 0)
+					if (number.compareTo(BigInteger.ONE) == 0) {
 						break;
+					}
 				}
 				if (ex > 0) {
 					primeexp.add(new Integer(p.intValue()));
@@ -128,19 +130,20 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		primeexp = new Vector<>(2 * pows.size());
 		if (pows.size() > 0) {
 			n = BigInteger.ONE;
-			Prime primes = new Prime();
+			final Prime primes = new Prime();
 			/*
 			 * Build the full number by the product of all powers of the primes.
 			 */
 			for (int primindx = 0; primindx < pows.size(); primindx++) {
-				int ex = pows.elementAt(primindx).intValue();
+				final int ex = pows.elementAt(primindx).intValue();
 				final BigInteger p = primes.at(primindx);
 				n = n.multiply(p.pow(ex));
 				primeexp.add(new Integer(p.intValue()));
 				primeexp.add(new Integer(ex));
 			}
-		} else
+		} else {
 			n = BigInteger.ZERO;
+		}
 	} /* Ifactor */
 
 	/**
@@ -167,7 +170,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		 * Vector<Integer> p = (Vector<Integer>)primeexp.clone();
 		 *
 		 */
-		Ifactor cl = new Ifactor(0);
+		final Ifactor cl = new Ifactor(0);
 		cl.n = new BigInteger("" + n);
 		return cl;
 	} /* Ifactor.clone */
@@ -267,7 +270,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 * @return the product, gcd or lcm of both numbers.
 	 */
 	protected Ifactor multGcdLcm(final Ifactor oth, int type) {
-		Ifactor prod = new Ifactor(0);
+		final Ifactor prod = new Ifactor(0);
 		/*
 		 * skip the case where 0*something =0, falling thru to the empty
 		 * representation for 0
@@ -278,19 +281,19 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 			 * Cases of lcm(1, something) return something.
 			 * Cases of gcd(1, something) return 1.
 			 */
-			if (primeexp.firstElement().intValue() == 1 && type == 0)
+			if (primeexp.firstElement().intValue() == 1 && type == 0) {
 				return oth;
-			else if (primeexp.firstElement().intValue() == 1 && type == 2)
+			} else if (primeexp.firstElement().intValue() == 1 && type == 2) {
 				return oth;
-			else if (primeexp.firstElement().intValue() == 1 && type == 1)
+			} else if (primeexp.firstElement().intValue() == 1 && type == 1) {
 				return this;
-			else if (oth.primeexp.firstElement().intValue() == 1 && type == 0)
+			} else if (oth.primeexp.firstElement().intValue() == 1 && type == 0) {
 				return this;
-			else if (oth.primeexp.firstElement().intValue() == 1 && type == 2)
+			} else if (oth.primeexp.firstElement().intValue() == 1 && type == 2) {
 				return this;
-			else if (oth.primeexp.firstElement().intValue() == 1 && type == 1)
+			} else if (oth.primeexp.firstElement().intValue() == 1 && type == 1) {
 				return oth;
-			else {
+			} else {
 				int idxThis = 0;
 				int idxOth = 0;
 				switch (type) {
@@ -417,10 +420,11 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		/*
 		 * avoid refactorization if oth is zero...
 		 */
-		if (oth.compareTo(BigInteger.ZERO) != 0)
+		if (oth.compareTo(BigInteger.ZERO) != 0) {
 			return new Ifactor(n.add(oth));
-		else
+		} else {
 			return this;
+		}
 	} /* Ifactor.add */
 
 	/**
@@ -434,22 +438,23 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		/*
 		 * three simple cases first
 		 */
-		if (exponent < 0)
+		if (exponent < 0) {
 			throw new ArithmeticException("Cannot raise " + toString() + " to negative " + exponent);
-		else if (exponent == 0)
+		} else if (exponent == 0) {
 			return new Ifactor(1);
-		else if (exponent == 1)
+		} else if (exponent == 1) {
 			return this;
+		}
 
 		/*
 		 * general case, the vector with the prime factor powers, which are
 		 * component-wise
 		 * exponentiation of the individual prime factor powers.
 		 */
-		Ifactor pows = new Ifactor(0);
+		final Ifactor pows = new Ifactor(0);
 		for (int i = 0; i < primeexp.size(); i += 2) {
-			Integer p = primeexp.elementAt(i);
-			int ex = primeexp.elementAt(i + 1).intValue();
+			final Integer p = primeexp.elementAt(i);
+			final int ex = primeexp.elementAt(i + 1).intValue();
 			pows.primeexp.add(p);
 			pows.primeexp.add(new Integer(ex * exponent));
 		}
@@ -469,24 +474,25 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 * @since 2009-05-18
 	 */
 	public Rational root(final int r) throws ArithmeticException, Error {
-		if (r == 0)
+		if (r == 0) {
 			throw new ArithmeticException("Cannot pull zeroth root of " + toString());
-		else if (r < 0) {
+		} else if (r < 0) {
 			/*
 			 * a^(-1/b)= 1/(a^(1/b))
 			 */
 			final Rational invRoot = root(-r);
 			return Rational.ONE.divide(invRoot);
 		} else {
-			BigInteger pows = BigInteger.ONE;
+			final BigInteger pows = BigInteger.ONE;
 			for (int i = 0; i < primeexp.size(); i += 2) {
 				/*
 				 * all exponents must be multiples of r to succeed (that is, to
 				 * stay in the range of rational results).
 				 */
-				int ex = primeexp.elementAt(i + 1).intValue();
-				if (ex % r != 0)
+				final int ex = primeexp.elementAt(i + 1).intValue();
+				if (ex % r != 0) {
 					throw new ArithmeticException("Cannot pull " + r + "th root of " + toString());
+				}
 
 				pows.multiply(new BigInteger("" + primeexp.elementAt(i)).pow(ex / r));
 			}
@@ -512,18 +518,19 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		 * multiplied
 		 * by 1 or by a product that contains the factors p1..py.
 		 */
-		Vector<BigInteger> d = new Vector<>();
-		if (n.compareTo(BigInteger.ZERO) == 0)
+		final Vector<BigInteger> d = new Vector<>();
+		if (n.compareTo(BigInteger.ZERO) == 0) {
 			return d;
+		}
 		d.add(BigInteger.ONE);
 		if (n.compareTo(BigInteger.ONE) > 0) {
 			/* Computes sigmaIncopml(p1^e*p2^e2...*py^ey) */
-			Ifactor dp = dropPrime();
+			final Ifactor dp = dropPrime();
 
 			/* get ez */
 			final int ez = primeexp.lastElement().intValue();
 
-			Vector<BigInteger> partd = dp.divisors();
+			final Vector<BigInteger> partd = dp.divisors();
 
 			/* obtain pz by lookup in the prime list */
 			final BigInteger pz = new BigInteger(primeexp.elementAt(primeexp.size() - 2).toString());
@@ -532,12 +539,14 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 			 * the output contains all products of the form partd[]*pz^ez, ez>0,
 			 * and with the exception of the 1, all these are appended.
 			 */
-			for (int i = 1; i < partd.size(); i++)
+			for (int i = 1; i < partd.size(); i++) {
 				d.add(partd.elementAt(i));
+			}
 			for (int e = 1; e <= ez; e++) {
 				final BigInteger pzez = pz.pow(e);
-				for (int i = 0; i < partd.size(); i++)
+				for (int i = 0; i < partd.size(); i++) {
 					d.add(partd.elementAt(i).multiply(pzez));
+				}
 			}
 		}
 		Collections.sort(d);
@@ -563,29 +572,29 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		 * the question is whether keeping a factorization is worth the effort
 		 * or whether one should simply multiply these to return a BigInteger...
 		 */
-		if (n.compareTo(BigInteger.ONE) == 0)
+		if (n.compareTo(BigInteger.ONE) == 0) {
 			return ONE;
-		else if (n.compareTo(BigInteger.ZERO) == 0)
+		} else if (n.compareTo(BigInteger.ZERO) == 0) {
 			return ZERO;
-		else {
+		} else {
 			/*
 			 * multiplicative: sigma_k(p^e) = [p^(k*(e+1))-1]/[p^k-1]
 			 * sigma_0(p^e) = e+1.
 			 */
 			Ifactor resul = Ifactor.ONE;
 			for (int i = 0; i < primeexp.size(); i += 2) {
-				int ex = primeexp.elementAt(i + 1).intValue();
-				if (k == 0)
+				final int ex = primeexp.elementAt(i + 1).intValue();
+				if (k == 0) {
 					resul = resul.multiply(ex + 1);
-				else {
-					Integer p = primeexp.elementAt(i);
-					BigInteger num = (new BigInteger(p.toString())).pow(k * (ex + 1)).subtract(BigInteger.ONE);
-					BigInteger deno = (new BigInteger(p.toString())).pow(k).subtract(BigInteger.ONE);
+				} else {
+					final Integer p = primeexp.elementAt(i);
+					final BigInteger num = (new BigInteger(p.toString())).pow(k * (ex + 1)).subtract(BigInteger.ONE);
+					final BigInteger deno = (new BigInteger(p.toString())).pow(k).subtract(BigInteger.ONE);
 					/*
 					 * This division is of course exact, no remainder
 					 * The costly prime factorization is hidden here.
 					 */
-					Ifactor f = new Ifactor(num.divide(deno));
+					final Ifactor f = new Ifactor(num.divide(deno));
 					resul = resul.multiply(f);
 				}
 			}
@@ -608,8 +617,9 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		/*
 		 * the cases n==1 or n ==0
 		 */
-		if (n.compareTo(BigInteger.ONE) <= 0)
+		if (n.compareTo(BigInteger.ONE) <= 0) {
 			return this;
+		}
 
 		/*
 		 * The cases n>1
@@ -617,13 +627,13 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		 * the vector with the new prime factor powers, which contain the
 		 * old prime factor powers up to but not including the last one.
 		 */
-		Ifactor pows = new Ifactor(0);
+		final Ifactor pows = new Ifactor(0);
 		pows.n = BigInteger.ONE;
 		for (int i = 0; i < primeexp.size() - 2; i += 2) {
 			pows.primeexp.add(primeexp.elementAt(i));
 			pows.primeexp.add(primeexp.elementAt(i + 1));
-			BigInteger p = new BigInteger(primeexp.elementAt(i).toString());
-			int ex = primeexp.elementAt(i + 1).intValue();
+			final BigInteger p = new BigInteger(primeexp.elementAt(i).toString());
+			final int ex = primeexp.elementAt(i + 1).intValue();
 			pows.n = pows.n.multiply(p.pow(ex));
 		}
 		return pows;
@@ -639,8 +649,9 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 		 * check the exponents, located at the odd-indexed positions
 		 */
 		for (int i = 1; i < primeexp.size(); i += 2) {
-			if (primeexp.elementAt(i).intValue() % 2 != 0)
+			if (primeexp.elementAt(i).intValue() % 2 != 0) {
 				return false;
+			}
 		}
 		return true;
 	} /* Ifactor.issquare */
@@ -652,8 +663,9 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 */
 	public int bigomega() {
 		int resul = 0;
-		for (int i = 1; i < primeexp.size(); i += 2)
+		for (int i = 1; i < primeexp.size(); i += 2) {
 			resul += primeexp.elementAt(i).intValue();
+		}
 		return (resul);
 	} /* Ifactor.bigomega */
 
@@ -675,9 +687,11 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 */
 	public BigInteger core() {
 		BigInteger resul = BigInteger.ONE;
-		for (int i = 0; i < primeexp.size(); i += 2)
-			if (primeexp.elementAt(i + 1).intValue() % 2 != 0)
+		for (int i = 0; i < primeexp.size(); i += 2) {
+			if (primeexp.elementAt(i + 1).intValue() % 2 != 0) {
 				resul = resul.multiply(new BigInteger(primeexp.elementAt(i).toString()));
+			}
+		}
 		return resul;
 	} /* Ifactor.core */
 
@@ -690,17 +704,19 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 * @return the moebius function.
 	 */
 	public int moebius() {
-		if (n.compareTo(BigInteger.ONE) <= 0)
+		if (n.compareTo(BigInteger.ONE) <= 0) {
 			return 1;
+		}
 		/* accumulate number of different primes in k */
 		int k = 1;
 		for (int i = 0; i < primeexp.size(); i += 2) {
 			final int e = primeexp.elementAt(i + 1).intValue();
-			if (e > 1)
+			if (e > 1) {
 				return 0;
-			else if (e == 1)
+			} else if (e == 1) {
 				/* accumulates (-1)^k */
 				k *= -1;
+			}
 
 		}
 		return (k);
@@ -714,10 +730,11 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 * @return the larger of the two values.
 	 */
 	public Ifactor max(final Ifactor oth) {
-		if (n.compareTo(oth.n) >= 0)
+		if (n.compareTo(oth.n) >= 0) {
 			return this;
-		else
+		} else {
 			return oth;
+		}
 	} /* Ifactor.max */
 
 	/**
@@ -728,10 +745,11 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 * @return the smaller of the two values.
 	 */
 	public Ifactor min(final Ifactor oth) {
-		if (n.compareTo(oth.n) <= 0)
+		if (n.compareTo(oth.n) <= 0) {
 			return this;
-		else
+		} else {
 			return oth;
+		}
 	} /* Ifactor.min */
 
 	/**
@@ -743,8 +761,9 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 */
 	public static Ifactor max(final Vector<Ifactor> set) {
 		Ifactor resul = set.elementAt(0);
-		for (int i = 1; i < set.size(); i++)
+		for (int i = 1; i < set.size(); i++) {
 			resul = resul.max(set.elementAt(i));
+		}
 		return resul;
 	} /* Ifactor.max */
 
@@ -757,8 +776,9 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 */
 	public static Ifactor min(final Vector<Ifactor> set) {
 		Ifactor resul = set.elementAt(0);
-		for (int i = 1; i < set.size(); i++)
+		for (int i = 1; i < set.size(); i++) {
 			resul = resul.min(set.elementAt(i));
+		}
 		return resul;
 	} /* Ifactor.min */
 
@@ -784,17 +804,19 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	@Override
 	public String toString() {
 		String resul = new String(n.toString() + ":");
-		if (n.compareTo(BigInteger.ONE) == 0)
+		if (n.compareTo(BigInteger.ONE) == 0) {
 			resul += "1";
-		else {
+		} else {
 			boolean firstMul = true;
 			for (int i = 0; i < primeexp.size(); i += 2) {
-				if (!firstMul)
+				if (!firstMul) {
 					resul += "*";
-				if (primeexp.elementAt(i + 1).intValue() > 1)
+				}
+				if (primeexp.elementAt(i + 1).intValue() > 1) {
 					resul += primeexp.elementAt(i).toString() + "^" + primeexp.elementAt(i + 1).toString();
-				else
+				} else {
 					resul += primeexp.elementAt(i).toString();
+				}
 				firstMul = false;
 			}
 		}
@@ -807,7 +829,7 @@ public class Ifactor implements Cloneable, Comparable<Ifactor> {
 	 * java -cp . org.nevec.rjm.Ifactor n<br>
 	 */
 	public static void main(String[] args) throws Exception {
-		BigInteger n = new BigInteger(args[0]);
+		final BigInteger n = new BigInteger(args[0]);
 		System.out.println(new Ifactor(n));
 	} /* Ifactor.main */
 } /* Ifactor */

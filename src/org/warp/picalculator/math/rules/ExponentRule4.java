@@ -13,13 +13,14 @@ import org.warp.picalculator.math.functions.Power;
 /**
  * Exponent rule<br>
  * <b>(a*b)^n=a^n*b^n</b>
+ * 
  * @author Andrea Cavalli
  *
  */
 public class ExponentRule4 {
 
 	public static boolean compare(Function f) {
-		Power fnc = (Power) f;
+		final Power fnc = (Power) f;
 		if (fnc.getVariable1() instanceof Expression && ((Expression) fnc.getVariable1()).getVariablesLength() == 1 && ((Expression) fnc.getVariable1()).getVariable(0) instanceof Multiplication && fnc.getVariable2() instanceof Number) {
 			return true;
 		}
@@ -27,22 +28,22 @@ public class ExponentRule4 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
-		Power fnc = (Power) f;
-		Expression expr = (Expression) fnc.getVariable1();
-		Multiplication mult = (Multiplication) expr.getVariable(0);
-		Function a = mult.getVariable1();
-		Function b = mult.getVariable2();
-		Number n = (Number) fnc.getVariable2();
-		Multiplication retMult = new Multiplication(root, null, null);
-		Power p1 = new Power(root, null, null);
-		Expression e1 = new Expression(root);
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
+		final Power fnc = (Power) f;
+		final Expression expr = (Expression) fnc.getVariable1();
+		final Multiplication mult = (Multiplication) expr.getVariable(0);
+		final Function a = mult.getVariable1();
+		final Function b = mult.getVariable2();
+		final Number n = (Number) fnc.getVariable2();
+		final Multiplication retMult = new Multiplication(root, null, null);
+		final Power p1 = new Power(root, null, null);
+		final Expression e1 = new Expression(root);
 		e1.addFunctionToEnd(a);
 		p1.setVariable1(e1);
 		p1.setVariable2(n);
-		Power p2 = new Power(root, null, null);
-		Expression e2 = new Expression(root);
+		final Power p2 = new Power(root, null, null);
+		final Expression e2 = new Expression(root);
 		e2.addFunctionToEnd(b);
 		p2.setVariable1(e2);
 		p2.setVariable2(n);

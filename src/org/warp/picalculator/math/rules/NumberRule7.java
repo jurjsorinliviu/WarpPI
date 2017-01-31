@@ -12,6 +12,7 @@ import org.warp.picalculator.math.functions.Sum;
 /**
  * Number rule<br>
  * <b>a + a = 2a</b>
+ * 
  * @author Andrea Cavalli
  *
  */
@@ -22,9 +23,9 @@ public class NumberRule7 {
 	}
 
 	public static ArrayList<Function> execute(Sum f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
-		Multiplication mult = new Multiplication(root, null, null);
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
+		final Multiplication mult = new Multiplication(root, null, null);
 		mult.setVariable1(new Number(root, 2));
 		mult.setVariable2(f.getVariable1());
 		result.add(mult);

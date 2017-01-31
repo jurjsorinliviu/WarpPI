@@ -38,20 +38,22 @@ public class Euler {
 		while (n >= a.size()) {
 			BigInteger val = BigInteger.ZERO;
 			boolean sigPos = true;
-			int thisn = a.size();
+			final int thisn = a.size();
 			for (int i = thisn - 1; i > 0; i--) {
 				BigInteger f = new BigInteger("" + a.elementAt(i).toString());
 				f = f.multiply(BigIntegerMath.binomial(2 * thisn, 2 * i));
-				if (sigPos)
+				if (sigPos) {
 					val = val.add(f);
-				else
+				} else {
 					val = val.subtract(f);
+				}
 				sigPos = !sigPos;
 			}
-			if (thisn % 2 == 0)
+			if (thisn % 2 == 0) {
 				val = val.subtract(BigInteger.ONE);
-			else
+			} else {
 				val = val.add(BigInteger.ONE);
+			}
 			a.add(val);
 		}
 	}

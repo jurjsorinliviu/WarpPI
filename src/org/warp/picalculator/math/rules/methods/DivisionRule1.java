@@ -12,6 +12,7 @@ import org.warp.picalculator.math.functions.Number;
 /**
  * Division method<br>
  * <b>Example: (XY)/(YZ) = X/Z</b>
+ * 
  * @author Andrea Cavalli
  *
  */
@@ -22,32 +23,32 @@ public class DivisionRule1 {
 	}
 
 	public static ArrayList<Function> execute(Division f) throws Error {
-		Calculator root = f.getRoot();
+		final Calculator root = f.getRoot();
 		Function result;
-		ArrayList<Function> elements = getDivisionElements(f);
-		int[] workingElementCouple = getFirstWorkingDivisionCouple(elements);
-		Function elem1 = elements.get(workingElementCouple[0]);
-		Function elem2 = elements.get(workingElementCouple[1]);
-		
+		final ArrayList<Function> elements = getDivisionElements(f);
+		final int[] workingElementCouple = getFirstWorkingDivisionCouple(elements);
+		final Function elem1 = elements.get(workingElementCouple[0]);
+		final Function elem2 = elements.get(workingElementCouple[1]);
+
 		final int size = elements.size();
 		Function prec = new Multiplication(root, elem1, elem2);
-		for (int i = size-1; i >= 0; i--) {
+		for (int i = size - 1; i >= 0; i--) {
 			if (i != workingElementCouple[0] & i != workingElementCouple[1]) {
-				Function a = prec;
-				Function b = elements.get(i);
+				final Function a = prec;
+				final Function b = elements.get(i);
 				prec = new Multiplication(root, a, b);
 			}
 		}
-		
+
 		result = prec;
-		
-		ArrayList<Function> results = new ArrayList<>();
+
+		final ArrayList<Function> results = new ArrayList<>();
 		results.add(result);
 		return results;
 	}
-	
+
 	private static ArrayList<Function> getDivisionElements(Division division) {
-		ArrayList<Function> elementsNumerator = new ArrayList<>();
+		final ArrayList<Function> elementsNumerator = new ArrayList<>();
 		Function numMult = division.getVariable1();
 		while (numMult instanceof Multiplication) {
 			elementsNumerator.add(((Multiplication) numMult).getVariable1());
@@ -55,18 +56,17 @@ public class DivisionRule1 {
 		}
 		elementsNumerator.add(numMult);
 
-		ArrayList<Function> elementsDenominator = new ArrayList<>();
+		final ArrayList<Function> elementsDenominator = new ArrayList<>();
 		Function denomMult = division.getVariable1();
 		while (denomMult instanceof Multiplication) {
 			elementsDenominator.add(((Multiplication) denomMult).getVariable1());
 			denomMult = ((Multiplication) denomMult).getVariable2();
 		}
 		elementsDenominator.add(denomMult);
-		
-		
+
 		return elements;
 	}
-	
+
 	private static int[] getFirstWorkingDivisionCouple(ArrayList<Function> elements) {
 		final int size = elements.size();
 		Function a;
@@ -82,7 +82,7 @@ public class DivisionRule1 {
 					Function testFunc;
 					testFunc = new Multiplication(root, a, b);
 					if (!testFunc.isSolved()) {
-						return new int[]{i, j};
+						return new int[] { i, j };
 					}
 				}
 			}

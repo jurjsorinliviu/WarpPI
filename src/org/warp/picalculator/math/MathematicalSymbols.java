@@ -51,7 +51,7 @@ public class MathematicalSymbols {
 	}
 
 	public static String[] variables() {
-		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "ⓧ", "Ⓨ", "Z", PI};
+		return new String[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "ⓧ", "Ⓨ", "Z", PI };
 	}
 
 	public static String[] genericSyntax() {
@@ -59,13 +59,6 @@ public class MathematicalSymbols {
 	}
 
 	public static String getGraphicRepresentation(String string) {
-		return string
-				.replace("Ⓑ", "^")
-				.replace("Ⓒ", "SIN")
-				.replace("Ⓓ", "COS")
-				.replace("Ⓔ", "TAN")
-				.replace("Ⓕ", "ASIN")
-				.replace("Ⓖ", "ACOS")
-				.replace("Ⓗ", "ATAN");
+		return string.replace("Ⓑ", "^").replace("Ⓒ", "SIN").replace("Ⓓ", "COS").replace("Ⓔ", "TAN").replace("Ⓕ", "ASIN").replace("Ⓖ", "ACOS").replace("Ⓗ", "ATAN");
 	}
 }

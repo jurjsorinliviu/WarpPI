@@ -9,16 +9,16 @@ import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
 
 public class ArcTangent extends AnteriorFunction {
-	
+
 	public ArcTangent(Calculator root, Function value) {
 		super(root, value);
 	}
-	
+
 	@Override
 	public Function NewInstance(Calculator root, Function value) {
 		return new ArcTangent(root, value);
 	}
-	
+
 	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.getGraphicRepresentation(MathematicalSymbols.ARC_TANGENT);

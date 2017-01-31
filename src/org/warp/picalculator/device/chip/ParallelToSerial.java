@@ -3,11 +3,11 @@ package org.warp.picalculator.device.chip;
 import com.pi4j.wiringpi.Gpio;
 
 public class ParallelToSerial {
-	
-	private int SH_LD;
-	private int CLK_INH;
-	private int QH;
-	private int CLK;
+
+	private final int SH_LD;
+	private final int CLK_INH;
+	private final int QH;
+	private final int CLK;
 
 	public ParallelToSerial(int SH_LD_pin, int CLK_INH_pin, int QH_pin, int CLK_pin) {
 		SH_LD = SH_LD_pin;
@@ -17,19 +17,19 @@ public class ParallelToSerial {
 	}
 
 	public boolean[] read() {
-		boolean[] data = new boolean[8];	
+		final boolean[] data = new boolean[8];
 		Gpio.digitalWrite(CLK_INH, Gpio.HIGH);
 		Gpio.digitalWrite(SH_LD, Gpio.LOW);
 		Gpio.delay(1);
 		Gpio.digitalWrite(SH_LD, Gpio.HIGH);
 		Gpio.digitalWrite(CLK_INH, Gpio.LOW);
-		
+
 		for (int i = 7; i >= 0; i--) {
 			Gpio.digitalWrite(CLK, Gpio.HIGH);
 			Gpio.digitalWrite(CLK, Gpio.LOW);
-			data[i] = Gpio.digitalRead(QH)==Gpio.HIGH?true:false;
+			data[i] = Gpio.digitalRead(QH) == Gpio.HIGH ? true : false;
 		}
-		
+
 		return data;
 	}
 }

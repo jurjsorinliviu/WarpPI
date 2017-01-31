@@ -12,16 +12,16 @@ import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 
 public class Sine extends AnteriorFunction {
-	
+
 	public Sine(Calculator root, Function value) {
 		super(root, value);
 	}
-	
+
 	@Override
 	public Function NewInstance(Calculator root, Function value) {
 		return new Sine(root, value);
 	}
-	
+
 	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.getGraphicRepresentation(MathematicalSymbols.SINE);
@@ -35,14 +35,14 @@ public class Sine extends AnteriorFunction {
 			}
 		}
 		if (root.angleMode == AngleMode.DEG) {
-			Function[] solvableValues = new Function[]{new Number(root, 0), new Number(root, 30), new Number(root, 90), };
+			final Function[] solvableValues = new Function[] { new Number(root, 0), new Number(root, 30), new Number(root, 90), };
 		}
 		return false;
 	}
 
 	@Override
 	public ArrayList<Function> solve() throws Error {
-		ArrayList<Function> results = new ArrayList<>();
+		final ArrayList<Function> results = new ArrayList<>();
 		if (variable instanceof Number) {
 			if (root.exactMode == false) {
 				results.add(new Number(root, BigDecimalMath.sin(((Number) variable).getTerm())));
@@ -54,7 +54,7 @@ public class Sine extends AnteriorFunction {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Sine) {
-			AnteriorFunction f = (AnteriorFunction) o;
+			final AnteriorFunction f = (AnteriorFunction) o;
 			if (variable.equals(f.getVariable())) {
 				return true;
 			}

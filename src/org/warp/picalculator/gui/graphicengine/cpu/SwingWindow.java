@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.Drawable;
 
 public class SwingWindow extends JFrame {
@@ -26,40 +26,41 @@ public class SwingWindow extends JFrame {
 	public CustomCanvas c;
 	private static Drawable d;
 	public boolean wasResized = false;
+	private final CPUDisplay display;
 
-	public SwingWindow(Drawable d) {
+	public SwingWindow(CPUDisplay disp, Drawable d) {
 		SwingWindow.d = d;
+		display = disp;
 		c = new CustomCanvas();
 		c.setDoubleBuffered(false);
 		this.add(c);
 //		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		Toolkit.getDefaultToolkit().setDynamicLayout(false);
 		// Transparent 16 x 16 pixel cursor image.
-		BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
-		
+		final BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+
 		if (Utils.debugOn) {
 			if (Utils.debugThirdScreen) {
 				this.setLocation(2880, 900);
-				this.setResizable(false);
-				this.setAlwaysOnTop(true);
+				setResizable(false);
+				setAlwaysOnTop(true);
 			}
 		} else {
 			// Create a new blank cursor.
-			Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
+			final Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
 
 			// Set the blank cursor to the JFrame.
 			getContentPane().setCursor(blankCursor);
-			
-			this.setResizable(false);
+
+			setResizable(false);
 		}
-		
-		this.setTitle("Raspberry PI Calculator by XDrake99 (Andrea Cavalli)");
-		
-		
-		this.addComponentListener(new ComponentListener() {
+
+		setTitle("Raspberry PI Calculator by XDrake99 (Andrea Cavalli)");
+
+		addComponentListener(new ComponentListener() {
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				PIDisplay.display.destroy();
+				DisplayManager.display.destroy();
 			}
 
 			@Override
@@ -73,10 +74,10 @@ public class SwingWindow extends JFrame {
 			@Override
 			public void componentShown(ComponentEvent e) {}
 		});
-		this.addKeyListener(new KeyListener() {
+		addKeyListener(new KeyListener() {
 			@Override
 			public void keyPressed(KeyEvent arg0) {
-				Keyboard.debugKeyEvent = arg0;
+				Keyboard.debugKeyCode = arg0.getKeyCode();
 			}
 
 			@Override
@@ -125,7 +126,7 @@ public class SwingWindow extends JFrame {
 						}
 						int row = 2;
 						int col = 1;
-						Keyboard.debugKeysDown[row-1][col-1] = false;
+						Keyboard.debugKeysDown[row - 1][col - 1] = false;
 						break;
 					case KeyEvent.VK_1:
 						if (!Keyboard.shift && !Keyboard.alpha) {
@@ -175,12 +176,12 @@ public class SwingWindow extends JFrame {
 						//LEFT
 						row = 2;
 						col = 3;
-						Keyboard.debugKeysDown[row-1][col-1] = false;
+						Keyboard.debugKeysDown[row - 1][col - 1] = false;
 					case KeyEvent.VK_RIGHT:
 						//RIGHT
 						row = 2;
 						col = 5;
-						Keyboard.debugKeysDown[row-1][col-1] = false;
+						Keyboard.debugKeysDown[row - 1][col - 1] = false;
 				}
 			}
 
@@ -216,7 +217,7 @@ public class SwingWindow extends JFrame {
 
 //	private static ArrayList<Double> mediaValori = new ArrayList<Double>();
 
-	public static class CustomCanvas extends JPanel {
+	public class CustomCanvas extends JPanel {
 
 		/**
 		 * 
@@ -228,11 +229,11 @@ public class SwingWindow extends JFrame {
 //			long time1 = System.nanoTime();
 			d.refresh();
 
-	        final int[] a = ((DataBufferInt) CPUDisplay.g.getRaster().getDataBuffer()).getData();
+			final int[] a = ((DataBufferInt) display.g.getRaster().getDataBuffer()).getData();
 //		        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
-	        CPUDisplay.canvas2d = a;
-			g.clearRect(0, 0, CPUDisplay.size[0], CPUDisplay.size[1]);
-			g.drawImage(CPUDisplay.g, 0, 0, null);
+			CPUDisplay.canvas2d = a;
+			g.clearRect(0, 0, display.size[0], display.size[1]);
+			g.drawImage(display.g, 0, 0, null);
 //			long time2 = System.nanoTime();
 //			double timeDelta = ((double)(time2-time1))/1000000000d;
 //			double mediaAttuale = timeDelta;

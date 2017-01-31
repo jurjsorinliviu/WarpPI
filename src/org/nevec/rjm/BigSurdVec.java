@@ -69,7 +69,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		terms.add(b);
 		try {
 			normalize();
-		} catch (Error e) {
+		} catch (final Error e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -87,16 +87,17 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		/*
 		 * nothing to be done if at most one term
 		 */
-		if (terms.size() <= 1)
+		if (terms.size() <= 1) {
 			return;
+		}
 
-		Vector<BigSurd> newter = new Vector<>();
+		final Vector<BigSurd> newter = new Vector<>();
 		newter.add(terms.firstElement());
 		/*
 		 * add j-th element to the existing vector and combine were possible
 		 */
 		for (int j = 1; j < terms.size(); j++) {
-			BigSurd todo = terms.elementAt(j);
+			final BigSurd todo = terms.elementAt(j);
 			boolean merged = false;
 			for (int ex = 0; ex < newter.size(); ex++) {
 				BigSurd v = newter.elementAt(ex);
@@ -105,16 +106,16 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 				 * rational number is needed. Replaces v with v+todo = v*(1+r)
 				 * if this reduction works.
 				 */
-				BigSurd r = todo.divide(v);
+				final BigSurd r = todo.divide(v);
 				if (r.isRational()) {
 					/* compute r+1 */
-					Rational newpref = r.toRational().add(1);
+					final Rational newpref = r.toRational().add(1);
 					/*
 					 * eliminate accidental zeros; overwrite with v*(1+r).
 					 */
-					if (newpref.compareTo(Rational.ZERO) == 0)
+					if (newpref.compareTo(Rational.ZERO) == 0) {
 						newter.removeElementAt(ex);
-					else {
+					} else {
 						v = v.multiply(newpref);
 						newter.setElementAt(v, ex);
 					}
@@ -125,8 +126,9 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 			/*
 			 * append if none of the existing elements matched
 			 */
-			if (!merged)
+			if (!merged) {
 				newter.add(todo);
+			}
 		}
 
 		/* overwrite old version */
@@ -148,7 +150,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		try {
 			diff = this.subtract(oth);
 			return diff.signum();
-		} catch (Error e) {
+		} catch (final Error e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return 0;
@@ -168,34 +170,40 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		 * the case of zero is unique, because no (reduced) vector of surds
 		 * other than the one element 0 itself can add/subtract to zero.
 		 */
-		if (terms.size() == 0)
+		if (terms.size() == 0) {
 			return 0;
+		}
 
 		/*
 		 * if there is one term: forward to the signum function of BigSurd
 		 */
-		if (terms.size() == 1)
+		if (terms.size() == 1) {
 			return terms.firstElement().signum();
+		}
 
 		/*
 		 * if all terms have a common sign: take that one offsig is the index of
 		 * the first "offending" term in the sense that its sign doese not agree
 		 * with the term[0].
 		 */
-		int sig0 = terms.elementAt(0).signum();
+		final int sig0 = terms.elementAt(0).signum();
 		int offsig = 1;
-		for (; offsig < terms.size(); offsig++)
-			if (terms.elementAt(offsig).signum() != sig0)
+		for (; offsig < terms.size(); offsig++) {
+			if (terms.elementAt(offsig).signum() != sig0) {
 				break;
-		if (offsig >= terms.size())
+			}
+		}
+		if (offsig >= terms.size()) {
 			return sig0;
+		}
 
 		/*
 		 * if there are two terms (now known to have different sign): forward to
 		 * the comparison of the two elements as BigSurds
 		 */
-		if (terms.size() == 2)
+		if (terms.size() == 2) {
 			return terms.elementAt(0).compareTo(terms.elementAt(1).negate());
+		}
 
 		/*
 		 * if there are three terms, move the one with the offending sign to the
@@ -206,10 +214,11 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		 */
 		if (terms.size() == 3) {
 			BigSurdVec lhs;
-			if (offsig == 2)
+			if (offsig == 2) {
 				lhs = new BigSurdVec(terms.elementAt(0), terms.elementAt(1));
-			else
+			} else {
 				lhs = new BigSurdVec(terms.elementAt(0), terms.elementAt(2));
+			}
 			lhs = lhs.sqr();
 			/*
 			 * Strange line: this line isn't used, but it's present in this
@@ -223,13 +232,14 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 			 * 
 			 * 
 			 */
-			if (lhs.compareTo(lhs) > 0)
+			if (lhs.compareTo(lhs) > 0) {
 				/*
 				 * dominating sign was t(0)+t(offbar)
 				 */
 				return terms.elementAt(0).signum();
-			else
+			} else {
 				return terms.elementAt(offsig).signum();
+			}
 		}
 
 		/*
@@ -252,9 +262,9 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		/*
 		 * simple cases with one term forwarded to the BigSurd class
 		 */
-		if (terms.size() == 0)
+		if (terms.size() == 0) {
 			return BigDecimal.ZERO;
-		else if (terms.size() == 1) {
+		} else if (terms.size() == 1) {
 			return terms.firstElement().BigDecimalValue(mc);
 		}
 
@@ -263,18 +273,20 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		 * until we are stable to the required result. Keep the old (less
 		 * precise) estimate in res[0], and the newer, more precise in res[1].
 		 */
-		BigDecimal[] res = new BigDecimal[2];
+		final BigDecimal[] res = new BigDecimal[2];
 		res[0] = BigDecimal.ZERO;
 		for (int addpr = 1;; addpr += 3) {
-			MathContext locmc = new MathContext(mc.getPrecision() + addpr, mc.getRoundingMode());
+			final MathContext locmc = new MathContext(mc.getPrecision() + addpr, mc.getRoundingMode());
 			res[1] = BigDecimal.ZERO;
-			for (BigSurd j : terms)
+			for (final BigSurd j : terms) {
 				res[1] = BigDecimalMath.addRound(res[1], j.BigDecimalValue(locmc));
+			}
 			if (addpr > 1) {
-				BigDecimal err = res[1].subtract(res[0]).abs();
-				int prec = BigDecimalMath.err2prec(res[1], err);
-				if (prec > mc.getPrecision())
+				final BigDecimal err = res[1].subtract(res[0]).abs();
+				final int prec = BigDecimalMath.err2prec(res[1], err);
+				if (prec > mc.getPrecision()) {
 					break;
+				}
 			}
 			res[0] = res[1];
 		}
@@ -288,7 +300,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @return A truncated version with the precision described by mc
 	 */
 	public double doubleValue() {
-		BigDecimal bd = BigDecimalValue(MathContext.DECIMAL128);
+		final BigDecimal bd = BigDecimalValue(MathContext.DECIMAL128);
 		return bd.doubleValue();
 	} /* doubleValue */
 
@@ -298,7 +310,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @return A truncated version with the precision described by mc
 	 */
 	public double floatValue() {
-		BigDecimal bd = BigDecimalValue(MathContext.DECIMAL64);
+		final BigDecimal bd = BigDecimalValue(MathContext.DECIMAL64);
 		return bd.floatValue();
 	} /* floatValue */
 
@@ -311,16 +323,16 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @throws Error
 	 */
 	public BigSurdVec add(final BigSurdVec val) throws Error {
-		BigSurdVec sum = new BigSurdVec();
+		final BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
 		 */
-		for (BigSurd term : terms) {
+		for (final BigSurd term : terms) {
 			if (term.compareTo(BigSurd.ZERO) != 0) {
 				sum.terms.add(term);
 			}
 		}
-		for (BigSurd term : val.terms) {
+		for (final BigSurd term : val.terms) {
 			if (term.compareTo(BigSurd.ZERO) != 0) {
 				sum.terms.add(term);
 			}
@@ -338,7 +350,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @throws Error
 	 */
 	public BigSurdVec add(final BigSurd val) throws Error {
-		BigSurdVec sum = new BigSurdVec();
+		final BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
 		 */
@@ -357,13 +369,14 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @throws Error
 	 */
 	public BigSurdVec subtract(final BigSurdVec val) throws Error {
-		BigSurdVec sum = new BigSurdVec();
+		final BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
 		 */
 		sum.terms.addAll(terms);
-		for (BigSurd s : val.terms)
+		for (final BigSurd s : val.terms) {
 			sum.terms.add(s.negate());
+		}
 		sum.normalize();
 		return sum;
 	} /* subtract */
@@ -377,7 +390,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @throws Error
 	 */
 	public BigSurdVec subtract(final BigSurd val) throws Error {
-		BigSurdVec sum = new BigSurdVec();
+		final BigSurdVec sum = new BigSurdVec();
 		/*
 		 * concatenate the vectors and eliminate common overlaps
 		 */
@@ -397,9 +410,10 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		/*
 		 * accumulate the negated elements of term one by one
 		 */
-		BigSurdVec resul = new BigSurdVec();
-		for (BigSurd s : terms)
+		final BigSurdVec resul = new BigSurdVec();
+		for (final BigSurd s : terms) {
 			resul.terms.add(s.negate());
+		}
 		/*
 		 * no normalization step here, because the negation of all terms does
 		 * not introduce new common factors
@@ -419,12 +433,15 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		 * Binomial expansion. First the sum of the terms squared, then 2 times
 		 * the mixed products.
 		 */
-		BigSurdVec resul = new BigSurdVec();
-		for (int i = 0; i < terms.size(); i++)
+		final BigSurdVec resul = new BigSurdVec();
+		for (int i = 0; i < terms.size(); i++) {
 			resul.terms.add(new BigSurd(terms.elementAt(i).sqr(), Rational.ONE));
-		for (int i = 0; i < terms.size() - 1; i++)
-			for (int j = i + 1; j < terms.size(); j++)
+		}
+		for (int i = 0; i < terms.size() - 1; i++) {
+			for (int j = i + 1; j < terms.size(); j++) {
 				resul.terms.add(terms.elementAt(i).multiply(terms.elementAt(j)).multiply(2));
+			}
+		}
 		resul.normalize();
 		return resul;
 	} /* sqr */
@@ -439,28 +456,30 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 * @since 2011-02-12
 	 */
 	public BigSurdVec multiply(final BigSurd val) throws Error {
-		BigSurdVec resul = new BigSurdVec();
-		for (BigSurd s : terms)
+		final BigSurdVec resul = new BigSurdVec();
+		for (final BigSurd s : terms) {
 			resul.terms.add(s.multiply(val));
+		}
 		resul.normalize();
 		return resul;
 	} /* multiply */
 
 	public BigSurdVec multiply(final BigSurdVec val) throws Error {
 		BigSurdVec resul = new BigSurdVec();
-		for (BigSurd s : terms) {
+		for (final BigSurd s : terms) {
 			resul.terms.add(s);
 		}
-		for (BigSurd s : val.terms) {
+		for (final BigSurd s : val.terms) {
 			resul = resul.multiply(s);
 		}
 		return resul;
 	} /* multiply */
 
 	public BigSurdVec divide(final BigSurd val) throws Error {
-		BigSurdVec resul = new BigSurdVec();
-		for (BigSurd s : terms)
+		final BigSurdVec resul = new BigSurdVec();
+		for (final BigSurd s : terms) {
 			resul.terms.add(s.divide(val));
+		}
 		resul.normalize();
 		return resul;
 	} /* multiply */
@@ -468,7 +487,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	public BigSurdVec divide(final BigSurdVec val) throws Error {
 		BigSurdVec resul = new BigSurdVec();
 		resul.terms = terms;
-		for (BigSurd s : val.terms) {
+		for (final BigSurd s : val.terms) {
 			resul = resul.divide(s);
 		}
 		return resul;
@@ -482,7 +501,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 */
 	public boolean isRational() {
 		boolean val = false;
-		for (BigSurd s : terms) {
+		for (final BigSurd s : terms) {
 			val = s.isRational();
 			if (val == false) {
 				break;
@@ -499,7 +518,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 */
 	public boolean isBigInteger() {
 		boolean val = false;
-		for (BigSurd s : terms) {
+		for (final BigSurd s : terms) {
 			val = s.isBigInteger();
 			if (val == false) {
 				break;
@@ -515,9 +534,10 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 */
 	public Rational toRational() {
 		Rational rat = Rational.ZERO;
-		if (isRational() == false)
+		if (isRational() == false) {
 			throw new ArithmeticException("Undefined conversion " + toString() + " to Rational.");
-		for (BigSurd s : terms) {
+		}
+		for (final BigSurd s : terms) {
 			rat = rat.add(s.pref);
 		}
 		return rat;
@@ -530,9 +550,10 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 */
 	public BigInteger toBigInteger() {
 		BigDecimal tmp = BigDecimal.ZERO.setScale(Utils.scale, Utils.scaleMode);
-		if (isBigInteger() == false)
+		if (isBigInteger() == false) {
 			throw new ArithmeticException("Undefined conversion " + toString() + " to Rational.");
-		for (BigSurd s : terms) {
+		}
+		for (final BigSurd s : terms) {
 			tmp = BigDecimalMath.addRound(tmp, s.pref.BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)));
 		}
 		return tmp.toBigInteger();
@@ -545,7 +566,7 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	 */
 	public BigDecimal toBigDecimal() {
 		BigDecimal tmp = BigDecimal.ZERO.setScale(Utils.scale, Utils.scaleMode);
-		for (BigSurd s : terms) {
+		for (final BigSurd s : terms) {
 			tmp = BigDecimalMath.addRound(tmp, s.BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)));
 		}
 		return tmp;
@@ -563,14 +584,15 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 		/*
 		 * simple cases with one term forwarded to the BigSurd class
 		 */
-		if (terms.size() == 0)
+		if (terms.size() == 0) {
 			return new String("0");
-		else {
+		} else {
 			String s = new String();
 			for (int t = 0; t < terms.size(); t++) {
-				BigSurd bs = terms.elementAt(t);
-				if (bs.signum() > 0)
+				final BigSurd bs = terms.elementAt(t);
+				if (bs.signum() > 0) {
 					s += "+";
+				}
 				s += bs.toString();
 			}
 			return s;
@@ -578,9 +600,9 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 	} /* toString */
 
 	public String toFancyString() {
-		if (terms.size() == 0)
+		if (terms.size() == 0) {
 			return new String("0");
-		else {
+		} else {
 			BigInteger denominator = BigInteger.ONE;
 			for (int i = 0; i < terms.size(); i++) {
 				denominator = denominator.multiply(terms.elementAt(i).pref.b);
@@ -590,15 +612,16 @@ public class BigSurdVec implements Comparable<BigSurdVec> {
 				s += "(";
 			}
 			for (int t = 0; t < terms.size(); t++) {
-				BigSurd bs = terms.elementAt(t);
-				if (bs.signum() > 0 && t > 0)
+				final BigSurd bs = terms.elementAt(t);
+				if (bs.signum() > 0 && t > 0) {
 					s += "+";
+				}
 				if (bs.isBigInteger()) {
 					s += bs.BigDecimalValue(new MathContext(Utils.scale, Utils.scaleMode2)).toBigInteger().toString();
 				} else if (bs.isRational()) {
 					s += bs.toRational().toString();
 				} else {
-					BigInteger numerator = bs.pref.multiply(denominator).numer();
+					final BigInteger numerator = bs.pref.multiply(denominator).numer();
 					if (numerator.compareTo(BigInteger.ONE) != 0) {
 						s += numerator.toString();
 						s += "*";

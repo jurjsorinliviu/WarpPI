@@ -15,6 +15,7 @@ import org.warp.picalculator.math.functions.Sum;
 /**
  * Variable rule<br>
  * <b>ax+x=(a+1)*x (a,b NUMBER; x VARIABLES)</b>
+ * 
  * @author Andrea Cavalli
  *
  */
@@ -22,7 +23,7 @@ public class VariableRule2 {
 
 	public static boolean compare(FunctionTwoValues fnc) {
 		if (fnc.getVariable1() instanceof Multiplication) {
-			Multiplication m1 = (Multiplication) fnc.getVariable1();
+			final Multiplication m1 = (Multiplication) fnc.getVariable1();
 			if (m1.getVariable2().equals(fnc.getVariable2())) {
 				return true;
 			}
@@ -31,15 +32,15 @@ public class VariableRule2 {
 	}
 
 	public static ArrayList<Function> execute(FunctionTwoValues fnc) throws Error {
-		Calculator root = fnc.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
-		Multiplication m1 = (Multiplication) fnc.getVariable1();
-		Function a = m1.getVariable1();
-		Function x = fnc.getVariable2();
-		
-		Multiplication retm = new Multiplication(root, null, null);
-		Expression rete = new Expression(root);
-		
+		final Calculator root = fnc.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
+		final Multiplication m1 = (Multiplication) fnc.getVariable1();
+		final Function a = m1.getVariable1();
+		final Function x = fnc.getVariable2();
+
+		final Multiplication retm = new Multiplication(root, null, null);
+		final Expression rete = new Expression(root);
+
 		FunctionTwoValues rets;
 		if (fnc instanceof Sum) {
 			rets = new Sum(root, null, null);

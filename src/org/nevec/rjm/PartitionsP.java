@@ -63,9 +63,9 @@ public class PartitionsP {
 	private void growto(BigInteger n) {
 		while (a.size() <= n.intValue()) {
 			BigInteger per = new BigInteger("0");
-			BigInteger cursiz = new BigInteger("" + a.size());
+			final BigInteger cursiz = new BigInteger("" + a.size());
 			for (int k = 0; k < a.size(); k++) {
-				BigInteger tmp = a.elementAt(k).multiply(BigIntegerMath.sigma(a.size() - k));
+				final BigInteger tmp = a.elementAt(k).multiply(BigIntegerMath.sigma(a.size() - k));
 				per = per.add(tmp);
 			}
 			a.add(per.divide(cursiz));
@@ -81,8 +81,8 @@ public class PartitionsP {
 	 * @since 2008-10-15
 	 */
 	public static void main(String[] args) throws Exception {
-		PartitionsP a = new PartitionsP();
-		int n = (new Integer(args[0])).intValue();
+		final PartitionsP a = new PartitionsP();
+		final int n = (new Integer(args[0])).intValue();
 		System.out.println("P(" + n + ")=" + a.at(n));
 	}
 }

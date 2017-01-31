@@ -16,14 +16,15 @@ import org.warp.picalculator.math.functions.Number;
  * <b>0 - a = a</b><br>
  * <b>a ± 0 = a</b><br>
  * <b>0 ± a = a</b>
+ * 
  * @author Andrea Cavalli
  *
  */
 public class NumberRule5 {
 
 	public static boolean compare(Function f) {
-		Calculator root = f.getRoot();
-		FunctionTwoValues fnc = (FunctionTwoValues) f;
+		final Calculator root = f.getRoot();
+		final FunctionTwoValues fnc = (FunctionTwoValues) f;
 		if (fnc.getVariable1().equals(new Number(root, 0)) || fnc.getVariable2().equals(new Number(root, 0))) {
 			return true;
 		}
@@ -31,9 +32,9 @@ public class NumberRule5 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
-		FunctionTwoValues fnc = (FunctionTwoValues) f;
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
+		final FunctionTwoValues fnc = (FunctionTwoValues) f;
 		Function a = fnc.getVariable1();
 		if (a.equals(new Number(root, 0))) {
 			a = fnc.getVariable2();

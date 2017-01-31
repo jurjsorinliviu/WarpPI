@@ -79,12 +79,12 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 		searJ.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		searJ.addListSelectionListener(this);
 
-		Font defFont = new Font("Monospaced", Font.PLAIN, 11);
+		final Font defFont = new Font("Monospaced", Font.PLAIN, 11);
 
 		fram.setBackground(new Color(250, 250, 250));
 		fram.setForeground(new Color(0, 0, 0));
-		Color fg = new Color(0, 200, 0);
-		Color bg = new Color(10, 10, 10);
+		final Color fg = new Color(0, 200, 0);
+		final Color bg = new Color(10, 10, 10);
 
 		gridbag = new GridBagLayout();
 		fram.setLayout(gridbag);
@@ -138,8 +138,8 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 	 * @since 2010-08-27
 	 */
 	public void compute() throws Error {
-		String tr = inpGtria.getText();
-		String[] trias = new String[4];
+		final String tr = inpGtria.getText();
+		final String[] trias = new String[4];
 
 		/*
 		 * Read the trias configuration from inpGtria into trias[0..2], skipping
@@ -149,9 +149,10 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 		for (int l = 0; l < 3;) {
 			try {
 				trias[l] = s.nextLine().trim();
-				if (!trias[l].startsWith("#"))
+				if (!trias[l].startsWith("#")) {
 					l++;
-			} catch (Exception e) {
+				}
+			} catch (final Exception e) {
 				s.close();
 				outG.setText("ERROR: less than 3 lines in the triad definition");
 				return;
@@ -163,28 +164,28 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 		/*
 		 * Read the J values from inpGjval into trias[3] in a loop
 		 */
-		String j = inpGjval.getText();
+		final String j = inpGjval.getText();
 		s = new Scanner(j);
 		while (true) {
 			try {
 				trias[3] = s.nextLine().trim();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				s.close();
 				return;
 			}
 			if (!trias[3].startsWith("#")) {
 				try {
-					BigSurdVec w = Wigner3j.wigner3j(trias[0], trias[1], trias[2], trias[3]);
+					final BigSurdVec w = Wigner3j.wigner3j(trias[0], trias[1], trias[2], trias[3]);
 					outG.append(w.toString() + " = " + w.doubleValue());
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					outG.append(e.toString());
 					e.printStackTrace();
 				}
 				outG.append(" # J = ");
-				Scanner num = new Scanner(trias[3]);
+				final Scanner num = new Scanner(trias[3]);
 				while (num.hasNextInt()) {
-					int twoj1 = num.nextInt();
-					Rational jfrac = new Rational(twoj1 - 1, 2);
+					final int twoj1 = num.nextInt();
+					final Rational jfrac = new Rational(twoj1 - 1, 2);
 					outG.append(jfrac.toString() + " ");
 				}
 				outG.append("\n");
@@ -202,7 +203,7 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String lin = e.getActionCommand();
+		final String lin = e.getActionCommand();
 		/*
 		 * debugging System.out.println("Ac"+e.paramString()) ;
 		 * System.out.println(lin) ;
@@ -211,7 +212,7 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 			outG.setText("");
 			try {
 				compute();
-			} catch (Error e1) {
+			} catch (final Error e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
@@ -327,7 +328,7 @@ public class Wigner3jGUI implements ActionListener, ListSelectionListener {
 	 * @author Richard J. Mathar
 	 */
 	public static void main(String[] args) {
-		Wigner3jGUI g = new Wigner3jGUI();
+		final Wigner3jGUI g = new Wigner3jGUI();
 		g.init();
 	} /* main */
 

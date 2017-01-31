@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
@@ -16,11 +16,11 @@ public abstract class FunctionTwoValues implements Function {
 		variable1 = value1;
 		variable2 = value2;
 	}
-	
+
 	protected abstract Function NewInstance(Calculator root, Function value1, Function value2);
 
 	protected final Calculator root;
-	
+
 	protected Function variable1 = null;
 	protected Function variable2 = null;
 	protected int width;
@@ -40,7 +40,7 @@ public abstract class FunctionTwoValues implements Function {
 	public Calculator getRoot() {
 		return root;
 	}
-	
+
 	public Function getVariable2() {
 		return variable2;
 	}
@@ -51,24 +51,24 @@ public abstract class FunctionTwoValues implements Function {
 
 	@Override
 	public abstract String getSymbol();
-	
+
 	@Override
 	public boolean isSolved() {
 		return (variable1.isSolved() & variable2.isSolved()) ? !isSolvable() : false;
 	}
-	
+
 	protected abstract boolean isSolvable();
-	
+
 	@Override
 	public final ArrayList<Function> solveOneStep() throws Error {
 		final boolean solved = variable1.isSolved() & variable2.isSolved();
-		ArrayList<Function> result = solved?solve():null;;
-		
+		ArrayList<Function> result = solved ? solve() : null;;
+
 		if (result == null || result.isEmpty()) {
 			result = new ArrayList<>();
-			
-			ArrayList<Function> l1 = new ArrayList<>();
-			ArrayList<Function> l2 = new ArrayList<>();
+
+			final ArrayList<Function> l1 = new ArrayList<>();
+			final ArrayList<Function> l2 = new ArrayList<>();
 			if (variable1.isSolved()) {
 				l1.add(variable1);
 			} else {
@@ -79,27 +79,27 @@ public abstract class FunctionTwoValues implements Function {
 			} else {
 				l2.addAll(variable2.solveOneStep());
 			}
-			
-			Function[][] results = Utils.joinFunctionsResults(l1, l2);
-			
-			for (Function[] f : results) {
-				result.add(NewInstance(this.root, f[0], f[1]));
+
+			final Function[][] results = Utils.joinFunctionsResults(l1, l2);
+
+			for (final Function[] f : results) {
+				result.add(NewInstance(root, f[0], f[1]));
 			}
 		}
-		
+
 		return result;
 	}
-	
+
 	protected abstract ArrayList<Function> solve() throws Error;
-	
+
 	@Override
 	public void generateGraphics() {
 		variable1.setSmall(small);
 		variable1.generateGraphics();
-		
+
 		variable2.setSmall(small);
 		variable2.generateGraphics();
-		
+
 		width = calcWidth();
 		height = calcHeight();
 		line = calcLine();
@@ -107,14 +107,14 @@ public abstract class FunctionTwoValues implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		int ln = getLine();
+		final int ln = getLine();
 		int dx = 0;
 		variable1.draw(dx + x, ln - variable1.getLine() + y);
-		dx += 1+variable1.getWidth();
+		dx += 1 + variable1.getWidth();
 		if (drawSignum()) {
-			PIDisplay.renderer.glSetFont(Utils.getFont(small));
-			PIDisplay.renderer.glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-			dx += PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
+			Utils.getFont(small).use(DisplayManager.display);
+			DisplayManager.renderer.glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
+			dx += Utils.getFont(small).getStringWidth(getSymbol());
 		}
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
@@ -144,28 +144,28 @@ public abstract class FunctionTwoValues implements Function {
 		if (variable2 != null) {
 			val2 = variable2.toString();
 		}
-		return val1+getSymbol()+val2;
+		return val1 + getSymbol() + val2;
 	}
 
 	@Override
 	public FunctionTwoValues clone() {
-		Cloner cloner = new Cloner();
+		final Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}
 
 	public boolean drawSignum() {
 		return true;
 	}
-	
+
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
-	}	
+	}
 
 	protected int calcWidth() {
-		return variable1.getWidth() + 1 + (drawSignum() ? PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol()) : 0) + variable2.getWidth();
+		return variable1.getWidth() + 1 + (drawSignum() ? Utils.getFont(small).getStringWidth(getSymbol()) : 0) + variable2.getWidth();
 	}
-	
+
 	protected int calcHeight() {
 
 		Function tmin = variable1;
@@ -178,7 +178,7 @@ public abstract class FunctionTwoValues implements Function {
 		}
 		return tmin.getLine() + tmax.getHeight() - tmax.getLine();
 	}
-	
+
 	protected int calcLine() {
 		Function tl = variable1;
 		if (tl == null || variable2.getLine() >= tl.getLine()) {
@@ -186,12 +186,12 @@ public abstract class FunctionTwoValues implements Function {
 		}
 		return tl.getLine();
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return variable1.hashCode()+7*variable2.hashCode()+883*getSymbol().hashCode();
+		return variable1.hashCode() + 7 * variable2.hashCode() + 883 * getSymbol().hashCode();
 	}
-	
+
 	@Override
 	public abstract boolean equals(Object o);
 }

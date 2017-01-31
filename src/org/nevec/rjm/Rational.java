@@ -133,7 +133,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *            does not yet test for a denominator equal to zero
 	 */
 	public Rational(String str, int radix) {
-		int hasslah = str.indexOf("/");
+		final int hasslah = str.indexOf("/");
 		if (hasslah == -1) {
 			a = new BigInteger(str, radix);
 			b = new BigInteger("1", radix);
@@ -159,8 +159,8 @@ public class Rational implements Cloneable, Comparable<Rational> {
 		 * protected access means this does not work return new
 		 * Rational(a.clone(), b.clone()) ;
 		 */
-		BigInteger aclon = new BigInteger("" + a);
-		BigInteger bclon = new BigInteger("" + b);
+		final BigInteger aclon = new BigInteger("" + a);
+		final BigInteger bclon = new BigInteger("" + b);
 		return new Rational(aclon, bclon);
 	} /* Rational.clone */
 
@@ -172,8 +172,8 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return the product of this with the val.
 	 */
 	public Rational multiply(final Rational val) {
-		BigInteger num = a.multiply(val.a);
-		BigInteger deno = b.multiply(val.b);
+		final BigInteger num = a.multiply(val.a);
+		final BigInteger deno = b.multiply(val.b);
 		/*
 		 * Normalization to an coprime format will be done inside the ctor() and
 		 * is not duplicated here.
@@ -189,7 +189,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return the product of this with the value.
 	 */
 	public Rational multiply(final BigInteger val) {
-		Rational val2 = new Rational(val, BigInteger.ONE);
+		final Rational val2 = new Rational(val, BigInteger.ONE);
 		return (multiply(val2));
 	} /* Rational.multiply */
 
@@ -201,7 +201,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return the product of this with the value.
 	 */
 	public Rational multiply(final int val) {
-		BigInteger tmp = new BigInteger("" + val);
+		final BigInteger tmp = new BigInteger("" + val);
 		return multiply(tmp);
 	} /* Rational.multiply */
 
@@ -214,15 +214,17 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 *         exponent is 0, the value 1 is returned.
 	 */
 	public Rational pow(int exponent) {
-		if (exponent == 0)
+		if (exponent == 0) {
 			return new Rational(1, 1);
+		}
 
-		BigInteger num = a.pow(Math.abs(exponent));
-		BigInteger deno = b.pow(Math.abs(exponent));
-		if (exponent > 0)
+		final BigInteger num = a.pow(Math.abs(exponent));
+		final BigInteger deno = b.pow(Math.abs(exponent));
+		if (exponent > 0) {
 			return (new Rational(num, deno));
-		else
+		} else {
 			return (new Rational(deno, num));
+		}
 	} /* Rational.pow */
 
 	/**
@@ -237,10 +239,12 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 */
 	public Rational pow(BigInteger exponent) throws Error {
 		/* test for overflow */
-		if (exponent.compareTo(MAX_INT) == 1)
+		if (exponent.compareTo(MAX_INT) == 1) {
 			throw new Error(Errors.NUMBER_TOO_LARGE);
-		if (exponent.compareTo(MIN_INT) == -1)
+		}
+		if (exponent.compareTo(MIN_INT) == -1) {
 			throw new Error(Errors.NUMBER_TOO_SMALL);
+		}
 
 		/* promote to the simpler interface above */
 		return pow(exponent.intValue());
@@ -259,15 +263,18 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 */
 	public Rational root(BigInteger r) throws Error {
 		/* test for overflow */
-		if (r.compareTo(MAX_INT) == 1)
+		if (r.compareTo(MAX_INT) == 1) {
 			throw new Error(Errors.NUMBER_TOO_LARGE);
-		if (r.compareTo(MIN_INT) == -1)
+		}
+		if (r.compareTo(MIN_INT) == -1) {
 			throw new Error(Errors.NUMBER_TOO_SMALL);
+		}
 
-		int rthroot = r.intValue();
+		final int rthroot = r.intValue();
 		/* cannot pull root of a negative value with even-valued root */
-		if (compareTo(ZERO) == -1 && (rthroot % 2) == 0)
+		if (compareTo(ZERO) == -1 && (rthroot % 2) == 0) {
 			throw new Error(Errors.NEGATIVE_PARAMETER);
+		}
 
 		/*
 		 * extract a sign such that we calculate |n|^(1/r), still r carrying any
@@ -278,13 +285,14 @@ public class Rational implements Cloneable, Comparable<Rational> {
 		/*
 		 * delegate the main work to ifactor#root()
 		 */
-		Ifactor num = new Ifactor(a.abs());
-		Ifactor deno = new Ifactor(b);
+		final Ifactor num = new Ifactor(a.abs());
+		final Ifactor deno = new Ifactor(b);
 		final Rational resul = num.root(rthroot).divide(deno.root(rthroot));
-		if (flipsign)
+		if (flipsign) {
 			return resul.negate();
-		else
+		} else {
 			return resul;
+		}
 	} /* Rational.root */
 
 	/**
@@ -298,14 +306,15 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2009-05-18
 	 */
 	public Rational pow(Rational exponent) throws Error {
-		if (exponent.a.compareTo(BigInteger.ZERO) == 0)
+		if (exponent.a.compareTo(BigInteger.ZERO) == 0) {
 			return new Rational(1, 1);
+		}
 
 		/*
 		 * calculate (a/b)^(exponent.a/exponent.b) as
 		 * ((a/b)^exponent.a)^(1/exponent.b) = tmp^(1/exponent.b)
 		 */
-		Rational tmp = pow(exponent.a);
+		final Rational tmp = pow(exponent.a);
 		return tmp.root(exponent.b);
 	} /* Rational.pow */
 
@@ -318,10 +327,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @throws Error
 	 */
 	public Rational divide(final Rational val) throws Error {
-		if (val.compareTo(Rational.ZERO) == 0)
+		if (val.compareTo(Rational.ZERO) == 0) {
 			throw new Error(Errors.DIVISION_BY_ZERO);
-		BigInteger num = a.multiply(val.b);
-		BigInteger deno = b.multiply(val.a);
+		}
+		final BigInteger num = a.multiply(val.b);
+		final BigInteger deno = b.multiply(val.a);
 		/*
 		 * Reduction to a coprime format is done inside the ctor, and not
 		 * repeated here.
@@ -338,9 +348,10 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @throws Error
 	 */
 	public Rational divide(BigInteger val) throws Error {
-		if (val.compareTo(BigInteger.ZERO) == 0)
+		if (val.compareTo(BigInteger.ZERO) == 0) {
 			throw new Error(Errors.DIVISION_BY_ZERO);
-		Rational val2 = new Rational(val, BigInteger.ONE);
+		}
+		final Rational val2 = new Rational(val, BigInteger.ONE);
 		return (divide(val2));
 	} /* Rational.divide */
 
@@ -353,9 +364,10 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @throws Error
 	 */
 	public Rational divide(int val) throws Error {
-		if (val == 0)
+		if (val == 0) {
 			throw new Error(Errors.DIVISION_BY_ZERO);
-		Rational val2 = new Rational(val, 1);
+		}
+		final Rational val2 = new Rational(val, 1);
 		return (divide(val2));
 	} /* Rational.divide */
 
@@ -367,8 +379,8 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return this+val.
 	 */
 	public Rational add(Rational val) {
-		BigInteger num = a.multiply(val.b).add(b.multiply(val.a));
-		BigInteger deno = b.multiply(val.b);
+		final BigInteger num = a.multiply(val.b).add(b.multiply(val.a));
+		final BigInteger deno = b.multiply(val.b);
 		return (new Rational(num, deno));
 	} /* Rational.add */
 
@@ -380,7 +392,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return this+val.
 	 */
 	public Rational add(BigInteger val) {
-		Rational val2 = new Rational(val, BigInteger.ONE);
+		final Rational val2 = new Rational(val, BigInteger.ONE);
 		return (add(val2));
 	} /* Rational.add */
 
@@ -393,7 +405,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since May 26 2010
 	 */
 	public Rational add(int val) {
-		BigInteger val2 = a.add(b.multiply(new BigInteger("" + val)));
+		final BigInteger val2 = a.add(b.multiply(new BigInteger("" + val)));
 		return new Rational(val2, b);
 	} /* Rational.add */
 
@@ -414,7 +426,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return this - val.
 	 */
 	public Rational subtract(Rational val) {
-		Rational val2 = val.negate();
+		final Rational val2 = val.negate();
 		return (add(val2));
 	} /* Rational.subtract */
 
@@ -426,7 +438,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return this - val.
 	 */
 	public Rational subtract(BigInteger val) {
-		Rational val2 = new Rational(val, BigInteger.ONE);
+		final Rational val2 = new Rational(val, BigInteger.ONE);
 		return (subtract(val2));
 	} /* Rational.subtract */
 
@@ -438,7 +450,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @return this - val.
 	 */
 	public Rational subtract(int val) {
-		Rational val2 = new Rational(val, 1);
+		final Rational val2 = new Rational(val, 1);
 		return (subtract(val2));
 	} /* Rational.subtract */
 
@@ -455,8 +467,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @throws Error
 	 */
 	public static Rational binomial(Rational n, BigInteger m) throws Error {
-		if (m.compareTo(BigInteger.ZERO) == 0)
+		if (m.compareTo(BigInteger.ZERO) == 0) {
 			return Rational.ONE;
+		}
 		Rational bin = n;
 		for (BigInteger i = new BigInteger("2"); i.compareTo(m) != 1; i = i.add(BigInteger.ONE)) {
 			bin = bin.multiply(n.subtract(i.subtract(BigInteger.ONE))).divide(i);
@@ -477,8 +490,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @throws Error
 	 */
 	public static Rational binomial(Rational n, int m) throws Error {
-		if (m == 0)
+		if (m == 0) {
 			return Rational.ONE;
+		}
 		Rational bin = n;
 		for (int i = 2; i <= m; i++) {
 			bin = bin.multiply(n.subtract(i - 1)).divide(i);
@@ -499,13 +513,14 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @throws Error
 	 */
 	public static Rational hankelSymb(Rational n, int k) throws Error {
-		if (k == 0)
+		if (k == 0) {
 			return Rational.ONE;
-		else if (k < 0)
+		} else if (k < 0) {
 			throw new Error(Errors.NEGATIVE_PARAMETER);
+		}
 		Rational nkhalf = n.subtract(k).add(Rational.HALF);
 		nkhalf = nkhalf.Pochhammer(2 * k);
-		Factorial f = new Factorial();
+		final Factorial f = new Factorial();
 		return nkhalf.divide(f.at(k));
 	} /* Rational.binomial */
 
@@ -545,12 +560,13 @@ public class Rational implements Cloneable, Comparable<Rational> {
 		/*
 		 * is already integer: return the numerator
 		 */
-		if (b.compareTo(BigInteger.ONE) == 0)
+		if (b.compareTo(BigInteger.ONE) == 0) {
 			return a;
-		else if (a.compareTo(BigInteger.ZERO) > 0)
+		} else if (a.compareTo(BigInteger.ZERO) > 0) {
 			return a.divide(b);
-		else
+		} else {
 			return a.divide(b).subtract(BigInteger.ONE);
+		}
 	} /* Rational.floor */
 
 	/**
@@ -563,12 +579,13 @@ public class Rational implements Cloneable, Comparable<Rational> {
 		/*
 		 * is already integer: return the numerator
 		 */
-		if (b.compareTo(BigInteger.ONE) == 0)
+		if (b.compareTo(BigInteger.ONE) == 0) {
 			return a;
-		else if (a.compareTo(BigInteger.ZERO) > 0)
+		} else if (a.compareTo(BigInteger.ZERO) > 0) {
 			return a.divide(b).add(BigInteger.ONE);
-		else
+		} else {
 			return a.divide(b);
+		}
 	} /* Rational.ceil */
 
 	/**
@@ -580,10 +597,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 		/*
 		 * is already integer: return the numerator
 		 */
-		if (b.compareTo(BigInteger.ONE) == 0)
+		if (b.compareTo(BigInteger.ONE) == 0) {
 			return a;
-		else
+		} else {
 			return a.divide(b);
+		}
 	} /* Rational.trunc */
 
 	/**
@@ -626,10 +644,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 */
 	@Override
 	public String toString() {
-		if (b.compareTo(BigInteger.ONE) != 0)
+		if (b.compareTo(BigInteger.ONE) != 0) {
 			return (a.toString() + "/" + b.toString());
-		else
+		} else {
 			return a.toString();
+		}
 	} /* Rational.toString */
 
 	/**
@@ -644,7 +663,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 		 * separate invocation a.doubleValue() or b.doubleValue(), we divide
 		 * first in a BigDecimal environment and convert the result.
 		 */
-		BigDecimal adivb = (new BigDecimal(a)).divide(new BigDecimal(b), MathContext.DECIMAL128);
+		final BigDecimal adivb = (new BigDecimal(a)).divide(new BigDecimal(b), MathContext.DECIMAL128);
 		return adivb.doubleValue();
 	} /* Rational.doubleValue */
 
@@ -655,7 +674,7 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2009-08-06
 	 */
 	public float floatValue() {
-		BigDecimal adivb = (new BigDecimal(a)).divide(new BigDecimal(b), MathContext.DECIMAL128);
+		final BigDecimal adivb = (new BigDecimal(a)).divide(new BigDecimal(b), MathContext.DECIMAL128);
 		return adivb.floatValue();
 	} /* Rational.floatValue */
 
@@ -672,8 +691,8 @@ public class Rational implements Cloneable, Comparable<Rational> {
 		/*
 		 * numerator and denominator individually rephrased
 		 */
-		BigDecimal n = new BigDecimal(a);
-		BigDecimal d = new BigDecimal(b);
+		final BigDecimal n = new BigDecimal(a);
+		final BigDecimal d = new BigDecimal(b);
 		/*
 		 * the problem with n.divide(d,mc) is that the apparent precision might
 		 * be smaller than what is set by mc if the value has a precise
@@ -692,11 +711,12 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 */
 	public String toFString(int digits) {
 		if (b.compareTo(BigInteger.ONE) != 0) {
-			MathContext mc = new MathContext(digits, RoundingMode.DOWN);
-			BigDecimal f = (new BigDecimal(a)).divide(new BigDecimal(b), mc);
+			final MathContext mc = new MathContext(digits, RoundingMode.DOWN);
+			final BigDecimal f = (new BigDecimal(a)).divide(new BigDecimal(b), mc);
 			return (f.toString());
-		} else
+		} else {
 			return a.toString();
+		}
 	} /* Rational.toFString */
 
 	/**
@@ -708,10 +728,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2008-10-19
 	 */
 	public Rational max(final Rational val) {
-		if (compareTo(val) > 0)
+		if (compareTo(val) > 0) {
 			return this;
-		else
+		} else {
 			return val;
+		}
 	} /* Rational.max */
 
 	/**
@@ -723,10 +744,11 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2008-10-19
 	 */
 	public Rational min(final Rational val) {
-		if (compareTo(val) < 0)
+		if (compareTo(val) < 0) {
 			return this;
-		else
+		} else {
 			return val;
+		}
 	} /* Rational.min */
 
 	/**
@@ -738,18 +760,19 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2008-10-25
 	 */
 	public Rational Pochhammer(final BigInteger n) {
-		if (n.compareTo(BigInteger.ZERO) < 0)
+		if (n.compareTo(BigInteger.ZERO) < 0) {
 			return null;
-		else if (n.compareTo(BigInteger.ZERO) == 0)
+		} else if (n.compareTo(BigInteger.ZERO) == 0) {
 			return Rational.ONE;
-		else {
+		} else {
 			/*
 			 * initialize results with the current value
 			 */
 			Rational res = new Rational(a, b);
 			BigInteger i = BigInteger.ONE;
-			for (; i.compareTo(n) < 0; i = i.add(BigInteger.ONE))
+			for (; i.compareTo(n) < 0; i = i.add(BigInteger.ONE)) {
 				res = res.multiply(add(i));
+			}
 			return res;
 		}
 	} /* Rational.pochhammer */
@@ -784,8 +807,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2010-05-26
 	 */
 	public boolean isInteger() {
-		if (!isBigInteger())
+		if (!isBigInteger()) {
 			return false;
+		}
 		return (a.compareTo(MAX_INT) <= 0 && a.compareTo(MIN_INT) >= 0);
 	} /* Rational.isInteger */
 
@@ -797,8 +821,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2011-02-13
 	 */
 	int intValue() throws Error {
-		if (!isInteger())
+		if (!isInteger()) {
 			throw new Error(Errors.CONVERSION_ERROR);
+		}
 		return a.intValue();
 	}
 
@@ -810,8 +835,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 * @since 2012-03-02
 	 */
 	BigInteger BigIntegerValue() throws Error {
-		if (!isBigInteger())
+		if (!isBigInteger()) {
 			throw new Error(Errors.CONVERSION_ERROR);
+		}
 		return a;
 	}
 
@@ -845,8 +871,9 @@ public class Rational implements Cloneable, Comparable<Rational> {
 	 */
 	static public BigInteger lcmDenom(final Rational[] vals) {
 		BigInteger l = BigInteger.ONE;
-		for (int v = 0; v < vals.length; v++)
-			l = BigIntegerMath.lcm(l, vals[v].b);
+		for (final Rational val : vals) {
+			l = BigIntegerMath.lcm(l, val.b);
+		}
 		return l;
 	} /* Rational.lcmDenom */
 

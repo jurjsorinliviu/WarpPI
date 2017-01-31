@@ -64,7 +64,7 @@ public class Cloner {
 	private boolean cloneSynthetics = true;
 
 	public Cloner() {
-		this.instantiationStrategy = ObjenesisInstantiationStrategy.getInstance();
+		instantiationStrategy = ObjenesisInstantiationStrategy.getInstance();
 		init();
 	}
 
@@ -113,12 +113,12 @@ public class Cloner {
 		fastCloners.put(ConcurrentHashMap.class, new FastClonerConcurrentHashMap());
 	}
 
-	private IDeepCloner deepCloner = new IDeepCloner() {
+	private final IDeepCloner deepCloner = new IDeepCloner() {
 		@Override
 		public <T> T deepClone(T o, Map<Object, Object> clones) {
 			try {
 				return cloneInternal(o, clones);
-			} catch (IllegalAccessException e) {
+			} catch (final IllegalAccessException e) {
 				// just rethrow unchecked
 				throw new IllegalStateException(e);
 			}
@@ -128,8 +128,9 @@ public class Cloner {
 	protected Object fastClone(final Object o, final Map<Object, Object> clones) throws IllegalAccessException {
 		final Class<? extends Object> c = o.getClass();
 		final IFastCloner fastCloner = fastCloners.get(c);
-		if (fastCloner != null)
+		if (fastCloner != null) {
 			return fastCloner.clone(o, deepCloner, clones);
+		}
 		return null;
 	}
 
@@ -281,8 +282,9 @@ public class Cloner {
 	}
 
 	public void registerFastCloner(final Class<?> c, final IFastCloner fastCloner) {
-		if (fastCloners.containsKey(c))
+		if (fastCloners.containsKey(c)) {
 			throw new IllegalArgumentException(c + " already fast-cloned!");
+		}
 		fastCloners.put(c, fastCloner);
 	}
 
@@ -307,8 +309,9 @@ public class Cloner {
 	public <T> T fastCloneOrNewInstance(final Class<T> c) {
 		try {
 			final T fastClone = (T) fastClone(c, null);
-			if (fastClone != null)
+			if (fastClone != null) {
 				return fastClone;
+			}
 		} catch (final IllegalAccessException e) {
 			throw new RuntimeException(e);
 		}
@@ -326,10 +329,12 @@ public class Cloner {
 	 * @return a deep-clone of "o".
 	 */
 	public <T> T deepClone(final T o) {
-		if (o == null)
+		if (o == null) {
 			return null;
-		if (!cloningEnabled)
+		}
+		if (!cloningEnabled) {
 			return o;
+		}
 		if (dumpCloned != null) {
 			dumpCloned.startCloning(o.getClass());
 		}
@@ -342,10 +347,12 @@ public class Cloner {
 	}
 
 	public <T> T deepCloneDontCloneInstances(final T o, final Object... dontCloneThese) {
-		if (o == null)
+		if (o == null) {
 			return null;
-		if (!cloningEnabled)
+		}
+		if (!cloningEnabled) {
 			return o;
+		}
 		if (dumpCloned != null) {
 			dumpCloned.startCloning(o.getClass());
 		}
@@ -371,10 +378,12 @@ public class Cloner {
 	 * @return a shallow clone of "o"
 	 */
 	public <T> T shallowClone(final T o) {
-		if (o == null)
+		if (o == null) {
 			return null;
-		if (!cloningEnabled)
+		}
+		if (!cloningEnabled) {
 			return o;
+		}
 		try {
 			return cloneInternal(o, null);
 		} catch (final IllegalAccessException e) {
@@ -411,10 +420,12 @@ public class Cloner {
 	 */
 	private boolean isImmutable(final Class<?> clz) {
 		final Boolean isIm = immutables.get(clz);
-		if (isIm != null)
+		if (isIm != null) {
 			return isIm;
-		if (considerImmutable(clz))
+		}
+		if (considerImmutable(clz)) {
 			return true;
+		}
 
 		final Class<?> immutableAnnotation = getImmutableAnnotation();
 		for (final Annotation annotation : clz.getDeclaredAnnotations()) {
@@ -442,34 +453,45 @@ public class Cloner {
 
 	@SuppressWarnings("unchecked")
 	protected <T> T cloneInternal(final T o, final Map<Object, Object> clones) throws IllegalAccessException {
-		if (o == null)
+		if (o == null) {
 			return null;
+		}
 		if (o == this)
+		 {
 			return null; // don't clone the cloner!
-		if (ignoredInstances.containsKey(o))
+		}
+		if (ignoredInstances.containsKey(o)) {
 			return o;
-		if (o instanceof Enum)
+		}
+		if (o instanceof Enum) {
 			return o;
+		}
 		final Class<T> clz = (Class<T>) o.getClass();
 		// skip cloning ignored classes
-		if (nullInstead.contains(clz))
+		if (nullInstead.contains(clz)) {
 			return null;
-		if (ignored.contains(clz))
-			return o;
-		for (final Class<?> iClz : ignoredInstanceOf) {
-			if (iClz.isAssignableFrom(clz))
-				return o;
 		}
-		if (isImmutable(clz))
+		if (ignored.contains(clz)) {
 			return o;
+		}
+		for (final Class<?> iClz : ignoredInstanceOf) {
+			if (iClz.isAssignableFrom(clz)) {
+				return o;
+			}
+		}
+		if (isImmutable(clz)) {
+			return o;
+		}
 		if (o instanceof IFreezable) {
 			final IFreezable f = (IFreezable) o;
-			if (f.isFrozen())
+			if (f.isFrozen()) {
 				return o;
+			}
 		}
 		final Object clonedPreviously = clones != null ? clones.get(o) : null;
-		if (clonedPreviously != null)
+		if (clonedPreviously != null) {
 			return (T) clonedPreviously;
+		}
 
 		final Object fastClone = fastClone(o, clones);
 		if (fastClone != null) {
@@ -549,15 +571,18 @@ public class Cloner {
 	 *            fields of src
 	 */
 	public <T, E extends T> void copyPropertiesOfInheritedClass(final T src, final E dest) {
-		if (src == null)
+		if (src == null) {
 			throw new IllegalArgumentException("src can't be null");
-		if (dest == null)
+		}
+		if (dest == null) {
 			throw new IllegalArgumentException("dest can't be null");
+		}
 		final Class<? extends Object> srcClz = src.getClass();
 		final Class<? extends Object> destClz = dest.getClass();
 		if (srcClz.isArray()) {
-			if (!destClz.isArray())
+			if (!destClz.isArray()) {
 				throw new IllegalArgumentException("can't copy from array to non-array class " + destClz);
+			}
 			final int length = Array.getLength(src);
 			for (int i = 0; i < length; i++) {
 				final Object v = Array.get(src, i);
@@ -639,8 +664,9 @@ public class Cloner {
 					System.out.println("cloned field>" + field + "  -- of class " + clz);
 				}
 			};
-		} else
+		} else {
 			dumpCloned = null;
+		}
 	}
 
 	public boolean isCloningEnabled() {

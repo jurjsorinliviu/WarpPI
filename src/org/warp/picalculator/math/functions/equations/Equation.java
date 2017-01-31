@@ -21,7 +21,7 @@ import com.rits.cloning.Cloner;
 public class Equation extends FunctionTwoValues {
 
 	public Equation(Calculator root, Function value1, Function value2) {
-		super(root, value1,value2);
+		super(root, value1, value2);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class Equation extends FunctionTwoValues {
 	public String getSymbol() {
 		return MathematicalSymbols.EQUATION;
 	}
-	
+
 	@Override
 	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
@@ -41,18 +41,18 @@ public class Equation extends FunctionTwoValues {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public ArrayList<Function> solve() throws Error {
 		if (variable1 == null || variable2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		ArrayList<Function> result = new ArrayList<>();
+		final ArrayList<Function> result = new ArrayList<>();
 		if (variable1.isSolved() & variable2.isSolved()) {
-			if (((Number)variable2).getTerm().compareTo(new BigDecimal(0)) == 0) {
+			if (((Number) variable2).getTerm().compareTo(new BigDecimal(0)) == 0) {
 				result.add(this);
 			} else {
-				Equation e = new Equation(root, null, null);
+				final Equation e = new Equation(root, null, null);
 				e.setVariable1(new Subtraction(root, variable1, variable2));
 				e.setVariable2(new Number(root, "0"));
 				result.add(e);
@@ -60,26 +60,26 @@ public class Equation extends FunctionTwoValues {
 		}
 		return result;
 	}
-	
+
 	public List<Function> solve(char variableCharacter) {
 		@SuppressWarnings("unused")
-		ArrayList<Equation> e;
+		final ArrayList<Equation> e;
 		//TODO: WORK IN PROGRESS.
 		//TODO: Finire. Fare in modo che risolva i passaggi fino a che non ce ne sono più
 		return null;
 	}
-	
+
 	//WORK IN PROGRESS
 	public ArrayList<Equation> solveStep(char charIncognita) {
 		ArrayList<Equation> result = new ArrayList<>();
-		result.add(this.clone());
-		for (SolveMethod t : SolveMethod.techniques) {
-			ArrayList<Equation> newResults = new ArrayList<>();
+		result.add(clone());
+		for (final SolveMethod t : SolveMethod.techniques) {
+			final ArrayList<Equation> newResults = new ArrayList<>();
 			final int sz = result.size();
 			for (int n = 0; n < sz; n++) {
 				newResults.addAll(t.solve(result.get(n)));
 			}
-			Set<Equation> hs = new HashSet<>();
+			final Set<Equation> hs = new HashSet<>();
 			hs.addAll(newResults);
 			newResults.clear();
 			newResults.addAll(hs);
@@ -91,8 +91,14 @@ public class Equation extends FunctionTwoValues {
 
 	@Override
 	public Equation clone() {
-		Cloner cloner = new Cloner();
+		final Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

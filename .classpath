@@ -3,6 +3,7 @@
 	<classpathentry excluding="org/warp/picalculator/deprecatedmath/" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="res"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/JOGL"/>
 	<classpathentry kind="lib" path="libs/pi4j-1.1/pi4j-core.jar" sourcepath="libs/pi4j-1.1/pi4j-core-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/pi4j-1.1/pi4j-core-javadoc.jar!/"/>
@@ -28,6 +29,5 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/objenesis-2.4/objenesis-2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JOGL"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

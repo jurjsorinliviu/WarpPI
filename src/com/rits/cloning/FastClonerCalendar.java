@@ -14,7 +14,7 @@ public class FastClonerCalendar implements IFastCloner {
 	@Override
 	public Object clone(final Object t, final IDeepCloner cloner, final Map<Object, Object> clones) {
 		final GregorianCalendar gc = new GregorianCalendar();
-		Calendar c = (Calendar) t;
+		final Calendar c = (Calendar) t;
 		gc.setTimeInMillis(c.getTimeInMillis());
 		gc.setTimeZone((TimeZone) c.getTimeZone().clone());
 		return gc;

@@ -15,8 +15,9 @@ import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
@@ -42,17 +43,17 @@ public class MathInputScreen extends Screen {
 	public int errorLevel = 0; // 0 = nessuno, 1 = risultato, 2 = tutto
 	boolean mustRefresh = true;
 	boolean afterDoNextStep = false;
-	
+
 	public MathInputScreen() {
 		super();
 		canBeInHistory = true;
-		
+
 		calc = new Calculator();
 	}
-	
+
 	@Override
 	public void created() throws InterruptedException {
-		
+
 	}
 
 	@Override
@@ -114,14 +115,14 @@ public class MathInputScreen extends Screen {
 	}
 
 	public void interpreta(boolean temporary) throws Error {
-		String eqn = nuovaEquazione;
+		final String eqn = nuovaEquazione;
 		if (!temporary) {
 			equazioneCorrente = eqn;
 		}
-		
+
 		calc.parseInputString(eqn);
 	}
-	
+
 	@Override
 	public void beforeRender(float dt) {
 		showCaretDelta += dt;
@@ -134,39 +135,39 @@ public class MathInputScreen extends Screen {
 			caretPos = nuovaEquazione.length();
 		}
 
-		if (PIDisplay.error == null) {
-			PIDisplay.renderer.glClearColor(0xFFc5c2af);
+		if (DisplayManager.error == null) {
+			DisplayManager.renderer.glClearColor(0xFFc5c2af);
 		} else {
-			PIDisplay.renderer.glClearColor(0xFFDC3C32);
+			DisplayManager.renderer.glClearColor(0xFFDC3C32);
 		}
 	}
 
 	private static final RAWFont fontBig = Utils.getFont(false);
-	
+
 	@Override
 	public void renderStatusbar() {
-		PIDisplay.renderer.glColor3i(0, 0, 0);
-		int pos = 2;
-		int spacersNumb = 1;
+		Renderer renderer = DisplayManager.renderer;
+		renderer.glColor3f(1, 1, 1);
+		final int pos = 2;
+		final int spacersNumb = 1;
 		int skinN = 0;
 		if (calc.exactMode) {
 			skinN = 22;
-			PIDisplay.drawSkinPart(2 + 18 * pos + 2 * spacersNumb, 2, 16 * skinN, 16 * 0, 16 + 16 * skinN, 16 + 16 * 0);
 		} else {
 			skinN = 21;
-			PIDisplay.drawSkinPart(2 + 18 * pos + 2 * spacersNumb, 2, 16 * skinN, 16 * 0, 16 + 16 * skinN, 16 + 16 * 0);
 		}
+		renderer.glFillRect(2 + 18 * pos + 2 * spacersNumb, 2, 16, 16, 16 * skinN, 16 * 0, 16, 16);
 	}
-	
+
 	@Override
 	public void render() {
-		PIDisplay.renderer.glSetFont(fontBig);
+		fontBig.use(DisplayManager.display);
 		final int textColor = 0xFF000000;
 		final int padding = 4;
-		PIDisplay.renderer.glColor(textColor);
-		final int caretRealPos = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione.substring(0, caretPos)).length()*(fontBig.charW+1);
+		DisplayManager.renderer.glColor(textColor);
+		final int caretRealPos = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione.substring(0, caretPos)).length() * (fontBig.getCharacterWidth() + 1);
 		final String inputTextWithoutCaret = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione);
-		final boolean tooLongI = padding+PIDisplay.renderer.glGetStringWidth(fontBig, nuovaEquazione)+padding >= Main.screenSize[0];
+		final boolean tooLongI = padding + fontBig.getStringWidth(nuovaEquazione) + padding >= Main.screenSize[0];
 		int scrollI = 0;
 		if (tooLongI) {
 			scrollI = -scrollX;
@@ -176,23 +177,23 @@ public class MathInputScreen extends Screen {
 				scrollI = 0;
 			}
 		}
-		PIDisplay.renderer.glDrawStringLeft(padding+scrollI, padding+20, inputTextWithoutCaret);
+		DisplayManager.renderer.glDrawStringLeft(padding + scrollI, padding + 20, inputTextWithoutCaret);
 		if (showCaret) {
-			PIDisplay.renderer.glDrawStringLeft(padding+scrollI+caretRealPos, padding+20, "|");
+			DisplayManager.renderer.glDrawStringLeft(padding + scrollI + caretRealPos, padding + 20, "|");
 		}
 		if (tooLongI) {
-			PIDisplay.renderer.glColor(PIDisplay.renderer.glGetClearColor());
-			PIDisplay.renderer.glFillRect(Main.screenSize[0]-16-2, padding+20, fontBig.charH, Main.screenSize[0]);
-			PIDisplay.renderer.glColor(textColor);
-			PIDisplay.drawSkinPart(Main.screenSize[0]-16, padding+20+fontBig.charH/2-16/2, 304, 0, 304+16, 16);
+			DisplayManager.renderer.glColor(DisplayManager.renderer.glGetClearColor());
+			DisplayManager.renderer.glFillColor(Main.screenSize[0] - 16 - 2, padding + 20, fontBig.getCharacterHeight(), Main.screenSize[0]);
+			DisplayManager.renderer.glColor(textColor);
+			DisplayManager.drawSkinPart(Main.screenSize[0] - 16, padding + 20 + fontBig.getCharacterHeight() / 2 - 16 / 2, 304, 0, 304 + 16, 16);
 		}
 		if (calc.f != null) {
 			int topSpacing = 0;
-			Iterator<Function> iter = calc.f.iterator();
+			final Iterator<Function> iter = calc.f.iterator();
 			while (iter.hasNext()) {
-				Function fnc = iter.next();
+				final Function fnc = iter.next();
 				try {
-					final boolean tooLong = padding+fnc.getWidth()+padding >= Main.screenSize[0];
+					final boolean tooLong = padding + fnc.getWidth() + padding >= Main.screenSize[0];
 					int scrollA = 0;
 					if (tooLong) {
 						scrollA = -scrollX;
@@ -202,15 +203,15 @@ public class MathInputScreen extends Screen {
 							scrollA = 0;
 						}
 					}
-					final int y = padding+20+padding+fontBig.charH+1+topSpacing;
-					fnc.draw(padding+scrollA, y);
+					final int y = padding + 20 + padding + fontBig.getCharacterHeight() + 1 + topSpacing;
+					fnc.draw(padding + scrollA, y);
 					if (tooLong) {
-						PIDisplay.renderer.glColor(PIDisplay.renderer.glGetClearColor());
-						PIDisplay.renderer.glFillRect(Main.screenSize[0]-16-2, y, fnc.getHeight(), Main.screenSize[0]);
-						PIDisplay.renderer.glColor(textColor);
-						PIDisplay.drawSkinPart(Main.screenSize[0]-16, y+fnc.getHeight()/2-16/2, 304, 0, 304+16, 16);
+						DisplayManager.renderer.glColor(DisplayManager.renderer.glGetClearColor());
+						DisplayManager.renderer.glFillColor(Main.screenSize[0] - 16 - 2, y, fnc.getHeight(), Main.screenSize[0]);
+						DisplayManager.renderer.glColor(textColor);
+						DisplayManager.drawSkinPart(Main.screenSize[0] - 16, y + fnc.getHeight() / 2 - 16 / 2, 304, 0, 304 + 16, 16);
 					}
-				} catch (NullPointerException e) {
+				} catch (final NullPointerException e) {
 					iter.remove();
 				}
 				topSpacing += fnc.getHeight() + 2;
@@ -218,16 +219,16 @@ public class MathInputScreen extends Screen {
 		}
 		if (calc.f2 != null) {
 			int bottomSpacing = 0;
-			for (Function f : calc.f2) {
-				bottomSpacing += f.getHeight()+2;
-				f.draw(PIDisplay.display.getWidth() - 2 - f.getWidth(), PIDisplay.display.getHeight() - bottomSpacing);
+			for (final Function f : calc.f2) {
+				bottomSpacing += f.getHeight() + 2;
+				f.draw(DisplayManager.display.getWidth() - 2 - f.getWidth(), DisplayManager.display.getHeight() - bottomSpacing);
 			}
 			if (calc.resultsCount > 1 && calc.resultsCount != calc.f2.size()) {
-				String resultsCountText = calc.resultsCount+" total results".toUpperCase();
-				PIDisplay.renderer.glColor(0xFF9AAEA0);
-				PIDisplay.renderer.glSetFont(Utils.getFont(true));
-				bottomSpacing += fontBig.charH+2;
-				PIDisplay.renderer.glDrawStringRight(PIDisplay.display.getWidth() - 2, PIDisplay.display.getHeight() - bottomSpacing, resultsCountText);
+				final String resultsCountText = calc.resultsCount + " total results".toUpperCase();
+				DisplayManager.renderer.glColor(0xFF9AAEA0);
+				Utils.getFont(true).use(DisplayManager.display);
+				bottomSpacing += fontBig.getCharacterHeight() + 2;
+				DisplayManager.renderer.glDrawStringRight(DisplayManager.display.getWidth() - 2, DisplayManager.display.getHeight() - bottomSpacing, resultsCountText);
 			}
 		}
 	}
@@ -251,26 +252,24 @@ public class MathInputScreen extends Screen {
 						try {
 							try {
 								interpreta(true);
-								showVariablesDialog(new Runnable(){
-									@Override
-									public void run() {
-										equazioneCorrente = nuovaEquazione;
-										calc.f2 = calc.f;
-										afterDoNextStep = true;
-										simplify(MathInputScreen.this);
-									}
+								showVariablesDialog(() -> {
+									equazioneCorrente = nuovaEquazione;
+									calc.f2 = calc.f;
+									afterDoNextStep = true;
+									simplify(MathInputScreen.this);
 								});
-							} catch (Exception ex) {
-								if (Utils.debugOn)
+							} catch (final Exception ex) {
+								if (Utils.debugOn) {
 									ex.printStackTrace();
+								}
 								throw new Error(Errors.SYNTAX_ERROR);
 							}
-						} catch (Error e) {
-							StringWriter sw = new StringWriter();
-							PrintWriter pw = new PrintWriter(sw);
+						} catch (final Error e) {
+							final StringWriter sw = new StringWriter();
+							final PrintWriter pw = new PrintWriter(sw);
 							e.printStackTrace(pw);
 							d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-							PIDisplay.error = e.id.toString();
+							DisplayManager.error = e.id.toString();
 							System.err.println(e.id);
 						}
 					} else {
@@ -279,10 +278,10 @@ public class MathInputScreen extends Screen {
 				}
 				return true;
 			case SOLVE:
-				if (PIDisplay.error != null) {
+				if (DisplayManager.error != null) {
 					Utils.debug.println("Resetting after error...");
-					PIDisplay.error = null;
-					this.equazioneCorrente = null;
+					DisplayManager.error = null;
+					equazioneCorrente = null;
 					calc.f = null;
 					calc.f2 = null;
 					calc.resultsCount = 0;
@@ -296,26 +295,24 @@ public class MathInputScreen extends Screen {
 								if (nuovaEquazione != equazioneCorrente && nuovaEquazione.length() > 0) {
 									changeEquationScreen();
 									interpreta(true);
-									showVariablesDialog(new Runnable(){
-										@Override
-										public void run() {
-											equazioneCorrente = nuovaEquazione;
-											solve();
-										}});
+									showVariablesDialog(() -> {
+										equazioneCorrente = nuovaEquazione;
+										solve();
+									});
 								}
 							}
-						} catch (Exception ex) {
+						} catch (final Exception ex) {
 							if (Utils.debugOn) {
 								ex.printStackTrace();
 							}
 							throw new Error(Errors.SYNTAX_ERROR);
 						}
-					} catch (Error e) {
-						StringWriter sw = new StringWriter();
-						PrintWriter pw = new PrintWriter(sw);
+					} catch (final Error e) {
+						final StringWriter sw = new StringWriter();
+						final PrintWriter pw = new PrintWriter(sw);
 						e.printStackTrace(pw);
 						d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-						PIDisplay.error = e.id.toString();
+						DisplayManager.error = e.id.toString();
 						System.err.println(e.id);
 					}
 					return true;
@@ -384,7 +381,7 @@ public class MathInputScreen extends Screen {
 				typeChar("√");
 				return true;
 			case POWER_OF_2:
-				typeChar(MathematicalSymbols.POWER+"2");
+				typeChar(MathematicalSymbols.POWER + "2");
 				return true;
 			case POWER_OF_x:
 				typeChar(MathematicalSymbols.POWER);
@@ -419,12 +416,14 @@ public class MathInputScreen extends Screen {
 			case DELETE:
 				if (nuovaEquazione.length() > 0) {
 					if (caretPos > 0) {
-						caretPos-=1;
-						nuovaEquazione=nuovaEquazione.substring(0, caretPos)+nuovaEquazione.substring(caretPos+1, nuovaEquazione.length());
+						caretPos -= 1;
+						nuovaEquazione = nuovaEquazione.substring(0, caretPos) + nuovaEquazione.substring(caretPos + 1, nuovaEquazione.length());
 					} else {
 						nuovaEquazione = nuovaEquazione.substring(1);
 					}
-					try {interpreta(true);} catch (Error e) {}
+					try {
+						interpreta(true);
+					} catch (final Error e) {}
 				}
 				afterDoNextStep = false;
 				return true;
@@ -434,7 +433,7 @@ public class MathInputScreen extends Screen {
 				} else {
 					caretPos = nuovaEquazione.length();
 				}
-				scrollX = PIDisplay.renderer.glGetStringWidth(fontBig, nuovaEquazione.substring(0, caretPos)+"|||");
+				scrollX = fontBig.getStringWidth(nuovaEquazione.substring(0, caretPos) + "|||");
 				showCaret = true;
 				showCaretDelta = 0L;
 				return true;
@@ -444,18 +443,18 @@ public class MathInputScreen extends Screen {
 				} else {
 					caretPos = 0;
 				}
-				scrollX = PIDisplay.renderer.glGetStringWidth(fontBig, nuovaEquazione.substring(0, caretPos)+"|||");
+				scrollX = fontBig.getStringWidth(nuovaEquazione.substring(0, caretPos) + "|||");
 				showCaret = true;
 				showCaretDelta = 0L;
 				return true;
 			case RESET:
-				if (PIDisplay.error != null) {
+				if (DisplayManager.error != null) {
 					Utils.debug.println("Resetting after error...");
-					PIDisplay.error = null;
+					DisplayManager.error = null;
 					return true;
 				} else {
 					caretPos = 0;
-					nuovaEquazione="";
+					nuovaEquazione = "";
 					afterDoNextStep = false;
 					if (calc.f != null) {
 						calc.f.clear();
@@ -472,27 +471,25 @@ public class MathInputScreen extends Screen {
 				}
 				return true;
 			case debug1:
-				PIDisplay.INSTANCE.setScreen(new EmptyScreen());
+				DisplayManager.INSTANCE.setScreen(new EmptyScreen());
 				return true;
 			case HISTORY_BACK:
-				if (PIDisplay.INSTANCE.canGoBack()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & PIDisplay.sessions[PIDisplay.currentSession+1] instanceof MathInputScreen) {
+				if (DisplayManager.INSTANCE.canGoBack()) {
+					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession + 1] instanceof MathInputScreen) {
 						nuovaEquazione = equazioneCorrente;
 						try {
 							interpreta(true);
-						} catch (Error e) {
-						}
+						} catch (final Error e) {}
 					}
 				}
 				return false;
 			case HISTORY_FORWARD:
-				if (PIDisplay.INSTANCE.canGoForward()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & PIDisplay.sessions[PIDisplay.currentSession-1] instanceof MathInputScreen) {
+				if (DisplayManager.INSTANCE.canGoForward()) {
+					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession - 1] instanceof MathInputScreen) {
 						nuovaEquazione = equazioneCorrente;
 						try {
 							interpreta(true);
-						} catch (Error e) {
-						}
+						} catch (final Error e) {}
 					}
 				}
 				return false;
@@ -527,23 +524,23 @@ public class MathInputScreen extends Screen {
 				return false;
 		}
 	}
-	
+
 	private ArrayList<Function> solveExpression(ArrayList<Function> f22) {
 		try {
 			try {
 				return calc.solveExpression(f22);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				if (Utils.debugOn) {
 					ex.printStackTrace();
 				}
 				throw new Error(Errors.SYNTAX_ERROR);
 			}
-		} catch (Error e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
+		} catch (final Error e) {
+			final StringWriter sw = new StringWriter();
+			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			PIDisplay.error = e.id.toString();
+			DisplayManager.error = e.id.toString();
 			System.err.println(e.id);
 		}
 		return null;
@@ -554,15 +551,15 @@ public class MathInputScreen extends Screen {
 			try {
 				showVariablesDialog();
 				ArrayList<Function> results = new ArrayList<>();
-				ArrayList<Function> partialResults = new ArrayList<>();
-				for (Function f : calc.f2) {
+				final ArrayList<Function> partialResults = new ArrayList<>();
+				for (final Function f : calc.f2) {
 					if (f instanceof Equation) {
-						PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(this));
+						DisplayManager.INSTANCE.setScreen(new SolveEquationScreen(this));
 					} else {
 						results.add(f);
-						for (Function itm : results) {
+						for (final Function itm : results) {
 							if (itm.isSolved() == false) {
-								List<Function> dt = itm.solveOneStep();
+								final List<Function> dt = itm.solveOneStep();
 								partialResults.addAll(dt);
 							} else {
 								partialResults.add(itm);
@@ -572,34 +569,34 @@ public class MathInputScreen extends Screen {
 						partialResults.clear();
 					}
 				}
-				
+
 				if (results.size() == 0) {
 					calc.resultsCount = 0;
 				} else {
 					calc.resultsCount = results.size();
 					Collections.reverse(results);
 					// add elements to al, including duplicates
-					Set<Function> hs = new LinkedHashSet<>();
+					final Set<Function> hs = new LinkedHashSet<>();
 					hs.addAll(results);
 					results.clear();
 					results.addAll(hs);
 					calc.f2 = results;
-					for (Function rf : calc.f2) {
+					for (final Function rf : calc.f2) {
 						rf.generateGraphics();
 					}
 				}
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				if (Utils.debugOn) {
 					ex.printStackTrace();
 				}
 				throw new Error(Errors.SYNTAX_ERROR);
 			}
-		} catch (Error e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
+		} catch (final Error e) {
+			final StringWriter sw = new StringWriter();
+			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			PIDisplay.error = e.id.toString();
+			DisplayManager.error = e.id.toString();
 			System.err.println(e.id);
 		}
 	}
@@ -607,71 +604,72 @@ public class MathInputScreen extends Screen {
 	protected void solve() {
 		try {
 			try {
-				for (Function f : calc.f) {
+				for (final Function f : calc.f) {
 					if (f instanceof Equation) {
-						PIDisplay.INSTANCE.setScreen(new SolveEquationScreen(this));
+						DisplayManager.INSTANCE.setScreen(new SolveEquationScreen(this));
 						return;
 					}
 				}
-				
-				ArrayList<Function> results = solveExpression(calc.f);
+
+				final ArrayList<Function> results = solveExpression(calc.f);
 				if (results.size() == 0) {
 					calc.resultsCount = 0;
 				} else {
 					calc.resultsCount = results.size();
 					Collections.reverse(results);
 					// add elements to al, including duplicates
-					Set<Function> hs = new LinkedHashSet<>();
+					final Set<Function> hs = new LinkedHashSet<>();
 					hs.addAll(results);
 					results.clear();
 					results.addAll(hs);
 					calc.f2 = results;
-					for (Function rf : calc.f2) {
+					for (final Function rf : calc.f2) {
 						rf.generateGraphics();
 					}
 				}
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				if (Utils.debugOn) {
 					ex.printStackTrace();
 				}
 				throw new Error(Errors.SYNTAX_ERROR);
 			}
-		} catch (Error e) {
-			StringWriter sw = new StringWriter();
-			PrintWriter pw = new PrintWriter(sw);
+		} catch (final Error e) {
+			final StringWriter sw = new StringWriter();
+			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			PIDisplay.error = e.id.toString();
+			DisplayManager.error = e.id.toString();
 			System.err.println(e.id);
 		}
 	}
 
 	private void changeEquationScreen() {
 		if (equazioneCorrente != null && equazioneCorrente.length() > 0) {
-			MathInputScreen cloned = clone();
+			final MathInputScreen cloned = clone();
 			cloned.caretPos = cloned.equazioneCorrente.length();
 			cloned.nuovaEquazione = cloned.equazioneCorrente;
-			cloned.scrollX = PIDisplay.renderer.glGetStringWidth(fontBig, cloned.equazioneCorrente);
-			try {cloned.interpreta(true);} catch (Error e) {}
-			PIDisplay.INSTANCE.replaceScreen(cloned);
-			this.initialized = false;
-			PIDisplay.INSTANCE.setScreen(this);
-			
+			cloned.scrollX = fontBig.getStringWidth(cloned.equazioneCorrente);
+			try {
+				cloned.interpreta(true);
+			} catch (final Error e) {}
+			DisplayManager.INSTANCE.replaceScreen(cloned);
+			initialized = false;
+			DisplayManager.INSTANCE.setScreen(this);
+
 		}
 	}
 
 	public void typeChar(String chr) {
-		int len = chr.length();
-		nuovaEquazione=nuovaEquazione.substring(0, caretPos)+chr+nuovaEquazione.substring(caretPos, nuovaEquazione.length());
-		caretPos+=len;
-		scrollX = PIDisplay.renderer.glGetStringWidth(fontBig, nuovaEquazione.substring(0, caretPos)+"|||");
+		final int len = chr.length();
+		nuovaEquazione = nuovaEquazione.substring(0, caretPos) + chr + nuovaEquazione.substring(caretPos, nuovaEquazione.length());
+		caretPos += len;
+		scrollX = fontBig.getStringWidth(nuovaEquazione.substring(0, caretPos) + "|||");
 		showCaret = true;
 		showCaretDelta = 0L;
 		afterDoNextStep = false;
 		try {
 			interpreta(true);
-		} catch (Error e) {
-		}
+		} catch (final Error e) {}
 //		f.clear(); //TODO: I removed this line to prevent input blanking when pressing EQUALS button and cloning this screen, but I must see why I created this part of code.
 	}
 
@@ -679,30 +677,30 @@ public class MathInputScreen extends Screen {
 	public boolean keyReleased(Key k) {
 		return false;
 	}
-	
+
 	public void showVariablesDialog() {
 		showVariablesDialog(null);
 	}
-	
+
 	public void showVariablesDialog(final Runnable runnable) {
-		Thread ct = new Thread(()->{
-			ArrayList<Function> variablesInFunctions = getVariables(calc.f.toArray(new Function[calc.f.size()]));
-			for (VariableValue f : calc.variablesValues) {
+		final Thread ct = new Thread(() -> {
+			final ArrayList<Function> variablesInFunctions = getVariables(calc.f.toArray(new Function[calc.f.size()]));
+			for (final VariableValue f : calc.variablesValues) {
 				if (variablesInFunctions.contains(f.v)) {
 					variablesInFunctions.remove(f.v);
 				}
 			}
-			
+
 			boolean cancelled = false;
-			for (Function f : variablesInFunctions) {
-				ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
-				PIDisplay.INSTANCE.setScreen(cvs);
+			for (final Function f : variablesInFunctions) {
+				final ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
+				DisplayManager.INSTANCE.setScreen(cvs);
 				try {
-					while (PIDisplay.screen == cvs) {
+					while (DisplayManager.screen == cvs) {
 						Utils.debug.println(Thread.currentThread().getName());
 						Thread.sleep(200);
 					}
-				} catch (InterruptedException e) {}
+				} catch (final InterruptedException e) {}
 				if (cvs.resultNumberValue == null) {
 					cancelled = true;
 					break;
@@ -716,7 +714,7 @@ public class MathInputScreen extends Screen {
 					calc.variablesValues.add(new VariableValue((Variable) f, (Number) cvs.resultNumberValue));
 				}
 			}
-			if (!cancelled)  {
+			if (!cancelled) {
 				if (runnable != null) {
 					runnable.run();
 				}
@@ -728,16 +726,16 @@ public class MathInputScreen extends Screen {
 		ct.setDaemon(true);
 		ct.start();
 	}
-	
+
 	private ArrayList<Function> getVariables(Function[] fncs) {
-		ArrayList<Function> res = new ArrayList<>();
-		for (Function f : fncs) {
+		final ArrayList<Function> res = new ArrayList<>();
+		for (final Function f : fncs) {
 			if (f instanceof FunctionTwoValues) {
-				res.addAll(getVariables(new Function[]{((FunctionTwoValues)f).getVariable1(), ((FunctionTwoValues)f).getVariable2()}));
+				res.addAll(getVariables(new Function[] { ((FunctionTwoValues) f).getVariable1(), ((FunctionTwoValues) f).getVariable2() }));
 			} else if (f instanceof FunctionMultipleValues) {
-				res.addAll(getVariables(((FunctionMultipleValues)f).getVariables()));
+				res.addAll(getVariables(((FunctionMultipleValues) f).getVariables()));
 			} else if (f instanceof AnteriorFunction) {
-				res.addAll(getVariables(new Function[]{((AnteriorFunction)f).getVariable()}));
+				res.addAll(getVariables(new Function[] { ((AnteriorFunction) f).getVariable() }));
 			} else if (f instanceof Variable) {
 				if (!res.contains(f)) {
 					res.add(f);
@@ -746,11 +744,11 @@ public class MathInputScreen extends Screen {
 		}
 		return res;
 	}
-	
+
 	@Override
 	public MathInputScreen clone() {
-		MathInputScreen es = this;
-		MathInputScreen es2 = new MathInputScreen();
+		final MathInputScreen es = this;
+		final MathInputScreen es2 = new MathInputScreen();
 		es2.scrollX = es.scrollX;
 		es2.nuovaEquazione = es.nuovaEquazione;
 		es2.equazioneCorrente = es.equazioneCorrente;

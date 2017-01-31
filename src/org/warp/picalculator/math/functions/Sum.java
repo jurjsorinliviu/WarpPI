@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.NumberRule3;
@@ -28,25 +28,41 @@ public class Sum extends FunctionTwoValues {
 	protected Function NewInstance(Calculator root, Function value1, Function value2) {
 		return new Sum(root, value1, value2);
 	}
-	
+
 	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.SUM;
 	}
-	
+
 	@Override
 	protected boolean isSolvable() {
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
-		if (SyntaxRule2.compare(this)) return true;
-		if (VariableRule1.compare(this)) return true;
-		if (VariableRule2.compare(this)) return true;
-		if (VariableRule3.compare(this)) return true;
-		if (NumberRule3.compare(this)) return true;
-		if (NumberRule5.compare(this)) return true;
-		if (NumberRule7.compare(this)) return true;
-		if (SumMethod1.compare(this)) return true;
+		if (SyntaxRule2.compare(this)) {
+			return true;
+		}
+		if (VariableRule1.compare(this)) {
+			return true;
+		}
+		if (VariableRule2.compare(this)) {
+			return true;
+		}
+		if (VariableRule3.compare(this)) {
+			return true;
+		}
+		if (NumberRule3.compare(this)) {
+			return true;
+		}
+		if (NumberRule5.compare(this)) {
+			return true;
+		}
+		if (NumberRule7.compare(this)) {
+			return true;
+		}
+		if (SumMethod1.compare(this)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -74,18 +90,18 @@ public class Sum extends FunctionTwoValues {
 			result = SumMethod1.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
 			if ((root.getChild().equals(this))) {
-				if (((Number)variable1).term.compareTo(new BigDecimal(2)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(2)) == 0) {
+				if (((Number) variable1).term.compareTo(new BigDecimal(2)) == 0 && ((Number) variable2).term.compareTo(new BigDecimal(2)) == 0) {
 					result.add(new Joke(root, Joke.FISH));
 					return result;
-				} else if (((Number)variable1).term.compareTo(new BigDecimal(20)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(20)) == 0) {
+				} else if (((Number) variable1).term.compareTo(new BigDecimal(20)) == 0 && ((Number) variable2).term.compareTo(new BigDecimal(20)) == 0) {
 					result.add(new Joke(root, Joke.TORNADO));
 					return result;
-				} else if (((Number)variable1).term.compareTo(new BigDecimal(29)) == 0 && ((Number)variable2).term.compareTo(new BigDecimal(29)) == 0) {
+				} else if (((Number) variable1).term.compareTo(new BigDecimal(29)) == 0 && ((Number) variable2).term.compareTo(new BigDecimal(29)) == 0) {
 					result.add(new Joke(root, Joke.SHARKNADO));
 					return result;
 				}
 			}
-			result.add(((Number)variable1).add((Number)variable2));
+			result.add(((Number) variable1).add((Number) variable2));
 		}
 		return result;
 	}
@@ -94,10 +110,10 @@ public class Sum extends FunctionTwoValues {
 	public void generateGraphics() {
 		variable1.setSmall(small);
 		variable1.generateGraphics();
-		
+
 		variable2.setSmall(small);
 		variable2.generateGraphics();
-		
+
 		width = calcWidth();
 		height = calcHeight();
 		line = calcLine();
@@ -107,20 +123,20 @@ public class Sum extends FunctionTwoValues {
 	public int getWidth() {
 		return width;
 	}
-	
+
 	@Override
 	protected int calcWidth() {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
+		dx += DisplayManager.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
 		return dx += variable2.getWidth();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Sum) {
-			FunctionTwoValues f = (FunctionTwoValues) o;
+			final FunctionTwoValues f = (FunctionTwoValues) o;
 			if (variable1.equals(f.variable1) && variable2.equals(f.variable2)) {
 				return true;
 			} else if (variable1.equals(f.variable2) && variable2.equals(f.variable1)) {

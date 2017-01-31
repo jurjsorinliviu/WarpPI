@@ -16,26 +16,26 @@ public class BMPFile extends Component {
 	// --- Private variable declaration
 	// --- Bitmap file header
 	@SuppressWarnings("unused")
-	private byte bitmapFileHeader[] = new byte[14];
-	private byte bfType[] = { 'B', 'M' };
+	private final byte bitmapFileHeader[] = new byte[14];
+	private final byte bfType[] = { 'B', 'M' };
 	private int bfSize = 0;
-	private int bfReserved1 = 0;
-	private int bfReserved2 = 0;
-	private int bfOffBits = BITMAPFILEHEADER_SIZE + BITMAPINFOHEADER_SIZE;
+	private final int bfReserved1 = 0;
+	private final int bfReserved2 = 0;
+	private final int bfOffBits = BITMAPFILEHEADER_SIZE + BITMAPINFOHEADER_SIZE;
 	// --- Bitmap info header
 	@SuppressWarnings("unused")
-	private byte bitmapInfoHeader[] = new byte[40];
-	private int biSize = BITMAPINFOHEADER_SIZE;
+	private final byte bitmapInfoHeader[] = new byte[40];
+	private final int biSize = BITMAPINFOHEADER_SIZE;
 	private int biWidth = 0;
 	private int biHeight = 0;
-	private int biPlanes = 1;
-	private int biBitCount = 24;
-	private int biCompression = 0;
+	private final int biPlanes = 1;
+	private final int biBitCount = 24;
+	private final int biCompression = 0;
 	private int biSizeImage = 0x030000;
-	private int biXPelsPerMeter = 0x0;
-	private int biYPelsPerMeter = 0x0;
-	private int biClrUsed = 0;
-	private int biClrImportant = 0;
+	private final int biXPelsPerMeter = 0x0;
+	private final int biYPelsPerMeter = 0x0;
+	private final int biClrUsed = 0;
+	private final int biClrImportant = 0;
 	// --- Bitmap raw data
 	private int bitmap[];
 	// --- File section
@@ -49,7 +49,7 @@ public class BMPFile extends Component {
 			fo = new FileOutputStream(parFilename);
 			save(parImage, parWidth, parHeight);
 			fo.close();
-		} catch (Exception saveEx) {
+		} catch (final Exception saveEx) {
 			saveEx.printStackTrace();
 		}
 	}
@@ -68,7 +68,7 @@ public class BMPFile extends Component {
 			writeBitmapFileHeader();
 			writeBitmapInfoHeader();
 			writeBitmap();
-		} catch (Exception saveEx) {
+		} catch (final Exception saveEx) {
 			saveEx.printStackTrace();
 		}
 	}
@@ -81,10 +81,10 @@ public class BMPFile extends Component {
 	private boolean convertImage(Image parImage, int parWidth, int parHeight) {
 		int pad;
 		bitmap = new int[parWidth * parHeight];
-		PixelGrabber pg = new PixelGrabber(parImage, 0, 0, parWidth, parHeight, bitmap, 0, parWidth);
+		final PixelGrabber pg = new PixelGrabber(parImage, 0, 0, parWidth, parHeight, bitmap, 0, parWidth);
 		try {
 			pg.grabPixels();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			e.printStackTrace();
 			return (false);
 		}
@@ -113,11 +113,13 @@ public class BMPFile extends Component {
 		int lastRowIndex;
 		int pad;
 		int padCount;
-		byte rgb[] = new byte[3];
+		final byte rgb[] = new byte[3];
 		size = (biWidth * biHeight) - 1;
 		pad = 4 - ((biWidth * 3) % 4);
-		if (pad == 4) // <==== Bug correction
+		if (pad == 4)
+		 {
 			pad = 0; // <==== Bug correction
+		}
 		rowCount = 1;
 		padCount = 0;
 		rowIndex = size - biWidth;
@@ -137,14 +139,15 @@ public class BMPFile extends Component {
 					rowCount = 1;
 					rowIndex = lastRowIndex - biWidth;
 					lastRowIndex = rowIndex;
-				} else
+				} else {
 					rowCount++;
+				}
 				rowIndex++;
 			}
 			// --- Update the size of the file
 			bfSize += padCount - pad;
 			biSizeImage += padCount - pad;
-		} catch (Exception wb) {
+		} catch (final Exception wb) {
 			wb.printStackTrace();
 		}
 	}
@@ -160,7 +163,7 @@ public class BMPFile extends Component {
 			fo.write(intToWord(bfReserved1));
 			fo.write(intToWord(bfReserved2));
 			fo.write(intToDWord(bfOffBits));
-		} catch (Exception wbfh) {
+		} catch (final Exception wbfh) {
 			wbfh.printStackTrace();
 		}
 	}
@@ -184,7 +187,7 @@ public class BMPFile extends Component {
 			fo.write(intToDWord(biYPelsPerMeter));
 			fo.write(intToDWord(biClrUsed));
 			fo.write(intToDWord(biClrImportant));
-		} catch (Exception wbih) {
+		} catch (final Exception wbih) {
 			wbih.printStackTrace();
 		}
 	}
@@ -196,7 +199,7 @@ public class BMPFile extends Component {
 	 *
 	 */
 	private byte[] intToWord(int parValue) {
-		byte retValue[] = new byte[2];
+		final byte retValue[] = new byte[2];
 		retValue[0] = (byte) (parValue & 0x00FF);
 		retValue[1] = (byte) ((parValue >> 8) & 0x00FF);
 		return (retValue);
@@ -209,7 +212,7 @@ public class BMPFile extends Component {
 	 *
 	 */
 	private byte[] intToDWord(int parValue) {
-		byte retValue[] = new byte[4];
+		final byte retValue[] = new byte[4];
 		retValue[0] = (byte) (parValue & 0x00FF);
 		retValue[1] = (byte) ((parValue >> 8) & 0x000000FF);
 		retValue[2] = (byte) ((parValue >> 16) & 0x000000FF);

@@ -15,7 +15,7 @@ public abstract class FunctionMultipleValues implements Function {
 
 	public FunctionMultipleValues(Function[] values) {
 		if (values.length > 0) {
-			this.root = values[0].getRoot();
+			root = values[0].getRoot();
 		} else {
 			throw new NullPointerException("Nessun elemento nell'array. Impossibile ricavare il nodo root");
 		}
@@ -39,8 +39,8 @@ public abstract class FunctionMultipleValues implements Function {
 	}
 
 	public void setVariables(final List<Function> value) {
-		int vsize = value.size();
-		Function[] tmp = new Function[vsize];
+		final int vsize = value.size();
+		final Function[] tmp = new Function[vsize];
 		for (int i = 0; i < vsize; i++) {
 			tmp[i] = value.get(i);
 		}
@@ -60,7 +60,7 @@ public abstract class FunctionMultipleValues implements Function {
 	}
 
 	public void addFunctionToEnd(Function value) {
-		int index = functions.length;
+		final int index = functions.length;
 		setVariablesLength(index + 1);
 		functions[index] = value;
 	}
@@ -75,32 +75,32 @@ public abstract class FunctionMultipleValues implements Function {
 
 	@Override
 	public abstract String getSymbol();
-	
+
 	@Override
 	public boolean isSolved() {
-		for (Function variable : functions) {
+		for (final Function variable : functions) {
 			if (!variable.isSolved()) {
 				return false;
 			}
 		}
 		return !isSolvable();
 	}
-	
+
 	protected abstract boolean isSolvable();
 
 	@Override
 	public Calculator getRoot() {
 		return root;
 	}
-	
+
 	@Override
 	public abstract void generateGraphics();
-	
+
 	@Override
 	public String toString() {
 //		try {
 //			return solve().toString();
-			return "TODO: fare una nuova alternativa a solve().toString()";
+		return "TODO: fare una nuova alternativa a solve().toString()";
 //		} catch (Error e) {
 //			return e.id.toString();
 //		}
@@ -108,20 +108,20 @@ public abstract class FunctionMultipleValues implements Function {
 
 	@Override
 	public Function clone() {
-		Cloner cloner = new Cloner();
+		final Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}
-	
+
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		return functions.hashCode()+883*getSymbol().hashCode();
+		return functions.hashCode() + 883 * getSymbol().hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		return false;

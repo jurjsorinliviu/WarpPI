@@ -10,13 +10,14 @@ import org.warp.picalculator.math.functions.Power;
 /**
  * Exponent rule<br>
  * <b>a^0=1</b>
+ * 
  * @author Andrea Cavalli
  *
  */
 public class ExponentRule3 {
 
 	public static boolean compare(Function f) {
-		Power fnc = (Power) f;
+		final Power fnc = (Power) f;
 		if (fnc.getVariable2().equals(new Number(f.getRoot(), 0))) {
 			return true;
 		}
@@ -24,7 +25,7 @@ public class ExponentRule3 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		ArrayList<Function> result = new ArrayList<>();
+		final ArrayList<Function> result = new ArrayList<>();
 		result.add(new Number(f.getRoot(), 1));
 		return result;
 	}

@@ -1,8 +1,9 @@
 package org.warp.picalculator;
 
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.screens.LoadingScreen;
+import org.warp.picalculator.gui.screens.Screen;
 
 import com.pi4j.wiringpi.Gpio;
 
@@ -12,42 +13,44 @@ public class Main {
 	public static final boolean zoomed = true;
 	public static Main instance;
 	public static boolean haxMode = true;
+	public static String[] args;
 
-	public Main() throws InterruptedException {
+	public Main(String[] args) throws InterruptedException {
+		this(new LoadingScreen(), args);
+	}
+
+	public Main(Screen screen, String[] args) {
 		instance = this;
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Thread.currentThread().setName("Main thread");
+		this.args = args;
 		beforeStart();
-		new PIDisplay(new LoadingScreen());
+		new DisplayManager(screen);
 		Utils.debug.println("Shutdown...");
 		beforeShutdown();
 		Utils.debug.println("");
 		Utils.debug.println("Closed");
 		System.exit(0);
 	}
-	
+
 	public void beforeStart() {
-		if (System.getProperty("os.name").equals("Linux")) {
+		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args)) {
 			Gpio.wiringPiSetupPhys();
 			Gpio.pinMode(12, Gpio.PWM_OUTPUT);
 		} else {
-			screenPos = new int[]{0,0};
+			screenPos = new int[] { 0, 0 };
 			Utils.debugOn = true;
 		}
 		Utils.debugThirdScreen = Utils.debugOn & false;
-		PIDisplay.setBrightness(0.5f);
-	}
-
-	
-	public void afterStart() {
+		DisplayManager.setBrightness(0.5f);
 		Keyboard.startKeyboard();
 	}
-	
+
 	public void beforeShutdown() {
 		Keyboard.stopKeyboard();
 	}
 
 	public static void main(String[] args) throws InterruptedException {
-		new Main();
+		new Main(args);
 	}
 }

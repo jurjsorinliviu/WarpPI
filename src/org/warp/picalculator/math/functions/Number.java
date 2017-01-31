@@ -9,9 +9,8 @@ import java.util.List;
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.RAWFont;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
@@ -29,7 +28,7 @@ public class Number implements Function {
 		this.root = root;
 		term = new BigDecimal(val).setScale(Utils.scale, Utils.scaleMode2);
 	}
-	
+
 	public Number(Calculator root, BigDecimal val) {
 		this.root = root;
 		term = val.setScale(Utils.scale, Utils.scaleMode2);
@@ -72,26 +71,26 @@ public class Number implements Function {
 	}
 
 	public Number add(Number f) {
-		Number ret = new Number(this.root, getTerm().add(f.getTerm()));
+		final Number ret = new Number(root, getTerm().add(f.getTerm()));
 		return ret;
 	}
 
 	public Number multiply(Number f) {
-		Number ret = new Number(this.root, getTerm().multiply(f.getTerm()));
+		final Number ret = new Number(root, getTerm().multiply(f.getTerm()));
 		return ret;
 	}
 
 	public Number divide(Number f) throws Error {
-		Number ret = new Number(this.root, BigDecimalMath.divideRound(getTerm(), f.getTerm()));
+		final Number ret = new Number(root, BigDecimalMath.divideRound(getTerm(), f.getTerm()));
 		return ret;
 	}
-	
+
 	public Number pow(Number f) throws Error {
-		Number ret = new Number(this.root, BigDecimal.ONE);
+		Number ret = new Number(root, BigDecimal.ONE);
 		if (Utils.isIntegerValue(f.term)) {
 			final BigInteger bi = f.term.toBigInteger();
 			for (BigInteger i = BigInteger.ZERO; i.compareTo(bi) < 0; i = i.add(BigInteger.ONE)) {
-				ret = ret.multiply(new Number(this.root, getTerm()));
+				ret = ret.multiply(new Number(root, getTerm()));
 			}
 		} else {
 			ret.term = BigDecimalMath.pow(term, f.term);
@@ -101,20 +100,20 @@ public class Number implements Function {
 
 	@Override
 	public String toString() {
-		String sWith0 = getTerm().setScale(Utils.displayScale, Utils.scaleMode2).toPlainString();
-		String sExtendedWith0 = getTerm().toPlainString();
+		final String sWith0 = getTerm().setScale(Utils.displayScale, Utils.scaleMode2).toPlainString();
+		final String sExtendedWith0 = getTerm().toPlainString();
 		//Remove trailing zeroes. Thanks to Kent, http://stackoverflow.com/questions/14984664/remove-trailing-zero-in-java
 		String s = sWith0.indexOf(".") < 0 ? sWith0 : sWith0.replaceAll("0*$", "").replaceAll("\\.$", "");
-		String sExtended = sExtendedWith0.indexOf(".") < 0 ? sExtendedWith0 : sExtendedWith0.replaceAll("0*$", "").replaceAll("\\.$", "");
-		
+		final String sExtended = sExtendedWith0.indexOf(".") < 0 ? sExtendedWith0 : sExtendedWith0.replaceAll("0*$", "").replaceAll("\\.$", "");
+
 		if (sExtended.length() > s.length()) {
-			s = s+"…";
+			s = s + "…";
 		}
-		
+
 		if (root.exactMode == false) {
-			String cuttedNumber = s.split("\\.")[0];
+			final String cuttedNumber = s.split("\\.")[0];
 			if (cuttedNumber.length() > 8) {
-				return cuttedNumber.substring(0, 1)+","+cuttedNumber.substring(1, 8)+"ℯ℮"+(cuttedNumber.length()-1);
+				return cuttedNumber.substring(0, 1) + "," + cuttedNumber.substring(1, 8) + "ℯ℮" + (cuttedNumber.length() - 1);
 			}
 		}
 		return s;
@@ -131,7 +130,7 @@ public class Number implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		PIDisplay.renderer.glSetFont(Utils.getFont(small));
+		Utils.getFont(small).use(DisplayManager.display);
 		String t = toString();
 
 		if (t.startsWith("-")) {
@@ -144,20 +143,20 @@ public class Number implements Function {
 		if (t.contains("ℯ℮")) {
 			final RAWFont defaultf = Utils.getFont(small);
 			final RAWFont smallf = Utils.getFont(true);
-			String s = t.substring(0,  t.indexOf("ℯ℮")+2);
-			int sw = PIDisplay.renderer.glGetStringWidth(defaultf, s);
-			PIDisplay.renderer.glDrawStringLeft(x+1, y+smallf.charH-2, s);
-			PIDisplay.renderer.glSetFont(smallf);
-			PIDisplay.renderer.glDrawStringLeft(x+1+sw-3, y, t.substring(t.indexOf("ℯ℮")+2));
+			final String s = t.substring(0, t.indexOf("ℯ℮") + 2);
+			final int sw = defaultf.getStringWidth(s);
+			DisplayManager.renderer.glDrawStringLeft(x + 1, y + smallf.getCharacterHeight() - 2, s);
+			smallf.use(DisplayManager.display);
+			DisplayManager.renderer.glDrawStringLeft(x + 1 + sw - 3, y, t.substring(t.indexOf("ℯ℮") + 2));
 		} else {
-			PIDisplay.renderer.glDrawStringLeft(x+1, y, t);
+			DisplayManager.renderer.glDrawStringLeft(x + 1, y, t);
 		}
 	}
 
 	public int getHeight(boolean drawMinus) {
-		boolean beforedrawminus = this.drawMinus;
+		final boolean beforedrawminus = this.drawMinus;
 		this.drawMinus = drawMinus;
-		int h = getHeight();
+		final int h = getHeight();
 		this.drawMinus = beforedrawminus;
 		return h;
 	}
@@ -166,21 +165,22 @@ public class Number implements Function {
 	public int getHeight() {
 		return height;
 	}
-	
+
 	private int calcHeight() {
-		String t = toString();
+		final String t = toString();
 		if (t.contains("ℯ℮")) {
-			return Utils.getFontHeight(small)-2+Utils.getFontHeight(true);
+			return Utils.getFontHeight(small) - 2 + Utils.getFontHeight(true);
 		} else {
-			int h1 = Utils.getFontHeight(small);
+			final int h1 = Utils.getFontHeight(small);
 			return h1;
 		}
 	}
+
 	@Override
 	public int getWidth() {
 		return width;
 	}
-	
+
 	public int calcWidth() {
 		String t = toString();
 		if (t.startsWith("-")) {
@@ -193,23 +193,23 @@ public class Number implements Function {
 		if (t.contains("ℯ℮")) {
 			final RAWFont defaultf = Utils.getFont(small);
 			final RAWFont smallf = Utils.getFont(true);
-			String s = t.substring(0,  t.indexOf("ℯ℮")+2);
-			int sw = PIDisplay.renderer.glGetStringWidth(defaultf, s);
-			return 1+sw-3+PIDisplay.renderer.glGetStringWidth(smallf, t.substring(t.indexOf("ℯ℮")+2));
+			final String s = t.substring(0, t.indexOf("ℯ℮") + 2);
+			final int sw = defaultf.getStringWidth(s);
+			return 1 + sw - 3 + smallf.getStringWidth(t.substring(t.indexOf("ℯ℮") + 2));
 		} else {
-			return PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), t)+1;
+			return Utils.getFont(small).getStringWidth(t) + 1;
 		}
 	}
-	
+
 	@Override
 	public int getLine() {
 		return line;
 	}
-	
+
 	private int calcLine() {
-		String t = toString();
+		final String t = toString();
 		if (t.contains("ℯ℮")) {
-			return (Utils.getFontHeight(small) / 2)-2+Utils.getFontHeight(true);
+			return (Utils.getFontHeight(small) / 2) - 2 + Utils.getFontHeight(true);
 		} else {
 			return Utils.getFontHeight(small) / 2;
 		}
@@ -217,10 +217,10 @@ public class Number implements Function {
 
 	@Override
 	public Number clone() {
-		Cloner cloner = new Cloner();
+		final Cloner cloner = new Cloner();
 		return cloner.deepClone(this);
 	}
-	
+
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
@@ -233,23 +233,23 @@ public class Number implements Function {
 
 	@Override
 	public List<Function> solveOneStep() throws Error {
-		List<Function> result = new ArrayList<>();
+		final List<Function> result = new ArrayList<>();
 		result.add(this);
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return toString().hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o != null & term != null) {
 			if (o instanceof Number) {
-				BigDecimal nav = ((Number) o).getTerm();
-				boolean na1 = term.compareTo(BigDecimal.ZERO) == 0;
-				boolean na2 = nav.compareTo(BigDecimal.ZERO) == 0;
+				final BigDecimal nav = ((Number) o).getTerm();
+				final boolean na1 = term.compareTo(BigDecimal.ZERO) == 0;
+				final boolean na2 = nav.compareTo(BigDecimal.ZERO) == 0;
 				if (na1 == na2) {
 					if (na1 == true) {
 						return true;
@@ -283,49 +283,41 @@ public class Number implements Function {
 	 * return 6*toString().length()-1;
 	 * }
 	 */
-	
+
 	public boolean canBeFactorized() {
 		if (Utils.isIntegerValue(getTerm())) {
 			return getTerm().toBigIntegerExact().compareTo(BigInteger.valueOf(1)) > 1;
 		}
 		return false;
 	}
-	
-	public LinkedList<BigInteger> getFactors()
-	{
+
+	public LinkedList<BigInteger> getFactors() {
 		BigInteger n = getTerm().toBigIntegerExact();
-	    BigInteger two = BigInteger.valueOf(2);
-	    LinkedList<BigInteger> fs = new LinkedList<>();
+		final BigInteger two = BigInteger.valueOf(2);
+		final LinkedList<BigInteger> fs = new LinkedList<>();
 
-	    if (n.compareTo(two) < 0)
-	    {
-	        throw new IllegalArgumentException("must be greater than one");
-	    }
+		if (n.compareTo(two) < 0) {
+			throw new IllegalArgumentException("must be greater than one");
+		}
 
-	    while (n.mod(two).equals(BigInteger.ZERO))
-	    {
-	        fs.add(two);
-	        n = n.divide(two);
-	    }
+		while (n.mod(two).equals(BigInteger.ZERO)) {
+			fs.add(two);
+			n = n.divide(two);
+		}
 
-	    if (n.compareTo(BigInteger.ONE) > 0)
-	    {
-	        BigInteger f = BigInteger.valueOf(3);
-	        while (f.multiply(f).compareTo(n) <= 0)
-	        {
-	            if (n.mod(f).equals(BigInteger.ZERO))
-	            {
-	                fs.add(f);
-	                n = n.divide(f);
-	            }
-	            else
-	            {
-	                f = f.add(two);
-	            }
-	        }
-	        fs.add(n);
-	    }
+		if (n.compareTo(BigInteger.ONE) > 0) {
+			BigInteger f = BigInteger.valueOf(3);
+			while (f.multiply(f).compareTo(n) <= 0) {
+				if (n.mod(f).equals(BigInteger.ZERO)) {
+					fs.add(f);
+					n = n.divide(f);
+				} else {
+					f = f.add(two);
+				}
+			}
+			fs.add(n);
+		}
 
-	    return fs;
+		return fs;
 	}
 }

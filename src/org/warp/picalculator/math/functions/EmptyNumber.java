@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
@@ -13,9 +13,9 @@ public class EmptyNumber implements Function {
 	public EmptyNumber(Calculator root) {
 		this.root = root;
 	}
-	
+
 	private final Calculator root;
-	
+
 	@Override
 	public String getSymbol() {
 		return " ";
@@ -39,12 +39,12 @@ public class EmptyNumber implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		PIDisplay.renderer.glDrawStringLeft(x, y, "␀");
+		DisplayManager.renderer.glDrawStringLeft(x, y, "␀");
 	}
 
 	@Override
 	public int getWidth() {
-		return PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "␀");
+		return DisplayManager.renderer.glGetStringWidth(Utils.getFont(small), "␀");
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class EmptyNumber implements Function {
 
 	@Override
 	public int getLine() {
-		return Utils.getFont(small).charH/2;
+		return Utils.getFont(small).charH / 2;
 	}
 
 	@Override
@@ -63,12 +63,12 @@ public class EmptyNumber implements Function {
 	}
 
 	private boolean small = false;
-	
+
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof EmptyNumber;

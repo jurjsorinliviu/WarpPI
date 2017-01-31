@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
 import org.warp.picalculator.math.Calculator;
 
 public class Undefined implements Function {
-	
+
 	protected final Calculator root;
 
 	public Undefined(Calculator root) {
@@ -33,18 +33,18 @@ public class Undefined implements Function {
 
 	private int width, height, line;
 	private boolean small;
-	
+
 	@Override
 	public void generateGraphics() {
-		width = PIDisplay.renderer.glGetStringWidth(Utils.getFont(small), "UNDEFINED");
+		width = DisplayManager.renderer.glGetStringWidth(Utils.getFont(small), "UNDEFINED");
 		height = Utils.getFontHeight(small);
-		line = height/2;
+		line = height / 2;
 	}
 
 	@Override
 	public void draw(int x, int y) {
-		PIDisplay.renderer.glSetFont(Utils.getFont(small));
-		PIDisplay.renderer.glDrawStringLeft(x, y, "UNDEFINED");
+		DisplayManager.renderer.glSetFont(Utils.getFont(small));
+		DisplayManager.renderer.glDrawStringLeft(x, y, "UNDEFINED");
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class Undefined implements Function {
 	public void setSmall(boolean small) {
 		this.small = small;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Undefined) {

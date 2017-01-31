@@ -1,9 +1,17 @@
 package org.warp.picalculator;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -12,7 +20,7 @@ import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
-import org.warp.picalculator.gui.PIDisplay;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.RAWFont;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Division;
@@ -45,7 +53,7 @@ public class Utils {
 	public static boolean debugThirdScreen;
 
 	public static Cloner cloner = new Cloner();
-	
+
 	public static final class DebugStream extends StringWriter {
 
 		public void println(String str) {
@@ -61,7 +69,7 @@ public class Utils {
 
 	public static boolean isInArray(String ch, String[] a) {
 		boolean contains = false;
-		for (String c : a) {
+		for (final String c : a) {
 			if (c.equals(ch)) {
 				contains = true;
 				break;
@@ -70,13 +78,13 @@ public class Utils {
 		return contains;
 	}
 
-	private static final String[] regexNormalSymbols = new String[]{"\\", ".", "[", "]", "{", "}", "(", ")", "*", "+", "-", "?", "^", "$", "|"};
-	
+	private static final String[] regexNormalSymbols = new String[] { "\\", ".", "[", "]", "{", "}", "(", ")", "*", "+", "-", "?", "^", "$", "|" };
+
 	public static String ArrayToRegex(String[] array) {
 		String regex = null;
-		for (String symbol : array) {
+		for (final String symbol : array) {
 			boolean contained = false;
-			for (String smb : regexNormalSymbols) {
+			for (final String smb : regexNormalSymbols) {
 				if (smb.equals(symbol)) {
 					contained = true;
 					break;
@@ -100,17 +108,17 @@ public class Utils {
 	}
 
 	public static String[] concat(String[] a, String[] b) {
-		int aLen = a.length;
-		int bLen = b.length;
-		String[] c = new String[aLen + bLen];
+		final int aLen = a.length;
+		final int bLen = b.length;
+		final String[] c = new String[aLen + bLen];
 		System.arraycopy(a, 0, c, 0, aLen);
 		System.arraycopy(b, 0, c, aLen, bLen);
 		return c;
 	}
 
 	public static String[] add(String[] a, String b) {
-		int aLen = a.length;
-		String[] c = new String[aLen + 1];
+		final int aLen = a.length;
+		final String[] c = new String[aLen + 1];
 		System.arraycopy(a, 0, c, 0, aLen);
 		c[aLen] = b;
 		return c;
@@ -213,7 +221,7 @@ public class Utils {
 		}
 		return false;
 	}
-	
+
 	public static boolean areThereEmptyMultiplications(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division) {
@@ -249,7 +257,7 @@ public class Utils {
 
 	public static boolean areThereOtherSettedUpFunctions(ArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
-			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Sum ||  fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunction || fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division)) {
+			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof AnteriorFunction || fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division)) {
 				if (fl.get(i) instanceof AnteriorFunction) {
 					if (((AnteriorFunction) fl.get(i)).getVariable() == null) {
 						return true;
@@ -269,7 +277,7 @@ public class Utils {
 	public static Rational getRational(BigDecimal str) {
 		try {
 			return getRational(str.toString());
-		} catch (Error e) {
+		} catch (final Error e) {
 			//E' IMPOSSIBILE CHE VENGA THROWATO UN ERRORE
 			return new Rational("0");
 		}
@@ -278,17 +286,17 @@ public class Utils {
 	public static Rational getRational(String str) throws Error {
 		try {
 			return new Rational(str);
-		} catch (NumberFormatException ex) {
+		} catch (final NumberFormatException ex) {
 			if (new BigDecimal(str).compareTo(new BigDecimal(8000.0)) < 0 && new BigDecimal(str).compareTo(new BigDecimal(-8000.0)) > 0) {
 				if (str.equals("-")) {
 					str = "-1";
 				}
-				long bits = Double.doubleToLongBits(Double.parseDouble(str));
+				final long bits = Double.doubleToLongBits(Double.parseDouble(str));
 
-				long sign = bits >>> 63;
-				long exponent = ((bits >>> 52) ^ (sign << 11)) - 1023;
-				long fraction = bits << 12; // bits are "reversed" but that's
-											// not a problem
+				final long sign = bits >>> 63;
+				final long exponent = ((bits >>> 52) ^ (sign << 11)) - 1023;
+				final long fraction = bits << 12; // bits are "reversed" but that's
+				// not a problem
 
 				long a = 1L;
 				long b = 1L;
@@ -298,13 +306,15 @@ public class Utils {
 					b *= 2;
 				}
 
-				if (exponent > 0)
+				if (exponent > 0) {
 					a *= 1 << exponent;
-				else
+				} else {
 					b *= 1 << -exponent;
+				}
 
-				if (sign == 1)
+				if (sign == 1) {
 					a *= -1;
+				}
 
 				if (b == 0) {
 					a = 0;
@@ -313,11 +323,11 @@ public class Utils {
 
 				return new Rational(new BigInteger(a + ""), new BigInteger(b + ""));
 			} else {
-				BigDecimal original = new BigDecimal(str);
+				final BigDecimal original = new BigDecimal(str);
 
-				BigInteger numerator = original.unscaledValue();
+				final BigInteger numerator = original.unscaledValue();
 
-				BigInteger denominator = BigDecimalMath.pow(BigDecimal.TEN, new BigDecimal(original.scale())).toBigIntegerExact();
+				final BigInteger denominator = BigDecimalMath.pow(BigDecimal.TEN, new BigDecimal(original.scale())).toBigIntegerExact();
 
 				return new Rational(numerator, denominator);
 			}
@@ -332,7 +342,7 @@ public class Utils {
 		if (variables.size() != variables2.size()) {
 			return false;
 		} else {
-			for (Variable v : variables) {
+			for (final Variable v : variables) {
 				if (!variables2.contains(v)) {
 					return false;
 				}
@@ -343,17 +353,17 @@ public class Utils {
 
 	public static void writeSquareRoot(Function var, int x, int y, boolean small) {
 		var.setSmall(small);
-		int w1 = var.getWidth();
-		int h1 = var.getHeight();
-		int wsegno = 5;
-		int hsegno = h1 + 2;
-		
+		final int w1 = var.getWidth();
+		final int h1 = var.getHeight();
+		final int wsegno = 5;
+		final int hsegno = h1 + 2;
+
 		var.draw(x + wsegno, y + (hsegno - h1));
 
-		PIDisplay.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 3, y + hsegno - 1);
-		PIDisplay.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
-		PIDisplay.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
-		PIDisplay.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
+		DisplayManager.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 3, y + hsegno - 1);
+		DisplayManager.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
+		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
+		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
 	}
 
 	public static final int getFontHeight() {
@@ -365,7 +375,7 @@ public class Utils {
 	}
 
 	public static final RAWFont getFont(boolean small, boolean zoomed) {
-		return PIDisplay.fonts[getFontIndex(small, zoomed)];
+		return DisplayManager.fonts[getFontIndex(small, zoomed)];
 	}
 
 	public static final int getFontIndex(boolean small, boolean zoomed) {
@@ -387,56 +397,56 @@ public class Utils {
 	public static final int getFontHeight(boolean small) {
 		return getFontHeight(small, Main.zoomed);
 	}
-	
+
 	public static final int getFontHeight(boolean small, boolean zoomed) {
 		if (small) {
 			if (zoomed) {
-				return PIDisplay.glyphsHeight[3];
+				return DisplayManager.glyphsHeight[3];
 			} else {
-				return PIDisplay.glyphsHeight[1];
+				return DisplayManager.glyphsHeight[1];
 			}
 		} else {
 			if (zoomed) {
-				return PIDisplay.glyphsHeight[2];
+				return DisplayManager.glyphsHeight[2];
 			} else {
-				return PIDisplay.glyphsHeight[0];
+				return DisplayManager.glyphsHeight[0];
 			}
 		}
 	}
-	
+
 	public static byte[] convertStreamToByteArray(InputStream stream, long size) throws IOException {
 
-	    // check to ensure that file size is not larger than Integer.MAX_VALUE.
-	    if (size > Integer.MAX_VALUE) {
-	        return new byte[0];
-	    }
+		// check to ensure that file size is not larger than Integer.MAX_VALUE.
+		if (size > Integer.MAX_VALUE) {
+			return new byte[0];
+		}
 
-	    byte[] buffer = new byte[(int)size];
-	    ByteArrayOutputStream os = new ByteArrayOutputStream();
+		final byte[] buffer = new byte[(int) size];
+		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-	    int line = 0;
-	    // read bytes from stream, and store them in buffer
-	    while ((line = stream.read(buffer)) != -1) {
-	        // Writes bytes from byte array (buffer) into output stream.
-	        os.write(buffer, 0, line);
-	    }
-	    stream.close();
-	    os.flush();
-	    os.close();
-	    return os.toByteArray();
+		int line = 0;
+		// read bytes from stream, and store them in buffer
+		while ((line = stream.read(buffer)) != -1) {
+			// Writes bytes from byte array (buffer) into output stream.
+			os.write(buffer, 0, line);
+		}
+		stream.close();
+		os.flush();
+		os.close();
+		return os.toByteArray();
 	}
 
 	public static int[] realBytes(byte[] bytes) {
-		int len = bytes.length;
-		int[] realbytes = new int[len];
+		final int len = bytes.length;
+		final int[] realbytes = new int[len];
 		for (int i = 0; i < len; i++) {
 			realbytes[i] = Byte.toUnsignedInt(bytes[i]);
 		}
 		return realbytes;
 	}
-	
+
 	public static boolean allSolved(List<Function> expressions) throws Error {
-		for (Function itm : expressions) {
+		for (final Function itm : expressions) {
 			if (itm.isSolved() == false) {
 				return false;
 			}
@@ -445,22 +455,26 @@ public class Utils {
 	}
 
 	public static Function[][] joinFunctionsResults(List<Function> l1, List<Function> l2) {
-		int size1 = l1.size();
-		int size2 = l2.size();
+		final int size1 = l1.size();
+		final int size2 = l2.size();
 		int cur1 = 0;
 		int cur2 = 0;
-		int total = l1.size()*l2.size();
-		Function[][] results = new Function[total][2];
+		final int total = l1.size() * l2.size();
+		final Function[][] results = new Function[total][2];
 		for (int i = 0; i < total; i++) {
-			results[i] = new Function[]{l1.get(cur1), l2.get(cur2)};
+			results[i] = new Function[] { l1.get(cur1), l2.get(cur2) };
 			if (i % size2 == 0) {
-				cur1+=1;
+				cur1 += 1;
 			}
 			if (i % size1 == 0) {
-				cur2+=1;
+				cur2 += 1;
 			}
-			if (cur1 >= size1) cur1 = 0;
-			if (cur2 >= size2) cur2 = 0;
+			if (cur1 >= size1) {
+				cur1 = 0;
+			}
+			if (cur2 >= size2) {
+				cur2 = 0;
+			}
 		}
 		return results;
 	}
@@ -477,28 +491,97 @@ public class Utils {
 	public static CharSequence multipleChars(String string, int i) {
 		String result = "";
 		for (int j = 0; j < i; j++) {
-			result+=string;
+			result += string;
 		}
 		return result;
 	}
-	
+
 	public static boolean isIntegerValue(BigDecimal bd) {
-		 return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+		return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
 	}
 
 	public static <T> String arrayToString(T... data) {
 		String sdata = "";
-		for (T o : data) {
-			sdata += ","+o.toString();
+		for (final T o : data) {
+			sdata += "," + o.toString();
 		}
 		return sdata.substring(1);
 	}
 
 	public static String arrayToString(boolean... data) {
 		String sdata = "";
-		for (boolean o : data) {
-			sdata += (o)?1:0;
+		for (final boolean o : data) {
+			sdata += (o) ? 1 : 0;
 		}
 		return sdata;
+	}
+
+	public static void printSystemResourcesUsage() {
+		System.out.println("============");
+		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+		for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
+			method.setAccessible(true);
+			if (method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers())) {
+				Object value;
+				try {
+					value = method.invoke(operatingSystemMXBean);
+				} catch (Exception e) {
+					value = e;
+				} // try
+				boolean percent = false;
+				boolean mb = false;
+				String displayName = method.getName();
+				String displayValue = value.toString();
+				if (displayName.endsWith("CpuLoad")) {
+					percent = true;
+				}
+				if (displayName.endsWith("MemorySize")) {
+					mb = true;
+				}
+				ArrayList<String> arr = new ArrayList<>();
+				arr.add("getFreePhysicalMemorySize");
+				arr.add("getProcessCpuLoad");
+				arr.add("getSystemCpuLoad");
+				arr.add("getTotalPhysicalMemorySize");
+				if (arr.contains(displayName)) {
+					if (percent) {
+						try {
+							System.out.println(displayName + " = " + (((int)(Float.parseFloat(displayValue) * 10000f))/100f) + "%");
+						}catch(Exception ex) {
+							System.out.println(displayName + " = " + displayValue);
+						}
+					} else if (mb) {
+						try {
+							System.out.println(displayName + " = " + (Long.parseLong(displayValue) / 1024L / 1024L) + " MB");
+						}catch(Exception ex) {
+							System.out.println(displayName + " = " + displayValue);
+						}
+					} else {
+						System.out.println(displayName + " = " + displayValue);
+					}
+				}
+			} // if
+		} // for
+		System.out.println("============");
+	}
+
+	public static boolean isRunningOnRaspberry() {
+		if (System.getProperty("os.name").equals("Linux")) {
+	        final File file = new File("/etc", "os-release");
+	        try (FileInputStream fis = new FileInputStream(file);
+	             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis))) {
+	            String string;
+	            while ((string = bufferedReader.readLine()) != null) {
+	                if (string.toLowerCase().contains("raspbian")) {
+	                    if (string.toLowerCase().contains("name")) {
+	                    	return true;
+	                    }
+	                }
+	            }
+	        } catch (final Exception e) {
+	            e.printStackTrace();
+	        }
+	    }
+		return false;
 	}
 }

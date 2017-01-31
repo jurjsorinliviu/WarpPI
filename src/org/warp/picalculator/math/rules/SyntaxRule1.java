@@ -12,13 +12,14 @@ import org.warp.picalculator.math.functions.Sum;
 /**
  * Syntax rule<br>
  * <b>(a*b)*c=a*(b*c)</b>
+ * 
  * @author Andrea Cavalli
  *
  */
 public class SyntaxRule1 {
 
 	public static boolean compare(Function f) {
-		FunctionTwoValues m = (FunctionTwoValues) f;
+		final FunctionTwoValues m = (FunctionTwoValues) f;
 		if (m instanceof Multiplication & m.getVariable1() instanceof Multiplication) {
 			return true;
 		} else if (m instanceof Sum & m.getVariable1() instanceof Sum) {
@@ -28,12 +29,12 @@ public class SyntaxRule1 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		Calculator root = f.getRoot();
-		ArrayList<Function> result = new ArrayList<>();
-		FunctionTwoValues mOut = (FunctionTwoValues) f;
-		Function a = ((FunctionTwoValues)mOut.getVariable1()).getVariable1();
-		Function b = ((FunctionTwoValues)mOut.getVariable1()).getVariable2();
-		Function c = mOut.getVariable2();
+		final Calculator root = f.getRoot();
+		final ArrayList<Function> result = new ArrayList<>();
+		final FunctionTwoValues mOut = (FunctionTwoValues) f;
+		final Function a = ((FunctionTwoValues) mOut.getVariable1()).getVariable1();
+		final Function b = ((FunctionTwoValues) mOut.getVariable1()).getVariable2();
+		final Function c = mOut.getVariable2();
 		FunctionTwoValues mIn;
 		if (f instanceof Multiplication) {
 			mIn = new Multiplication(root, null, null);

@@ -9,16 +9,16 @@ import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Function;
 
 public class ArcCosine extends AnteriorFunction {
-	
+
 	public ArcCosine(Calculator root, Function value) {
 		super(root, value);
 	}
-	
+
 	@Override
 	public Function NewInstance(Calculator root, Function value) {
 		return new ArcCosine(root, value);
 	}
-	
+
 	@Override
 	public String getSymbol() {
 		return MathematicalSymbols.getGraphicRepresentation(MathematicalSymbols.ARC_COSINE);
