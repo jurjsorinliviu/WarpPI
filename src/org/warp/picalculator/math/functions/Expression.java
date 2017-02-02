@@ -646,9 +646,15 @@ public class Expression extends FunctionMultipleValues {
 			final float maxy = y + getHeight();
 			final int h = getHeight();
 			x += 1;
-			DisplayManager.renderer.glDrawLine(x, y + 2, x + 2, y);
+			DisplayManager.renderer.glDrawLine(x, y + 2, x, y + 2);
+			DisplayManager.renderer.glDrawLine( x + 1, y + 1, x + 1, y + 1);
+			DisplayManager.renderer.glDrawLine( x + 2, y, x + 2, y);
+			
 			DisplayManager.renderer.glDrawLine(x, y + 2, x, y + h - 3);
-			DisplayManager.renderer.glDrawLine(x, y + h - 3, x + 2, y + h - 1);
+			
+			DisplayManager.renderer.glDrawLine(x, y + h - 3, x, y + h - 3);
+			DisplayManager.renderer.glDrawLine(x + 1, y + h - 2, x + 1, y + h - 2);
+			DisplayManager.renderer.glDrawLine(x + 2, y + h - 1, x + 2, y + h - 1);
 			x += 4;
 			for (final Function f : functions) {
 				final float fheight = f.getHeight();
@@ -657,9 +663,15 @@ public class Expression extends FunctionMultipleValues {
 				x += f.getWidth();
 			}
 			x += 2;
-			DisplayManager.renderer.glDrawLine(x, y, x + 2, y + 2);
+			DisplayManager.renderer.glDrawLine(x, y, x, y);
+			DisplayManager.renderer.glDrawLine(x + 1, y + 1, x + 1, y + 1);
+			DisplayManager.renderer.glDrawLine(x + 2, y + 2, x + 2, y + 2);
+			
 			DisplayManager.renderer.glDrawLine(x + 2, y + 2, x + 2, y + h - 3);
-			DisplayManager.renderer.glDrawLine(x, y + h - 1, x + 2, y + h - 3);
+
+			DisplayManager.renderer.glDrawLine(x, y + h - 1, x, y + h - 1);
+			DisplayManager.renderer.glDrawLine(x + 1, y + h - 2, x + 1, y + h - 2);
+			DisplayManager.renderer.glDrawLine(x + 2, y + h - 3, x + 2, y + h - 3);
 			x += 4;
 		}
 	}
