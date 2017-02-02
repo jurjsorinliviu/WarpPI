@@ -126,6 +126,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public boolean isSupported() {
+		if (true) return false;
 		return GLProfile.isAvailable(GLProfile.GL2ES1);
 	}
 

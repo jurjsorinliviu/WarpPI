@@ -9,6 +9,8 @@ import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
+import org.warp.picalculator.math.rules.FractionsRule11;
+import org.warp.picalculator.math.rules.FractionsRule12;
 import org.warp.picalculator.math.rules.FractionsRule2;
 import org.warp.picalculator.math.rules.FractionsRule3;
 import org.warp.picalculator.math.rules.UndefinedRule2;
@@ -40,11 +42,25 @@ public class Division extends FunctionTwoValues {
 		if (FractionsRule3.compare(this)) {
 			return true;
 		}
+		if (FractionsRule11.compare(this)) {
+			return true;
+		}
+		if (FractionsRule12.compare(this)) {
+			return true;
+		}
 		if (UndefinedRule2.compare(this)) {
 			return true;
 		}
-		if (variable1 instanceof Number && variable2 instanceof Number && root.exactMode == false) {
-			return true;
+		if (variable1 instanceof Number && variable2 instanceof Number) {
+			if (root.exactMode) {
+				try {
+					return ((Number)variable1).divide((Number)variable2).isInteger();
+				} catch (Error e) {
+					return false;
+				}
+			} else {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -58,9 +74,13 @@ public class Division extends FunctionTwoValues {
 			result = FractionsRule2.execute(this);
 		} else if (FractionsRule3.compare(this)) {
 			result = FractionsRule3.execute(this);
+		} else if (FractionsRule11.compare(this)) {
+			result = FractionsRule11.execute(this);
+		} else if (FractionsRule12.compare(this)) {
+			result = FractionsRule12.execute(this);
 		} else if (UndefinedRule2.compare(this)) {
 			result = UndefinedRule2.execute(this);
-		} else if (variable1 instanceof Number && variable2 instanceof Number && root.exactMode == false) {
+		} else if (variable1 instanceof Number && variable2 instanceof Number) {
 			result.add(((Number) variable1).divide((Number) variable2));
 		}
 		return result;

@@ -60,38 +60,9 @@ import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 
 /**
- * <pre>
- *   __ __|_  ___________________________________________________________________________  ___|__ __
- *  //    /\                                           _                                  /\    \\
- * //____/  \__     __ _____ _____ _____ _____ _____  | |     __ _____ _____ __        __/  \____\\
- *  \    \  / /  __|  |     |   __|  _  |     |  _  | | |  __|  |     |   __|  |      /\ \  /    /
- *   \____\/_/  |  |  |  |  |  |  |     | | | |   __| | | |  |  |  |  |  |  |  |__   "  \_\/____/
- *  /\    \     |_____|_____|_____|__|__|_|_|_|__|    | | |_____|_____|_____|_____|  _  /    /\
- * /  \____\                       http://jogamp.org  |_|                              /____/  \
- * \  /   "' _________________________________________________________________________ `"   \  /
- *  \/____.                                                                             .____\/
- * </pre>
- *
- * <p>
- * JOGL2 OpenGL ES 2 demo to expose and learn what the RAW OpenGL ES 2 API looks
- * like.
- *
- * Compile, run and enjoy:
- * wget
- * http://jogamp.org/deployment/jogamp-current/archive/jogamp-all-platforms.7z
- * 7z x jogamp-all-platforms.7z
- * cd jogamp-all-platforms
- * mkdir -p demos/es2
- * cd demos/es2
- * wget
- * https://raw.github.com/xranby/jogl-demos/master/src/demos/es2/RawGL2ES1demo.java
- * cd ../..
- * javac -cp jar/jogl-all.jar:jar/gluegen-rt.jar demos/es2/RawGL2ES1demo.java
- * java -cp jar/jogl-all.jar:jar/gluegen-rt.jar:. demos.es2.RawGL2ES1demo
- * </p>
- *
  *
  * @author Xerxes Rånby (xranby)
+ * @author Andrea Cavalli (XDRake99)
  */
 
 class NEWTWindow implements GLEventListener {
@@ -107,19 +78,6 @@ class NEWTWindow implements GLEventListener {
 	public GLWindow window;
 
 	public void create() {
-		/* This demo are based on the GL2ES1 GLProfile that uses common hardware acceleration
-		 * functionality of desktop OpenGL 3, 2 and mobile OpenGL ES 2 devices.
-		 * JogAmp JOGL will probe all the installed libGL.so, libEGL.so and libGLESv2.so librarys on
-		 * the system to find which one provide hardware acceleration for your GPU device.
-		 * Its common to find more than one version of these librarys installed on a system.
-		 * For example on a ARM Linux system JOGL may find
-		 * Hardware accelerated Nvidia tegra GPU drivers in: /usr/lib/nvidia-tegra/libEGL.so
-		 * Software rendered Mesa Gallium driver in: /usr/lib/arm-linux-gnueabi/mesa-egl/libEGL.so.1
-		 * Software rendered Mesa X11 in: /usr/lib/arm-linux-gnueabi/mesa/libGL.so
-		 * Good news!: JOGL does all this probing for you all you have to do are to ask for
-		 * the GLProfile you want to use.
-		 */
-
 		System.out.println("Loading OpenGL...");
 		System.out.println(GLProfile.glAvailabilityToString());
 		if (!GLProfile.isAvailable(GLProfile.GL2ES1)) {
@@ -135,7 +93,7 @@ class NEWTWindow implements GLEventListener {
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
 
-		glWindow.setTitle("Algebraic Calculator for Raspberry PI by Andrea Cavalli (XDrake99)");
+		glWindow.setTitle("WarpPI Calculator by Andrea Cavalli (XDrake99)");
 		
 		glWindow.addWindowListener(new WindowListener() {
 
@@ -272,9 +230,17 @@ class NEWTWindow implements GLEventListener {
 					case 0x15:
 					case KeyEvent.VK_SHIFT:
 						Keyboard.keyReleased(Key.SHIFT);
+						if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.SHIFT);
+							Keyboard.keyReleased(Key.SHIFT);
+						}
 						break;
 					case KeyEvent.VK_A:
 						Keyboard.keyReleased(Key.ALPHA);
+						if (Keyboard.alpha) {
+							Keyboard.keyPressed(Key.ALPHA);
+							Keyboard.keyReleased(Key.ALPHA);
+						}
 						break;
 					case KeyEvent.VK_M:
 						Keyboard.keyPressed(Key.SURD_MODE);

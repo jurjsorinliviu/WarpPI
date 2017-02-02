@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
+import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
@@ -228,14 +229,33 @@ public class Number implements Function {
 
 	@Override
 	public boolean isSolved() {
-		return true;
+		if (root.exactMode) {
+			return isInteger();
+		} else {
+			return true;
+		}
 	}
 
 	@Override
 	public List<Function> solveOneStep() throws Error {
 		final List<Function> result = new ArrayList<>();
-		result.add(this);
+		if (root.exactMode) {
+			Number divisor = new Number(root, BigInteger.TEN.pow(getNumberOfDecimalPlaces()));
+			Number numb = new Number(root, term.multiply(divisor.term));
+			Division div = new Division(root, numb, divisor);
+			result.add(div);
+		} else {
+			result.add(this);
+		}
 		return result;
+	}
+	
+	public int getNumberOfDecimalPlaces() {
+	    return Math.max(0, term.stripTrailingZeros().scale());
+	}
+	
+	public boolean isInteger() {
+		return getNumberOfDecimalPlaces() <= 0;
 	}
 
 	@Override

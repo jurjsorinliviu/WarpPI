@@ -256,7 +256,7 @@ public class MathInputScreen extends Screen {
 									equazioneCorrente = nuovaEquazione;
 									calc.f2 = calc.f;
 									afterDoNextStep = true;
-									simplify(MathInputScreen.this);
+									simplify();
 								});
 							} catch (final Exception ex) {
 								if (Utils.debugOn) {
@@ -273,7 +273,7 @@ public class MathInputScreen extends Screen {
 							System.err.println(e.id);
 						}
 					} else {
-						simplify(this);
+						simplify();
 					}
 				}
 				return true;
@@ -290,7 +290,7 @@ public class MathInputScreen extends Screen {
 					try {
 						try {
 							if (afterDoNextStep) {
-								simplify(this);
+								simplify();
 							} else {
 								if (nuovaEquazione != equazioneCorrente && nuovaEquazione.length() > 0) {
 									changeEquationScreen();
@@ -457,7 +457,7 @@ public class MathInputScreen extends Screen {
 					nuovaEquazione = "";
 					afterDoNextStep = false;
 					if (calc.f != null) {
-						calc.f.clear();
+						calc.f = new ArrayList<>();
 					}
 					return true;
 				}
@@ -546,7 +546,7 @@ public class MathInputScreen extends Screen {
 		return null;
 	}
 
-	protected void simplify(MathInputScreen mathInputScreen) {
+	protected void simplify() {
 		try {
 			try {
 				showVariablesDialog();
@@ -585,6 +585,7 @@ public class MathInputScreen extends Screen {
 						rf.generateGraphics();
 					}
 				}
+				Utils.debug.println(calc.f2.toString());
 			} catch (final Exception ex) {
 				if (Utils.debugOn) {
 					ex.printStackTrace();
@@ -718,7 +719,6 @@ public class MathInputScreen extends Screen {
 				if (runnable != null) {
 					runnable.run();
 				}
-				Utils.debug.println(calc.f.toString());
 			}
 		});
 		ct.setName("Variables user-input queue thread");

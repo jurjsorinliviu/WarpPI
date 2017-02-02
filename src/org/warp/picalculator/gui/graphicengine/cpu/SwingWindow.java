@@ -55,7 +55,7 @@ public class SwingWindow extends JFrame {
 			setResizable(false);
 		}
 
-		setTitle("Raspberry PI Calculator by XDrake99 (Andrea Cavalli)");
+		setTitle("WarpPI Calculator by Andrea Cavalli (XDrake99)");
 
 		addComponentListener(new ComponentListener() {
 			@Override
@@ -165,9 +165,17 @@ public class SwingWindow extends JFrame {
 						break;
 					case KeyEvent.VK_SHIFT:
 						Keyboard.keyReleased(Key.SHIFT);
+						if (Keyboard.shift) {
+							Keyboard.keyPressed(Key.SHIFT);
+							Keyboard.keyReleased(Key.SHIFT);
+						}
 						break;
 					case KeyEvent.VK_A:
 						Keyboard.keyReleased(Key.ALPHA);
+						if (Keyboard.alpha) {
+							Keyboard.keyPressed(Key.ALPHA);
+							Keyboard.keyReleased(Key.ALPHA);
+						}
 						break;
 					case KeyEvent.VK_M:
 						Keyboard.keyPressed(Key.SURD_MODE);

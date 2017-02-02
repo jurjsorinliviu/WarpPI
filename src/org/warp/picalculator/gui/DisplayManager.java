@@ -446,7 +446,7 @@ public final class DisplayManager implements RenderingLoop {
 			});
 			dbgthrd.setDaemon(true);
 			dbgthrd.setName("Debug performance thread");
-			dbgthrd.start();
+			//dbgthrd.start();
 			
 			engine.start(this);
 			

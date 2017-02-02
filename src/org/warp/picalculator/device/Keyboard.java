@@ -233,8 +233,10 @@ public class Keyboard {
 			case KeyEvent.VK_7:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.NUM7);
-				} else {
-					Keyboard.keyPressed(Key.NONE);
+				} else if (Keyboard.shift) {
+					if (Utils.debugOn) {
+						Keyboard.keyPressed(Key.DIVIDE);
+					}
 				}
 				break;
 			case KeyEvent.VK_8:
@@ -740,12 +742,14 @@ public class Keyboard {
 				default:
 					break;
 			}
-			if (k != Key.SHIFT && Keyboard.shift) {
-				Keyboard.shift = false;
-				refresh = true;
-			} else if (k != Key.ALPHA && Keyboard.alpha) {
-				Keyboard.alpha = false;
-				refresh = true;
+			if (Utils.debugOn == false) {
+				if (k != Key.SHIFT && Keyboard.shift) {
+					Keyboard.shift = false;
+					refresh = true;
+				} else if (k != Key.ALPHA && Keyboard.alpha) {
+					Keyboard.alpha = false;
+					refresh = true;
+				}
 			}
 			if (refresh) {
 //				PIDisplay.display.repaint();

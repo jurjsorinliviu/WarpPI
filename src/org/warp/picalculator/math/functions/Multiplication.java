@@ -6,6 +6,7 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule15;
+import org.warp.picalculator.math.rules.FractionsRule14;
 import org.warp.picalculator.math.rules.NumberRule1;
 import org.warp.picalculator.math.rules.NumberRule2;
 import org.warp.picalculator.math.rules.NumberRule6;
@@ -52,6 +53,9 @@ public class Multiplication extends FunctionTwoValues {
 		if (ExponentRule15.compare(this)) {
 			return true;
 		}
+		if (FractionsRule14.compare(this)) {
+			return true;
+		}
 		if (MultiplicationMethod1.compare(this)) {
 			return true;
 		}
@@ -71,6 +75,8 @@ public class Multiplication extends FunctionTwoValues {
 			result = NumberRule6.execute(this);
 		} else if (ExponentRule15.compare(this)) {
 			result = ExponentRule15.execute(this);
+		} else if (FractionsRule14.compare(this)) {
+			result = FractionsRule14.execute(this);
 		} else if (MultiplicationMethod1.compare(this)) {
 			result = MultiplicationMethod1.execute(this);
 		} else if (variable1.isSolved() & variable2.isSolved()) {
@@ -122,8 +128,12 @@ public class Multiplication extends FunctionTwoValues {
 					}
 					ok[val] = true;
 				} else if (tmpVar[val] instanceof Expression) {
-					ok[0] = true;
-					ok[1] = true;
+					if (((Expression)tmpVar[val]).parenthesisNeeded() == true) {
+						ok[0] = true;
+						ok[1] = true;
+					} else {
+						break;
+					}
 				} else if (tmpVar[val] instanceof FunctionTwoValues) {
 					if (val == 0) {
 						tmpVar[val] = ((FunctionTwoValues) tmpVar[val]).variable2;

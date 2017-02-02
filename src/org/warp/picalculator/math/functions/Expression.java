@@ -32,6 +32,10 @@ public class Expression extends FunctionMultipleValues {
 		super(root, values);
 	}
 
+	public Expression(Calculator root, Function value) {
+		super(root, new Function[]{value});
+	}
+
 	private boolean initialParenthesis = false;
 
 	public Expression(Calculator root, String string) throws Error {
@@ -616,7 +620,7 @@ public class Expression extends FunctionMultipleValues {
 		} else {
 			if (functions.length == 1) {
 				final Function f = functions[0];
-				if (f instanceof Number || f instanceof Variable || f instanceof Expression || f instanceof Division || f instanceof Joke || f instanceof Undefined || f instanceof Power || f instanceof Sine || f instanceof Cosine || f instanceof Tangent || f instanceof ArcSine || f instanceof ArcCosine || f instanceof ArcTangent) {
+				if (f instanceof Number || f instanceof Variable || f instanceof Expression || f instanceof Division || f instanceof Joke || f instanceof Undefined || f instanceof Power || f instanceof Sine || f instanceof Cosine || f instanceof Tangent || f instanceof ArcSine || f instanceof ArcCosine || f instanceof ArcTangent || f instanceof RootSquare) {
 					parenthesisneeded = false;
 				}
 				if (f instanceof Multiplication) {
