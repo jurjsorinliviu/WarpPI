@@ -48,7 +48,8 @@ public class SolveEquationScreen extends Screen {
 	public boolean keyPressed(Key k) {
 		switch (k) {
 			case LETTER_X:
-				DisplayManager.INSTANCE.goBack();
+				//TODO: far funzionare questa parte
+				/*DisplayManager.INSTANCE.goBack();
 				try {
 					es.calc.solveExpression('X');
 				} catch (final Error e) {
@@ -61,6 +62,7 @@ public class SolveEquationScreen extends Screen {
 						e.printStackTrace();
 					}
 				}
+				*/
 				return true;
 			default:
 				return false;
