@@ -129,7 +129,7 @@ public class Sum extends FunctionTwoValues {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += DisplayManager.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
+		dx += Utils.getFont(small).getStringWidth(getSymbol());
 		return dx += variable2.getWidth();
 	}
 

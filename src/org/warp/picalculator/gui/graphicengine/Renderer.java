@@ -23,19 +23,19 @@ public interface Renderer {
 
 	public void glClear(int screenWidth, int screenHeight);
 
-	public void glDrawLine(int x0, int y0, int x1, int y1);
+	public void glDrawLine(float x0, float y0, float x1, float y1);
 
-	public void glFillRect(int x, int y, int width, int height, float uvX, float uvY, float uvWidth, float uvHeight);
+	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth, float uvHeight);
 
-	public void glFillColor(int x, int y, int width, int height);
+	public void glFillColor(float x, float y, float width, float height);
 
-	public void glDrawStringLeft(int x, int y, String text);
+	public void glDrawStringLeft(float x, float y, String text);
 
-	public void glDrawStringCenter(int x, int y, String text);
+	public void glDrawStringCenter(float x, float y, String text);
 
-	public void glDrawStringRight(int x, int y, String text);
+	public void glDrawStringRight(float x, float y, String text);
 	
 	public void glClearSkin();
 
-	public RAWFont getCurrentFont();
+	public BinaryFont getCurrentFont();
 }

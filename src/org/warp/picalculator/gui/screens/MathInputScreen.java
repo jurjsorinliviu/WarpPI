@@ -16,7 +16,7 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Calculator;
@@ -142,7 +142,7 @@ public class MathInputScreen extends Screen {
 		}
 	}
 
-	private static final RAWFont fontBig = Utils.getFont(false);
+	private static final BinaryFont fontBig = Utils.getFont(false);
 
 	@Override
 	public void renderStatusbar() {
@@ -161,7 +161,7 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void render() {
-		fontBig.use(DisplayManager.display);
+		fontBig.use(DisplayManager.engine);
 		final int textColor = 0xFF000000;
 		final int padding = 4;
 		DisplayManager.renderer.glColor(textColor);
@@ -221,14 +221,14 @@ public class MathInputScreen extends Screen {
 			int bottomSpacing = 0;
 			for (final Function f : calc.f2) {
 				bottomSpacing += f.getHeight() + 2;
-				f.draw(DisplayManager.display.getWidth() - 2 - f.getWidth(), DisplayManager.display.getHeight() - bottomSpacing);
+				f.draw(DisplayManager.engine.getWidth() - 2 - f.getWidth(), DisplayManager.engine.getHeight() - bottomSpacing);
 			}
 			if (calc.resultsCount > 1 && calc.resultsCount != calc.f2.size()) {
 				final String resultsCountText = calc.resultsCount + " total results".toUpperCase();
 				DisplayManager.renderer.glColor(0xFF9AAEA0);
-				Utils.getFont(true).use(DisplayManager.display);
+				Utils.getFont(true).use(DisplayManager.engine);
 				bottomSpacing += fontBig.getCharacterHeight() + 2;
-				DisplayManager.renderer.glDrawStringRight(DisplayManager.display.getWidth() - 2, DisplayManager.display.getHeight() - bottomSpacing, resultsCountText);
+				DisplayManager.renderer.glDrawStringRight(DisplayManager.engine.getWidth() - 2, DisplayManager.engine.getHeight() - bottomSpacing, resultsCountText);
 			}
 		}
 	}

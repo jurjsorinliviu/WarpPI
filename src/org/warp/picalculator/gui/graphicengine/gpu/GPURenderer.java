@@ -11,7 +11,7 @@ import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import javax.imageio.ImageIO;
 
-import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
 import com.jogamp.common.nio.Buffers;
@@ -112,12 +112,12 @@ public class GPURenderer implements Renderer {
 	}
 
 	@Override
-	public void glDrawLine(int x0, int y0, int x1, int y1) {
+	public void glDrawLine(float x0, float y0, float x1, float y1) {
 		glFillColor(x0, y0, x1-x0+1, y1-y0+1);
 	}
 
 	@Override
-	public void glFillRect(int x, int y, int width, int height, float uvX, float uvY, float uvWidth, float uvHeight) {
+	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth, float uvHeight) {
 		enableTexture();
 		uvWidth/=currentTexWidth;
 		uvX/=currentTexWidth;
@@ -132,7 +132,7 @@ public class GPURenderer implements Renderer {
 	}
 
 	@Override
-	public void glFillColor(int x0, int y0, int w1, int h1) {
+	public void glFillColor(float x0, float y0, float w1, float h1) {
 		disableTexture();
 		final float[] vertices = { x0, y0, 0.0f, x0, y0 + h1, 0.0f, x0 + w1, y0, 0.0f, x0 + w1, y0 + h1, 0.0f, };
 		final float[] tex_vertices = { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, };
@@ -143,7 +143,7 @@ public class GPURenderer implements Renderer {
 	}
 
 	@Override
-	public void glDrawStringLeft(int x, int y, String text) {
+	public void glDrawStringLeft(float x, float y, String text) {
 		final int txtLen = text.length();
 		int[] txtArray = currentFont.getCharIndexes(text);
 		int tableIndexX;
@@ -151,22 +151,22 @@ public class GPURenderer implements Renderer {
 		for (int currentCharIndex = 0; currentCharIndex < txtLen; currentCharIndex++) {
 			tableIndexX = txtArray[currentCharIndex] % currentFont.memoryWidthOfEachColumn;
 			tableIndexY = (txtArray[currentCharIndex] - tableIndexX) / currentFont.memoryWidthOfEachColumn;
-			glFillRect(x + currentCharIndex * (currentFont.charW + 1), y, currentFont.charW, currentFont.charH, tableIndexX*currentFont.charW, tableIndexY*currentFont.charH, currentFont.charW, currentFont.charH);
+			glFillRect(x + ((float)currentCharIndex) * ((float)(currentFont.charW + 1)), y, currentFont.charW, currentFont.charH, tableIndexX*currentFont.charW, tableIndexY*currentFont.charH, currentFont.charW, currentFont.charH);
 		}
 	}
 
 	@Override
-	public void glDrawStringCenter(int x, int y, String text) {
+	public void glDrawStringCenter(float x, float y, String text) {
 		glDrawStringLeft(x - (currentFont.getStringWidth(text) / 2), y, text);
 	}
 
 	@Override
-	public void glDrawStringRight(int x, int y, String text) {
+	public void glDrawStringRight(float x, float y, String text) {
 		glDrawStringLeft(x - currentFont.getStringWidth(text), y, text);
 	}
 
 	@Override
-	public RAWFont getCurrentFont() {
+	public BinaryFont getCurrentFont() {
 		return currentFont;
 	}
 

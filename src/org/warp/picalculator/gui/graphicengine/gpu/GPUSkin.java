@@ -2,14 +2,14 @@ package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import org.warp.picalculator.gui.graphicengine.Display;
-import org.warp.picalculator.gui.graphicengine.RAWSkin;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.Skin;
 
 import com.jogamp.opengl.GL2ES1;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.util.texture.Texture;
 
-public class GPUSkin implements RAWSkin {
+public class GPUSkin implements Skin {
 
 	public Texture t;
 	public int w;
@@ -31,7 +31,7 @@ public class GPUSkin implements RAWSkin {
 	}
 
 	@Override
-	public void initialize(Display d) {
+	public void initialize(GraphicEngine d) {
 		try {
 			BufferedImage i = GPURenderer.openTexture(texturePath);
 			GL2ES1 gl = ((GPURenderer)d.getRenderer()).gl;
@@ -47,7 +47,7 @@ public class GPUSkin implements RAWSkin {
 	}
 
 	@Override
-	public void use(Display d) {
+	public void use(GraphicEngine d) {
 		if (!initialized) {
 			initialize(d);
 		}

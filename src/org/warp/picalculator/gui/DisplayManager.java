@@ -10,26 +10,26 @@ import java.util.ArrayList;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.gui.graphicengine.Display;
-import org.warp.picalculator.gui.graphicengine.Drawable;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Renderer;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
-import org.warp.picalculator.gui.graphicengine.gpu.GPUDisplay;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
-import org.warp.picalculator.gui.graphicengine.RAWSkin;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
+import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.screens.Screen;
 
 import com.pi4j.wiringpi.Gpio;
 
-public final class DisplayManager implements Drawable {
+public final class DisplayManager implements RenderingLoop {
 	public static DisplayManager INSTANCE;
 	private static float brightness;
 
-	public static final Display display = chooseGraphicEngine();
+	public static final GraphicEngine engine = chooseGraphicEngine();
 	public static Renderer renderer;
 
-	private static RAWSkin skin;
-	public static RAWFont[] fonts;
+	public static Skin guiSkin;
+	public static BinaryFont[] fonts;
 
 	public static String error = null;
 	public String[] errorStackTrace = null;
@@ -72,12 +72,18 @@ public final class DisplayManager implements Drawable {
 	 * }
 	 */
 
-	private static Display chooseGraphicEngine() {
-		Display d;
-		d = new GPUDisplay();
-		if (d.isSupported()) return d;
-		d = new CPUDisplay();
-		if (d.isSupported()) return d;
+	private static GraphicEngine chooseGraphicEngine() {
+		GraphicEngine d;
+		d = new GPUEngine();
+		if (d.isSupported()) {
+			Utils.debug.println("Using GPU Graphic Engine");
+			return d;
+		}
+		d = new CPUEngine();
+		if (d.isSupported()) {
+			Utils.debug.println("Using CPU Graphic Engine");
+			return d;
+		}
 		throw new UnsupportedOperationException("No graphic engines available.");
 	}
 
@@ -197,30 +203,30 @@ public final class DisplayManager implements Drawable {
 	}
 
 	private void load_skin() throws IOException {
-		skin = display.loadSkin("skin.png");
+		guiSkin = engine.loadSkin("skin.png");
 	}
 
 	private void load_fonts() throws IOException {
-		fonts = new RAWFont[7];
-		fonts[0] = display.loadFont("big");
-		fonts[1] = display.loadFont("small");
-		fonts[2] = display.loadFont("ex");
-		fonts[3] = display.loadFont("big");
-		fonts[4] = display.loadFont("32");
-		fonts[5] = display.loadFont("square");
+		fonts = new BinaryFont[7];
+		fonts[0] = engine.loadFont("big");
+		fonts[1] = engine.loadFont("small");
+		fonts[2] = engine.loadFont("ex");
+		fonts[3] = engine.loadFont("big");
+		fonts[4] = engine.loadFont("32");
+		fonts[5] = engine.loadFont("square");
 	}
 
 	private void draw_init() {
-		renderer.glClear(display.getWidth(), display.getHeight());
+		renderer.glClear(engine.getWidth(), engine.getHeight());
 	}
 
 	private void draw_status() {
 		renderer.glColor(0xFFc5c2af);
-		renderer.glFillColor(0, 0, display.getWidth(), 20);
+		renderer.glFillColor(0, 0, engine.getWidth(), 20);
 		renderer.glColor3i(0, 0, 0);
-		renderer.glDrawLine(0, 20, display.getWidth() - 1, 20);
+		renderer.glDrawLine(0, 20, engine.getWidth() - 1, 20);
 		renderer.glColor3i(255, 255, 255);
-		skin.use(display);
+		guiSkin.use(engine);
 		if (Keyboard.shift) {
 			renderer.glFillRect(2 + 18 * 0, 2, 16, 16, 16 * 2, 16 * 0, 16, 16);
 		} else {
@@ -291,18 +297,22 @@ public final class DisplayManager implements Drawable {
 	private void draw_bottom() {
 		renderer.glDrawStringLeft(2, 90, displayDebugString);
 
-		Utils.getFont(false, true).use(DisplayManager.display);
+		Utils.getFont(true, false).use(DisplayManager.engine);
 		DisplayManager.renderer.glColor4i(255, 0, 0, 40);
-		DisplayManager.renderer.glDrawStringLeft(5 + 1, Main.screenSize[1] - 20 + 1, "WORK IN PROGRESS.");
+		DisplayManager.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 - 7 + 1, "WORK IN");
 		DisplayManager.renderer.glColor4i(255, 0, 0, 80);
-		DisplayManager.renderer.glDrawStringLeft(5, Main.screenSize[1] - 20, "WORK IN PROGRESS.");
+		DisplayManager.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7 - 7, "WORK IN");
+		DisplayManager.renderer.glColor4i(255, 0, 0, 40);
+		DisplayManager.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 + 1, "PROGRESS.");
+		DisplayManager.renderer.glColor4i(255, 0, 0, 80);
+		DisplayManager.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7, "PROGRESS.");
 	}
 
 	private void draw_world() {
 		renderer.glColor3i(255, 255, 255);
 
 		if (error != null) {
-			Utils.getFont(false, false).use(display);
+			Utils.getFont(false, false).use(engine);
 			renderer.glColor3i(129, 28, 22);
 			renderer.glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1] - DisplayManager.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
 			renderer.glColor3i(149, 32, 26);
@@ -313,11 +323,11 @@ public final class DisplayManager implements Drawable {
 				renderer.glDrawStringLeft(2, 22 + i, stackPart);
 				i += 11;
 			}
-			fonts[0].use(display);
+			fonts[0].use(engine);
 			renderer.glColor3i(129, 28, 22);
 			renderer.glDrawStringCenter((Main.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
 		} else {
-			fonts[0].use(display);
+			fonts[0].use(engine);
 			draw_screen();
 			draw_status();
 			draw_bottom();
@@ -355,9 +365,9 @@ public final class DisplayManager implements Drawable {
 	}
 
 	private void checkDisplayResized() {
-		if (display.wasResized()) {
-			Main.screenSize[0] = display.getWidth();
-			Main.screenSize[1] = display.getHeight();
+		if (engine.wasResized()) {
+			Main.screenSize[0] = engine.getWidth();
+			Main.screenSize[1] = engine.getHeight();
 		}
 	};
 
@@ -365,8 +375,8 @@ public final class DisplayManager implements Drawable {
 		try {
 			load_skin();
 			load_fonts();
-			display.create();
-			renderer = display.getRenderer();
+			engine.create();
+			renderer = engine.getRenderer();
 
 			try {
 				screen.initialize();
@@ -438,9 +448,9 @@ public final class DisplayManager implements Drawable {
 			dbgthrd.setName("Debug performance thread");
 			dbgthrd.start();
 			
-			display.start(this);
+			engine.start(this);
 			
-			display.waitUntilExit();
+			engine.waitUntilExit();
 		} catch (final Exception ex) {
 			ex.printStackTrace();
 		} finally {}
@@ -483,7 +493,7 @@ public final class DisplayManager implements Drawable {
 		renderer.glColor4f(f1,f2,f3,f4);
 	}
 
-	public static Drawable getDrawable() {
+	public static RenderingLoop getDrawable() {
 		return INSTANCE;
 	}
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
@@ -112,7 +112,7 @@ public abstract class FunctionTwoValues implements Function {
 		variable1.draw(dx + x, ln - variable1.getLine() + y);
 		dx += 1 + variable1.getWidth();
 		if (drawSignum()) {
-			Utils.getFont(small).use(DisplayManager.display);
+			Utils.getFont(small).use(DisplayManager.engine);
 			DisplayManager.renderer.glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
 			dx += Utils.getFont(small).getStringWidth(getSymbol());
 		}

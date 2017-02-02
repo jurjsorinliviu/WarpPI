@@ -21,7 +21,7 @@ import java.util.List;
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.functions.AnteriorFunction;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Expression;
@@ -360,7 +360,9 @@ public class Utils {
 
 		var.draw(x + wsegno, y + (hsegno - h1));
 
-		DisplayManager.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 3, y + hsegno - 1);
+		DisplayManager.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 1, y + hsegno - 3);
+		DisplayManager.renderer.glDrawLine(x + 2, y + hsegno - 2, x + 2, y + hsegno - 2);
+		DisplayManager.renderer.glDrawLine(x + 3, y + hsegno - 1, x + 3, y + hsegno - 1);
 		DisplayManager.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
 		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
 		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
@@ -370,11 +372,11 @@ public class Utils {
 		return getFontHeight(false);
 	}
 
-	public static final RAWFont getFont(boolean small) {
+	public static final BinaryFont getFont(boolean small) {
 		return getFont(small, Main.zoomed);
 	}
 
-	public static final RAWFont getFont(boolean small, boolean zoomed) {
+	public static final BinaryFont getFont(boolean small, boolean zoomed) {
 		return DisplayManager.fonts[getFontIndex(small, zoomed)];
 	}
 

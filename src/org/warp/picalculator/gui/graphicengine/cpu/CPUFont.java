@@ -12,11 +12,11 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.graphicengine.Display;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay.CPURenderer;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine.CPURenderer;
 
-public class CPUFont implements RAWFont {
+public class CPUFont implements BinaryFont {
 
 	public boolean[][] rawchars;
 	public int[] chars32;
@@ -134,7 +134,7 @@ public class CPUFont implements RAWFont {
 		try {
 			ImageIO.write(bi, "PNG", new File(coutputpng));
 		} catch (final IOException ex) {
-			Logger.getLogger(RAWFont.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(BinaryFont.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
@@ -149,13 +149,13 @@ public class CPUFont implements RAWFont {
 	}
 
 	@Override
-	public void initialize(Display d) {
+	public void initialize(GraphicEngine d) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void use(Display d) {
+	public void use(GraphicEngine d) {
 		((CPURenderer) d.getRenderer()).currentFont = this;
 	}
 

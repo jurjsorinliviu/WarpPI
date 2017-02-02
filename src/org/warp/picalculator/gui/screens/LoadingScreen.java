@@ -43,31 +43,13 @@ public class LoadingScreen extends Screen {
 
 	@Override
 	public void render() {
-		fonts[2].use(DisplayManager.display);
-		DisplayManager.renderer.glClearColor(0xFF000000);
-		DisplayManager.renderer.glClear(DisplayManager.display.getWidth(), DisplayManager.display.getWidth());
-		DisplayManager.renderer.glColor3i(230, 33, 23);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) - 1, (int) ((Main.screenSize[1] / 2) - 25 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) - 2, (int) ((Main.screenSize[1] / 2) - 25 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) + 1, (int) ((Main.screenSize[1] / 2) - 25 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) + 2, (int) ((Main.screenSize[1] / 2) - 25 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1] / 2) - 25 - 1 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1] / 2) - 25 - 2 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1] / 2) - 25 + 1 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1] / 2) - 25 + 2 + loadingTextTranslation), titleString);
-
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) + 1, (int) ((Main.screenSize[1] / 2) - 25 + 1 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) - 1, (int) ((Main.screenSize[1] / 2) - 25 + 1 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) - 1, (int) ((Main.screenSize[1] / 2) - 25 - 1 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2) + 1, (int) ((Main.screenSize[1] / 2) - 25 - 1 + loadingTextTranslation), titleString);
+		DisplayManager.guiSkin.use(DisplayManager.engine);
 		DisplayManager.renderer.glColor3i(255, 255, 255);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2), (int) ((Main.screenSize[1] / 2) - 25 + loadingTextTranslation), titleString);
-		DisplayManager.renderer.glColor4f(0.0f, 0.0f, 0.0f, 0.75f);
-		fonts[0].use(DisplayManager.display);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2), (Main.screenSize[1] / 2) + 11, "LOADING");
-		fonts[1].use(DisplayManager.display);
-		DisplayManager.renderer.glColor4f(0.0f, 0.0f, 0.0f, 0.5f);
-		DisplayManager.renderer.glDrawStringCenter((Main.screenSize[0] / 2), (Main.screenSize[1] / 2) + 22, "PLEASE WAIT...");
+		DisplayManager.renderer.glFillRect(Main.screenSize[0]/2f-80, Main.screenSize[1]/2f-64, 160, 48, 0, 32, 160, 48);
+		DisplayManager.renderer.glFillRect(Main.screenSize[0]/2f-24, Main.screenSize[1]/2f-loadingTextTranslation, 48, 48, 160, 32, 48, 48);
+
+		DisplayManager.renderer.glFillRect(Main.screenSize[0]-224, Main.screenSize[1]-48, 224, 48, 0, 80, 224, 48);
+		DisplayManager.renderer.glFillRect(Main.screenSize[0]-160-24-224, Main.screenSize[1]-48, 160, 48, 224, 80, 160, 48);
 
 	}
 

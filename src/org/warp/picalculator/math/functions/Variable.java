@@ -62,7 +62,7 @@ public class Variable implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		Utils.getFont(small).use(DisplayManager.display);
+		Utils.getFont(small).use(DisplayManager.engine);
 		DisplayManager.renderer.glDrawStringLeft(x + 1, y, toString());
 	}
 

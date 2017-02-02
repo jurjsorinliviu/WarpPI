@@ -9,12 +9,12 @@ import org.warp.picalculator.Main;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.RAWSkin;
+import org.warp.picalculator.gui.graphicengine.Skin;
 
 public class MarioScreen extends Screen {
 
-	private RAWSkin skin;
-	private RAWSkin groundskin;
+	private Skin skin;
+	private Skin groundskin;
 	private boolean errored;
 	public float[] marioPos = new float[] { 30, 0 };
 	public float[] marioForces = new float[] { 0, 0 };
@@ -35,8 +35,8 @@ public class MarioScreen extends Screen {
 	@Override
 	public void init() {
 		try {
-			skin = DisplayManager.display.loadSkin("marioskin.png");
-			groundskin = DisplayManager.display.loadSkin("marioground.png");
+			skin = DisplayManager.engine.loadSkin("marioskin.png");
+			groundskin = DisplayManager.engine.loadSkin("marioground.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -125,8 +125,8 @@ public class MarioScreen extends Screen {
 		if (errored) {
 			DisplayManager.renderer.glDrawStringLeft(0, 20, "ERROR");
 		} else {
-			DisplayManager.fonts[0].use(DisplayManager.display);
-			groundskin.use(DisplayManager.display);
+			DisplayManager.fonts[0].use(DisplayManager.engine);
+			groundskin.use(DisplayManager.engine);
 			DisplayManager.renderer.glFillRect(16 * 0, 25 + 25, 16, 16, 0, 0, 16, 16);
 			DisplayManager.renderer.glFillRect(16 * 1, 25 + 25, 16, 16, 0, 0, 16, 16);
 			DisplayManager.renderer.glFillRect(16 * 2, 25 + 25, 16, 16, 0, 0, 16, 16);
@@ -165,7 +165,7 @@ public class MarioScreen extends Screen {
 //			glDrawStringRight(0, Main.screenSize[1]-glGetCurrentFontHeight(), "G");
 
 			//DRAW MARIO
-			skin.use(DisplayManager.display);
+			skin.use(DisplayManager.engine);
 			DisplayManager.renderer.glFillRect(getPosX() - 18, 25 + getPosY(), 35, 27, 35 * (marioSkinPos[0] + 1), 27 * marioSkinPos[1], 35, 27);
 //			PIDisplay.renderer.glDrawSkin(getPosX() - 18, 25 + getPosY(), 35 * (marioSkinPos[0] + (flipped ? 2 : 1)), 27 * marioSkinPos[1], 35 * (marioSkinPos[0] + (flipped ? 1 : 2)), 27 * (marioSkinPos[1] + 1), true);
 		}

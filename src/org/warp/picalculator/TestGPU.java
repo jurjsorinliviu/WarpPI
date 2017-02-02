@@ -2,11 +2,11 @@ package org.warp.picalculator;
 
 import java.io.IOException;
 
-import org.warp.picalculator.gui.graphicengine.Display;
-import org.warp.picalculator.gui.graphicengine.Drawable;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
-import org.warp.picalculator.gui.graphicengine.RAWSkin;
-import org.warp.picalculator.gui.graphicengine.gpu.GPUDisplay;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.Skin;
+import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
 import org.warp.picalculator.gui.graphicengine.gpu.GPURenderer;
 import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
 import org.warp.picalculator.gui.screens.MarioScreen;
@@ -19,11 +19,9 @@ import java.util.ArrayList;
 
 public class TestGPU {
 
-	public static final GPUDisplay d = new GPUDisplay();
+	public static final GPUEngine d = new GPUEngine();
 
 	public static void main(String[] args) throws IOException {
-		new Main(new KeyboardDebugScreen());
-		if (true) return;
 		Utils.debugOn = true;
 		Utils.debugThirdScreen = false;
 		d.create();
@@ -31,15 +29,15 @@ public class TestGPU {
 		final Scene s = new Scene(d);
 	}
 
-	private static class Scene implements Drawable {
+	private static class Scene implements RenderingLoop {
 
-		private RAWFont exampleFont;
-		private final RAWSkin exampleSkin;
+		private BinaryFont exampleFont;
+		private final Skin exampleSkin;
 
 		private final GPURenderer r;
-		private final Display d;
+		private final GraphicEngine d;
 
-		public Scene(Display d) throws IOException {
+		public Scene(GraphicEngine d) throws IOException {
 			this.d = d;
 			r = (GPURenderer) d.getRenderer();
 
@@ -79,6 +77,12 @@ public class TestGPU {
 			exampleFont.use(d);
 			r.glColor3f(1, 0, 0);
 			r.glDrawStringLeft(10, 170, "Prova! 123456789");
+			
+			//MSAA TEST
+			r.glDrawStringLeft(10f, 190.5f, "Test MSAA");
+			exampleSkin.use(d);
+			r.glColor3f(1.0f, 1.0f, 1.0f);
+			r.glFillRect(162, 2.5f, 160, 160, 0, 0, 16, 16);
 		}
 
 	}

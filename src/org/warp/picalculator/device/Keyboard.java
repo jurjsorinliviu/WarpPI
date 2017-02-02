@@ -700,7 +700,7 @@ public class Keyboard {
 			} else {
 				switch (k) {
 					case POWER:
-						DisplayManager.display.destroy();
+						DisplayManager.engine.destroy();
 						break;
 					case NONE:
 						break;

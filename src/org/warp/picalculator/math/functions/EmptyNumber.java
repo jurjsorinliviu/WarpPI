@@ -5,7 +5,7 @@ import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.Calculator;
 
 public class EmptyNumber implements Function {
@@ -44,17 +44,17 @@ public class EmptyNumber implements Function {
 
 	@Override
 	public int getWidth() {
-		return DisplayManager.renderer.glGetStringWidth(Utils.getFont(small), "␀");
+		return Utils.getFont(small).getStringWidth("␀");
 	}
 
 	@Override
 	public int getHeight() {
-		return Utils.getFont(small).charH;
+		return Utils.getFont(small).getCharacterHeight();
 	}
 
 	@Override
 	public int getLine() {
-		return Utils.getFont(small).charH / 2;
+		return Utils.getFont(small).getCharacterHeight() / 2;
 	}
 
 	@Override

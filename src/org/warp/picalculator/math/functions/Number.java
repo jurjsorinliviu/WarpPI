@@ -10,7 +10,7 @@ import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.Calculator;
 
 import com.rits.cloning.Cloner;
@@ -130,7 +130,7 @@ public class Number implements Function {
 
 	@Override
 	public void draw(int x, int y) {
-		Utils.getFont(small).use(DisplayManager.display);
+		Utils.getFont(small).use(DisplayManager.engine);
 		String t = toString();
 
 		if (t.startsWith("-")) {
@@ -141,12 +141,12 @@ public class Number implements Function {
 			}
 		}
 		if (t.contains("ℯ℮")) {
-			final RAWFont defaultf = Utils.getFont(small);
-			final RAWFont smallf = Utils.getFont(true);
+			final BinaryFont defaultf = Utils.getFont(small);
+			final BinaryFont smallf = Utils.getFont(true);
 			final String s = t.substring(0, t.indexOf("ℯ℮") + 2);
 			final int sw = defaultf.getStringWidth(s);
 			DisplayManager.renderer.glDrawStringLeft(x + 1, y + smallf.getCharacterHeight() - 2, s);
-			smallf.use(DisplayManager.display);
+			smallf.use(DisplayManager.engine);
 			DisplayManager.renderer.glDrawStringLeft(x + 1 + sw - 3, y, t.substring(t.indexOf("ℯ℮") + 2));
 		} else {
 			DisplayManager.renderer.glDrawStringLeft(x + 1, y, t);
@@ -191,8 +191,8 @@ public class Number implements Function {
 			}
 		}
 		if (t.contains("ℯ℮")) {
-			final RAWFont defaultf = Utils.getFont(small);
-			final RAWFont smallf = Utils.getFont(true);
+			final BinaryFont defaultf = Utils.getFont(small);
+			final BinaryFont smallf = Utils.getFont(true);
 			final String s = t.substring(0, t.indexOf("ℯ℮") + 2);
 			final int sw = defaultf.getStringWidth(s);
 			return 1 + sw - 3 + smallf.getStringWidth(t.substring(t.indexOf("ℯ℮") + 2));

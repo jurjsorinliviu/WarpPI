@@ -36,6 +36,10 @@ import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.fixedfunc.GLPointerFunc;
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.nativewindow.util.DimensionImmutable;
+import com.jogamp.nativewindow.util.PixelFormat;
+import com.jogamp.nativewindow.util.PixelRectangle;
+import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.WindowEvent;
@@ -47,11 +51,13 @@ import com.jogamp.opengl.util.*;
 
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.nio.ByteBuffer;
+import java.util.Collection;
 
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.Display;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 
 /**
  * <pre>
@@ -88,12 +94,12 @@ import org.warp.picalculator.gui.graphicengine.Display;
  * @author Xerxes Rånby (xranby)
  */
 
-public class NEWTWindow implements GLEventListener {
+class NEWTWindow implements GLEventListener {
 
-	private final GPUDisplay disp;
+	private final GPUEngine disp;
 	private final GPURenderer renderer;
 
-	public NEWTWindow(GPUDisplay disp) {
+	public NEWTWindow(GPUEngine disp) {
 		this.disp = disp;
 		renderer = disp.getRenderer();
 	}
@@ -116,13 +122,16 @@ public class NEWTWindow implements GLEventListener {
 
 		System.out.println("Loading OpenGL...");
 		System.out.println(GLProfile.glAvailabilityToString());
-		if (GLProfile.isAnyAvailable()) {
+		if (!GLProfile.isAvailable(GLProfile.GL2ES1)) {
 			System.err.println("Le OpenGL non sono presenti su questo computer!");
+			return;
 		}
+		System.setProperty("jnlp.newt.window.icons", "res/icons/calculator-016.png res/icons/calculator-018.png res/icons/calculator-256.png");
 		final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES1));
 		System.out.println("Loaded OpenGL");
 		// We may at this point tweak the caps and request a translucent drawable
 		caps.setBackgroundOpaque(true); //transparency window
+		caps.setSampleBuffers(false);
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
 
@@ -138,7 +147,7 @@ public class NEWTWindow implements GLEventListener {
 
 			@Override
 			public void windowDestroyed(WindowEvent e) {
-				DisplayManager.display.destroy();
+				DisplayManager.engine.destroy();
 			}
 
 			@Override
@@ -299,10 +308,11 @@ public class NEWTWindow implements GLEventListener {
 		
 		//Textures
 		gl.glEnable(GL.GL_TEXTURE_2D);
-
+		
 		//Transparency
 		gl.glEnable(GL2ES1.GL_BLEND);
 		gl.glBlendFunc(GL2ES1.GL_SRC_ALPHA, GL2ES1.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glShadeModel(GL2ES1.GL_SMOOTH);
 		
 		try {
 			renderer.currentTex = ((GPUSkin) disp.loadSkin("test.png")).t;

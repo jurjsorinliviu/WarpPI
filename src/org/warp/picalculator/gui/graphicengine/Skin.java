@@ -2,11 +2,11 @@ package org.warp.picalculator.gui.graphicengine;
 
 import java.io.IOException;
 
-public interface RAWSkin {
+public interface Skin {
 
 	public void load(String file) throws IOException;
 
-	public void initialize(Display d);
+	public void initialize(GraphicEngine d);
 
-	public void use(Display d);
+	public void use(GraphicEngine d);
 }

@@ -4,19 +4,19 @@ import java.io.IOException;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.graphicengine.Drawable;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
-import org.warp.picalculator.gui.graphicengine.RAWSkin;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.Skin;
 
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.egl.EGL;
 
-public class GPUDisplay implements org.warp.picalculator.gui.graphicengine.Display {
+public class GPUEngine implements org.warp.picalculator.gui.graphicengine.GraphicEngine {
 
 	private volatile boolean initialized = false;
 	private volatile boolean created = false;
 	private NEWTWindow wnd;
-	private Drawable d;
+	private RenderingLoop d;
 	private GPURenderer r;
 	int[] size = new int[]{Main.screenSize[0], Main.screenSize[1]};
 
@@ -86,7 +86,7 @@ public class GPUDisplay implements org.warp.picalculator.gui.graphicengine.Displ
 	}
 
 	@Override
-	public void start(Drawable d) {
+	public void start(RenderingLoop d) {
 		this.d = d;
 		wnd.window.setVisible(true);
 	}
@@ -104,12 +104,12 @@ public class GPUDisplay implements org.warp.picalculator.gui.graphicengine.Displ
 	}
 
 	@Override
-	public RAWFont loadFont(String file) throws IOException {
+	public BinaryFont loadFont(String file) throws IOException {
 		return new GPUFont(file);
 	}
 
 	@Override
-	public RAWSkin loadSkin(String file) throws IOException {
+	public Skin loadSkin(String file) throws IOException {
 		return new GPUSkin(file);
 	}
 
@@ -126,7 +126,7 @@ public class GPUDisplay implements org.warp.picalculator.gui.graphicengine.Displ
 
 	@Override
 	public boolean isSupported() {
-		return GLProfile.isAnyAvailable() == false;
+		return GLProfile.isAvailable(GLProfile.GL2ES1);
 	}
 
 }

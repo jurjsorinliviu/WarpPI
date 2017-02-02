@@ -30,18 +30,18 @@ public class KeyboardDebugScreen extends Screen {
 	@Override
 	public void render() {
 		Renderer renderer = DisplayManager.renderer;
-		fonts[2].use(DisplayManager.display);
+		fonts[2].use(DisplayManager.engine);
 		renderer.glColor4f(0.75f, 0.0f, 0.0f, 1.0f);
 		renderer.glDrawStringRight(Main.screenSize[0] - 10, 30, "-" + keyevent.toUpperCase() + "-");
 		if (keyevent != "NONE") {
-			fonts[2].use(DisplayManager.display);
+			fonts[2].use(DisplayManager.engine);
 			renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 			renderer.glDrawStringLeft(10, 30, "Key position");
 			renderer.glDrawStringLeft(10, 45, "X: " + keyX + ", Y:" + keyY);
 			renderer.glDrawStringLeft(10, 65, "Key value");
 			renderer.glDrawStringLeft(10, 80, key);
 		}
-		fonts[3].use(DisplayManager.display);
+		fonts[3].use(DisplayManager.engine);
 		renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		for (int i = 0; i < 5; i++) {
 			if (log[i] != null) {
@@ -53,10 +53,10 @@ public class KeyboardDebugScreen extends Screen {
 		renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		renderer.glFillColor(-80 + 100 + 200, 90, 5, 5);
 		renderer.glFillColor(-80 + 100, 100, 200, 70);
-		fonts[2].use(DisplayManager.display);
+		fonts[2].use(DisplayManager.engine);
 		renderer.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		renderer.glDrawStringCenter(-80 + 100 + 200 / 2, 100 + 70 / 2 - (renderer.getCurrentFont().getCharacterHeight() / 2), "FROM SERIAL");
-		fonts[3].use(DisplayManager.display);
+		fonts[3].use(DisplayManager.engine);
 		renderer.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 		for (int i = 0; i < 8; i++) {
 			if (pinsA[i] == 1) {
@@ -99,10 +99,10 @@ public class KeyboardDebugScreen extends Screen {
 		renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		renderer.glFillColor(150 + 90, 200, 5, 5);
 		renderer.glFillColor(150 + 100, 100, 200, 70);
-		fonts[2].use(DisplayManager.display);
+		fonts[2].use(DisplayManager.engine);
 		renderer.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		renderer.glDrawStringCenter(150 + 100 + 200 / 2, 100 + 70 / 2 - (renderer.getCurrentFont().getCharacterHeight() / 2), "TO SERIAL");
-		fonts[3].use(DisplayManager.display);
+		fonts[3].use(DisplayManager.engine);
 		renderer.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 		for (int i = 15; i >= 8; i--) {
 			if (pinsB[i] == 1) {

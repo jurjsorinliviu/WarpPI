@@ -28,7 +28,7 @@ public class ChooseVariableValueScreen extends Screen {
 
 	@Override
 	public void render() {
-		Utils.getFont(false, true).use(DisplayManager.display);
+		Utils.getFont(false, true).use(DisplayManager.engine);
 		DisplayManager.renderer.glColor4i(0, 0, 0, 64);
 		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
 		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
@@ -36,7 +36,7 @@ public class ChooseVariableValueScreen extends Screen {
 		DisplayManager.renderer.glColor3i(255, 0, 0);
 		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
 		
-		Utils.getFont(false, false).use(DisplayManager.display);
+		Utils.getFont(false, false).use(DisplayManager.engine);
 		DisplayManager.renderer.glColor4i(0, 0, 0, 64);
 		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
 		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");

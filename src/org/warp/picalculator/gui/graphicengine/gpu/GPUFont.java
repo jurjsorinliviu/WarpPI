@@ -6,14 +6,14 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.warp.picalculator.gui.graphicengine.Display;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUFont;
 
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.util.texture.Texture;
 
-public class GPUFont implements RAWFont {
+public class GPUFont implements BinaryFont {
 
 	public Texture texture;
 	public int textureW;
@@ -100,7 +100,7 @@ public class GPUFont implements RAWFont {
 	}
 
 	@Override
-	public void initialize(Display d) {
+	public void initialize(GraphicEngine d) {
 		genTexture(tmpFont.rawchars);
 		tmpFont.chars32 = null;
 		tmpFont.rawchars = null;
@@ -109,7 +109,7 @@ public class GPUFont implements RAWFont {
 	}
 
 	@Override
-	public void use(Display d) {
+	public void use(GraphicEngine d) {
 		if (!initialized) {
 			initialize(d);
 		}

@@ -6,11 +6,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.Main;
-import org.warp.picalculator.gui.graphicengine.Display;
-import org.warp.picalculator.gui.graphicengine.RAWSkin;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay.CPURenderer;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.Skin;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine.CPURenderer;
 
-public class CPUSkin implements RAWSkin {
+public class CPUSkin implements Skin {
 
 	public int[] skinData;
 	public int[] skinSize;
@@ -40,13 +40,13 @@ public class CPUSkin implements RAWSkin {
 	}
 
 	@Override
-	public void initialize(Display d) {
+	public void initialize(GraphicEngine d) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void use(Display d) {
+	public void use(GraphicEngine d) {
 		((CPURenderer) d.getRenderer()).currentSkin = this;
 	}
 

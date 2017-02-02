@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.AnteriorFunction;
@@ -17,7 +18,7 @@ public class EquationsSystemPart extends AnteriorFunction {
 
 	@Override
 	protected Function NewInstance(Calculator root, Function value) {
-		return new EquationsSystemPart(root, value);
+		return new EquationsSystemPart(root, (Equation) value);
 	}
 
 	@Override
@@ -42,13 +43,13 @@ public class EquationsSystemPart extends AnteriorFunction {
 		final int spazioSotto = (h - 3 - 2) / 2 + paddingTop;
 		final int spazioSopra = h - spazioSotto;
 		variable.draw(x + 5, y + paddingTop);
-		glDrawLine(x + 2, y + 0, x + 3, y + 0);
-		glDrawLine(x + 1, y + 1, x + 1, y + spazioSotto / 2);
-		glDrawLine(x + 2, y + spazioSotto / 2 + 1, x + 2, y + spazioSotto - 1);
-		glDrawLine(x + 0, y + spazioSotto, x + 1, y + spazioSotto);
-		glDrawLine(x + 2, y + spazioSotto + 1, x + 2, y + spazioSotto + spazioSopra / 2 - 1);
-		glDrawLine(x + 1, y + spazioSotto + spazioSopra / 2, x + 1, y + h - 1);
-		glDrawLine(x + 2, y + h, x + 3, y + h);
+		DisplayManager.renderer.glDrawLine(x + 2, y + 0, x + 3, y + 0);
+		DisplayManager.renderer.glDrawLine(x + 1, y + 1, x + 1, y + spazioSotto / 2);
+		DisplayManager.renderer.glDrawLine(x + 2, y + spazioSotto / 2 + 1, x + 2, y + spazioSotto - 1);
+		DisplayManager.renderer.glDrawLine(x + 0, y + spazioSotto, x + 1, y + spazioSotto);
+		DisplayManager.renderer.glDrawLine(x + 2, y + spazioSotto + 1, x + 2, y + spazioSotto + spazioSopra / 2 - 1);
+		DisplayManager.renderer.glDrawLine(x + 1, y + spazioSotto + spazioSopra / 2, x + 1, y + h - 1);
+		DisplayManager.renderer.glDrawLine(x + 2, y + h, x + 3, y + h);
 	}
 
 	@Override

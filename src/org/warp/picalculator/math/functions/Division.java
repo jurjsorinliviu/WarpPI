@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
@@ -112,7 +112,7 @@ public class Division extends FunctionTwoValues {
 		}
 		int w1 = 0;
 		int h1 = 0;
-		Utils.getFont(small).use(DisplayManager.display);
+		Utils.getFont(small).use(DisplayManager.engine);
 		if (minus) {
 			w1 = Utils.getFont(small).getStringWidth(numerator);
 			h1 = Utils.getFont(small).getCharacterHeight();

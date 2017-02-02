@@ -8,13 +8,13 @@ import java.io.IOException;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.Display;
-import org.warp.picalculator.gui.graphicengine.Drawable;
-import org.warp.picalculator.gui.graphicengine.RAWFont;
-import org.warp.picalculator.gui.graphicengine.RAWSkin;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
-public class CPUDisplay implements Display {
+public class CPUEngine implements GraphicEngine {
 
 	private SwingWindow INSTANCE;
 	public int[] size = new int[] { 1, 1 };
@@ -85,7 +85,7 @@ public class CPUDisplay implements Display {
 	}
 
 	@Override
-	public void start(Drawable d) {
+	public void start(RenderingLoop d) {
 		Thread th = new Thread(() -> {
 			try {
 				double extratime = 0;
@@ -254,49 +254,59 @@ public class CPUDisplay implements Display {
 		}
 
 		@Override
-		public void glDrawLine(int x0, int y0, int x1, int y1) {
+		public void glDrawLine(float x0, float y0, float x1, float y1) {
 			x0 += Main.screenPos[0];
 			x1 += Main.screenPos[0];
 			y0 += Main.screenPos[1];
 			y1 += Main.screenPos[1];
-			if (x0 >= size[0] || y0 >= size[0]) {
+			final int ix0 = (int) x0;
+			final int ix1 = (int) x1;
+			final int iy0 = (int) y0;
+			final int iy1 = (int) y1;
+			if (ix0 >= size[0] || iy0 >= size[0]) {
 				return;
 			}
-			if (y0 == y1) {
-				for (int x = 0; x <= x1 - x0; x++) {
-					canvas2d[x0 + x + y0 * size[0]] = color;
+			if (iy0 == iy1) {
+				for (int x = 0; x <= ix1 - ix0; x++) {
+					canvas2d[ix0 + x + iy0 * size[0]] = color;
 				}
-			} else if (x0 == x1) {
-				for (int y = 0; y <= y1 - y0; y++) {
-					canvas2d[x0 + (y0 + y) * size[0]] = color;
+			} else if (ix0 == ix1) {
+				for (int y = 0; y <= iy1 - iy0; y++) {
+					canvas2d[ix0 + (iy0 + y) * size[0]] = color;
 				}
 			} else {
-				final int m = (y1 - y0) / (x1 - x0);
-				for (int texx = 0; texx <= x1 - x0; texx++) {
-					if (x0 + texx < size[0] && y0 + (m * texx) < size[1]) {
-						canvas2d[(x0 + texx) + (y0 + (m * texx)) * size[0]] = color;
+				final int m = (iy1 - iy0) / (ix1 - ix0);
+				for (int texx = 0; texx <= ix1 - ix0; texx++) {
+					if (ix0 + texx < size[0] && iy0 + (m * texx) < size[1]) {
+						canvas2d[(ix0 + texx) + (iy0 + (m * texx)) * size[0]] = color;
 					}
 				}
 			}
 		}
 
 		@Override
-		public void glFillRect(int x, int y, int width, int height, float uvX, float uvY, float uvWidth,
+		public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth,
 				float uvHeight) {
 			if (currentSkin != null) {
-				glDrawSkin(x, y, (int) uvX, (int) uvY, (int) (uvWidth + uvX), (int) (uvHeight + uvY), true);
+				glDrawSkin((int) x, (int) y, (int) uvX, (int) uvY, (int) (uvWidth + uvX), (int) (uvHeight + uvY), true);
 			} else {
 				glFillColor(x, y, width, height);
 			}
 		}
 
 		@Override
-		public void glFillColor(int x, int y, int width, int height) {
+		public void glFillColor(float x, float y, float width, float height) {
 			x += Main.screenPos[0];
 			y += Main.screenPos[1];
-			int x1 = x + width;
-			int y1 = y + height;
-			if (x >= size[0] || y >= size[0]) {
+			
+			final int ix = (int) x;
+			final int iy = (int) y;
+			final int iw = (int) width;
+			final int ih = (int) height;
+			
+			int x1 = ix + iw;
+			int y1 = iy + ih;
+			if (ix >= size[0] || iy >= size[0]) {
 				return;
 			}
 			if (x1 >= size[0]) {
@@ -306,18 +316,21 @@ public class CPUDisplay implements Display {
 				y1 = size[1];
 			}
 			final int sizeW = size[0];
-			for (int px = x; px < x1; px++) {
-				for (int py = y; py < y1; py++) {
+			for (int px = ix; px < x1; px++) {
+				for (int py = iy; py < y1; py++) {
 					canvas2d[(px) + (py) * sizeW] = color;
 				}
 			}
 		}
 
 		@Override
-		public void glDrawStringLeft(int x, int y, String textString) {
+		public void glDrawStringLeft(float x, float y, String textString) {
 			x += Main.screenPos[0];
 			y += Main.screenPos[1];
 
+			final int ix = (int) x;
+			final int iy = (int) y;
+			
 			final int[] text = currentFont.getCharIndexes(textString);
 			final int[] screen = canvas2d;
 			final int[] screenSize = size;
@@ -335,13 +348,13 @@ public class CPUDisplay implements Display {
 				final int charIndex = text[i];
 				for (int dy = 0; dy < currentFont.charH; dy++) {
 					for (int dx = 0; dx < currentFont.charW; dx++) {
-						j = x + cpos + dx;
+						j = ix + cpos + dx;
 						if (j > 0 & j < screenSize[0]) {
 							final int bit = dx + dy * currentFont.charW;
 							currentInt = (int) (Math.floor(bit) / (CPUFont.intBits));
 							currentIntBitPosition = bit - (currentInt * CPUFont.intBits);
 							bitData = (currentFont.chars32[charIndex * currentFont.charIntCount + currentInt] >> currentIntBitPosition) & 1;
-							screenPos = x + cpos + dx + (y + dy) * screenSize[0];
+							screenPos = ix + cpos + dx + (iy + dy) * screenSize[0];
 							if (bitData == 1 & screenLength > screenPos) {
 								screen[screenPos] = color;
 							}
@@ -352,12 +365,12 @@ public class CPUDisplay implements Display {
 		}
 
 		@Override
-		public void glDrawStringCenter(int x, int y, String text) {
+		public void glDrawStringCenter(float x, float y, String text) {
 			glDrawStringLeft(x - (currentFont.getStringWidth(text) / 2), y, text);
 		}
 
 		@Override
-		public void glDrawStringRight(int x, int y, String text) {
+		public void glDrawStringRight(float x, float y, String text) {
 			glDrawStringLeft(x - currentFont.getStringWidth(text), y, text);
 		}
 
@@ -377,7 +390,7 @@ public class CPUDisplay implements Display {
 		}
 
 		@Override
-		public RAWFont getCurrentFont() {
+		public BinaryFont getCurrentFont() {
 			return currentFont;
 		}
 
@@ -414,12 +427,12 @@ public class CPUDisplay implements Display {
 	}
 
 	@Override
-	public RAWFont loadFont(String file) throws IOException {
+	public BinaryFont loadFont(String file) throws IOException {
 		return new CPUFont(file);
 	}
 
 	@Override
-	public RAWSkin loadSkin(String file) throws IOException {
+	public Skin loadSkin(String file) throws IOException {
 		return new CPUSkin(file);
 	}
 

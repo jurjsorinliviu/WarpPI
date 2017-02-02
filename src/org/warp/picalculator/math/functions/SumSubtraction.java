@@ -6,7 +6,7 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUDisplay;
+import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
@@ -94,10 +94,10 @@ public class SumSubtraction extends FunctionTwoValues {
 		int dx = 0;
 		variable1.draw(dx + x, ln - variable1.getLine() + y);
 		dx += variable1.getWidth();
-		DisplayManager.renderer.glSetFont(Utils.getFont(small));
+		Utils.getFont(small).use(DisplayManager.engine);
 		dx += 1;
 		DisplayManager.renderer.glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-		dx += DisplayManager.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
+		dx += Utils.getFont(small).getStringWidth(getSymbol());
 		variable2.draw(dx + x, ln - variable2.getLine() + y);
 	}
 
@@ -111,7 +111,7 @@ public class SumSubtraction extends FunctionTwoValues {
 		int dx = 0;
 		dx += variable1.getWidth();
 		dx += 1;
-		dx += DisplayManager.renderer.glGetStringWidth(Utils.getFont(small), getSymbol());
+		dx += Utils.getFont(small).getStringWidth(getSymbol());
 		return dx += variable2.getWidth();
 	}
 

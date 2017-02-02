@@ -19,16 +19,16 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.Drawable;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 
 public class SwingWindow extends JFrame {
 	private static final long serialVersionUID = 2945898937634075491L;
 	public CustomCanvas c;
-	private static Drawable d;
+	private static RenderingLoop d;
 	public boolean wasResized = false;
-	private final CPUDisplay display;
+	private final CPUEngine display;
 
-	public SwingWindow(CPUDisplay disp, Drawable d) {
+	public SwingWindow(CPUEngine disp, RenderingLoop d) {
 		SwingWindow.d = d;
 		display = disp;
 		c = new CustomCanvas();
@@ -60,7 +60,7 @@ public class SwingWindow extends JFrame {
 		addComponentListener(new ComponentListener() {
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				DisplayManager.display.destroy();
+				DisplayManager.engine.destroy();
 			}
 
 			@Override
@@ -231,7 +231,7 @@ public class SwingWindow extends JFrame {
 
 			final int[] a = ((DataBufferInt) display.g.getRaster().getDataBuffer()).getData();
 //		        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
-			CPUDisplay.canvas2d = a;
+			CPUEngine.canvas2d = a;
 			g.clearRect(0, 0, display.size[0], display.size[1]);
 			g.drawImage(display.g, 0, 0, null);
 //			long time2 = System.nanoTime();

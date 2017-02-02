@@ -2,7 +2,7 @@ package org.warp.picalculator.gui.graphicengine;
 
 import java.io.IOException;
 
-public interface Display {
+public interface GraphicEngine {
 
 	public int[] getSize();
 
@@ -24,15 +24,15 @@ public interface Display {
 
 	public void destroy();
 
-	public void start(Drawable d);
+	public void start(RenderingLoop d);
 
 	public void repaint();
 
 	public Renderer getRenderer();
 
-	public RAWFont loadFont(String file) throws IOException;
+	public BinaryFont loadFont(String file) throws IOException;
 
-	public RAWSkin loadSkin(String file) throws IOException;
+	public Skin loadSkin(String file) throws IOException;
 
 	public void waitUntilExit();
 
