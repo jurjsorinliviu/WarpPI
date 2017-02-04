@@ -89,10 +89,10 @@ class NEWTWindow implements GLEventListener {
 		System.out.println("Loaded OpenGL");
 		// We may at this point tweak the caps and request a translucent drawable
 		caps.setBackgroundOpaque(true); //transparency window
-		caps.setSampleBuffers(false);
+//		caps.setSampleBuffers(false);
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
-
+		
 		glWindow.setTitle("WarpPI Calculator by Andrea Cavalli (XDrake99)");
 		
 		glWindow.addWindowListener(new WindowListener() {
