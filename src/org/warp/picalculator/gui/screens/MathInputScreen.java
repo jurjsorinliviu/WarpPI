@@ -685,16 +685,15 @@ public class MathInputScreen extends Screen {
 
 	public void showVariablesDialog(final Runnable runnable) {
 		final Thread ct = new Thread(() -> {
-			final ArrayList<Function> unknownsInFunctions = getUnknowns(calc.f.toArray(new Function[calc.f.size()]));
-			unknownsInFunctions.clear(); //TODO: Remove this line to test the new variables dialog
+			final ArrayList<Function> knownVarsInFunctions = getKnownVariables(calc.f.toArray(new Function[calc.f.size()]));
 			for (final VariableValue f : calc.variablesValues) {
-				if (unknownsInFunctions.contains(f.v)) {
-					unknownsInFunctions.remove(f.v);
+				if (knownVarsInFunctions.contains(f.v)) {
+					knownVarsInFunctions.remove(f.v);
 				}
 			}
-
+			
 			boolean cancelled = false;
-			for (final Function f : unknownsInFunctions) {
+			for (final Function f : knownVarsInFunctions) {
 				final ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
 				DisplayManager.INSTANCE.setScreen(cvs);
 				try {
@@ -728,18 +727,20 @@ public class MathInputScreen extends Screen {
 		ct.start();
 	}
 
-	private ArrayList<Function> getUnknowns(Function[] fncs) {
+	private ArrayList<Function> getKnownVariables(Function[] fncs) {
 		final ArrayList<Function> res = new ArrayList<>();
 		for (final Function f : fncs) {
 			if (f instanceof FunctionTwoValues) {
-				res.addAll(getUnknowns(new Function[] { ((FunctionTwoValues) f).getVariable1(), ((FunctionTwoValues) f).getVariable2() }));
+				res.addAll(getKnownVariables(new Function[] { ((FunctionTwoValues) f).getVariable1(), ((FunctionTwoValues) f).getVariable2() }));
 			} else if (f instanceof FunctionMultipleValues) {
-				res.addAll(getUnknowns(((FunctionMultipleValues) f).getVariables()));
+				res.addAll(getKnownVariables(((FunctionMultipleValues) f).getVariables()));
 			} else if (f instanceof AnteriorFunction) {
-				res.addAll(getUnknowns(new Function[] { ((AnteriorFunction) f).getVariable() }));
+				res.addAll(getKnownVariables(new Function[] { ((AnteriorFunction) f).getVariable() }));
 			} else if (f instanceof Variable) {
-				if (!res.contains(f)) {
-					res.add(f);
+				if (((Variable)f).getType() == Variable.V_TYPE.KNOWN) {
+					if (!res.contains(f)) {
+						res.add(f);
+					}
 				}
 			}
 		}
