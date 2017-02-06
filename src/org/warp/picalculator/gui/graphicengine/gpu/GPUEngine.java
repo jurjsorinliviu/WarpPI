@@ -129,11 +129,13 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 		boolean available = GLProfile.isAvailable(GLProfile.GL2ES1);
 		if (!available) {
 			System.err.println(GLProfile.glAvailabilityToString());
-			try {
-				Thread.sleep(1000);
-			} catch(Exception e) {}
 		}
-		return available;
+		return false;
+	}
+
+	@Override
+	public boolean doesRefreshPauses() {
+		return false;
 	}
 
 }

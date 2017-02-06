@@ -16,24 +16,35 @@ public class Variable implements Function {
 	protected int width;
 	protected int height;
 	protected int line;
+	protected int[] varColor;
 	protected boolean small;
 	protected final Calculator root;
+	protected V_TYPE type = V_TYPE.KNOWN;
 
-	public Variable(Calculator root, char val) {
+	public Variable(Calculator root, char val, V_TYPE type) {
 		this.root = root;
 		var = val;
+		this.type = type;
 	}
 
-	public Variable(Calculator root, String s) throws Error {
-		this(root, s.charAt(0));
+	public Variable(Calculator root, String s, V_TYPE type) throws Error {
+		this(root, s.charAt(0), type);
 	}
 
 	public char getChar() {
 		return var;
 	}
 
-	public void setChar(char val) {
-		var = val;
+	public Variable setChar(char val) {
+		return new Variable(root, val, type);
+	}
+
+	public V_TYPE getType() {
+		return type;
+	}
+
+	public Variable setType(V_TYPE typ) {
+		return new Variable(root, var, typ);
 	}
 
 	@Override
@@ -41,6 +52,24 @@ public class Variable implements Function {
 		line = calcLine();
 		height = calcHeight();
 		width = calcWidth();
+		varColor = new int[3];
+		switch (type) {
+			case KNOWN:
+				varColor[0] = 0;
+				varColor[1] = 200;
+				varColor[2] = 0;
+				break;
+			case UNKNOWN:
+				varColor[0] = 200;
+				varColor[1] = 0;
+				varColor[2] = 0;
+				break;
+			case SOLUTION:
+				varColor[0] = 0;
+				varColor[1] = 0;
+				varColor[2] = 200;
+				break;
+		}
 	}
 
 	@Override
@@ -63,7 +92,9 @@ public class Variable implements Function {
 	@Override
 	public void draw(int x, int y) {
 		Utils.getFont(small).use(DisplayManager.engine);
+		DisplayManager.renderer.glColor3i(varColor[0], varColor[1], varColor[2]);
 		DisplayManager.renderer.glDrawStringLeft(x + 1, y, toString());
+		DisplayManager.renderer.glColor3i(0, 0, 0);
 	}
 
 	@Override
@@ -135,7 +166,7 @@ public class Variable implements Function {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Variable) {
-			return ((Variable) o).getChar() == var;
+			return ((Variable) o).getChar() == var && ((Variable) o).getType() == type;
 		}
 		return false;
 	}
@@ -143,5 +174,11 @@ public class Variable implements Function {
 	@Override
 	public Calculator getRoot() {
 		return root;
+	}
+	
+	public static enum V_TYPE {
+		KNOWN,
+		UNKNOWN,
+		SOLUTION
 	}
 }

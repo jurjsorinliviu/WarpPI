@@ -120,7 +120,7 @@ public class SwingWindow extends JFrame {
 						break;
 					case KeyEvent.VK_ENTER:
 						if (!Keyboard.shift && !Keyboard.alpha) {
-							Keyboard.keyReleased(Key.SOLVE);
+							Keyboard.keyReleased(Key.SIMPLIFY);
 						} else {
 							Keyboard.keyReleased(Key.NONE);
 						}

@@ -107,7 +107,7 @@ public class CPUEngine implements GraphicEngine {
 				e.printStackTrace();
 			}
 		});
-		th.setName("Game loop thread");
+		th.setName("CPU rendering thread");
 		th.setDaemon(true);
 		th.start();
 	}
@@ -450,5 +450,10 @@ public class CPUEngine implements GraphicEngine {
 	@Override
 	public boolean isSupported() {
 		return GraphicsEnvironment.isHeadless() == false;
+	}
+
+	@Override
+	public boolean doesRefreshPauses() {
+		return true;
 	}
 }

@@ -26,6 +26,7 @@ public final class DisplayManager implements RenderingLoop {
 	private static float brightness;
 
 	public static final GraphicEngine engine = chooseGraphicEngine();
+	public static final boolean supportsPauses = engine.doesRefreshPauses();
 	public static Renderer renderer;
 
 	public static Skin guiSkin;
@@ -343,22 +344,7 @@ public final class DisplayManager implements RenderingLoop {
 
 	@Override
 	public void refresh() {
-		float dt = 0;
-		final long newtime = System.nanoTime();
-		if (precTime == -1) {
-			dt = 0;
-		} else {
-			dt = (float) ((newtime - precTime) / 1000000000d);
-		}
-		precTime = newtime;
-		/*
-		 * Calcoli
-		 */
-		checkDisplayResized();
-
-		screen.beforeRender(dt);
-
-		if (dt >= 0.03 || screen.mustBeRefreshed()) {
+		if (supportsPauses == false || (Keyboard.popRefreshRequest() || screen.mustBeRefreshed())) {
 			draw();
 		}
 
@@ -385,68 +371,83 @@ public final class DisplayManager implements RenderingLoop {
 				System.exit(0);
 			}
 
-			//Debug thread
-			Thread dbgthrd = new Thread(() -> {
+			//Working thread
+			Thread workThread = new Thread(() -> {
 				try {
 					while (true) {
-						for (int i = 0; i < 10; i++) {
-							System.out.println("============");
-							OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-							for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
-								method.setAccessible(true);
-								if (method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers())) {
-									Object value;
-									try {
-										value = method.invoke(operatingSystemMXBean);
-									} catch (Exception e) {
-										value = e;
-									} // try
-									boolean percent = false;
-									boolean mb = false;
-									String displayName = method.getName();
-									String displayValue = value.toString();
-									if (displayName.endsWith("CpuLoad")) {
-										percent = true;
-									}
-									if (displayName.endsWith("MemorySize")) {
-										mb = true;
-									}
-									ArrayList<String> arr = new ArrayList<>();
-									arr.add("getFreePhysicalMemorySize");
-									arr.add("getProcessCpuLoad");
-									arr.add("getSystemCpuLoad");
-									arr.add("getTotalPhysicalMemorySize");
-									if (arr.contains(displayName)) {
-										if (percent) {
-											try {
-												System.out.println(displayName + " = " + (((int)(Float.parseFloat(displayValue) * 10000f))/100f) + "%");
-											}catch(Exception ex) {
-												System.out.println(displayName + " = " + displayValue);
-											}
-										} else if (mb) {
-											try {
-												System.out.println(displayName + " = " + (Long.parseLong(displayValue) / 1024L / 1024L) + " MB");
-											}catch(Exception ex) {
-												System.out.println(displayName + " = " + displayValue);
-											}
-										} else {
-											System.out.println(displayName + " = " + displayValue);
-										}
-									}
-								} // if
-							} // for
-							System.out.println("============");
-							Thread.sleep(5000);
+						float dt = 0;
+						final long newtime = System.nanoTime();
+						if (precTime == -1) {
+							dt = 0;
+						} else {
+							dt = (float) ((newtime - precTime) / 1000000000d);
 						}
+						precTime = newtime;
+						/*
+						 * Calcoli
+						 */
+						checkDisplayResized();
+						
+						screen.beforeRender(dt);
+
+						Thread.sleep(50);
+//						for (int i = 0; i < 10; i++) {
+//							System.out.println("============");
+//							OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+//							for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
+//								method.setAccessible(true);
+//								if (method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers())) {
+//									Object value;
+//									try {
+//										value = method.invoke(operatingSystemMXBean);
+//									} catch (Exception e) {
+//										value = e;
+//									} // try
+//									boolean percent = false;
+//									boolean mb = false;
+//									String displayName = method.getName();
+//									String displayValue = value.toString();
+//									if (displayName.endsWith("CpuLoad")) {
+//										percent = true;
+//									}
+//									if (displayName.endsWith("MemorySize")) {
+//										mb = true;
+//									}
+//									ArrayList<String> arr = new ArrayList<>();
+//									arr.add("getFreePhysicalMemorySize");
+//									arr.add("getProcessCpuLoad");
+//									arr.add("getSystemCpuLoad");
+//									arr.add("getTotalPhysicalMemorySize");
+//									if (arr.contains(displayName)) {
+//										if (percent) {
+//											try {
+//												System.out.println(displayName + " = " + (((int)(Float.parseFloat(displayValue) * 10000f))/100f) + "%");
+//											}catch(Exception ex) {
+//												System.out.println(displayName + " = " + displayValue);
+//											}
+//										} else if (mb) {
+//											try {
+//												System.out.println(displayName + " = " + (Long.parseLong(displayValue) / 1024L / 1024L) + " MB");
+//											}catch(Exception ex) {
+//												System.out.println(displayName + " = " + displayValue);
+//											}
+//										} else {
+//											System.out.println(displayName + " = " + displayValue);
+//										}
+//									}
+//								} // if
+//							} // for
+//							System.out.println("============");
+//							Thread.sleep(5000);
+//						}
 					}
 				} catch (final InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			});
-			dbgthrd.setDaemon(true);
-			dbgthrd.setName("Debug performance thread");
-			//dbgthrd.start();
+			workThread.setDaemon(true);
+			workThread.setName("Work thread");
+			workThread.start();
 			
 			engine.start(this);
 			
@@ -464,8 +465,10 @@ public final class DisplayManager implements RenderingLoop {
 		if (newval >= 0 && newval <= 1) {
 			brightness = newval;
 			if (Utils.debugOn == false) {
-				Gpio.pwmWrite(12, (int) Math.ceil(brightness * 1024));
+				Gpio.pwmWrite(12, (int) Math.ceil(brightness * 1024f));
 //				SoftPwm.softPwmWrite(12, (int)(Math.ceil(brightness*10)));
+			} else {
+				Utils.debug.println("Brightness: " + newval);
 			}
 		}
 	}

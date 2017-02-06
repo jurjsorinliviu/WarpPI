@@ -29,6 +29,8 @@ public class Keyboard {
 	private static volatile boolean[][] precedentStates = new boolean[8][8];
 	public static volatile boolean[][] debugKeysDown = new boolean[8][8];
 	public static volatile int debugKeyCode = -1;
+	
+	private static volatile boolean refreshRequest = false;
 
 	public static void startKeyboard() {
 		final Thread kt = new Thread(() -> {
@@ -178,9 +180,9 @@ public class Keyboard {
 			case com.jogamp.newt.event.KeyEvent.VK_ENTER:
 			case KeyEvent.VK_ENTER:
 				if (Keyboard.shift) {
-					Keyboard.keyPressed(Key.SIMPLIFY);
+					Keyboard.keyPressed(Key.STEP);
 				} else if (!Keyboard.shift && !Keyboard.alpha) {
-					Keyboard.keyPressed(Key.SOLVE);
+					Keyboard.keyPressed(Key.SIMPLIFY);
 				} else {
 					Keyboard.keyPressed(Key.NONE);
 				}
@@ -421,11 +423,11 @@ public class Keyboard {
 			}
 		} else if (row == 1 && col == 8) {
 			if (shift) {
-				keyPressed(Key.SIMPLIFY);
+				keyPressed(Key.STEP);
 			} else if (alpha) {
 				keyPressed(Key.NONE);
 			} else {
-				keyPressed(Key.SOLVE);
+				keyPressed(Key.SIMPLIFY);
 			}
 		} else if (row == 2 && col == 8) {
 			if (shift) {
@@ -752,7 +754,7 @@ public class Keyboard {
 				}
 			}
 			if (refresh) {
-//				PIDisplay.display.repaint();
+				refreshRequest = true;
 			}
 		}
 	}
@@ -782,7 +784,15 @@ public class Keyboard {
 	}
 
 	public static enum Key {
-		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, SURD_MODE, DRG_CYCLE, LETTER_X, LETTER_Y, SIMPLIFY, SOLVE, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x, SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT, PI
+		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, SURD_MODE, DRG_CYCLE, LETTER_X, LETTER_Y, STEP, SIMPLIFY, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x, SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT, PI
+	}
+
+	public static boolean popRefreshRequest() {
+		if (refreshRequest) {
+			refreshRequest = false;
+			return true;
+		}
+		return false;
 	}
 
 }
@@ -829,9 +839,9 @@ public class Keyboard {
 |      |      |      |      |                    |
 |      |      |      |      |                    |
 |5,8---|4,8---|3,8---|2,8---|1,8-----------------|
-| 0    | .    |      |      | SOLVE              |
-|      |      |      |PI    | SIMPLIFY           |
-| X    | Y    | Z    |DRGCYCL|                   |
+| 0    | .    |      |      | SIMPLIFY           |
+|      |      |      |PI    | STEP               |
+| X    | Y    | Z    |DRGCYCL|SOLVE FOR [x]      |
 |------|------|------|------|--------------------|
 
 

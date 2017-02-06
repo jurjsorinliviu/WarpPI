@@ -111,7 +111,7 @@ public class Calculator {
 		final ArrayList<Function> fncs = new ArrayList<>();
 		if (eqn.length() > 0) {
 			try {
-				fncs.add(parseString(eqn.replace("sqrt", "Ⓐ").replace("^", "Ⓑ")));
+				fncs.add(parseString(eqn.replace("sqrt", MathematicalSymbols.SQUARE_ROOT).replace("^", MathematicalSymbols.POWER)));
 			} catch (final Exception ex) {
 
 			}

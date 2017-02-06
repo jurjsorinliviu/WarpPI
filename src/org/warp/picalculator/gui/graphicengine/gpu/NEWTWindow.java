@@ -89,7 +89,7 @@ class NEWTWindow implements GLEventListener {
 		System.out.println("Loaded OpenGL");
 		// We may at this point tweak the caps and request a translucent drawable
 		caps.setBackgroundOpaque(true); //transparency window
-//		caps.setSampleBuffers(false);
+		caps.setSampleBuffers(false);
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
 		
@@ -184,7 +184,7 @@ class NEWTWindow implements GLEventListener {
 						break;
 					case KeyEvent.VK_ENTER:
 						if (!Keyboard.shift && !Keyboard.alpha) {
-							Keyboard.keyReleased(Key.SOLVE);
+							Keyboard.keyReleased(Key.SIMPLIFY);
 						} else {
 							Keyboard.keyReleased(Key.NONE);
 						}

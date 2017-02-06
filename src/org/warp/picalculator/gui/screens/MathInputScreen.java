@@ -32,8 +32,8 @@ import org.warp.picalculator.math.functions.Number;
 
 public class MathInputScreen extends Screen {
 
-	public volatile String equazioneCorrente = "";
-	public volatile String nuovaEquazione = "";
+	public volatile String currentExpression = "";
+	public volatile String newExpression = "";
 	public volatile int caretPos = 0;
 	public volatile boolean showCaret = true;
 	public volatile float showCaretDelta = 0f;
@@ -42,7 +42,7 @@ public class MathInputScreen extends Screen {
 	public int scrollX = 0;
 	public int errorLevel = 0; // 0 = nessuno, 1 = risultato, 2 = tutto
 	boolean mustRefresh = true;
-	boolean afterDoNextStep = false;
+	boolean firstStep = true;
 
 	public MathInputScreen() {
 		super();
@@ -115,9 +115,9 @@ public class MathInputScreen extends Screen {
 	}
 
 	public void interpreta(boolean temporary) throws Error {
-		final String eqn = nuovaEquazione;
+		final String eqn = newExpression;
 		if (!temporary) {
-			equazioneCorrente = eqn;
+			currentExpression = eqn;
 		}
 
 		calc.parseInputString(eqn);
@@ -131,8 +131,8 @@ public class MathInputScreen extends Screen {
 			showCaret = !showCaret;
 			showCaretDelta = 0f;
 		}
-		if (caretPos > nuovaEquazione.length()) {
-			caretPos = nuovaEquazione.length();
+		if (caretPos > newExpression.length()) {
+			caretPos = newExpression.length();
 		}
 
 		if (DisplayManager.error == null) {
@@ -165,9 +165,9 @@ public class MathInputScreen extends Screen {
 		final int textColor = 0xFF000000;
 		final int padding = 4;
 		DisplayManager.renderer.glColor(textColor);
-		final int caretRealPos = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione.substring(0, caretPos)).length() * (fontBig.getCharacterWidth() + 1);
-		final String inputTextWithoutCaret = MathematicalSymbols.getGraphicRepresentation(nuovaEquazione);
-		final boolean tooLongI = padding + fontBig.getStringWidth(nuovaEquazione) + padding >= Main.screenSize[0];
+		final int caretRealPos = MathematicalSymbols.getGraphicRepresentation(newExpression.substring(0, caretPos)).length() * (fontBig.getCharacterWidth() + 1);
+		final String inputTextWithoutCaret = MathematicalSymbols.getGraphicRepresentation(newExpression);
+		final boolean tooLongI = padding + fontBig.getStringWidth(newExpression) + padding >= Main.screenSize[0];
 		int scrollI = 0;
 		if (tooLongI) {
 			scrollI = -scrollX;
@@ -246,17 +246,17 @@ public class MathInputScreen extends Screen {
 	@Override
 	public boolean keyPressed(Key k) {
 		switch (k) {
-			case SIMPLIFY:
-				if (nuovaEquazione.length() > 0) {
-					if (!afterDoNextStep) {
+			case STEP:
+				if (newExpression.length() > 0) {
+					if (firstStep) {
 						try {
 							try {
 								interpreta(true);
 								showVariablesDialog(() -> {
-									equazioneCorrente = nuovaEquazione;
+									currentExpression = newExpression;
 									calc.f2 = calc.f;
-									afterDoNextStep = true;
-									simplify();
+									firstStep = false;
+									step();
 								});
 							} catch (final Exception ex) {
 								if (Utils.debugOn) {
@@ -273,15 +273,15 @@ public class MathInputScreen extends Screen {
 							System.err.println(e.id);
 						}
 					} else {
-						simplify();
+						step();
 					}
 				}
 				return true;
-			case SOLVE:
+			case SIMPLIFY:
 				if (DisplayManager.error != null) {
 					Utils.debug.println("Resetting after error...");
 					DisplayManager.error = null;
-					equazioneCorrente = null;
+					currentExpression = null;
 					calc.f = null;
 					calc.f2 = null;
 					calc.resultsCount = 0;
@@ -289,15 +289,15 @@ public class MathInputScreen extends Screen {
 				} else {
 					try {
 						try {
-							if (afterDoNextStep) {
-								simplify();
+							if (!firstStep) {
+								step();
 							} else {
-								if (nuovaEquazione != equazioneCorrente && nuovaEquazione.length() > 0) {
+								if (newExpression != currentExpression && newExpression.length() > 0) {
 									changeEquationScreen();
 									interpreta(true);
 									showVariablesDialog(() -> {
-										equazioneCorrente = nuovaEquazione;
-										solve();
+										currentExpression = newExpression;
+										simplify();
 									});
 								}
 							}
@@ -414,36 +414,36 @@ public class MathInputScreen extends Screen {
 				typeChar(MathematicalSymbols.ARC_TANGENT);
 				return true;
 			case DELETE:
-				if (nuovaEquazione.length() > 0) {
+				if (newExpression.length() > 0) {
 					if (caretPos > 0) {
 						caretPos -= 1;
-						nuovaEquazione = nuovaEquazione.substring(0, caretPos) + nuovaEquazione.substring(caretPos + 1, nuovaEquazione.length());
+						newExpression = newExpression.substring(0, caretPos) + newExpression.substring(caretPos + 1, newExpression.length());
 					} else {
-						nuovaEquazione = nuovaEquazione.substring(1);
+						newExpression = newExpression.substring(1);
 					}
 					try {
 						interpreta(true);
 					} catch (final Error e) {}
 				}
-				afterDoNextStep = false;
+				firstStep = true;
 				return true;
 			case LEFT:
 				if (caretPos > 0) {
 					caretPos -= 1;
 				} else {
-					caretPos = nuovaEquazione.length();
+					caretPos = newExpression.length();
 				}
-				scrollX = fontBig.getStringWidth(nuovaEquazione.substring(0, caretPos) + "|||");
+				scrollX = fontBig.getStringWidth(newExpression.substring(0, caretPos) + "|||");
 				showCaret = true;
 				showCaretDelta = 0L;
 				return true;
 			case RIGHT:
-				if (caretPos < nuovaEquazione.length()) {
+				if (caretPos < newExpression.length()) {
 					caretPos += 1;
 				} else {
 					caretPos = 0;
 				}
-				scrollX = fontBig.getStringWidth(nuovaEquazione.substring(0, caretPos) + "|||");
+				scrollX = fontBig.getStringWidth(newExpression.substring(0, caretPos) + "|||");
 				showCaret = true;
 				showCaretDelta = 0L;
 				return true;
@@ -454,8 +454,8 @@ public class MathInputScreen extends Screen {
 					return true;
 				} else {
 					caretPos = 0;
-					nuovaEquazione = "";
-					afterDoNextStep = false;
+					newExpression = "";
+					firstStep = false;
 					if (calc.f != null) {
 						calc.f = new ArrayList<>();
 					}
@@ -466,8 +466,8 @@ public class MathInputScreen extends Screen {
 				if (calc.exactMode == false) {
 					calc.f2 = solveExpression(calc.f2);
 				} else {
-					equazioneCorrente = "";
-					Keyboard.keyPressed(Key.SOLVE);
+					currentExpression = "";
+					Keyboard.keyPressed(Key.SIMPLIFY);
 				}
 				return true;
 			case debug1:
@@ -475,8 +475,8 @@ public class MathInputScreen extends Screen {
 				return true;
 			case HISTORY_BACK:
 				if (DisplayManager.INSTANCE.canGoBack()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession + 1] instanceof MathInputScreen) {
-						nuovaEquazione = equazioneCorrente;
+					if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession + 1] instanceof MathInputScreen) {
+						newExpression = currentExpression;
 						try {
 							interpreta(true);
 						} catch (final Error e) {}
@@ -485,8 +485,8 @@ public class MathInputScreen extends Screen {
 				return false;
 			case HISTORY_FORWARD:
 				if (DisplayManager.INSTANCE.canGoForward()) {
-					if (equazioneCorrente != null && equazioneCorrente.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession - 1] instanceof MathInputScreen) {
-						nuovaEquazione = equazioneCorrente;
+					if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession - 1] instanceof MathInputScreen) {
+						newExpression = currentExpression;
 						try {
 							interpreta(true);
 						} catch (final Error e) {}
@@ -546,7 +546,7 @@ public class MathInputScreen extends Screen {
 		return null;
 	}
 
-	protected void simplify() {
+	protected void step() {
 		try {
 			try {
 				showVariablesDialog();
@@ -602,7 +602,7 @@ public class MathInputScreen extends Screen {
 		}
 	}
 
-	protected void solve() {
+	protected void simplify() {
 		try {
 			try {
 				for (final Function f : calc.f) {
@@ -645,11 +645,11 @@ public class MathInputScreen extends Screen {
 	}
 
 	private void changeEquationScreen() {
-		if (equazioneCorrente != null && equazioneCorrente.length() > 0) {
+		if (currentExpression != null && currentExpression.length() > 0) {
 			final MathInputScreen cloned = clone();
-			cloned.caretPos = cloned.equazioneCorrente.length();
-			cloned.nuovaEquazione = cloned.equazioneCorrente;
-			cloned.scrollX = fontBig.getStringWidth(cloned.equazioneCorrente);
+			cloned.caretPos = cloned.currentExpression.length();
+			cloned.newExpression = cloned.currentExpression;
+			cloned.scrollX = fontBig.getStringWidth(cloned.currentExpression);
 			try {
 				cloned.interpreta(true);
 			} catch (final Error e) {}
@@ -662,12 +662,12 @@ public class MathInputScreen extends Screen {
 
 	public void typeChar(String chr) {
 		final int len = chr.length();
-		nuovaEquazione = nuovaEquazione.substring(0, caretPos) + chr + nuovaEquazione.substring(caretPos, nuovaEquazione.length());
+		newExpression = newExpression.substring(0, caretPos) + chr + newExpression.substring(caretPos, newExpression.length());
 		caretPos += len;
-		scrollX = fontBig.getStringWidth(nuovaEquazione.substring(0, caretPos) + "|||");
+		scrollX = fontBig.getStringWidth(newExpression.substring(0, caretPos) + "|||");
 		showCaret = true;
 		showCaretDelta = 0L;
-		afterDoNextStep = false;
+		firstStep = true;
 		try {
 			interpreta(true);
 		} catch (final Error e) {}
@@ -685,15 +685,16 @@ public class MathInputScreen extends Screen {
 
 	public void showVariablesDialog(final Runnable runnable) {
 		final Thread ct = new Thread(() -> {
-			final ArrayList<Function> variablesInFunctions = getVariables(calc.f.toArray(new Function[calc.f.size()]));
+			final ArrayList<Function> unknownsInFunctions = getUnknowns(calc.f.toArray(new Function[calc.f.size()]));
+			unknownsInFunctions.clear(); //TODO: Remove this line to test the new variables dialog
 			for (final VariableValue f : calc.variablesValues) {
-				if (variablesInFunctions.contains(f.v)) {
-					variablesInFunctions.remove(f.v);
+				if (unknownsInFunctions.contains(f.v)) {
+					unknownsInFunctions.remove(f.v);
 				}
 			}
 
 			boolean cancelled = false;
-			for (final Function f : variablesInFunctions) {
+			for (final Function f : unknownsInFunctions) {
 				final ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
 				DisplayManager.INSTANCE.setScreen(cvs);
 				try {
@@ -727,15 +728,15 @@ public class MathInputScreen extends Screen {
 		ct.start();
 	}
 
-	private ArrayList<Function> getVariables(Function[] fncs) {
+	private ArrayList<Function> getUnknowns(Function[] fncs) {
 		final ArrayList<Function> res = new ArrayList<>();
 		for (final Function f : fncs) {
 			if (f instanceof FunctionTwoValues) {
-				res.addAll(getVariables(new Function[] { ((FunctionTwoValues) f).getVariable1(), ((FunctionTwoValues) f).getVariable2() }));
+				res.addAll(getUnknowns(new Function[] { ((FunctionTwoValues) f).getVariable1(), ((FunctionTwoValues) f).getVariable2() }));
 			} else if (f instanceof FunctionMultipleValues) {
-				res.addAll(getVariables(((FunctionMultipleValues) f).getVariables()));
+				res.addAll(getUnknowns(((FunctionMultipleValues) f).getVariables()));
 			} else if (f instanceof AnteriorFunction) {
-				res.addAll(getVariables(new Function[] { ((AnteriorFunction) f).getVariable() }));
+				res.addAll(getUnknowns(new Function[] { ((AnteriorFunction) f).getVariable() }));
 			} else if (f instanceof Variable) {
 				if (!res.contains(f)) {
 					res.add(f);
@@ -750,8 +751,8 @@ public class MathInputScreen extends Screen {
 		final MathInputScreen es = this;
 		final MathInputScreen es2 = new MathInputScreen();
 		es2.scrollX = es.scrollX;
-		es2.nuovaEquazione = es.nuovaEquazione;
-		es2.equazioneCorrente = es.equazioneCorrente;
+		es2.newExpression = es.newExpression;
+		es2.currentExpression = es.currentExpression;
 		es2.showCaret = es.showCaret;
 		es2.showCaretDelta = es.showCaretDelta;
 		es2.caretPos = es.caretPos;
@@ -761,7 +762,7 @@ public class MathInputScreen extends Screen {
 		es2.autoscroll = es.autoscroll;
 		es2.errorLevel = es.errorLevel;
 		es2.mustRefresh = es.mustRefresh;
-		es2.afterDoNextStep = es.afterDoNextStep;
+		es2.firstStep = es.firstStep;
 //		es2.calc.variablesValues = Utils.cloner.deepClone(es.calc.variablesValues);
 		es2.calc = Utils.cloner.deepClone(es.calc);
 		return es2;

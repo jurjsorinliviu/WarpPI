@@ -308,7 +308,7 @@ public class Expression extends FunctionMultipleValues {
 							break;
 						default:
 							if (Utils.isInArray(charI, MathematicalSymbols.variables())) {
-								f = new Variable(root, charI);
+								f = new Variable(root, charI, Variable.V_TYPE.UNKNOWN);
 							} else {
 								if (charI == "(" || charI == ")") {
 									throw new Error(Errors.UNBALANCED_BRACKETS);
