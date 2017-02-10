@@ -9,6 +9,7 @@ import org.warp.picalculator.math.rules.ExponentRule1;
 import org.warp.picalculator.math.rules.ExponentRule2;
 import org.warp.picalculator.math.rules.ExponentRule3;
 import org.warp.picalculator.math.rules.ExponentRule4;
+import org.warp.picalculator.math.rules.ExponentRule9;
 import org.warp.picalculator.math.rules.FractionsRule4;
 import org.warp.picalculator.math.rules.FractionsRule5;
 import org.warp.picalculator.math.rules.UndefinedRule1;
@@ -49,6 +50,9 @@ public class Power extends FunctionTwoValues {
 		if (ExponentRule4.compare(this)) {
 			return true;
 		}
+		if (ExponentRule9.compare(this)) {
+			return true;
+		}
 		if (FractionsRule4.compare(this)) {
 			return true;
 		}
@@ -84,6 +88,8 @@ public class Power extends FunctionTwoValues {
 			result.addAll(ExponentRule3.execute(this));
 		} else if (ExponentRule4.compare(this)) {
 			result.addAll(ExponentRule4.execute(this));
+		} else if (ExponentRule9.compare(this)) {
+			result.addAll(ExponentRule9.execute(this));
 		} else if (FractionsRule4.compare(this)) {
 			result.addAll(FractionsRule4.execute(this));
 		} else if (FractionsRule5.compare(this)) {

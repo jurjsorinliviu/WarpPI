@@ -6,6 +6,7 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Calculator;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule15;
+import org.warp.picalculator.math.rules.ExponentRule16;
 import org.warp.picalculator.math.rules.FractionsRule14;
 import org.warp.picalculator.math.rules.NumberRule1;
 import org.warp.picalculator.math.rules.NumberRule2;
@@ -53,6 +54,9 @@ public class Multiplication extends FunctionTwoValues {
 		if (ExponentRule15.compare(this)) {
 			return true;
 		}
+		if (ExponentRule16.compare(this)) {
+			return true;
+		}
 		if (FractionsRule14.compare(this)) {
 			return true;
 		}
@@ -75,6 +79,8 @@ public class Multiplication extends FunctionTwoValues {
 			result = NumberRule6.execute(this);
 		} else if (ExponentRule15.compare(this)) {
 			result = ExponentRule15.execute(this);
+		} else if (ExponentRule16.compare(this)) {
+			result = ExponentRule16.execute(this);
 		} else if (FractionsRule14.compare(this)) {
 			result = FractionsRule14.execute(this);
 		} else if (MultiplicationMethod1.compare(this)) {

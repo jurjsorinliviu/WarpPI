@@ -130,7 +130,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 		if (!available) {
 			System.err.println(GLProfile.glAvailabilityToString());
 		}
-		return false;
+		return available;
 	}
 
 	@Override
