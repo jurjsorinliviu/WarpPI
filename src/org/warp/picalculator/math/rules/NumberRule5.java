@@ -3,9 +3,9 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.FunctionTwoValues;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.functions.Number;
 
 /**
@@ -23,21 +23,21 @@ import org.warp.picalculator.math.functions.Number;
 public class NumberRule5 {
 
 	public static boolean compare(Function f) {
-		final Calculator root = f.getRoot();
-		final FunctionTwoValues fnc = (FunctionTwoValues) f;
-		if (fnc.getVariable1().equals(new Number(root, 0)) || fnc.getVariable2().equals(new Number(root, 0))) {
+		final MathContext root = f.getMathContext();
+		final FunctionOperator fnc = (FunctionOperator) f;
+		if (fnc.getParameter1().equals(new Number(root, 0)) || fnc.getParameter2().equals(new Number(root, 0))) {
 			return true;
 		}
 		return false;
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final ArrayList<Function> result = new ArrayList<>();
-		final FunctionTwoValues fnc = (FunctionTwoValues) f;
-		Function a = fnc.getVariable1();
+		final FunctionOperator fnc = (FunctionOperator) f;
+		Function a = fnc.getParameter1();
 		if (a.equals(new Number(root, 0))) {
-			a = fnc.getVariable2();
+			a = fnc.getParameter2();
 		}
 		result.add(a);
 		return result;

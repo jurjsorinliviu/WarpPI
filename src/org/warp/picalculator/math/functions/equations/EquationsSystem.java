@@ -5,24 +5,24 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionDynamic;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.FunctionMultipleValues;
 import org.warp.picalculator.math.functions.Number;
 
-public class EquationsSystem extends FunctionMultipleValues {
+public class EquationsSystem extends FunctionDynamic {
 	static final int spacing = 2;
 
-	public EquationsSystem(Calculator root) {
+	public EquationsSystem(MathContext root) {
 		super(root);
 	}
 
-	public EquationsSystem(Calculator root, Function value) {
+	public EquationsSystem(MathContext root, Function value) {
 		super(root, new Function[] { value });
 	}
 
-	public EquationsSystem(Calculator root, Function[] value) {
+	public EquationsSystem(MathContext root, Function[] value) {
 		super(root, value);
 	}
 
@@ -43,11 +43,11 @@ public class EquationsSystem extends FunctionMultipleValues {
 	public List<Function> solveOneStep() throws Error {
 		final List<Function> ret = new ArrayList<>();
 		if (functions.length == 1) {
-			if (functions[0].isSolved()) {
+			if (functions[0].isSimplified()) {
 				ret.add(functions[0]);
 				return ret;
 			} else {
-				final List<Function> l = functions[0].solveOneStep();
+				final List<Function> l = functions[0].simplify();
 				for (final Function f : l) {
 					if (f instanceof Number) {
 						ret.add(f);
@@ -59,8 +59,8 @@ public class EquationsSystem extends FunctionMultipleValues {
 			}
 		} else {
 			for (final Function f : functions) {
-				if (f.isSolved() == false) {
-					final List<Function> partial = f.solveOneStep();
+				if (f.isSimplified() == false) {
+					final List<Function> partial = f.simplify();
 					for (final Function fnc : partial) {
 						ret.add(new Expression(root, new Function[] { fnc }));
 					}
@@ -74,7 +74,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 	public void generateGraphics() {
 		for (final Function f : functions) {
 			f.setSmall(false);
-			f.generateGraphics();
+			f.recomputeDimensions();
 		}
 
 		width = 0;
@@ -103,7 +103,7 @@ public class EquationsSystem extends FunctionMultipleValues {
 		final int spazioSopra = h - marginBottom;
 		int dy = marginTop;
 		for (final Function f : functions) {
-			f.draw(x + 5, y + dy);
+			f.draw(x + 5, y + dy, null, null);
 			dy += f.getHeight() + spacing;
 		}
 

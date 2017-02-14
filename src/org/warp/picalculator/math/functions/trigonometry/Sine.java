@@ -5,20 +5,20 @@ import java.util.ArrayList;
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.AngleMode;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.functions.AnteriorFunction;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 
-public class Sine extends AnteriorFunction {
+public class Sine extends FunctionSingle {
 
-	public Sine(Calculator root, Function value) {
+	public Sine(MathContext root, Function value) {
 		super(root, value);
 	}
 
 	@Override
-	public Function NewInstance(Calculator root, Function value) {
+	public Function NewInstance(MathContext root, Function value) {
 		return new Sine(root, value);
 	}
 
@@ -30,12 +30,12 @@ public class Sine extends AnteriorFunction {
 	@Override
 	protected boolean isSolvable() {
 		if (variable instanceof Number) {
-			if (root.exactMode == false) {
+			if (mathContext.exactMode == false) {
 				return true;
 			}
 		}
-		if (root.angleMode == AngleMode.DEG) {
-			final Function[] solvableValues = new Function[] { new Number(root, 0), new Number(root, 30), new Number(root, 90), };
+		if (mathContext.angleMode == AngleMode.DEG) {
+			final Function[] solvableValues = new Function[] { new Number(mathContext, 0), new Number(mathContext, 30), new Number(mathContext, 90), };
 		}
 		return false;
 	}
@@ -44,8 +44,8 @@ public class Sine extends AnteriorFunction {
 	public ArrayList<Function> solve() throws Error {
 		final ArrayList<Function> results = new ArrayList<>();
 		if (variable instanceof Number) {
-			if (root.exactMode == false) {
-				results.add(new Number(root, BigDecimalMath.sin(((Number) variable).getTerm())));
+			if (mathContext.exactMode == false) {
+				results.add(new Number(mathContext, BigDecimalMath.sin(((Number) variable).getTerm())));
 			}
 		}
 		return results;
@@ -54,8 +54,8 @@ public class Sine extends AnteriorFunction {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Sine) {
-			final AnteriorFunction f = (AnteriorFunction) o;
-			if (variable.equals(f.getVariable())) {
+			final FunctionSingle f = (FunctionSingle) o;
+			if (variable.equals(f.getParameter())) {
 				return true;
 			}
 		}

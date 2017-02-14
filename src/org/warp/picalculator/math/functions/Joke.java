@@ -1,5 +1,6 @@
 package org.warp.picalculator.math.functions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
@@ -7,7 +8,8 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 
 public class Joke implements Function {
 
@@ -17,78 +19,41 @@ public class Joke implements Function {
 	private static final String[] jokes = new String[] { "♓", "TORNADO", "SHARKNADO" };
 	private static final int[] jokesFont = new int[] { 4, -1, -1 };
 	private final byte joke;
-	private final Calculator root;
+	private final MathContext root;
 
-	public Joke(Calculator root, byte joke) {
+	public Joke(MathContext root, byte joke) {
 		this.root = root;
 		this.joke = joke;
 	}
 
 	@Override
-	public String getSymbol() {
-		return "joke";
-	}
-
-	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> simplify() throws Error {
 		return null;
 	}
 
 	@Override
-	public boolean isSolved() {
+	public boolean isSimplified() {
 		return true;
 	}
 
 	@Override
-	public void generateGraphics() {
-
-	}
-
-	@Override
-	public void draw(int x, int y) {
-		final BinaryFont rf = DisplayManager.renderer.getCurrentFont();
-		if (jokesFont[joke] >= 0) {
-			DisplayManager.fonts[jokesFont[joke]].use(DisplayManager.engine);
-		}
-		DisplayManager.renderer.glDrawStringLeft(x, y, jokes[joke]);
-		if (jokesFont[joke] >= 0) {
-			rf.use(DisplayManager.engine);
-		}
-	}
-
-	@Override
-	public int getWidth() {
-		if (jokesFont[joke] >= 0) {
-			return DisplayManager.fonts[jokesFont[joke]].getStringWidth(jokes[joke]);
-		} else {
-			return Utils.getFont(small).getStringWidth(jokes[joke]);
-		}
-	}
-
-	@Override
-	public int getHeight() {
-		if (jokesFont[joke] >= 0) {
-			return DisplayManager.fonts[jokesFont[joke]].getCharacterHeight();
-		} else {
-			return Utils.getFont(small).getCharacterHeight();
-		}
-	}
-
-	@Override
-	public int getLine() {
-		return getHeight() / 2;
-	}
-
-	@Override
-	public Calculator getRoot() {
+	public MathContext getMathContext() {
 		return root;
 	}
 
-	private boolean small = false;
+	@Override
+	public Function clone() {
+		return new Joke(root, joke);
+	}
 
 	@Override
-	public void setSmall(boolean small) {
-		this.small = small;
+	public Function setParameter(int index, Function var) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public Function getParameter(int index) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
 	}
 
 }

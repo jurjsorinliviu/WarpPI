@@ -3,8 +3,8 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
@@ -26,11 +26,11 @@ public class NumberRule4 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final ArrayList<Function> result = new ArrayList<>();
 		final SumSubtraction ss = (SumSubtraction) f;
-		result.add(new Sum(root, ss.getVariable1(), ss.getVariable2()));
-		result.add(new Subtraction(root, ss.getVariable1(), ss.getVariable2()));
+		result.add(new Sum(root, ss.getParameter1(), ss.getParameter2()));
+		result.add(new Subtraction(root, ss.getParameter1(), ss.getParameter2()));
 		return result;
 	}
 

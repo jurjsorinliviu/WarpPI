@@ -5,17 +5,19 @@ import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathematicalSymbols;
 
-public class RootSquare extends AnteriorFunction {
+public class RootSquare extends FunctionSingle {
 
-	public RootSquare(Calculator root, Function value) {
+	public RootSquare(MathContext root, Function value) {
 		super(root, value);
 	}
 
 	@Override
-	public Function NewInstance(Calculator root, Function value) {
+	public Function NewInstance(MathContext root, Function value) {
 		return new RootSquare(root, value);
 	}
 
@@ -25,26 +27,26 @@ public class RootSquare extends AnteriorFunction {
 	}
 
 	@Override
-	public void generateGraphics() {
+	public void recomputeDimensions() {
 		variable.setSmall(small);
-		variable.generateGraphics();
+		variable.recomputeDimensions();
 
-		height = getVariable().getHeight() + 2;
-		width = 1 + 4 + getVariable().getWidth() + 1;
-		line = getVariable().getLine() + 2;
+		height = getParameter().getHeight() + 2;
+		width = 1 + 4 + getParameter().getWidth() + 1;
+		line = getParameter().getLine() + 2;
 	}
 
 	@Override
 	protected boolean isSolvable() {
 		if (variable instanceof Number) {
-			if (root.exactMode == false) {
+			if (mathContext.exactMode == false) {
 				return true;
 			}
 			try {
-				Number exponent = new Number(root, BigInteger.ONE);
-				exponent = exponent.divide(new Number(root, 2));
+				Number exponent = new Number(mathContext, BigInteger.ONE);
+				exponent = exponent.divide(new Number(mathContext, 2));
 				final Number resultVal = ((Number) variable).pow(exponent);
-				final Number originalVariable = resultVal.pow(new Number(root, 2));
+				final Number originalVariable = resultVal.pow(new Number(mathContext, 2));
 				if (originalVariable.equals(variable)) {
 					return true;
 				}
@@ -58,26 +60,26 @@ public class RootSquare extends AnteriorFunction {
 	@Override
 	public ArrayList<Function> solve() throws Error {
 		final ArrayList<Function> result = new ArrayList<>();
-		if (root.exactMode) {
-			Number exponent = new Number(root, BigInteger.ONE);
-			exponent = exponent.divide(new Number(root, 2));
+		if (mathContext.exactMode) {
+			Number exponent = new Number(mathContext, BigInteger.ONE);
+			exponent = exponent.divide(new Number(mathContext, 2));
 			result.add(((Number) variable).pow(exponent));
 		} else {
-			final Number exp = new Number(root, 2);
+			final Number exp = new Number(mathContext, 2);
 			final Number numb = (Number) variable;
 
-			result.add(numb.pow(new Number(root, 1).divide(exp)));
+			result.add(numb.pow(new Number(mathContext, 1).divide(exp)));
 		}
 		return result;
 	}
 
 	@Override
-	public void draw(int x, int y) {
+	public int draw(int x, int y, boolean small, int caretPos) {
 //		glColor3f(0, 255, 0);
 //		glFillRect(x,y,width,height);
 //		glColor3f(0, 0, 0);
 
-		Utils.writeSquareRoot(getVariable(), x, y, small);
+		Utils.writeSquareRoot(getParameter(), x, y, small);
 	}
 
 	@Override

@@ -3,8 +3,8 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Negative;
 import org.warp.picalculator.math.functions.Number;
@@ -26,20 +26,20 @@ public class NumberRule3 {
 	public static boolean compare(Function f) {
 		if (f instanceof Subtraction) {
 			final Subtraction sub = (Subtraction) f;
-			if (sub.getVariable1().equals(sub.getVariable2())) {
+			if (sub.getParameter1().equals(sub.getParameter2())) {
 				return true;
 			}
 		} else if (f instanceof Sum) {
 			final Sum sub = (Sum) f;
-			if (sub.getVariable1() instanceof Negative) {
-				final Negative neg = (Negative) sub.getVariable1();
-				if (neg.getVariable().equals(sub.getVariable2())) {
+			if (sub.getParameter1() instanceof Negative) {
+				final Negative neg = (Negative) sub.getParameter1();
+				if (neg.getParameter().equals(sub.getParameter2())) {
 					return true;
 				}
 			}
 		} else if (f instanceof SumSubtraction) {
 			final SumSubtraction sub = (SumSubtraction) f;
-			if (sub.getVariable1().equals(sub.getVariable2())) {
+			if (sub.getParameter1().equals(sub.getParameter2())) {
 				return true;
 			}
 		}
@@ -47,12 +47,10 @@ public class NumberRule3 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final ArrayList<Function> result = new ArrayList<>();
 		if (f instanceof SumSubtraction) {
-			final Multiplication mul = new Multiplication(root, null, null);
-			mul.setVariable1(new Number(root, 2));
-			mul.setVariable2(f);
+			final Multiplication mul = new Multiplication(root, new Number(root, 2), f);
 			result.add(mul);
 		}
 		result.add(new Number(root, 0));

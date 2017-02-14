@@ -6,28 +6,24 @@ import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 
 import com.rits.cloning.Cloner;
 
 public class Variable implements Function {
 
 	protected char var;
-	protected int width;
-	protected int height;
-	protected int line;
-	protected int[] varColor;
-	protected boolean small;
-	protected final Calculator root;
+	protected final MathContext root;
 	protected V_TYPE type = V_TYPE.KNOWN;
 
-	public Variable(Calculator root, char val, V_TYPE type) {
+	public Variable(MathContext root, char val, V_TYPE type) {
 		this.root = root;
 		var = val;
 		this.type = type;
 	}
 
-	public Variable(Calculator root, String s, V_TYPE type) throws Error {
+	public Variable(MathContext root, String s, V_TYPE type) throws Error {
 		this(root, s.charAt(0), type);
 	}
 
@@ -48,83 +44,10 @@ public class Variable implements Function {
 	}
 
 	@Override
-	public void generateGraphics() {
-		line = calcLine();
-		height = calcHeight();
-		width = calcWidth();
-		varColor = new int[3];
-		switch (type) {
-			case KNOWN:
-				varColor[0] = 0;
-				varColor[1] = 200;
-				varColor[2] = 0;
-				break;
-			case UNKNOWN:
-				varColor[0] = 200;
-				varColor[1] = 0;
-				varColor[2] = 0;
-				break;
-			case SOLUTION:
-				varColor[0] = 0;
-				varColor[1] = 0;
-				varColor[2] = 200;
-				break;
-		}
-	}
-
-	@Override
-	public String getSymbol() {
-		return toString();
-	}
-
-	@Override
 	public String toString() {
 		return "" + getChar();
 	}
-
-//	public void draw(int x, int y, PIDisplay g, boolean small, boolean drawMinus) {
-//		boolean beforedrawminus = this.drawMinus;
-//		this.drawMinus = drawMinus;
-//		draw(x, y, small);
-//		this.drawMinus = beforedrawminus;
-//	}
-
-	@Override
-	public void draw(int x, int y) {
-		Utils.getFont(small).use(DisplayManager.engine);
-		DisplayManager.renderer.glColor3i(varColor[0], varColor[1], varColor[2]);
-		DisplayManager.renderer.glDrawStringLeft(x + 1, y, toString());
-		DisplayManager.renderer.glColor3i(0, 0, 0);
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	private int calcHeight() {
-		final int h1 = Utils.getFontHeight(small);
-		return h1;
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	public int calcWidth() {
-		return Utils.getFont(small).getStringWidth(toString()) + 1;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	private int calcLine() {
-		return Utils.getFontHeight(small) / 2;
-	}
-
+	
 	public static class VariableValue {
 		public final Variable v;
 		public final Number n;
@@ -136,23 +59,12 @@ public class Variable implements Function {
 	}
 
 	@Override
-	public Variable clone() {
-		final Cloner cloner = new Cloner();
-		return cloner.deepClone(this);
-	}
-
-	@Override
-	public void setSmall(boolean small) {
-		this.small = small;
-	}
-
-	@Override
-	public boolean isSolved() {
+	public boolean isSimplified() {
 		return true;
 	}
 
 	@Override
-	public List<Function> solveOneStep() throws Error {
+	public List<Function> simplify() throws Error {
 		final List<Function> result = new ArrayList<>();
 		result.add(this);
 		return result;
@@ -172,13 +84,28 @@ public class Variable implements Function {
 	}
 
 	@Override
-	public Calculator getRoot() {
+	public MathContext getMathContext() {
 		return root;
+	}
+	
+	@Override
+	public Variable clone() {
+		return new Variable(root, var, type);
 	}
 	
 	public static enum V_TYPE {
 		KNOWN,
 		UNKNOWN,
 		SOLUTION
+	}
+
+	@Override
+	public Function setParameter(int index, Function var) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public Function getParameter(int index) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
 	}
 }

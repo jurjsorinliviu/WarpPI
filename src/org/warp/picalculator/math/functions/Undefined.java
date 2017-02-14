@@ -6,13 +6,14 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 
 public class Undefined implements Function {
 
-	protected final Calculator root;
+	protected final MathContext root;
 
-	public Undefined(Calculator root) {
+	public Undefined(MathContext root) {
 		this.root = root;
 	}
 
@@ -63,7 +64,7 @@ public class Undefined implements Function {
 	}
 
 	@Override
-	public Calculator getRoot() {
+	public MathContext getRoot() {
 		return root;
 	}
 

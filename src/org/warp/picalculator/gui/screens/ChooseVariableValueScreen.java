@@ -4,7 +4,7 @@ import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 
 public class ChooseVariableValueScreen extends Screen {

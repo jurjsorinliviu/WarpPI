@@ -5,19 +5,19 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.functions.AnteriorFunction;
-import org.warp.picalculator.math.functions.Function;
 
-public class EquationsSystemPart extends AnteriorFunction {
+public class EquationsSystemPart extends FunctionSingle {
 
-	public EquationsSystemPart(Calculator root, Equation equazione) {
+	public EquationsSystemPart(MathContext root, Equation equazione) {
 		super(root, equazione);
 	}
 
 	@Override
-	protected Function NewInstance(Calculator root, Function value) {
+	protected Function NewInstance(MathContext root, Function value) {
 		return new EquationsSystemPart(root, (Equation) value);
 	}
 
@@ -27,22 +27,22 @@ public class EquationsSystemPart extends AnteriorFunction {
 	}
 
 	@Override
-	public void generateGraphics() {
+	public void recomputeDimensions() {
 		variable.setSmall(false);
-		variable.generateGraphics();
+		variable.recomputeDimensions();
 
-		width = 5 + getVariable().getWidth();
-		height = 3 + getVariable().getHeight() + 2;
-		line = 3 + getVariable().getLine();
+		width = 5 + getParameter().getWidth();
+		height = 3 + getParameter().getHeight() + 2;
+		line = 3 + getParameter().getLine();
 	}
 
 	@Override
-	public void draw(int x, int y) {
+	public int draw(int x, int y, boolean small, int caretPos) {
 		final int h = getHeight() - 1;
 		final int paddingTop = 3;
 		final int spazioSotto = (h - 3 - 2) / 2 + paddingTop;
 		final int spazioSopra = h - spazioSotto;
-		variable.draw(x + 5, y + paddingTop);
+		variable.draw(x + 5, y + paddingTop, null, null);
 		DisplayManager.renderer.glDrawLine(x + 2, y + 0, x + 3, y + 0);
 		DisplayManager.renderer.glDrawLine(x + 1, y + 1, x + 1, y + spazioSotto / 2);
 		DisplayManager.renderer.glDrawLine(x + 2, y + spazioSotto / 2 + 1, x + 2, y + spazioSotto - 1);

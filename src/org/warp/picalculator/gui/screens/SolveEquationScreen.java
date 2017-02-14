@@ -4,7 +4,7 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
 
 public class SolveEquationScreen extends Screen {
 

@@ -1,76 +1,58 @@
 package org.warp.picalculator.math.functions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 
 public class EmptyNumber implements Function {
 
-	public EmptyNumber(Calculator root) {
+	public EmptyNumber(MathContext root) {
 		this.root = root;
 	}
 
-	private final Calculator root;
+	private final MathContext root;
+
 
 	@Override
-	public String getSymbol() {
-		return " ";
-	}
-
-	@Override
-	public List<Function> solveOneStep() throws Error {
+	public ArrayList<Function> simplify() throws Error {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean isSolved() {
+	public boolean isSimplified() {
 		return false;
 	}
 
 	@Override
-	public void generateGraphics() {
-
-	}
-
-	@Override
-	public void draw(int x, int y) {
-		DisplayManager.renderer.glDrawStringLeft(x, y, "␀");
-	}
-
-	@Override
-	public int getWidth() {
-		return Utils.getFont(small).getStringWidth("␀");
-	}
-
-	@Override
-	public int getHeight() {
-		return Utils.getFont(small).getCharacterHeight();
-	}
-
-	@Override
-	public int getLine() {
-		return Utils.getFont(small).getCharacterHeight() / 2;
-	}
-
-	@Override
-	public Calculator getRoot() {
+	public MathContext getMathContext() {
 		return root;
 	}
-
-	private boolean small = false;
-
-	@Override
-	public void setSmall(boolean small) {
-		this.small = small;
-	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof EmptyNumber;
 	}
+
+	@Override
+	public Function clone() {
+		return new EmptyNumber(root);
+	}
+
+	@Override
+	public Function setParameter(int index, Function var) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public Function getParameter(int index) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
+	}
+	
 }

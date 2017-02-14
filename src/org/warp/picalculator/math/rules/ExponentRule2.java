@@ -3,7 +3,7 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
 
@@ -18,7 +18,7 @@ public class ExponentRule2 {
 
 	public static boolean compare(Function f) {
 		final Power fnc = (Power) f;
-		if (fnc.getVariable2().equals(new Number(f.getRoot(), 1))) {
+		if (fnc.getParameter2().equals(new Number(f.getMathContext(), 1))) {
 			return true;
 		}
 		return false;
@@ -26,7 +26,7 @@ public class ExponentRule2 {
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		final ArrayList<Function> result = new ArrayList<>();
-		result.add(((Power) f).getVariable1());
+		result.add(((Power) f).getParameter1());
 		return result;
 	}
 

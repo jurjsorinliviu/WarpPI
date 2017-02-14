@@ -3,8 +3,8 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 
 /**
@@ -18,7 +18,7 @@ public class FractionsRule3 {
 
 	public static boolean compare(Function f) {
 		final Division fnc = (Division) f;
-		if (fnc.getVariable1().equals(fnc.getVariable2())) {
+		if (fnc.getParameter1().equals(fnc.getParameter2())) {
 			return true;
 		}
 		return false;
@@ -26,7 +26,7 @@ public class FractionsRule3 {
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		final ArrayList<Function> result = new ArrayList<>();
-		result.add(new Number(f.getRoot(), 1));
+		result.add(new Number(f.getMathContext(), 1));
 		return result;
 	}
 

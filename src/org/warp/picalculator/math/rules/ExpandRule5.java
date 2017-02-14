@@ -3,8 +3,8 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Negative;
 import org.warp.picalculator.math.functions.Subtraction;
 
@@ -20,15 +20,15 @@ public class ExpandRule5 {
 	public static boolean compare(Function f) {
 		if (f instanceof Negative) {
 			final Negative fnc = (Negative) f;
-			if (fnc.getVariable() instanceof Expression) {
-				final Expression e = (Expression) fnc.getVariable();
-				return e.getVariablesLength() == 1 && e.getVariable(0) instanceof Negative;
+			if (fnc.getParameter() instanceof Expression) {
+				final Expression e = (Expression) fnc.getParameter();
+				return e.getParametersLength() == 1 && e.getParameter(0) instanceof Negative;
 			}
 		} else if (f instanceof Subtraction) {
 			final Subtraction fnc = (Subtraction) f;
-			if (fnc.getVariable2() instanceof Expression) {
-				final Expression e = (Expression) fnc.getVariable2();
-				return e.getVariablesLength() == 1 && e.getVariable(0) instanceof Negative;
+			if (fnc.getParameter2() instanceof Expression) {
+				final Expression e = (Expression) fnc.getParameter2();
+				return e.getParametersLength() == 1 && e.getParameter(0) instanceof Negative;
 			}
 		}
 		return false;
@@ -40,10 +40,10 @@ public class ExpandRule5 {
 
 		if (f instanceof Negative) {
 			final Negative fnc = (Negative) f;
-			result.add(((Negative) ((Expression) fnc.getVariable()).getVariable(0)).getVariable());
+			result.add(((Negative) ((Expression) fnc.getParameter()).getParameter(0)).getParameter());
 		} else if (f instanceof Subtraction) {
 			final Subtraction fnc = (Subtraction) f;
-			result.add(((Negative) ((Expression) fnc.getVariable2()).getVariable(0)).getVariable());
+			result.add(((Negative) ((Expression) fnc.getParameter2()).getParameter(0)).getParameter());
 		}
 		return result;
 	}

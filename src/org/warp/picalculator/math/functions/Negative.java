@@ -7,19 +7,21 @@ import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.ExpandRule5;
 
-public class Negative extends AnteriorFunction {
+public class Negative extends FunctionSingle {
 
-	public Negative(Calculator root, Function value) {
+	public Negative(MathContext root, Function value) {
 		super(root, value);
 	}
 
 	@Override
-	public Function NewInstance(Calculator root, Function value) {
+	public Function NewInstance(MathContext root, Function value) {
 		return new Negative(root, value);
 	}
 
@@ -29,13 +31,13 @@ public class Negative extends AnteriorFunction {
 	}
 
 	@Override
-	public void generateGraphics() {
+	public void recomputeDimensions() {
 		variable.setSmall(small);
-		variable.generateGraphics();
+		variable.recomputeDimensions();
 
-		height = getVariable().getHeight();
-		width = Utils.getFont(small).getCharacterWidth() /* Width of - */ + getVariable().getWidth();
-		line = getVariable().getLine();
+		height = getParameter().getHeight();
+		width = Utils.getFont(small).getCharacterWidth() /* Width of - */ + getParameter().getWidth();
+		line = getParameter().getLine();
 	}
 
 	@Override
@@ -62,10 +64,10 @@ public class Negative extends AnteriorFunction {
 			result = ExpandRule1.execute(this);
 		} else if (ExpandRule5.compare(this)) {
 			result = ExpandRule5.execute(this);
-		} else if (variable.isSolved()) {
+		} else if (variable.isSimplified()) {
 			try {
-				final Number var = (Number) getVariable();
-				result.add(var.multiply(new Number(root, "-1")));
+				final Number var = (Number) getParameter();
+				result.add(var.multiply(new Number(mathContext, "-1")));
 			} catch (final NullPointerException ex) {
 				throw new Error(Errors.ERROR);
 			} catch (final NumberFormatException ex) {
@@ -75,14 +77,14 @@ public class Negative extends AnteriorFunction {
 			}
 		} else {
 			final ArrayList<Function> l1 = new ArrayList<>();
-			if (variable.isSolved()) {
+			if (variable.isSimplified()) {
 				l1.add(variable);
 			} else {
-				l1.addAll(variable.solveOneStep());
+				l1.addAll(variable.simplify());
 			}
 
 			for (final Function f : l1) {
-				result.add(new Negative(root, f));
+				result.add(new Negative(mathContext, f));
 			}
 		}
 		return result;

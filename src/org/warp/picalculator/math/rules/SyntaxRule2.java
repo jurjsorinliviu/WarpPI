@@ -3,9 +3,9 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Sum;
 
 /**
@@ -18,12 +18,12 @@ import org.warp.picalculator.math.functions.Sum;
 public class SyntaxRule2 {
 
 	public static boolean compare(Sum f) {
-		if (f.getVariable2() instanceof Sum) {
+		if (f.getParameter2() instanceof Sum) {
 			return true;
 		}
-		if (f.getVariable2() instanceof Expression) {
-			final Expression e = (Expression) f.getVariable2();
-			if (e.getVariablesLength() == 1 && e.getVariable(0) instanceof Sum) {
+		if (f.getParameter2() instanceof Expression) {
+			final Expression e = (Expression) f.getParameter2();
+			if (e.getParametersLength() == 1 && e.getParameter(0) instanceof Sum) {
 				return true;
 			}
 		}
@@ -31,22 +31,20 @@ public class SyntaxRule2 {
 	}
 
 	public static ArrayList<Function> execute(Sum f) throws Error {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final ArrayList<Function> result = new ArrayList<>();
-		final Function a = f.getVariable1();
+		final Function a = f.getParameter1();
 		Function b, c;
-		if (f.getVariable2() instanceof Sum) {
-			b = ((Sum) f.getVariable2()).getVariable1();
-			c = ((Sum) f.getVariable2()).getVariable2();
+		if (f.getParameter2() instanceof Sum) {
+			b = ((Sum) f.getParameter2()).getParameter1();
+			c = ((Sum) f.getParameter2()).getParameter2();
 		} else {
-			b = ((Sum) ((Expression) f.getVariable2()).getVariable(0)).getVariable1();
-			c = ((Sum) ((Expression) f.getVariable2()).getVariable(0)).getVariable2();
+			b = ((Sum) ((Expression) f.getParameter2()).getParameter(0)).getParameter1();
+			c = ((Sum) ((Expression) f.getParameter2()).getParameter(0)).getParameter2();
 		}
-		final Sum mIn = new Sum(root, null, null);
-		f.setVariable1(mIn);
-		mIn.setVariable1(a);
-		mIn.setVariable2(b);
-		f.setVariable2(c);
+		final Sum mIn = new Sum(root, a, b);
+		f.setParameter1(mIn);
+		f.setParameter2(c);
 		result.add(f);
 		return result;
 	}

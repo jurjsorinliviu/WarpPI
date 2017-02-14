@@ -3,9 +3,9 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
@@ -22,26 +22,26 @@ public class ExponentRule16 {
 
 	public static boolean compare(Function f) {
 		final Multiplication fnc = (Multiplication) f;
-		if (fnc.getVariable1() instanceof Power && fnc.getVariable2() instanceof Power) {
-			return ((Power)fnc.getVariable1()).getVariable1().equals(((Power)fnc.getVariable2()).getVariable1());
-		} else if (fnc.getVariable1() instanceof Power) {
-			return ((Power)fnc.getVariable1()).getVariable1().equals(fnc.getVariable2());
-		} else if (fnc.getVariable2() instanceof Power) {
-			return ((Power)fnc.getVariable2()).getVariable1().equals(fnc.getVariable1());
+		if (fnc.getParameter1() instanceof Power && fnc.getParameter2() instanceof Power) {
+			return ((Power)fnc.getParameter1()).getParameter1().equals(((Power)fnc.getParameter2()).getParameter1());
+		} else if (fnc.getParameter1() instanceof Power) {
+			return ((Power)fnc.getParameter1()).getParameter1().equals(fnc.getParameter2());
+		} else if (fnc.getParameter2() instanceof Power) {
+			return ((Power)fnc.getParameter2()).getParameter1().equals(fnc.getParameter1());
 		}
 		return false;
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final ArrayList<Function> result = new ArrayList<>();
 		final Multiplication fnc = (Multiplication) f;
-		if (fnc.getVariable1() instanceof Power && fnc.getVariable2() instanceof Power) {
-			result.add(new Power(root, ((Power)fnc.getVariable1()).getVariable1(), new Sum(root, new Expression(root, ((Power)fnc.getVariable1()).getVariable2()), new Expression(root, ((Power)fnc.getVariable2()).getVariable2()))));
-		} else if (fnc.getVariable1() instanceof Power) {
-			result.add(new Power(root, ((Power)fnc.getVariable1()).getVariable1(), new Sum(root, new Expression(root, ((Power)fnc.getVariable1()).getVariable2()), new Number(root, 1))));
-		} else if (fnc.getVariable2() instanceof Power) {
-			result.add(new Power(root, ((Power)fnc.getVariable1()).getVariable1(), new Sum(root, new Number(root, 1), new Expression(root, ((Power)fnc.getVariable2()).getVariable2()))));
+		if (fnc.getParameter1() instanceof Power && fnc.getParameter2() instanceof Power) {
+			result.add(new Power(root, ((Power)fnc.getParameter1()).getParameter1(), new Sum(root, new Expression(root, ((Power)fnc.getParameter1()).getParameter2()), new Expression(root, ((Power)fnc.getParameter2()).getParameter2()))));
+		} else if (fnc.getParameter1() instanceof Power) {
+			result.add(new Power(root, ((Power)fnc.getParameter1()).getParameter1(), new Sum(root, new Expression(root, ((Power)fnc.getParameter1()).getParameter2()), new Number(root, 1))));
+		} else if (fnc.getParameter2() instanceof Power) {
+			result.add(new Power(root, ((Power)fnc.getParameter1()).getParameter1(), new Sum(root, new Number(root, 1), new Expression(root, ((Power)fnc.getParameter2()).getParameter2()))));
 		}
 		return result;
 	}

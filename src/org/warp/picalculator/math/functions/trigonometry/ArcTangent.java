@@ -3,19 +3,19 @@ package org.warp.picalculator.math.functions.trigonometry;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.functions.AnteriorFunction;
-import org.warp.picalculator.math.functions.Function;
 
-public class ArcTangent extends AnteriorFunction {
+public class ArcTangent extends FunctionSingle {
 
-	public ArcTangent(Calculator root, Function value) {
+	public ArcTangent(MathContext root, Function value) {
 		super(root, value);
 	}
 
 	@Override
-	public Function NewInstance(Calculator root, Function value) {
+	public Function NewInstance(MathContext root, Function value) {
 		return new ArcTangent(root, value);
 	}
 

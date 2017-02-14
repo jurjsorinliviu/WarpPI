@@ -3,8 +3,8 @@ package org.warp.picalculator.math.rules.methods;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 
@@ -18,12 +18,12 @@ import org.warp.picalculator.math.functions.Number;
 public class MultiplicationMethod1 {
 
 	public static boolean compare(Function f) {
-		return ((Multiplication) f).getVariable1().isSolved() && ((Multiplication) f).getVariable2().isSolved() && !(((Multiplication) f).getVariable1() instanceof Number && ((Multiplication) f).getVariable2() instanceof Number) && getFirstWorkingMultiplicationCouple(getMultiplicationElements(f)) != null;
+		return ((Multiplication) f).getParameter1().isSimplified() && ((Multiplication) f).getParameter2().isSimplified() && !(((Multiplication) f).getParameter1() instanceof Number && ((Multiplication) f).getParameter2() instanceof Number) && getFirstWorkingMultiplicationCouple(getMultiplicationElements(f)) != null;
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
 		Function result;
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final ArrayList<Function> elements = getMultiplicationElements(f);
 		final int[] workingElementCouple = getFirstWorkingMultiplicationCouple(elements);
 		final Function elem1 = elements.get(workingElementCouple[0]);
@@ -49,8 +49,8 @@ public class MultiplicationMethod1 {
 	private static ArrayList<Function> getMultiplicationElements(Function mult) {
 		final ArrayList<Function> elements = new ArrayList<>();
 		while (mult instanceof Multiplication) {
-			elements.add(((Multiplication) mult).getVariable1());
-			mult = ((Multiplication) mult).getVariable2();
+			elements.add(((Multiplication) mult).getParameter1());
+			mult = ((Multiplication) mult).getParameter2();
 		}
 		elements.add(mult);
 		return elements;
@@ -66,7 +66,7 @@ public class MultiplicationMethod1 {
 		if (elements.size() == 2) {
 			return null;
 		}
-		final Calculator root = elements.get(0).getRoot();
+		final MathContext root = elements.get(0).getMathContext();
 		for (int i = 0; i < size; i++) {
 			a = elements.get(i);
 			for (int j = 0; j < size; j++) {
@@ -74,7 +74,7 @@ public class MultiplicationMethod1 {
 				if (i != j) {
 					Function testFunc;
 					testFunc = new Multiplication(root, a, b);
-					if (!testFunc.isSolved()) {
+					if (!testFunc.isSimplified()) {
 						return new int[] { i, j };
 					}
 				}

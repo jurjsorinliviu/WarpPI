@@ -3,9 +3,9 @@ package org.warp.picalculator.math.rules;
 import java.util.ArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
@@ -23,7 +23,7 @@ public class ExponentRule17 {
 	public static boolean compare(Function f) {
 		if (f instanceof Root) {
 			final Root fnc = (Root) f;
-			if (fnc.getVariable1().equals(fnc.getVariable2())) {
+			if (fnc.getParameter1().equals(fnc.getParameter2())) {
 				return true;
 			}
 		}
@@ -31,16 +31,13 @@ public class ExponentRule17 {
 	}
 
 	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final ArrayList<Function> result = new ArrayList<>();
 		final Multiplication fnc = (Multiplication) f;
-		final Power p = new Power(fnc.getRoot(), null, null);
-		final Expression expr = new Expression(root);
-		final Function a = fnc.getVariable1();
-		expr.addFunctionToEnd(a);
+		final Function a = fnc.getParameter1();
+		final Expression expr = new Expression(root, a);
 		final Number two = new Number(root, 2);
-		p.setVariable1(expr);
-		p.setVariable2(two);
+		final Power p = new Power(fnc.getMathContext(), expr, two);
 		result.add(p);
 		return result;
 	}

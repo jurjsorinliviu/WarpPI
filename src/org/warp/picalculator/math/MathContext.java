@@ -7,13 +7,12 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystem;
 
-public class Calculator {
+public class MathContext {
 
 	public AngleMode angleMode = AngleMode.DEG;
 	public boolean exactMode = false;
@@ -22,7 +21,7 @@ public class Calculator {
 	public ArrayList<VariableValue> variablesValues;
 	public int resultsCount;
 
-	public Calculator() {
+	public MathContext() {
 		f = new ArrayList<>();
 		f2 = new ArrayList<>();
 		variablesValues = new ArrayList<>();
@@ -37,7 +36,7 @@ public class Calculator {
 			final String[] parts = string.substring(1).split("\\{");
 			final EquationsSystem s = new EquationsSystem(this);
 			for (final String part : parts) {
-				s.addFunctionToEnd(parseEquationString(part));
+				s.appendParameter(parseEquationString(part));
 			}
 			return s;
 		} else if (string.contains("=")) {
@@ -50,15 +49,9 @@ public class Calculator {
 	public Function parseEquationString(String string) throws Error {
 		final String[] parts = string.split("=");
 		if (parts.length == 1) {
-			final Equation e = new Equation(this, null, null);
-			e.setVariable1(new Expression(this, parts[0]));
-			e.setVariable2(new Number(this, BigInteger.ZERO));
-			return e;
+			return new Equation(this, new Expression(this, parts[0]), new Number(this, BigInteger.ZERO));
 		} else if (parts.length == 2) {
-			final Equation e = new Equation(this, null, null);
-			e.setVariable1(new Expression(this, parts[0]));
-			e.setVariable2(new Expression(this, parts[1]));
-			return e;
+			return new Equation(this, new Expression(this, parts[0]), new Expression(this, parts[1]));
 		} else {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
@@ -74,11 +67,11 @@ public class Calculator {
 				results.add(f);
 				while (Utils.allSolved(results) == false) {
 					for (final Function itm : results) {
-						if (itm.isSolved() == false) {
+						if (itm.isSimplified() == false) {
 							final long t1 = System.currentTimeMillis();
-							final List<Function> dt = itm.solveOneStep();
+							final List<Function> dt = itm.simplify();
 							final long t2 = System.currentTimeMillis();
-							if (t2 - t1 >= 3000) {
+							if (!Utils.debugOn & (t2 - t1 >= 3000)) {
 								throw new Error(Errors.TIMEOUT);
 							}
 							partialResults.addAll(dt);
@@ -117,13 +110,6 @@ public class Calculator {
 			}
 		}
 		f = fncs;
-		for (final Function f : f) {
-			try {
-				f.generateGraphics();
-			} catch (final NullPointerException ex) {
-				throw new Error(Errors.SYNTAX_ERROR);
-			}
-		}
 	}
 
 	/*public void solve(EquationScreen equationScreen, char letter) throws Error {

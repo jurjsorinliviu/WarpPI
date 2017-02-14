@@ -19,12 +19,12 @@ import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.AngleMode;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionDynamic;
+import org.warp.picalculator.math.FunctionSingle;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.functions.AnteriorFunction;
-import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.FunctionMultipleValues;
-import org.warp.picalculator.math.functions.FunctionTwoValues;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.functions.equations.Equation;
@@ -37,7 +37,7 @@ public class MathInputScreen extends Screen {
 	public volatile int caretPos = 0;
 	public volatile boolean showCaret = true;
 	public volatile float showCaretDelta = 0f;
-	public Calculator calc;
+	public MathContext calc;
 	public boolean autoscroll;
 	public int scrollX = 0;
 	public int errorLevel = 0; // 0 = nessuno, 1 = risultato, 2 = tutto
@@ -48,7 +48,7 @@ public class MathInputScreen extends Screen {
 		super();
 		canBeInHistory = true;
 
-		calc = new Calculator();
+		calc = new MathContext();
 	}
 
 	@Override
@@ -204,7 +204,7 @@ public class MathInputScreen extends Screen {
 						}
 					}
 					final int y = padding + 20 + padding + fontBig.getCharacterHeight() + 1 + topSpacing;
-					fnc.draw(padding + scrollA, y);
+					fnc.draw(padding + scrollA, y, null, null);
 					if (tooLong) {
 						DisplayManager.renderer.glColor(DisplayManager.renderer.glGetClearColor());
 						DisplayManager.renderer.glFillColor(Main.screenSize[0] - 16 - 2, y, fnc.getHeight(), Main.screenSize[0]);
@@ -221,7 +221,7 @@ public class MathInputScreen extends Screen {
 			int bottomSpacing = 0;
 			for (final Function f : calc.f2) {
 				bottomSpacing += f.getHeight() + 2;
-				f.draw(DisplayManager.engine.getWidth() - 2 - f.getWidth(), DisplayManager.engine.getHeight() - bottomSpacing);
+				f.draw(DisplayManager.engine.getWidth() - 2 - f.getWidth(), DisplayManager.engine.getHeight() - bottomSpacing, null, null);
 			}
 			if (calc.resultsCount > 1 && calc.resultsCount != calc.f2.size()) {
 				final String resultsCountText = calc.resultsCount + " total results".toUpperCase();
@@ -558,8 +558,8 @@ public class MathInputScreen extends Screen {
 					} else {
 						results.add(f);
 						for (final Function itm : results) {
-							if (itm.isSolved() == false) {
-								final List<Function> dt = itm.solveOneStep();
+							if (itm.isSimplified() == false) {
+								final List<Function> dt = itm.simplify();
 								partialResults.addAll(dt);
 							} else {
 								partialResults.add(itm);
@@ -582,7 +582,7 @@ public class MathInputScreen extends Screen {
 					results.addAll(hs);
 					calc.f2 = results;
 					for (final Function rf : calc.f2) {
-						rf.generateGraphics();
+						rf.recomputeDimensions();
 					}
 				}
 				Utils.debug.println(calc.f2.toString());
@@ -625,7 +625,7 @@ public class MathInputScreen extends Screen {
 					results.addAll(hs);
 					calc.f2 = results;
 					for (final Function rf : calc.f2) {
-						rf.generateGraphics();
+						rf.recomputeDimensions();
 					}
 				}
 			} catch (final Exception ex) {
@@ -730,12 +730,12 @@ public class MathInputScreen extends Screen {
 	private ArrayList<Function> getKnownVariables(Function[] fncs) {
 		final ArrayList<Function> res = new ArrayList<>();
 		for (final Function f : fncs) {
-			if (f instanceof FunctionTwoValues) {
-				res.addAll(getKnownVariables(new Function[] { ((FunctionTwoValues) f).getVariable1(), ((FunctionTwoValues) f).getVariable2() }));
-			} else if (f instanceof FunctionMultipleValues) {
-				res.addAll(getKnownVariables(((FunctionMultipleValues) f).getVariables()));
-			} else if (f instanceof AnteriorFunction) {
-				res.addAll(getKnownVariables(new Function[] { ((AnteriorFunction) f).getVariable() }));
+			if (f instanceof FunctionOperator) {
+				res.addAll(getKnownVariables(new Function[] { ((FunctionOperator) f).getParameter1(), ((FunctionOperator) f).getParameter2() }));
+			} else if (f instanceof FunctionDynamic) {
+				res.addAll(getKnownVariables(((FunctionDynamic) f).getParameters()));
+			} else if (f instanceof FunctionSingle) {
+				res.addAll(getKnownVariables(new Function[] { ((FunctionSingle) f).getParameter() }));
 			} else if (f instanceof Variable) {
 				if (((Variable)f).getType() == Variable.V_TYPE.KNOWN) {
 					if (!res.contains(f)) {
