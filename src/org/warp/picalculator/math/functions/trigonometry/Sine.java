@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
@@ -16,20 +16,10 @@ public class Sine extends FunctionSingle {
 	public Sine(MathContext root, Function value) {
 		super(root, value);
 	}
-
-	@Override
-	public Function NewInstance(MathContext root, Function value) {
-		return new Sine(root, value);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.getGraphicRepresentation(MathematicalSymbols.SINE);
-	}
-
+	
 	@Override
 	protected boolean isSolvable() {
-		if (variable instanceof Number) {
+		if (parameter instanceof Number) {
 			if (mathContext.exactMode == false) {
 				return true;
 			}
@@ -41,11 +31,11 @@ public class Sine extends FunctionSingle {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		final ArrayList<Function> results = new ArrayList<>();
-		if (variable instanceof Number) {
+	public ObjectArrayList<Function> solve() throws Error {
+		final ObjectArrayList<Function> results = new ObjectArrayList<>();
+		if (parameter instanceof Number) {
 			if (mathContext.exactMode == false) {
-				results.add(new Number(mathContext, BigDecimalMath.sin(((Number) variable).getTerm())));
+				results.add(new Number(mathContext, BigDecimalMath.sin(((Number) parameter).getTerm())));
 			}
 		}
 		return results;
@@ -55,11 +45,16 @@ public class Sine extends FunctionSingle {
 	public boolean equals(Object o) {
 		if (o instanceof Sine) {
 			final FunctionSingle f = (FunctionSingle) o;
-			if (variable.equals(f.getParameter())) {
+			if (parameter.equals(f.getParameter())) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Sine clone() {
+		return new Sine(mathContext, parameter);
 	}
 
 }

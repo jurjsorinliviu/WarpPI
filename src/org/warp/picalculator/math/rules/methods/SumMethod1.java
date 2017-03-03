@@ -1,7 +1,7 @@
 package org.warp.picalculator.math.rules.methods;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -26,10 +26,10 @@ public class SumMethod1 {
 		return (f instanceof Sum || f instanceof Subtraction) && ((FunctionOperator) f).getParameter1().isSimplified() && ((FunctionOperator) f).getParameter2().isSimplified() && !(((FunctionOperator) f).getParameter1() instanceof Number && ((FunctionOperator) f).getParameter2() instanceof Number) && getFirstWorkingSumCouple(root, getSumElements(f)) != null;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
 		Function result;
 		final MathContext root = f.getMathContext();
-		final ArrayList<Function> elements = getSumElements(f);
+		final ObjectArrayList<Function> elements = getSumElements(f);
 		final int[] workingElementCouple = getFirstWorkingSumCouple(root, elements);
 		final Function elem1 = elements.get(workingElementCouple[0]);
 		final Function elem2 = elements.get(workingElementCouple[1]);
@@ -54,14 +54,14 @@ public class SumMethod1 {
 
 		result = prec;
 
-		final ArrayList<Function> results = new ArrayList<>();
+		final ObjectArrayList<Function> results = new ObjectArrayList<>();
 		results.add(result);
 		return results;
 	}
 
-	private static ArrayList<Function> getSumElements(Function sum) {
+	private static ObjectArrayList<Function> getSumElements(Function sum) {
 		final MathContext root = sum.getMathContext();
-		final ArrayList<Function> elements = new ArrayList<>();
+		final ObjectArrayList<Function> elements = new ObjectArrayList<>();
 		while (sum instanceof Sum || sum instanceof Subtraction) {
 			if (sum instanceof Sum) {
 				elements.add(((FunctionOperator) sum).getParameter2());
@@ -74,7 +74,7 @@ public class SumMethod1 {
 		return elements;
 	}
 
-	private static int[] getFirstWorkingSumCouple(MathContext root, ArrayList<Function> elements) {
+	private static int[] getFirstWorkingSumCouple(MathContext root, ObjectArrayList<Function> elements) {
 		final int size = elements.size();
 		Function a;
 		Function b;

@@ -1,12 +1,12 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
+import org.warp.picalculator.gui.expression.GraphicalElement;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.gui.math.GraphicalElement;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
@@ -61,10 +61,10 @@ public class Division extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error {
 		Function variable1 = getParameter1();
 		Function variable2 = getParameter2();
-		ArrayList<Function> result = new ArrayList<>();
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (FractionsRule1.compare(this)) {
 			result = FractionsRule1.execute(this);
 		} else if (FractionsRule2.compare(this)) {

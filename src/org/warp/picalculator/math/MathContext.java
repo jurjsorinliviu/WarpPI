@@ -1,7 +1,6 @@
 package org.warp.picalculator.math;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -12,19 +11,22 @@ import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystem;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+
 public class MathContext {
 
 	public AngleMode angleMode = AngleMode.DEG;
 	public boolean exactMode = false;
-	public ArrayList<Function> f;
-	public ArrayList<Function> f2;
-	public ArrayList<VariableValue> variablesValues;
+	public ObjectArrayList<Function> f;
+	public ObjectArrayList<Function> f2;
+	public ObjectArrayList<VariableValue> variablesValues;
 	public int resultsCount;
 
 	public MathContext() {
-		f = new ArrayList<>();
-		f2 = new ArrayList<>();
-		variablesValues = new ArrayList<>();
+		f = new ObjectArrayList<>();
+		f2 = new ObjectArrayList<>();
+		variablesValues = new ObjectArrayList<>();
 		resultsCount = 0;
 	}
 
@@ -57,9 +59,9 @@ public class MathContext {
 		}
 	}
 
-	public ArrayList<Function> solveExpression(ArrayList<Function> input) throws Error {
-		ArrayList<Function> results = new ArrayList<>();
-		final ArrayList<Function> partialResults = new ArrayList<>();
+	public ObjectArrayList<Function> solveExpression(ObjectArrayList<Function> input) throws Error {
+		ObjectArrayList<Function> results = new ObjectArrayList<>();
+		final ObjectArrayList<Function> partialResults = new ObjectArrayList<>();
 		for (final Function f : input) {
 			if (f instanceof Equation) {
 				throw new IllegalArgumentException("Not an expression!");
@@ -79,7 +81,7 @@ public class MathContext {
 							partialResults.add(itm);
 						}
 					}
-					results = new ArrayList<>(partialResults);
+					results = new ObjectArrayList<>(partialResults);
 					partialResults.clear();
 				}
 			}
@@ -93,15 +95,15 @@ public class MathContext {
 
 	public void init() {
 		if (f == null & f2 == null) {
-			f = new ArrayList<>();
-			f2 = new ArrayList<>();
-			variablesValues = new ArrayList<>();
+			f = new ObjectArrayList<>();
+			f2 = new ObjectArrayList<>();
+			variablesValues = new ObjectArrayList<>();
 			resultsCount = 0;
 		}
 	}
 
 	public void parseInputString(String eqn) throws Error {
-		final ArrayList<Function> fncs = new ArrayList<>();
+		final ObjectArrayList<Function> fncs = new ObjectArrayList<>();
 		if (eqn.length() > 0) {
 			try {
 				fncs.add(parseString(eqn.replace("sqrt", MathematicalSymbols.SQUARE_ROOT).replace("^", MathematicalSymbols.POWER)));
@@ -115,7 +117,7 @@ public class MathContext {
 	/*public void solve(EquationScreen equationScreen, char letter) throws Error {
 		if (Calculator.currentSession == 0 && Calculator.sessions[0] instanceof EquationScreen) {
 			EquationScreen es = (EquationScreen) Calculator.sessions[0];
-			ArrayList<Function> f = es.f;
+			ObjectArrayList<Function> f = es.f;
 			if (f instanceof Equation) {
 				List<Function> results = ((Equation)f).solve(letter);
 				Collections.reverse(results);

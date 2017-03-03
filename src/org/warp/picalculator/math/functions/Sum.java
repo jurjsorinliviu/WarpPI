@@ -1,7 +1,7 @@
 package org.warp.picalculator.math.functions;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -59,11 +59,11 @@ public class Sum extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error {
 		if (parameter1 == null || parameter2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		ArrayList<Function> result = new ArrayList<>();
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (SyntaxRule2.compare(this)) {
 			result = SyntaxRule2.execute(this);
 		} else if (VariableRule1.compare(this)) {

@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -30,9 +30,9 @@ public class UndefinedRule2 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
 		final MathContext root = f.getMathContext();
-		final ArrayList<Function> result = new ArrayList<>();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		result.add(new Undefined(root));
 		return result;
 	}

@@ -1,7 +1,7 @@
 package org.warp.picalculator.math.functions.equations;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,17 +23,7 @@ public class Equation extends FunctionOperator {
 	public Equation(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
 	}
-
-	@Override
-	protected Function NewInstance(MathContext root, Function value1, Function value2) {
-		return new Equation(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.EQUATION;
-	}
-
+	
 	@Override
 	protected boolean isSolvable() {
 		if (parameter1 instanceof Number & parameter2 instanceof Number) {
@@ -43,11 +33,11 @@ public class Equation extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error {
 		if (parameter1 == null || parameter2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		final ArrayList<Function> result = new ArrayList<>();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (parameter1.isSimplified() & parameter2.isSimplified()) {
 			if (((Number) parameter2).getTerm().compareTo(new BigDecimal(0)) == 0) {
 				result.add(this);
@@ -63,18 +53,18 @@ public class Equation extends FunctionOperator {
 
 	public List<Function> solve(char variableCharacter) {
 		@SuppressWarnings("unused")
-		final ArrayList<Equation> e;
+		final ObjectArrayList<Equation> e;
 		//TODO: WORK IN PROGRESS.
 		//TODO: Finire. Fare in modo che risolva i passaggi fino a che non ce ne sono più
 		return null;
 	}
 
 	//WORK IN PROGRESS
-	public ArrayList<Equation> solveStep(char charIncognita) {
-		ArrayList<Equation> result = new ArrayList<>();
+	public ObjectArrayList<Equation> solveStep(char charIncognita) {
+		ObjectArrayList<Equation> result = new ObjectArrayList<>();
 		result.add(clone());
 		for (final SolveMethod t : SolveMethod.techniques) {
-			final ArrayList<Equation> newResults = new ArrayList<>();
+			final ObjectArrayList<Equation> newResults = new ObjectArrayList<>();
 			final int sz = result.size();
 			for (int n = 0; n < sz; n++) {
 				newResults.addAll(t.solve(result.get(n)));

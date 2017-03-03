@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -21,28 +21,8 @@ public class Negative extends FunctionSingle {
 	}
 
 	@Override
-	public Function NewInstance(MathContext root, Function value) {
-		return new Negative(root, value);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.MINUS;
-	}
-
-	@Override
-	public void recomputeDimensions() {
-		variable.setSmall(small);
-		variable.recomputeDimensions();
-
-		height = getParameter().getHeight();
-		width = Utils.getFont(small).getCharacterWidth() /* Width of - */ + getParameter().getWidth();
-		line = getParameter().getLine();
-	}
-
-	@Override
 	protected boolean isSolvable() {
-		if (variable instanceof Number) {
+		if (parameter instanceof Number) {
 			return true;
 		}
 		if (ExpandRule1.compare(this)) {
@@ -55,16 +35,16 @@ public class Negative extends FunctionSingle {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		if (variable == null) {
+	public ObjectArrayList<Function> solve() throws Error {
+		if (parameter == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		ArrayList<Function> result = new ArrayList<>();
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (ExpandRule1.compare(this)) {
 			result = ExpandRule1.execute(this);
 		} else if (ExpandRule5.compare(this)) {
 			result = ExpandRule5.execute(this);
-		} else if (variable.isSimplified()) {
+		} else if (parameter.isSimplified()) {
 			try {
 				final Number var = (Number) getParameter();
 				result.add(var.multiply(new Number(mathContext, "-1")));
@@ -76,11 +56,11 @@ public class Negative extends FunctionSingle {
 				throw new Error(Errors.NUMBER_TOO_SMALL);
 			}
 		} else {
-			final ArrayList<Function> l1 = new ArrayList<>();
-			if (variable.isSimplified()) {
-				l1.add(variable);
+			final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
+			if (parameter.isSimplified()) {
+				l1.add(parameter);
 			} else {
-				l1.addAll(variable.simplify());
+				l1.addAll(parameter.simplify());
 			}
 
 			for (final Function f : l1) {
@@ -91,25 +71,15 @@ public class Negative extends FunctionSingle {
 	}
 
 	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Negative) {
-			return ((Negative) o).variable.equals(variable);
+			return ((Negative) o).getParameter().equals(parameter);
 		}
 		return false;
+	}
+
+	@Override
+	public Negative clone() {
+		return new Negative(mathContext, parameter);
 	}
 }

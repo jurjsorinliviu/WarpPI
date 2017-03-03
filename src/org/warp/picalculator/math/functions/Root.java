@@ -2,7 +2,7 @@ package org.warp.picalculator.math.functions;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.DisplayManager;
@@ -15,29 +15,6 @@ public class Root extends FunctionOperator {
 
 	public Root(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
-	}
-
-	@Override
-	protected Function NewInstance(MathContext root, Function value1, Function value2) {
-		return new Root(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.NTH_ROOT;
-	}
-
-	@Override
-	public void generateGraphics() {
-		parameter1.setSmall(true);
-		parameter1.recomputeDimensions();
-
-		parameter2.setSmall(small);
-		parameter2.recomputeDimensions();
-
-		width = 1 + parameter1.getWidth() + 2 + parameter2.getWidth() + 2;
-		height = parameter1.getHeight() + parameter2.getHeight() - 2;
-		line = parameter1.getHeight() + parameter2.getLine() - 2;
 	}
 
 	@Override
@@ -65,8 +42,8 @@ public class Root extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		final ArrayList<Function> result = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (mathContext.exactMode) {
 			if (parameter1 instanceof Number && ((Number) parameter1).equals(new Number(mathContext, 2))) {
 				result.add(new RootSquare(mathContext, parameter2));
@@ -83,52 +60,19 @@ public class Root extends FunctionOperator {
 		}
 		return result;
 	}
-
-	@Override
-	public void draw(int x, int y, boolean small, int caretPos) {
-//		glColor3f(0, 255, 0);
-//		glFillRect(x,y,width,height);
-//		glColor3f(0, 0, 0);
-
-		final int w1 = getVariable2().getWidth();
-		final int h1 = getVariable2().getHeight();
-		final int w2 = getParameter1().getWidth();
-		final int h2 = getParameter1().getHeight();
-		final int height = getHeight();
-		final int hh = (int) Math.ceil((double) h1 / 2);
-
-		getParameter1().draw(x + 1, y, null, null);
-		getVariable2().draw(x + 1 + w2 + 2, y + h2 - 2, null, null);
-
-		DisplayManager.renderer.glDrawLine(x + 1 + w2 - 2, y + height - 2, x + 1 + w2 - 2, y + height - 2);
-		DisplayManager.renderer.glDrawLine(x + 1 + w2 - 1, y + height - 1, x + 1 + w2 - 1, y + height - 1);
-		DisplayManager.renderer.glDrawLine(x + 1 + w2 - 0, y + height - 0, x + 1 + w2 - 0, y + height - 0);
-		DisplayManager.renderer.glDrawLine(x + 1 + w2, y + height - 1 - hh, x + 1 + w2, y + height - 1);
-		DisplayManager.renderer.glDrawLine(x + 1 + w2 + 1, y + height - 2 - h1, x + 1 + w2 + 1, y + height - 1 - hh - 1);
-		DisplayManager.renderer.glDrawLine(x + 1 + w2 + 1, y + height - h1 - 2, x + 1 + w2 + 2 + w1 + 1, y + height - h1 - 2);
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Root) {
 			final FunctionOperator f = (FunctionOperator) o;
-			return parameter1.equals(f.parameter1) && parameter2.equals(f.parameter2);
+			return parameter1.equals(f.getParameter1()) && parameter2.equals(f.getParameter2());
 		}
 		return false;
 	}
+
+	@Override
+	public Root clone() {
+		return new Root(mathContext, parameter1, parameter2);
+	}
+	
 }

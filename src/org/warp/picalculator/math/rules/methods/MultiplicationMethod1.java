@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.rules.methods;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -21,10 +21,10 @@ public class MultiplicationMethod1 {
 		return ((Multiplication) f).getParameter1().isSimplified() && ((Multiplication) f).getParameter2().isSimplified() && !(((Multiplication) f).getParameter1() instanceof Number && ((Multiplication) f).getParameter2() instanceof Number) && getFirstWorkingMultiplicationCouple(getMultiplicationElements(f)) != null;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
 		Function result;
 		final MathContext root = f.getMathContext();
-		final ArrayList<Function> elements = getMultiplicationElements(f);
+		final ObjectArrayList<Function> elements = getMultiplicationElements(f);
 		final int[] workingElementCouple = getFirstWorkingMultiplicationCouple(elements);
 		final Function elem1 = elements.get(workingElementCouple[0]);
 		final Function elem2 = elements.get(workingElementCouple[1]);
@@ -41,13 +41,13 @@ public class MultiplicationMethod1 {
 
 		result = prec;
 
-		final ArrayList<Function> results = new ArrayList<>();
+		final ObjectArrayList<Function> results = new ObjectArrayList<>();
 		results.add(result);
 		return results;
 	}
 
-	private static ArrayList<Function> getMultiplicationElements(Function mult) {
-		final ArrayList<Function> elements = new ArrayList<>();
+	private static ObjectArrayList<Function> getMultiplicationElements(Function mult) {
+		final ObjectArrayList<Function> elements = new ObjectArrayList<>();
 		while (mult instanceof Multiplication) {
 			elements.add(((Multiplication) mult).getParameter1());
 			mult = ((Multiplication) mult).getParameter2();
@@ -56,7 +56,7 @@ public class MultiplicationMethod1 {
 		return elements;
 	}
 
-	private static int[] getFirstWorkingMultiplicationCouple(ArrayList<Function> elements) {
+	private static int[] getFirstWorkingMultiplicationCouple(ObjectArrayList<Function> elements) {
 		final int size = elements.size();
 		Function a;
 		Function b;

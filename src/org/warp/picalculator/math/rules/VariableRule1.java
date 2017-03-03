@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -31,9 +31,9 @@ public class VariableRule1 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(FunctionOperator fnc) throws Error {
+	public static ObjectArrayList<Function> execute(FunctionOperator fnc) throws Error {
 		final MathContext root = fnc.getMathContext();
-		final ArrayList<Function> result = new ArrayList<>();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final Multiplication m1 = (Multiplication) fnc.getParameter1();
 		final Multiplication m2 = (Multiplication) fnc.getParameter2();
 		final Function a = m1.getParameter1();

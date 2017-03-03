@@ -1,4 +1,4 @@
-package org.warp.picalculator.gui.math;
+package org.warp.picalculator.gui.expression;
 
 public interface GraphicalElement {
 
@@ -24,10 +24,4 @@ public interface GraphicalElement {
 	 * @return Position of the vertical alignment line of the element, relative to itself.
 	 */
 	public int getLine();
-	
-	/**
-	 * Used to compute the position of the caret.
-	 * @return Length (in characters) of the element.
-	 */
-	public int getLength();
 }

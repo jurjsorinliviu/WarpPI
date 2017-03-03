@@ -50,9 +50,13 @@ public class GPUFont implements BinaryFont {
 		final int[] indexes = new int[l];
 		final char[] chars = txt.toCharArray();
 		for (int i = 0; i < l; i++) {
-			indexes[i] = (chars[i] & 0xFFFF) - minCharIndex;
+			indexes[i] = getCharIndex(chars[i]);
 		}
 		return indexes;
+	}
+	
+	public int getCharIndex(char ch) {
+		return (ch & 0xFFFF) - minCharIndex;
 	}
 
 	private void genTexture(boolean[][] chars) {
@@ -120,9 +124,9 @@ public class GPUFont implements BinaryFont {
 
 	@Override
 	public int getStringWidth(String text) {
-		final int w = (charW + 1) * text.length();
+		final int w = (charW) * text.length();
 		if (text.length() > 0) {
-			return w - 1;
+			return w;
 		} else {
 			return 0;
 		}

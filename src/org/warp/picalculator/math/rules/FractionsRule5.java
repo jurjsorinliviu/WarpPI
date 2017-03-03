@@ -1,7 +1,7 @@
 package org.warp.picalculator.math.rules;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -30,9 +30,9 @@ public class FractionsRule5 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
 		final MathContext root = f.getMathContext();
-		final ArrayList<Function> result = new ArrayList<>();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final Power fnc = (Power) f;
 		final Function a = ((Division) fnc.getParameter1()).getParameter1();
 		final Function b = ((Division) fnc.getParameter1()).getParameter2();

@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
@@ -65,7 +65,7 @@ public class Variable implements Function {
 
 	@Override
 	public List<Function> simplify() throws Error {
-		final List<Function> result = new ArrayList<>();
+		final List<Function> result = new ObjectArrayList<>();
 		result.add(this);
 		return result;
 	}

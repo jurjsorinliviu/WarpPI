@@ -4,7 +4,7 @@ import static org.warp.picalculator.Utils.ArrayToRegex;
 import static org.warp.picalculator.Utils.concat;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -141,7 +141,7 @@ public class Expression extends FunctionDynamic {
 			}
 
 			// Rimuovi i + in eccesso
-			pattern = Pattern.compile("[" + ArrayToRegex(Utils.add(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions()), "(")) + "]\\+[^" + ArrayToRegex(concat(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions()), new String[] { "(", ")" })) + "]+?[" + ArrayToRegex(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions())) + "]|[" + ArrayToRegex(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions())) + "]+?\\+[^" + ArrayToRegex(concat(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions()), new String[] { "(", ")" })) + "]");
+			pattern = Pattern.compile("[" + ArrayToRegex(Utils.add(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions), '(')) + "]\\+[^" + ArrayToRegex(concat(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions), new char[] { '(', ')' })) + "]+?[" + ArrayToRegex(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions)) + "]|[" + ArrayToRegex(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions)) + "]+?\\+[^" + ArrayToRegex(concat(concat(MathematicalSymbols.signums(true), MathematicalSymbols.functions), new char[] { '(', ')' })) + "]");
 			matcher = pattern.matcher(processExpression);
 			symbolsChanged = false;
 			while (matcher.find()) {
@@ -152,14 +152,14 @@ public class Expression extends FunctionDynamic {
 			}
 
 			// Correggi i segni - in −
-			processExpression = processExpression.replace("-", MathematicalSymbols.SUBTRACTION);
+			processExpression = processExpression.replace('-', MathematicalSymbols.SUBTRACTION);
 
 			// Correggi i segni − dopo di espressioni o funzioni SN in -
-			pattern = Pattern.compile("[" + Utils.ArrayToRegex(concat(concat(MathematicalSymbols.functions(), new String[] { MathematicalSymbols.PARENTHESIS_OPEN }), MathematicalSymbols.signums(true))) + "]" + MathematicalSymbols.SUBTRACTION);
+			pattern = Pattern.compile("[" + Utils.ArrayToRegex(concat(concat(MathematicalSymbols.functions, new char[] { MathematicalSymbols.PARENTHESIS_OPEN }), MathematicalSymbols.signums(true))) + "]" + MathematicalSymbols.SUBTRACTION);
 			matcher = pattern.matcher(processExpression);
 			while (matcher.find()) {
 				symbolsChanged = true;
-				final String correzione = MathematicalSymbols.MINUS;
+				final char correzione = MathematicalSymbols.MINUS;
 				processExpression = processExpression.substring(0, matcher.start(0) + 1) + correzione + processExpression.substring(matcher.start(0) + 2, processExpression.length());
 				matcher = pattern.matcher(processExpression);
 			}
@@ -196,11 +196,11 @@ public class Expression extends FunctionDynamic {
 				String beforeexp = processExpression.substring(0, matcher.start(0));
 				final String newexp = matcher.group(0).substring(1, matcher.group(0).length() - 1);
 				String afterexp = processExpression.substring(matcher.start(0) + matcher.group(0).length(), processExpression.length());
-				if (Pattern.compile("[^\\-" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functions(), concat(MathematicalSymbols.signums(true), MathematicalSymbols.genericSyntax())), "(")) + "]$").matcher(beforeexp).find()) {
+				if (Pattern.compile("[^\\-" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functions, concat(MathematicalSymbols.signums(true), MathematicalSymbols.genericSyntax)), '(')) + "]$").matcher(beforeexp).find()) {
 					// Se la stringa precedente finisce con un numero
 					beforeexp += MathematicalSymbols.MULTIPLICATION;
 				}
-				if (Pattern.compile("^[^\\-" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functions(), concat(MathematicalSymbols.signums(true), MathematicalSymbols.genericSyntax())), ")")) + "]").matcher(afterexp).find()) {
+				if (Pattern.compile("^[^\\-" + Utils.ArrayToRegex(Utils.add(concat(MathematicalSymbols.functions, concat(MathematicalSymbols.signums(true), MathematicalSymbols.genericSyntax)), ')')) + "]").matcher(afterexp).find()) {
 					// Se la stringa successiva inizia con un numero
 					afterexp = MathematicalSymbols.MULTIPLICATION + afterexp;
 				}
@@ -222,10 +222,10 @@ public class Expression extends FunctionDynamic {
 			Expression imputRawParenthesis = new Expression(root);
 			imputRawParenthesis = (Expression) imputRawParenthesis.setParameters(new Function[] {});
 			String tmp = "";
-			final String[] functions = concat(concat(concat(concat(MathematicalSymbols.functions(), MathematicalSymbols.parentheses()), MathematicalSymbols.signums(true)), MathematicalSymbols.variables()), MathematicalSymbols.genericSyntax());
+			final char[] functions = concat(concat(concat(concat(MathematicalSymbols.functions, MathematicalSymbols.parentheses), MathematicalSymbols.signums(true)), MathematicalSymbols.variables), MathematicalSymbols.genericSyntax);
 			for (int i = 0; i < processExpression.length(); i++) {
 				// Per ogni carattere cerca se è un numero o una funzione:
-				final String charI = processExpression.charAt(i) + "";
+				final char charI = processExpression.charAt(i);
 				if (Utils.isInArray(charI, functions)) {
 
 					// Finds the type of function fron the following list
@@ -291,14 +291,14 @@ public class Expression extends FunctionDynamic {
 									} else if (jumps > 0) {
 										jumps -= 1;
 									} else if (jumps < 0) {
-										throw new Error(Errors.UNBALANCED_BRACKETS);
+										throw new Error(Errors.UNBALANCED_STACK);
 									}
 								} else if ((processExpression.charAt(i2) + "").equals(MathematicalSymbols.PARENTHESIS_OPEN)) {
 									jumps += 1;
 								}
 							}
 							if (endIndex == -1 || endIndex < startIndex) {
-								throw new Error(Errors.UNBALANCED_BRACKETS);
+								throw new Error(Errors.UNBALANCED_STACK);
 							}
 							startIndex += 1;
 							i = startIndex;
@@ -311,11 +311,11 @@ public class Expression extends FunctionDynamic {
 							f = new Expression(root, tmpExpr, debugSpaces, false);
 							break;
 						default:
-							if (Utils.isInArray(charI, MathematicalSymbols.variables())) {
+							if (Utils.isInArray(charI, MathematicalSymbols.variables)) {
 								f = new Variable(root, charI, Variable.V_TYPE.UNKNOWN);
 							} else {
-								if (charI == "(" || charI == ")") {
-									throw new Error(Errors.UNBALANCED_BRACKETS);
+								if (charI == '(' || charI == ')') {
+									throw new Error(Errors.UNBALANCED_STACK);
 								} else {
 									System.err.println("Unexpected character while parsing expression: " + charI);
 									throw new Error(Errors.SYNTAX_ERROR);
@@ -368,7 +368,7 @@ public class Expression extends FunctionDynamic {
 					tmp = "";
 				} else {
 					try {
-						if (charI.equals("-") == false && charI.equals(".") == false) {
+						if (charI != '-' && charI != '.') {
 							new BigDecimal(tmp + charI);
 						}
 						// Se il carattere è un numero intero, un segno
@@ -415,7 +415,7 @@ public class Expression extends FunctionDynamic {
 			Utils.debug.println(debugSpaces + "•Pushing classes...");
 
 			final Function[] oldFunctionsArray = imputRawParenthesis.getParameters();
-			final ArrayList<Function> oldFunctionsList = new ArrayList<>();
+			final ObjectArrayList<Function> oldFunctionsList = new ObjectArrayList<>();
 			for (int i = 0; i < oldFunctionsArray.length; i++) {
 				Function funzione = oldFunctionsArray[i];
 				if (funzione != null) {
@@ -570,8 +570,8 @@ public class Expression extends FunctionDynamic {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		final ArrayList<Function> ret = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		final ObjectArrayList<Function> ret = new ObjectArrayList<>();
 		if (getParametersLength() == 1) {
 			if (getParameter(0).isSimplified() || !parenthesisNeeded()) {
 				ret.add(getParameter(0));
@@ -629,7 +629,11 @@ public class Expression extends FunctionDynamic {
 		String s = "(";
 		if (functions.length > 0) {
 			for (Function f : functions) {
-				s+=f.toString()+",";
+				if (f == null) {
+					s+="[null],";
+				} else {
+					s+=f.toString()+",";
+				}
 			}
 			s = s.substring(0, s.length()-1);
 		}

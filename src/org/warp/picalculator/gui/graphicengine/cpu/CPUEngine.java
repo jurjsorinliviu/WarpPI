@@ -45,10 +45,10 @@ public class CPUEngine implements GraphicEngine {
 		g = new BufferedImage(ww, wh, BufferedImage.TYPE_INT_ARGB);
 		INSTANCE.wasResized = false;
 	}
-
+	
 	@Override
 	public void create() {
-		INSTANCE = new SwingWindow(this, DisplayManager.getDrawable());
+		INSTANCE = new SwingWindow(this);
 		setResizable(Utils.debugOn & !Utils.debugThirdScreen);
 		setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		INSTANCE.setVisible(true);
@@ -86,6 +86,7 @@ public class CPUEngine implements GraphicEngine {
 
 	@Override
 	public void start(RenderingLoop d) {
+		INSTANCE.setRenderingLoop(d);
 		Thread th = new Thread(() -> {
 			try {
 				double extratime = 0;
@@ -407,6 +408,21 @@ public class CPUEngine implements GraphicEngine {
 		@Override
 		public void glClearSkin() {
 			currentSkin = null;
+		}
+
+		@Override
+		public void glDrawCharLeft(int x, int y, char ch) {
+			glDrawStringLeft(x, y, ch+"");
+		}
+
+		@Override
+		public void glDrawCharCenter(int x, int y, char ch) {
+			glDrawStringCenter(x, y, ch+"");
+		}
+
+		@Override
+		public void glDrawCharRight(int x, int y, char ch) {
+			glDrawStringRight(x, y, ch+"");
 		}
 
 	}

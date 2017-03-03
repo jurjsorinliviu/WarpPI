@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -55,8 +55,8 @@ public class ExpandRule1 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
-		final ArrayList<Function> result = new ArrayList<>();
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final MathContext root = f.getMathContext();
 
 		Expression expr = null;

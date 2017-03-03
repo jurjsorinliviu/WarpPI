@@ -2,7 +2,7 @@ package org.warp.picalculator.math.functions;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -121,7 +121,7 @@ public class Number implements Function {
 
 	@Override
 	public List<Function> simplify() throws Error {
-		final List<Function> result = new ArrayList<>();
+		final List<Function> result = new ObjectArrayList<>();
 		if (root.exactMode) {
 			Number divisor = new Number(root, BigInteger.TEN.pow(getNumberOfDecimalPlaces()));
 			Number numb = new Number(root, term.multiply(divisor.term));

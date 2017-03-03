@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -20,16 +20,6 @@ public class SumSubtraction extends FunctionOperator {
 
 	public SumSubtraction(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
-	}
-
-	@Override
-	protected Function NewInstance(MathContext root, Function value1, Function value2) {
-		return new SumSubtraction(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.SUM_SUBTRACTION;
 	}
 
 	@Override
@@ -53,11 +43,11 @@ public class SumSubtraction extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error {
 		if (parameter1 == null || parameter2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		ArrayList<Function> result = new ArrayList<>();
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (NumberRule3.compare(this)) {
 			result = NumberRule3.execute(this);
 		} else if (ExpandRule1.compare(this)) {
@@ -74,55 +64,17 @@ public class SumSubtraction extends FunctionOperator {
 	}
 
 	@Override
-	public void generateGraphics() {
-		parameter1.setSmall(small);
-		parameter1.recomputeDimensions();
-
-		parameter2.setSmall(small);
-		parameter2.recomputeDimensions();
-
-		width = calcWidth();
-		height = calcHeight();
-		line = calcLine();
-	}
-
-	@Override
-	public void draw(int x, int y, boolean small, int caretPos) {
-//		glColor3f(127, 127-50+new Random().nextInt(50), 255);
-//		glFillRect(x,y,width,height);
-//		glColor3f(0, 0, 0);
-
-		final int ln = getLine();
-		int dx = 0;
-		parameter1.draw(dx + x, ln - parameter1.getLine() + y, null, null);
-		dx += parameter1.getWidth();
-		Utils.getFont(small).use(DisplayManager.engine);
-		dx += 1;
-		DisplayManager.renderer.glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-		dx += Utils.getFont(small).getStringWidth(getSymbol());
-		parameter2.draw(dx + x, ln - parameter2.getLine() + y, null, null);
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	protected int calcWidth() {
-		int dx = 0;
-		dx += parameter1.getWidth();
-		dx += 1;
-		dx += Utils.getFont(small).getStringWidth(getSymbol());
-		return dx += parameter2.getWidth();
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof SumSubtraction) {
 			final FunctionOperator f = (FunctionOperator) o;
-			return parameter1.equals(f.parameter1) && parameter2.equals(f.parameter2);
+			return parameter1.equals(f.getParameter1()) && parameter2.equals(f.getParameter2());
 		}
 		return false;
 	}
+
+	@Override
+	public SumSubtraction clone() {
+		return new SumSubtraction(mathContext, parameter1, parameter2);
+	}
+	
 }

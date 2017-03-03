@@ -1,6 +1,6 @@
 package org.warp.picalculator.math;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
@@ -114,15 +114,15 @@ public abstract class FunctionOperator implements Function {
 	protected abstract boolean isSolvable();
 
 	@Override
-	public final ArrayList<Function> simplify() throws Error {
+	public final ObjectArrayList<Function> simplify() throws Error {
 		final boolean solved = parameter1.isSimplified() & parameter2.isSimplified();
-		ArrayList<Function> result = solved ? solve() : null;;
+		ObjectArrayList<Function> result = solved ? solve() : null;;
 
 		if (result == null || result.isEmpty()) {
-			result = new ArrayList<>();
+			result = new ObjectArrayList<>();
 
-			final ArrayList<Function> l1 = new ArrayList<>();
-			final ArrayList<Function> l2 = new ArrayList<>();
+			final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
+			final ObjectArrayList<Function> l2 = new ObjectArrayList<>();
 			if (parameter1.isSimplified()) {
 				l1.add(parameter1);
 			} else {
@@ -149,7 +149,7 @@ public abstract class FunctionOperator implements Function {
 	 * @return The solved function.
 	 * @throws Error Errors during computation, like a/0 or similar.
 	 */
-	protected abstract ArrayList<Function> solve() throws Error;
+	protected abstract ObjectArrayList<Function> solve() throws Error;
 
 	@Override
 	public abstract FunctionOperator clone();

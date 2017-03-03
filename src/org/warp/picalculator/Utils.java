@@ -15,7 +15,7 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
@@ -78,6 +78,17 @@ public class Utils {
 		return contains;
 	}
 
+	public static boolean isInArray(char ch, char[] a) {
+		boolean contains = false;
+		for (final char c : a) {
+			if (c == ch) {
+				contains = true;
+				break;
+			}
+		}
+		return contains;
+	}
+
 	private static final String[] regexNormalSymbols = new String[] { "\\", ".", "[", "]", "{", "}", "(", ")", "*", "+", "-", "?", "^", "$", "|" };
 
 	public static String ArrayToRegex(String[] array) {
@@ -107,10 +118,46 @@ public class Utils {
 		return regex;
 	}
 
+	public static String ArrayToRegex(char[] array) {
+		String regex = null;
+		for (final char symbol : array) {
+			boolean contained = false;
+			for (final String smb : regexNormalSymbols) {
+				if ((smb).equals(symbol+"")) {
+					contained = true;
+					break;
+				}
+			}
+			if (contained) {
+				if (regex != null) {
+					regex += "|\\" + symbol;
+				} else {
+					regex = "\\" + symbol;
+				}
+			} else {
+				if (regex != null) {
+					regex += "|" + symbol;
+				} else {
+					regex = symbol+"";
+				}
+			}
+		}
+		return regex;
+	}
+
 	public static String[] concat(String[] a, String[] b) {
 		final int aLen = a.length;
 		final int bLen = b.length;
 		final String[] c = new String[aLen + bLen];
+		System.arraycopy(a, 0, c, 0, aLen);
+		System.arraycopy(b, 0, c, aLen, bLen);
+		return c;
+	}
+
+	public static char[] concat(char[] a, char[] b) {
+		final int aLen = a.length;
+		final int bLen = b.length;
+		final char[] c = new char[aLen + bLen];
 		System.arraycopy(a, 0, c, 0, aLen);
 		System.arraycopy(b, 0, c, aLen, bLen);
 		return c;
@@ -124,7 +171,15 @@ public class Utils {
 		return c;
 	}
 
-	public static boolean areThereOnlySettedUpFunctionsSumsEquationsAndSystems(ArrayList<Function> fl) {
+	public static char[] add(char[] a, char b) {
+		final int aLen = a.length;
+		final char[] c = new char[aLen + 1];
+		System.arraycopy(a, 0, c, 0, aLen);
+		c[aLen] = b;
+		return c;
+	}
+
+	public static boolean areThereOnlySettedUpFunctionsSumsEquationsAndSystems(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof FunctionSingle) {
@@ -143,7 +198,7 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ArrayList<Function> fl) {
+	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Multiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof FunctionSingle) {
@@ -162,7 +217,7 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean areThereOnlySettedUpFunctionsEquationsAndSystems(ArrayList<Function> fl) {
+	public static boolean areThereOnlySettedUpFunctionsEquationsAndSystems(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof FunctionSingle) {
@@ -181,7 +236,7 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean areThereOnlySettedUpFunctionsAndSystems(ArrayList<Function> fl) {
+	public static boolean areThereOnlySettedUpFunctionsAndSystems(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof FunctionSingle) {
@@ -200,7 +255,7 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean areThereOnlyEmptySNFunctions(ArrayList<Function> fl) {
+	public static boolean areThereOnlyEmptySNFunctions(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof FunctionSingle) {
 				if (((FunctionSingle) fl.get(i)).getParameter() == null) {
@@ -211,7 +266,7 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean areThereOnlyEmptyNSNFunctions(ArrayList<Function> fl) {
+	public static boolean areThereOnlyEmptyNSNFunctions(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof FunctionOperator && !(fl.get(i) instanceof Sum) && !(fl.get(i) instanceof SumSubtraction) && !(fl.get(i) instanceof Subtraction) && !(fl.get(i) instanceof Multiplication) && !(fl.get(i) instanceof Division)) {
 				if (((FunctionOperator) fl.get(i)).getParameter1() == null && ((FunctionOperator) fl.get(i)).getParameter2() == null) {
@@ -222,7 +277,7 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean areThereEmptyMultiplications(ArrayList<Function> fl) {
+	public static boolean areThereEmptyMultiplications(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division) {
 				if (((FunctionOperator) fl.get(i)).getParameter1() == null && ((FunctionOperator) fl.get(i)).getParameter2() == null) {
@@ -233,7 +288,7 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean areThereEmptySums(ArrayList<Function> fl) {
+	public static boolean areThereEmptySums(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction) {
 				if (((FunctionOperator) fl.get(i)).getParameter1() == null && ((FunctionOperator) fl.get(i)).getParameter2() == null) {
@@ -244,7 +299,7 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean areThereEmptySystems(ArrayList<Function> fl) {
+	public static boolean areThereEmptySystems(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (fl.get(i) instanceof EquationsSystemPart) {
 				if (((EquationsSystemPart) fl.get(i)).getParameter() == null) {
@@ -255,7 +310,7 @@ public class Utils {
 		return false;
 	}
 
-	public static boolean areThereOtherSettedUpFunctions(ArrayList<Function> fl) {
+	public static boolean areThereOtherSettedUpFunctions(ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Expression || fl.get(i) instanceof FunctionSingle || fl.get(i) instanceof Multiplication || fl.get(i) instanceof Division)) {
 				if (fl.get(i) instanceof FunctionSingle) {
@@ -338,7 +393,7 @@ public class Utils {
 		return BigDecimalMath.divideRound(new BigDecimal(r.numer()).setScale(Utils.scale, Utils.scaleMode), new BigDecimal(r.denom()).setScale(Utils.scale, Utils.scaleMode));
 	}
 
-	public static boolean equalsVariables(ArrayList<Variable> variables, ArrayList<Variable> variables2) {
+	public static boolean equalsVariables(ObjectArrayList<Variable> variables, ObjectArrayList<Variable> variables2) {
 		if (variables.size() != variables2.size()) {
 			return false;
 		} else {
@@ -351,21 +406,22 @@ public class Utils {
 		}
 	}
 
+	@Deprecated
 	public static void writeSquareRoot(Function var, int x, int y, boolean small) {
-		var.setSmall(small);
-		final int w1 = var.getWidth();
-		final int h1 = var.getHeight();
-		final int wsegno = 5;
-		final int hsegno = h1 + 2;
-
-		var.draw(x + wsegno, y + (hsegno - h1), null, null);
-
-		DisplayManager.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 1, y + hsegno - 3);
-		DisplayManager.renderer.glDrawLine(x + 2, y + hsegno - 2, x + 2, y + hsegno - 2);
-		DisplayManager.renderer.glDrawLine(x + 3, y + hsegno - 1, x + 3, y + hsegno - 1);
-		DisplayManager.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
-		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
-		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
+//		var.setSmall(small);
+//		final int w1 = var.getWidth();
+//		final int h1 = var.getHeight();
+//		final int wsegno = 5;
+//		final int hsegno = h1 + 2;
+//
+//		var.draw(x + wsegno, y + (hsegno - h1), null, null);
+//
+//		DisplayManager.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 1, y + hsegno - 3);
+//		DisplayManager.renderer.glDrawLine(x + 2, y + hsegno - 2, x + 2, y + hsegno - 2);
+//		DisplayManager.renderer.glDrawLine(x + 3, y + hsegno - 1, x + 3, y + hsegno - 1);
+//		DisplayManager.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
+//		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
+//		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
 	}
 
 	public static final int getFontHeight() {
@@ -482,7 +538,7 @@ public class Utils {
 	}
 	
 
-	public static Function[][] joinFunctionsResults(ArrayList<ArrayList<Function>> ln) {
+	public static Function[][] joinFunctionsResults(ObjectArrayList<ObjectArrayList<Function>> ln) {
 		final int[] sizes = new int[ln.size()];
 		for (int i = 0; i < ln.size(); i++) {
 			sizes[i] = ln.get(i).size();
@@ -579,7 +635,7 @@ public class Utils {
 				if (displayName.endsWith("MemorySize")) {
 					mb = true;
 				}
-				ArrayList<String> arr = new ArrayList<>();
+				ObjectArrayList<String> arr = new ObjectArrayList<>();
 				arr.add("getFreePhysicalMemorySize");
 				arr.add("getProcessCpuLoad");
 				arr.add("getSystemCpuLoad");

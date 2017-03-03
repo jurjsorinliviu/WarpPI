@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -22,9 +22,9 @@ public class NumberRule7 {
 		return f.getParameter1().equals(f.getParameter2());
 	}
 
-	public static ArrayList<Function> execute(Sum f) throws Error {
+	public static ObjectArrayList<Function> execute(Sum f) throws Error {
 		final MathContext root = f.getMathContext();
-		final ArrayList<Function> result = new ArrayList<>();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final Multiplication mult = new Multiplication(root, new Number(root, 2), f.getParameter1());
 		result.add(mult);
 		return result;

@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -32,9 +32,9 @@ public class ExponentRule16 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
 		final MathContext root = f.getMathContext();
-		final ArrayList<Function> result = new ArrayList<>();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final Multiplication fnc = (Multiplication) f;
 		if (fnc.getParameter1() instanceof Power && fnc.getParameter2() instanceof Power) {
 			result.add(new Power(root, ((Power)fnc.getParameter1()).getParameter1(), new Sum(root, new Expression(root, ((Power)fnc.getParameter1()).getParameter2()), new Expression(root, ((Power)fnc.getParameter2()).getParameter2()))));

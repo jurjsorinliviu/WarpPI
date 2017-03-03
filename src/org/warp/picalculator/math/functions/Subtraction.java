@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -20,16 +20,6 @@ public class Subtraction extends FunctionOperator {
 
 	public Subtraction(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
-	}
-
-	@Override
-	protected Function NewInstance(MathContext root, Function value1, Function value2) {
-		return new Subtraction(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.SUBTRACTION;
 	}
 
 	@Override
@@ -65,8 +55,8 @@ public class Subtraction extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		ArrayList<Function> result = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (VariableRule1.compare(this)) {
 			result = VariableRule1.execute(this);
 		} else if (VariableRule2.compare(this)) {
@@ -93,8 +83,14 @@ public class Subtraction extends FunctionOperator {
 	public boolean equals(Object o) {
 		if (o instanceof Subtraction) {
 			final FunctionOperator f = (FunctionOperator) o;
-			return parameter1.equals(f.parameter1) && parameter2.equals(f.parameter2);
+			return parameter1.equals(f.getParameter1()) && parameter2.equals(f.getParameter2());
 		}
 		return false;
 	}
+
+	@Override
+	public Subtraction clone() {
+		return new Subtraction(mathContext, parameter1, parameter2);
+	}
+	
 }

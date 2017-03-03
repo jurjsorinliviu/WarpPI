@@ -29,6 +29,12 @@ public interface Renderer {
 
 	public void glFillColor(float x, float y, float width, float height);
 
+	public void glDrawCharLeft(int x, int y, char ch);
+	
+	public void glDrawCharCenter(int x, int y, char ch);
+	
+	public void glDrawCharRight(int x, int y, char ch);
+	
 	public void glDrawStringLeft(float x, float y, String text);
 
 	public void glDrawStringCenter(float x, float y, String text);

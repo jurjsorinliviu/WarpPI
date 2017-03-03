@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
@@ -20,7 +20,7 @@ public class EmptyNumber implements Function {
 
 
 	@Override
-	public ArrayList<Function> simplify() throws Error {
+	public ObjectArrayList<Function> simplify() throws Error {
 		// TODO Auto-generated method stub
 		return null;
 	}

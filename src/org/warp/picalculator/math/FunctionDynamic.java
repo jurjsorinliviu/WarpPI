@@ -1,6 +1,6 @@
 package org.warp.picalculator.math;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -103,7 +103,7 @@ public abstract class FunctionDynamic implements Function {
 	protected abstract boolean isSolvable();
 
 	@Override
-	public final ArrayList<Function> simplify() throws Error {
+	public final ObjectArrayList<Function> simplify() throws Error {
 		boolean solved = true;
 		Function[] fncs = getParameters();
 		for (Function f : fncs) {
@@ -112,14 +112,14 @@ public abstract class FunctionDynamic implements Function {
 				break;
 			}
 		}
-		ArrayList<Function> result = solved ? solve() : null;
+		ObjectArrayList<Function> result = solved ? solve() : null;
 
 		if (result == null || result.isEmpty()) {
-			result = new ArrayList<>();
+			result = new ObjectArrayList<>();
 
-			final ArrayList<ArrayList<Function>> ln = new ArrayList<>();
+			final ObjectArrayList<ObjectArrayList<Function>> ln = new ObjectArrayList<>();
 			for (int i = 0; i < fncs.length; i++) {
-				ArrayList<Function> l = new ArrayList<>();
+				ObjectArrayList<Function> l = new ObjectArrayList<>();
 				if (fncs[i].isSimplified()) {
 					l.add(fncs[i]);
 				} else {
@@ -143,7 +143,7 @@ public abstract class FunctionDynamic implements Function {
 	 * @return The solved function.
 	 * @throws Error Errors during computation, like a/0 or similar.
 	 */
-	protected abstract ArrayList<Function> solve() throws Error;
+	protected abstract ObjectArrayList<Function> solve() throws Error;
 	
 	@Override
 	public MathContext getMathContext() {

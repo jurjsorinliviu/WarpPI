@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -62,8 +62,8 @@ public class Multiplication extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		ArrayList<Function> result = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (SyntaxRule1.compare(this)) {
 			result = SyntaxRule1.execute(this);
 		} else if (NumberRule1.compare(this)) {

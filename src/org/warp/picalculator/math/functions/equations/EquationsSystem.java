@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions.equations;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
@@ -27,11 +27,6 @@ public class EquationsSystem extends FunctionDynamic {
 	}
 
 	@Override
-	public String getSymbol() {
-		return null;
-	}
-
-	@Override
 	protected boolean isSolvable() {
 		if (functions.length >= 1) {
 			return true;
@@ -40,8 +35,8 @@ public class EquationsSystem extends FunctionDynamic {
 	}
 
 	@Override
-	public List<Function> solveOneStep() throws Error {
-		final List<Function> ret = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		final ObjectArrayList<Function> ret = new ObjectArrayList<>();
 		if (functions.length == 1) {
 			if (functions[0].isSimplified()) {
 				ret.add(functions[0]);
@@ -71,63 +66,8 @@ public class EquationsSystem extends FunctionDynamic {
 	}
 
 	@Override
-	public void generateGraphics() {
-		for (final Function f : functions) {
-			f.setSmall(false);
-			f.recomputeDimensions();
-		}
-
-		width = 0;
-		for (final Function f : functions) {
-			if (f.getWidth() > width) {
-				width = f.getWidth();
-			}
-		}
-		width += 5;
-
-		height = 3;
-		for (final Function f : functions) {
-			height += f.getHeight() + spacing;
-		}
-		height = height - spacing + 2;
-
-		line = height / 2;
+	public EquationsSystem clone() {
+		return new EquationsSystem(root, functions);
 	}
-
-	@Override
-	public void draw(int x, int y) {
-
-		final int h = getHeight() - 1;
-		final int marginTop = 3;
-		final int marginBottom = (h - 3 - 2) / 2 + marginTop;
-		final int spazioSopra = h - marginBottom;
-		int dy = marginTop;
-		for (final Function f : functions) {
-			f.draw(x + 5, y + dy, null, null);
-			dy += f.getHeight() + spacing;
-		}
-
-		DisplayManager.renderer.glDrawLine(x + 2, y + 0, x + 3, y + 0);
-		DisplayManager.renderer.glDrawLine(x + 1, y + 1, x + 1, y + marginBottom / 2);
-		DisplayManager.renderer.glDrawLine(x + 2, y + marginBottom / 2 + 1, x + 2, y + marginBottom - 1);
-		DisplayManager.renderer.glDrawLine(x + 0, y + marginBottom, x + 1, y + marginBottom);
-		DisplayManager.renderer.glDrawLine(x + 2, y + marginBottom + 1, x + 2, y + marginBottom + spazioSopra / 2 - 1);
-		DisplayManager.renderer.glDrawLine(x + 1, y + marginBottom + spazioSopra / 2, x + 1, y + h - 1);
-		DisplayManager.renderer.glDrawLine(x + 2, y + h, x + 3, y + h);
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
+	
 }

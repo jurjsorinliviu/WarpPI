@@ -16,61 +16,20 @@ public class Undefined implements Function {
 	public Undefined(MathContext root) {
 		this.root = root;
 	}
-
+	
 	@Override
-	public String getSymbol() {
-		return "undefined";
-	}
-
-	@Override
-	public List<Function> solveOneStep() throws Error {
+	public List<Function> simplify() throws Error {
 		return null;
 	}
 
 	@Override
-	public boolean isSolved() {
+	public boolean isSimplified() {
 		return true;
 	}
 
-	private int width, height, line;
-	private boolean small;
-
 	@Override
-	public void generateGraphics() {
-		width = Utils.getFont(small).getStringWidth("UNDEFINED");
-		height = Utils.getFontHeight(small);
-		line = height / 2;
-	}
-
-	@Override
-	public void draw(int x, int y) {
-		Utils.getFont(small).use(DisplayManager.engine);
-		DisplayManager.renderer.glDrawStringLeft(x, y, "UNDEFINED");
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	@Override
-	public MathContext getRoot() {
+	public MathContext getMathContext() {
 		return root;
-	}
-
-	@Override
-	public void setSmall(boolean small) {
-		this.small = small;
 	}
 
 	@Override
@@ -79,6 +38,21 @@ public class Undefined implements Function {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public Undefined clone() {
+		return new Undefined(root);
+	}
+
+	@Override
+	public Function setParameter(int index, Function var) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public Function getParameter(int index) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
 	}
 
 }

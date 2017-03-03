@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.rules.methods;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.functions.Multiplication;
@@ -22,10 +22,10 @@ public class DivisionRule1 {
 		return f.getParameter1().isSimplified() && f.getParameter2().isSimplified() && !(f.getParameter1() instanceof Number && f.getParameter2() instanceof Number) && getFirstWorkingDivisionCouple(getDivisionElements(f)) != null;
 	}
 
-	public static ArrayList<Function> execute(Division f) throws Error {
+	public static ObjectArrayList<Function> execute(Division f) throws Error {
 		final MathContext root = f.getMathContext();
 		Function result;
-		final ArrayList<Function> elements = getDivisionElements(f);
+		final ObjectArrayList<Function> elements = getDivisionElements(f);
 		final int[] workingElementCouple = getFirstWorkingDivisionCouple(elements);
 		final Function elem1 = elements.get(workingElementCouple[0]);
 		final Function elem2 = elements.get(workingElementCouple[1]);
@@ -42,13 +42,13 @@ public class DivisionRule1 {
 
 		result = prec;
 
-		final ArrayList<Function> results = new ArrayList<>();
+		final ObjectArrayList<Function> results = new ObjectArrayList<>();
 		results.add(result);
 		return results;
 	}
 
-	private static ArrayList<Function> getDivisionElements(Division division) {
-		final ArrayList<Function> elementsNumerator = new ArrayList<>();
+	private static ObjectArrayList<Function> getDivisionElements(Division division) {
+		final ObjectArrayList<Function> elementsNumerator = new ObjectArrayList<>();
 		Function numMult = division.getParameter1();
 		while (numMult instanceof Multiplication) {
 			elementsNumerator.add(((Multiplication) numMult).getParameter1());
@@ -56,7 +56,7 @@ public class DivisionRule1 {
 		}
 		elementsNumerator.add(numMult);
 
-		final ArrayList<Function> elementsDenominator = new ArrayList<>();
+		final ObjectArrayList<Function> elementsDenominator = new ObjectArrayList<>();
 		Function denomMult = division.getParameter1();
 		while (denomMult instanceof Multiplication) {
 			elementsDenominator.add(((Multiplication) denomMult).getParameter1());
@@ -67,7 +67,7 @@ public class DivisionRule1 {
 		return elements;
 	}
 
-	private static int[] getFirstWorkingDivisionCouple(ArrayList<Function> elements) {
+	private static int[] getFirstWorkingDivisionCouple(ObjectArrayList<Function> elements) {
 		final int size = elements.size();
 		Function a;
 		Function b;

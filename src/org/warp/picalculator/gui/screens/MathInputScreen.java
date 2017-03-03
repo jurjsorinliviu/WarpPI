@@ -2,7 +2,7 @@ package org.warp.picalculator.gui.screens;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -457,7 +457,7 @@ public class MathInputScreen extends Screen {
 					newExpression = "";
 					firstStep = false;
 					if (calc.f != null) {
-						calc.f = new ArrayList<>();
+						calc.f = new ObjectArrayList<>();
 					}
 					return true;
 				}
@@ -525,7 +525,7 @@ public class MathInputScreen extends Screen {
 		}
 	}
 
-	private ArrayList<Function> solveExpression(ArrayList<Function> f22) {
+	private ObjectArrayList<Function> solveExpression(ObjectArrayList<Function> f22) {
 		try {
 			try {
 				return calc.solveExpression(f22);
@@ -550,8 +550,8 @@ public class MathInputScreen extends Screen {
 		try {
 			try {
 				showVariablesDialog();
-				ArrayList<Function> results = new ArrayList<>();
-				final ArrayList<Function> partialResults = new ArrayList<>();
+				ObjectArrayList<Function> results = new ObjectArrayList<>();
+				final ObjectArrayList<Function> partialResults = new ObjectArrayList<>();
 				for (final Function f : calc.f2) {
 					if (f instanceof Equation) {
 						DisplayManager.INSTANCE.setScreen(new SolveEquationScreen(this));
@@ -565,7 +565,7 @@ public class MathInputScreen extends Screen {
 								partialResults.add(itm);
 							}
 						}
-						results = new ArrayList<>(partialResults);
+						results = new ObjectArrayList<>(partialResults);
 						partialResults.clear();
 					}
 				}
@@ -582,7 +582,7 @@ public class MathInputScreen extends Screen {
 					results.addAll(hs);
 					calc.f2 = results;
 					for (final Function rf : calc.f2) {
-						rf.recomputeDimensions();
+						rf.recomputeDimensions(null);
 					}
 				}
 				Utils.debug.println(calc.f2.toString());
@@ -612,7 +612,7 @@ public class MathInputScreen extends Screen {
 					}
 				}
 
-				final ArrayList<Function> results = solveExpression(calc.f);
+				final ObjectArrayList<Function> results = solveExpression(calc.f);
 				if (results.size() == 0) {
 					calc.resultsCount = 0;
 				} else {
@@ -625,7 +625,7 @@ public class MathInputScreen extends Screen {
 					results.addAll(hs);
 					calc.f2 = results;
 					for (final Function rf : calc.f2) {
-						rf.recomputeDimensions();
+						rf.recomputeDimensions(null);
 					}
 				}
 			} catch (final Exception ex) {
@@ -685,7 +685,7 @@ public class MathInputScreen extends Screen {
 
 	public void showVariablesDialog(final Runnable runnable) {
 		final Thread ct = new Thread(() -> {
-			final ArrayList<Function> knownVarsInFunctions = getKnownVariables(calc.f.toArray(new Function[calc.f.size()]));
+			final ObjectArrayList<Function> knownVarsInFunctions = getKnownVariables(calc.f.toArray(new Function[calc.f.size()]));
 			for (final VariableValue f : calc.variablesValues) {
 				if (knownVarsInFunctions.contains(f.v)) {
 					knownVarsInFunctions.remove(f.v);
@@ -727,8 +727,8 @@ public class MathInputScreen extends Screen {
 		ct.start();
 	}
 
-	private ArrayList<Function> getKnownVariables(Function[] fncs) {
-		final ArrayList<Function> res = new ArrayList<>();
+	private ObjectArrayList<Function> getKnownVariables(Function[] fncs) {
+		final ObjectArrayList<Function> res = new ObjectArrayList<>();
 		for (final Function f : fncs) {
 			if (f instanceof FunctionOperator) {
 				res.addAll(getKnownVariables(new Function[] { ((FunctionOperator) f).getParameter1(), ((FunctionOperator) f).getParameter2() }));

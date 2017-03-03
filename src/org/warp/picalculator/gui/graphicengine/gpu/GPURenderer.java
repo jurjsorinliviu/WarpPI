@@ -151,7 +151,7 @@ public class GPURenderer implements Renderer {
 		for (int currentCharIndex = 0; currentCharIndex < txtLen; currentCharIndex++) {
 			tableIndexX = txtArray[currentCharIndex] % currentFont.memoryWidthOfEachColumn;
 			tableIndexY = (txtArray[currentCharIndex] - tableIndexX) / currentFont.memoryWidthOfEachColumn;
-			glFillRect(x + ((float)currentCharIndex) * ((float)(currentFont.charW + 1)), y, currentFont.charW, currentFont.charH, tableIndexX*currentFont.charW, tableIndexY*currentFont.charH, currentFont.charW, currentFont.charH);
+			glFillRect(x + ((float)currentCharIndex) * ((float)(currentFont.charW)), y, currentFont.charW, currentFont.charH, tableIndexX*currentFont.charW, tableIndexY*currentFont.charH, currentFont.charW, currentFont.charH);
 		}
 	}
 
@@ -163,6 +163,24 @@ public class GPURenderer implements Renderer {
 	@Override
 	public void glDrawStringRight(float x, float y, String text) {
 		glDrawStringLeft(x - currentFont.getStringWidth(text), y, text);
+	}
+
+	@Override
+	public void glDrawCharLeft(int x, int y, char ch) {
+		int index = currentFont.getCharIndex(ch);
+		int tableIndexX = index % currentFont.memoryWidthOfEachColumn;
+		int tableIndexY = (index - tableIndexX) / currentFont.memoryWidthOfEachColumn;
+		glFillRect(x, y, currentFont.charW, currentFont.charH, tableIndexX*currentFont.charW, tableIndexY*currentFont.charH, currentFont.charW, currentFont.charH);
+	}
+
+	@Override
+	public void glDrawCharCenter(int x, int y, char ch) {
+		glDrawCharLeft(x - (currentFont.charW / 2), y, ch);
+	}
+
+	@Override
+	public void glDrawCharRight(int x, int y, char ch) {
+		glDrawCharLeft(x - currentFont.charW, y, ch);
 	}
 
 	@Override

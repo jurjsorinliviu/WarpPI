@@ -1,6 +1,6 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
@@ -55,8 +55,8 @@ public class Power extends FunctionOperator {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		final ArrayList<Function> result = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (UndefinedRule1.compare(this)) {
 			result.addAll(UndefinedRule1.execute(this));
 		} else if (ExponentRule1.compare(this)) {

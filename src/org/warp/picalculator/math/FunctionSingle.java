@@ -1,6 +1,6 @@
 package org.warp.picalculator.math;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 
@@ -26,7 +26,7 @@ public abstract class FunctionSingle implements Function {
 		parameter = value;
 	}
 	
-	private final MathContext mathContext;
+	protected final MathContext mathContext;
 	
 	/**
 	 * Function parameter.<br>
@@ -76,14 +76,14 @@ public abstract class FunctionSingle implements Function {
 	}
 
 	@Override
-	public final ArrayList<Function> simplify() throws Error {
+	public final ObjectArrayList<Function> simplify() throws Error {
 		final boolean simplified = parameter.isSimplified();
-		ArrayList<Function> result = simplified ? solve() : null;
+		ObjectArrayList<Function> result = simplified ? solve() : null;
 
 		if (result == null || result.isEmpty()) {
-			result = new ArrayList<>();
+			result = new ObjectArrayList<>();
 
-			final ArrayList<Function> l1 = new ArrayList<>();
+			final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
 			if (parameter.isSimplified()) {
 				l1.add(parameter);
 			} else {
@@ -104,7 +104,7 @@ public abstract class FunctionSingle implements Function {
 	 * @return The solved function.
 	 * @throws Error Errors during computation, like a/0 or similar.
 	 */
-	protected abstract ArrayList<Function> solve() throws Error;
+	protected abstract ObjectArrayList<Function> solve() throws Error;
 
 	@Override
 	public boolean isSimplified() {

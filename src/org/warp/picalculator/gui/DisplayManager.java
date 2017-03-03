@@ -5,7 +5,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
@@ -413,7 +413,7 @@ public final class DisplayManager implements RenderingLoop {
 //									if (displayName.endsWith("MemorySize")) {
 //										mb = true;
 //									}
-//									ArrayList<String> arr = new ArrayList<>();
+//									ObjectArrayList<String> arr = new ObjectArrayList<>();
 //									arr.add("getFreePhysicalMemorySize");
 //									arr.add("getProcessCpuLoad");
 //									arr.add("getSystemCpuLoad");
@@ -449,7 +449,7 @@ public final class DisplayManager implements RenderingLoop {
 			workThread.setName("Work thread");
 			workThread.start();
 			
-			engine.start(this);
+			engine.start(getDrawable());
 			
 			engine.waitUntilExit();
 		} catch (final Exception ex) {
