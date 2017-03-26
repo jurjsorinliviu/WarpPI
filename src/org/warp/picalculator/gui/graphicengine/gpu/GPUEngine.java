@@ -49,7 +49,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 	public void setDisplayMode(int ww, int wh) {
 		this.size[0] = ww;
 		this.size[1] = wh;
-		wnd.window.setSize(ww, wh);
+		wnd.window.setSize(Utils.debugOn?ww*2:ww, Utils.debugOn?wh*2:wh);
 	}
 
 	@Override

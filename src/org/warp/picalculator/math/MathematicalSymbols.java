@@ -16,6 +16,7 @@ public class MathematicalSymbols {
 	public static final char PARENTHESIS_OPEN = '(';
 	public static final char PARENTHESIS_CLOSE = ')';
 	public static final char POWER = 'Ⓑ';
+	public static final char POWER_OF_TWO = 'Ⓘ';
 	public static final char EQUATION = '=';
 	public static final char SYSTEM = '{';
 	public static final char SINE = 'Ⓒ';
@@ -29,7 +30,7 @@ public class MathematicalSymbols {
 
 	public static final char[] functionsNSN = new char[] { NTH_ROOT, POWER };
 
-	public static final char[] functionsSN = new char[] { SQUARE_ROOT, MINUS, SINE, COSINE, TANGENT, ARC_SINE, ARC_COSINE, ARC_TANGENT };
+	public static final char[] functionsSN = new char[] { SQUARE_ROOT, POWER_OF_TWO, MINUS, SINE, COSINE, TANGENT, ARC_SINE, ARC_COSINE, ARC_TANGENT };
 
 	public static final char[] functions = concat(functionsNSN, functionsSN);
 

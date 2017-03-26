@@ -96,4 +96,9 @@ public class Division extends FunctionOperator {
 	public FunctionOperator clone() {
 		return new Division(this.getMathContext(), this.getParameter1(), this.getParameter2());
 	}
+	
+	@Override
+	public String toString() {
+		return "("+this.getParameter1()+")/("+this.getParameter2()+")";
+	}
 }

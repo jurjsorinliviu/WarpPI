@@ -6,7 +6,9 @@ import org.warp.picalculator.math.parser.features.FeatureChar;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockChar extends Block {
-
+	
+	public static final int CLASS_ID = 0x00000001;
+	
 	private final char ch;
 	
 	public BlockChar(char ch) {
@@ -22,6 +24,16 @@ public class BlockChar extends Block {
 	}
 
 	@Override
+	public boolean putBlock(Caret caret, Block newBlock) {
+		return false;
+	}
+
+	@Override
+	public boolean delBlock(Caret caret) {
+		return false;
+	}
+	
+	@Override
 	public void recomputeDimensions() {
 		width = BlockContainer.getDefaultCharWidth(small);
 		height = BlockContainer.getDefaultCharHeight(small);
@@ -36,6 +48,11 @@ public class BlockChar extends Block {
 	
 	public char getChar() {
 		return ch;
+	}
+
+	@Override
+	public int getClassID() {
+		return CLASS_ID;
 	}
 
 }

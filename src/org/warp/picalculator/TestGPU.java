@@ -10,6 +10,7 @@ import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.BlockDivision;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
+import org.warp.picalculator.gui.expression.containers.NormalInputContainer;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
@@ -20,7 +21,7 @@ import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.parser.InputParser;
+import org.warp.picalculator.math.parser.MathParser;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -48,7 +49,7 @@ public class TestGPU {
 		private final Renderer r;
 		private final GraphicEngine d;
 		
-		private final BlockContainer c;
+		private final NormalInputContainer c;
 		
 		public Scene(GraphicEngine d) throws IOException, Error {
 			this.d = d;
@@ -62,22 +63,21 @@ public class TestGPU {
 			
 
 			//New expression framework test
-			c = new BlockContainer(false, 0, 200);
-			BlockDivision bd = new BlockDivision();
-			c.addBlock(bd);
-			bd.getUpperContainer().addBlock(new BlockChar('5'));
-			bd.getUpperContainer().addBlock(new BlockChar(MathematicalSymbols.MULTIPLICATION));
-			bd.getUpperContainer().addBlock(new BlockChar('2'));
-			bd.getLowerContainer().addBlock(new BlockChar('2'));
-			bd.recomputeDimensions();
-			c.addBlock(new BlockChar(MathematicalSymbols.MULTIPLICATION));
-			c.addBlock(new BlockChar('2'));
-			c.addBlock(new BlockChar('2'));
-			c.addBlock(new BlockChar('b'));
+			c = new NormalInputContainer(false, 0, 200);
+			c.typeChar(MathematicalSymbols.DIVISION);
+			c.typeChar('5');
+			c.typeChar(MathematicalSymbols.MULTIPLICATION);
+			c.typeChar('2');
+			c.moveRight();
+			c.typeChar('2');
+			c.moveRight();
+			c.typeChar(MathematicalSymbols.MULTIPLICATION);
+			c.typeChar('2');
+			c.typeChar('2');
 			c.recomputeDimensions();
 			
-			Expression expr = InputParser.parseInput(new MathContext(), c);
-			System.out.println(expr.toString());
+			Expression expr = MathParser.parseInput(new MathContext(), c.root);
+			System.out.println("Parsed input:"+expr.toString());
 			
 			d.start(this);
 
@@ -119,7 +119,7 @@ public class TestGPU {
 			r.glFillRect(162, 2.5f, 160, 160, 0, 0, 16, 16);
 			
 			//New expression framework test
-			c.draw(d, r, 10, 220, new Caret(CaretState.VISIBLE_ON, 10));
+			c.draw(d, r, 10, 220);
 		}
 
 	}

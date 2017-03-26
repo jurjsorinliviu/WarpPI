@@ -106,10 +106,6 @@ public class Multiplication extends FunctionOperator {
 	
 	@Override
 	public String toString() {
-		if (parameter1 != null && parameter2 != null) {
-			return parameter1.toString()+"*"+parameter2.toString();
-		} else {
-			return super.toString();
-		}
+		return "("+parameter1.toString()+")*("+parameter2.toString()+")";
 	}
 }

@@ -24,7 +24,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 
 public class GPURenderer implements Renderer {
 
-	public GL2ES1 gl;
+	public static GL2ES1 gl;
 
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();
 	FloatBuffer fbVertices;
@@ -192,10 +192,10 @@ public class GPURenderer implements Renderer {
 		final FileInputStream f = new FileInputStream("test.png");
 		final TextureData tx_dat = TextureIO.newTextureData(gl.getGLProfile(), f, false, TextureIO.PNG);
 		final Texture tex = new Texture(gl, tx_dat);
-		tex.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+		tex.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 		tex.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-		tex.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
-		tex.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
+//		tex.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
+//		tex.setTexParameteri(gl, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
 		return tex;
 	}
 
@@ -208,7 +208,10 @@ public class GPURenderer implements Renderer {
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 		ImageIO.write(img, "png", os);
 		final InputStream fis = new ByteArrayInputStream(os.toByteArray());
-		return TextureIO.newTexture(fis, false, TextureIO.PNG);
+		Texture tex = TextureIO.newTexture(fis, false, TextureIO.PNG);
+		tex.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+		tex.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+		return tex;
 	}
 
 	@Override

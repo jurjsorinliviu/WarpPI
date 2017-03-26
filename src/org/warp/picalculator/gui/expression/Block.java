@@ -5,7 +5,7 @@ import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public abstract class Block implements GraphicalElement {
-
+	
 	protected boolean small;
 	protected int width;
 	protected int height;
@@ -19,6 +19,10 @@ public abstract class Block implements GraphicalElement {
 	 * @param small 
 	 */
 	public abstract void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret);
+
+	public abstract boolean putBlock(Caret caret, Block newBlock);
+
+	public abstract boolean delBlock(Caret caret);
 
 	@Override
 	public abstract void recomputeDimensions();
@@ -44,4 +48,5 @@ public abstract class Block implements GraphicalElement {
 
 	public abstract void setSmall(boolean small);
 	
+	public abstract int getClassID();
 }

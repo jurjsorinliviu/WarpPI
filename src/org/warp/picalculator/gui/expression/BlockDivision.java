@@ -8,6 +8,8 @@ import org.warp.picalculator.math.parser.features.interfaces.Feature;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class BlockDivision extends Block {
+	
+	public static final int CLASS_ID = 0x00000002;
 
 	private final BlockContainer containerUp;
 	private final BlockContainer containerDown;
@@ -27,8 +29,30 @@ public class BlockDivision extends Block {
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(BlockContainer.getDefaultColor());
 		containerUp.draw(ge, r, x+1+paddingLeftUpper, y, caret);
-		r.glDrawLine(x, y+h1+1, x+width, y+h1+1);
+		r.glDrawLine(x, y+h1+1, x+width-1, y+h1+1);
 		containerDown.draw(ge, r, x+1+paddingLeftLower, y + h1+3, caret);
+	}
+
+	@Override
+	public boolean putBlock(Caret caret, Block newBlock) {
+		boolean added = false;
+		added = added|containerUp.putBlock(caret, newBlock);
+		added = added|containerDown.putBlock(caret, newBlock);
+		if (added) {
+			recomputeDimensions();
+		}
+		return added;
+	}
+
+	@Override
+	public boolean delBlock(Caret caret) {
+		boolean removed = false;
+		removed = removed|containerUp.delBlock(caret);
+		removed = removed|containerDown.delBlock(caret);
+		if (removed) {
+			recomputeDimensions();
+		}
+		return removed;
 	}
 
 	@Override
@@ -37,7 +61,7 @@ public class BlockDivision extends Block {
 		final int w2 = containerDown.getWidth();
 		final int h1 = containerUp.getHeight();
 		final int h2 = containerDown.getHeight();
-		width = (w1>w2?w1:w2) + 2;
+		width = (w1>w2?w1:w2) + 4;
 		height = h1+3+h2;
 		line = h1+1;
 		this.h1 = h1;
@@ -49,6 +73,9 @@ public class BlockDivision extends Block {
 				paddingLeftUpper = (w2 - w1) / 2;
 				paddingLeftLower = 0;
 			}
+		} else {
+			paddingLeftUpper = 0;
+			paddingLeftLower = 0;
 		}
 	}
 
@@ -66,5 +93,10 @@ public class BlockDivision extends Block {
 	
 	public BlockContainer getLowerContainer() {
 		return containerDown;
+	}
+
+	@Override
+	public int getClassID() {
+		return CLASS_ID;
 	}
 }

@@ -102,18 +102,6 @@ public class MathContext {
 		}
 	}
 
-	public void parseInputString(String eqn) throws Error {
-		final ObjectArrayList<Function> fncs = new ObjectArrayList<>();
-		if (eqn.length() > 0) {
-			try {
-				fncs.add(parseString(eqn.replace("sqrt", MathematicalSymbols.SQUARE_ROOT).replace("^", MathematicalSymbols.POWER)));
-			} catch (final Exception ex) {
-
-			}
-		}
-		f = fncs;
-	}
-
 	/*public void solve(EquationScreen equationScreen, char letter) throws Error {
 		if (Calculator.currentSession == 0 && Calculator.sessions[0] instanceof EquationScreen) {
 			EquationScreen es = (EquationScreen) Calculator.sessions[0];

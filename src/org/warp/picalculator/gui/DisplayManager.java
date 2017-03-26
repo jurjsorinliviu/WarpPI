@@ -356,7 +356,7 @@ public final class DisplayManager implements RenderingLoop {
 			Main.screenSize[1] = engine.getHeight();
 		}
 	};
-
+	
 	public void loop() {
 		try {
 			load_skin();

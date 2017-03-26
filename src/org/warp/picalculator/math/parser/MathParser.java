@@ -7,6 +7,7 @@ import org.warp.picalculator.gui.expression.BlockChar;
 import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.BlockDivision;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
@@ -30,7 +31,7 @@ import com.sun.org.apache.xpath.internal.functions.Function2Args;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 
-public class InputParser {
+public class MathParser {
 	public static Expression parseInput(MathContext context, BlockContainer root) throws Error {
 		Expression result;
 		
@@ -57,15 +58,19 @@ public class InputParser {
 		
 		Feature result;
 		
-		if (block instanceof BlockChar) {
-			result = new FeatureChar(((BlockChar) block).getChar());
-		} else if (block instanceof BlockDivision) {
-			BlockDivision bd = (BlockDivision) block;
-			Function upper = parseContainer(context, bd.getUpperContainer());
-			Function lower = parseContainer(context, bd.getLowerContainer());
-			result = new FeatureDivision(upper, lower);
-		} else {
-			throw new Error(Errors.SYNTAX_ERROR);
+		int blockType = block.getClassID();
+		switch (blockType) {
+			case BlockChar.CLASS_ID:
+				result = new FeatureChar(((BlockChar) block).getChar());
+				break;
+			case BlockDivision.CLASS_ID:
+				BlockDivision bd = (BlockDivision) block;
+				Function upper = parseContainer(context, bd.getUpperContainer());
+				Function lower = parseContainer(context, bd.getLowerContainer());
+				result = new FeatureDivision(upper, lower);
+				break;
+			default:
+				throw new Error(Errors.SYNTAX_ERROR);
 		}
 		
 		return result;
@@ -108,17 +113,31 @@ public class InputParser {
 		}
 
 		//Phase 2
-		stackIterator = process.iterator();
+		stackIterator = process.listIterator();
 		while (stackIterator.hasNext()) {
 			Function f = stackIterator.next();
+			final int curIndex = stackIterator.previousIndex();
 			
 			if (f instanceof Multiplication || f instanceof Division) {
-				
+				if (curIndex-1>=0 && stackIterator.hasNext()) {
+					Function next = process.get(curIndex+1);
+					Function prev = process.get(curIndex-1);
+					stackIterator.set(
+					f.setParameter(0, prev)
+					.setParameter(1, next)
+					);
+					process.remove(curIndex+1);
+					process.remove(curIndex-1);
+				} else {
+					if (f.getParameter(0) == null || f.getParameter(1) == null) {
+						throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
+					}
+				}
 			}
 		}
 
 		//Phase 3
-		stackIterator = process.iterator();
+		stackIterator = process.listIterator();
 		while (stackIterator.hasNext()) {
 			Function f = stackIterator.next();
 			

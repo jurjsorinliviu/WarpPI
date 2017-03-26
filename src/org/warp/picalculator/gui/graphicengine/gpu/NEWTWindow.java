@@ -54,6 +54,7 @@ import java.awt.event.ComponentListener;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
@@ -278,7 +279,7 @@ class NEWTWindow implements GLEventListener {
 		//Transparency
 		gl.glEnable(GL2ES1.GL_BLEND);
 		gl.glBlendFunc(GL2ES1.GL_SRC_ALPHA, GL2ES1.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glShadeModel(GL2ES1.GL_SMOOTH);
+		gl.glShadeModel(GL2ES1.GL_FLAT);
 		
 		try {
 			renderer.currentTex = ((GPUSkin) disp.loadSkin("test.png")).t;
@@ -295,8 +296,8 @@ class NEWTWindow implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
-		disp.size[0] = width;
-		disp.size[1] = height;
+		disp.size[0] = Utils.debugOn?width/2:width;
+		disp.size[1] = Utils.debugOn?height/2:height;
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 		float max_wh, min_wh;
 		if (width == 0) {
@@ -318,7 +319,7 @@ class NEWTWindow implements GLEventListener {
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		gl.glOrtho(0.0, width, height, 0.0, -1, 1);
+		gl.glOrtho(0.0, Utils.debugOn?width/2:width, Utils.debugOn?height/2:height, 0.0, -1, 1);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();

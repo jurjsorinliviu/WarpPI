@@ -269,17 +269,23 @@ public class CPUEngine implements GraphicEngine {
 			}
 			if (iy0 == iy1) {
 				for (int x = 0; x <= ix1 - ix0; x++) {
-					canvas2d[ix0 + x + iy0 * size[0]] = color;
+					if ((ix0+x < size[0]) & (iy0 < size[1])) {
+						canvas2d[ix0 + x + iy0 * size[0]] = color;
+					}
 				}
 			} else if (ix0 == ix1) {
 				for (int y = 0; y <= iy1 - iy0; y++) {
-					canvas2d[ix0 + (iy0 + y) * size[0]] = color;
+					if ((ix0 < size[0]) & (iy0+y < size[1])) {
+						canvas2d[ix0 + (iy0 + y) * size[0]] = color;
+					}
 				}
 			} else {
 				final int m = (iy1 - iy0) / (ix1 - ix0);
 				for (int texx = 0; texx <= ix1 - ix0; texx++) {
 					if (ix0 + texx < size[0] && iy0 + (m * texx) < size[1]) {
-						canvas2d[(ix0 + texx) + (iy0 + (m * texx)) * size[0]] = color;
+						if ((ix0 + texx < size[0]) & ((iy0 + (m * texx)) < size[1])) {
+							canvas2d[(ix0 + texx) + (iy0 + (m * texx)) * size[0]] = color;
+						}
 					}
 				}
 			}
