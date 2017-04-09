@@ -5,29 +5,21 @@ import java.io.IOException;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
-import org.warp.picalculator.gui.expression.BlockChar;
+import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.KeyboardEventListener;
+import org.warp.picalculator.gui.GUIErrorMessage;
 import org.warp.picalculator.gui.expression.BlockContainer;
-import org.warp.picalculator.gui.expression.BlockDivision;
-import org.warp.picalculator.gui.expression.Caret;
-import org.warp.picalculator.gui.expression.CaretState;
 import org.warp.picalculator.gui.expression.containers.NormalInputContainer;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
-import org.warp.picalculator.gui.graphicengine.gpu.GPURenderer;
-import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
-import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Expression;
+import org.warp.picalculator.math.functions.Root;
 import org.warp.picalculator.math.parser.MathParser;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class TestGPU {
 
@@ -38,8 +30,104 @@ public class TestGPU {
 		Utils.debugThirdScreen = false;
 		d.create();
 
+		Keyboard.startKeyboard();
+		Keyboard.setAdditionalKeyboardListener(new KeyboardEventListener() {
+			@Override
+			public boolean keyPressed(Key k) {
+				switch (k) {
+					case LEFT:
+						c.moveLeft();
+						return true;
+					case RIGHT:
+						c.moveRight();
+						return true;
+					case NUM0:
+						c.typeChar('0');
+						return true;
+					case NUM1:
+						c.typeChar('1');
+						return true;
+					case NUM2:
+						c.typeChar('2');
+						return true;
+					case NUM3:
+						c.typeChar('3');
+						return true;
+					case NUM4:
+						c.typeChar('4');
+						return true;
+					case NUM5:
+						c.typeChar('5');
+						return true;
+					case NUM6:
+						c.typeChar('6');
+						return true;
+					case NUM7:
+						c.typeChar('7');
+						return true;
+					case NUM8:
+						c.typeChar('8');
+						return true;
+					case NUM9:
+						c.typeChar('9');
+						return true;
+					case PLUS:
+						c.typeChar(MathematicalSymbols.SUM);
+						return true;
+					case MINUS:
+						c.typeChar(MathematicalSymbols.SUBTRACTION);
+						return true;
+					case MULTIPLY:
+						c.typeChar(MathematicalSymbols.MULTIPLICATION);
+						return true;
+					case DIVIDE:
+						c.typeChar(MathematicalSymbols.DIVISION);
+						return true;
+					case SQRT:
+						c.typeChar(MathematicalSymbols.SQUARE_ROOT);
+						return true;
+					case PARENTHESIS_OPEN:
+					case SINE:
+						c.typeChar(MathematicalSymbols.PARENTHESIS_OPEN);
+						return true;
+					case PARENTHESIS_CLOSE:
+					case debug_DEG:
+						c.moveRight();
+						return true;
+					case DELETE:
+						c.del();
+						return true;
+					case RESET:
+						c.clear();
+						return true;
+					case POWER:
+						d.destroy();
+						System.exit(0);
+						return true;
+					case EQUAL:
+						Expression expr;
+						try {
+							expr = MathParser.parseInput(new MathContext(), c.root);
+							System.out.println("Parsed input:"+expr.toString());
+						} catch (Error e) {
+							e.printStackTrace();
+						}
+				}
+				return false;
+				
+			}
+			
+			@Override
+			public boolean keyReleased(Key k) {
+				return false;
+				
+			}
+		});
+		
 		final Scene s = new Scene(d);
 	}
+	
+	private static NormalInputContainer c = null;
 
 	private static class Scene implements RenderingLoop {
 
@@ -48,8 +136,7 @@ public class TestGPU {
 
 		private final Renderer r;
 		private final GraphicEngine d;
-		
-		private final NormalInputContainer c;
+		private long lastTime = 0L;
 		
 		public Scene(GraphicEngine d) throws IOException, Error {
 			this.d = d;
@@ -76,9 +163,6 @@ public class TestGPU {
 			c.typeChar('2');
 			c.recomputeDimensions();
 			
-			Expression expr = MathParser.parseInput(new MathContext(), c.root);
-			System.out.println("Parsed input:"+expr.toString());
-			
 			d.start(this);
 
 //			fonts = new RAWFont[1];
@@ -95,7 +179,10 @@ public class TestGPU {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.exit(0);
+				if (!Utils.debugOn) {
+					d.destroy();
+					System.exit(0);
+				}
 			}).start();
 			
 			d.waitUntilExit();
@@ -119,6 +206,12 @@ public class TestGPU {
 			r.glFillRect(162, 2.5f, 160, 160, 0, 0, 16, 16);
 			
 			//New expression framework test
+			if (lastTime == 0) {
+				lastTime = System.currentTimeMillis();
+			}
+			double delta = System.currentTimeMillis()-lastTime;
+			lastTime = System.currentTimeMillis();
+			c.beforeRender((float) (delta/1000d));
 			c.draw(d, r, 10, 220);
 		}
 

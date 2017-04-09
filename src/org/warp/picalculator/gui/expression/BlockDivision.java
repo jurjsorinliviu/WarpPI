@@ -99,4 +99,9 @@ public class BlockDivision extends Block {
 	public int getClassID() {
 		return CLASS_ID;
 	}
+
+	@Override
+	public int computeCaretMaxBound() {
+		return containerUp.computeCaretMaxBound()+containerDown.computeCaretMaxBound();
+	}
 }

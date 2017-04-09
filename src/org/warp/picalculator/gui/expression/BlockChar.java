@@ -55,4 +55,9 @@ public class BlockChar extends Block {
 		return CLASS_ID;
 	}
 
+	@Override
+	public int computeCaretMaxBound() {
+		return 0;
+	}
+
 }

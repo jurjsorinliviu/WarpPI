@@ -224,12 +224,17 @@ public class GPURenderer implements Renderer {
 	}
 
 	public void startDrawCycle() {
-		fbVertices = Buffers.newDirectFloatBuffer(3 * 4);
-		txVertices = Buffers.newDirectFloatBuffer(2 * 4);
-		colVertices = Buffers.newDirectFloatBuffer(4 * 4);
+		if (fbVertices == null) {
+			fbVertices = Buffers.newDirectFloatBuffer(3 * 4);
+			txVertices = Buffers.newDirectFloatBuffer(2 * 4);
+			colVertices = Buffers.newDirectFloatBuffer(4 * 4);
+		}
 		fbElements = 0;
 	}
 
+	private boolean precTexEnabled;
+	private Texture precTex;
+	
 	public void endDrawCycle() {
 		fbVertices.rewind();
 		txVertices.rewind();
@@ -239,21 +244,25 @@ public class GPURenderer implements Renderer {
 		gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, txVertices);
 		gl.glVertexPointer(3, GL.GL_FLOAT, 0, fbVertices);
 
-		if (currentTexEnabled) {
-			gl.glEnable(GL2ES1.GL_TEXTURE_2D);
-			currentTex.bind(gl);
-		} else {
-			gl.glDisable(GL2ES1.GL_TEXTURE_2D);
+		if (precTexEnabled != currentTexEnabled | precTex != currentTex) {
+			precTexEnabled = currentTexEnabled;
+			precTex = currentTex;
+			if (currentTexEnabled) {
+				gl.glEnable(GL2ES1.GL_TEXTURE_2D);
+				currentTex.bind(gl);
+			} else {
+				gl.glDisable(GL2ES1.GL_TEXTURE_2D);
+			}
 		}
 
-		gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, 4);
+		gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, fbElements*4);
 
-		deleteBuffer(fbVertices);
-		deleteBuffer(txVertices);
-		deleteBuffer(colVertices);
-		fbVertices = null;
-		txVertices = null;
-		colVertices = null;
+//		deleteBuffer(fbVertices);
+//		deleteBuffer(txVertices);
+//		deleteBuffer(colVertices);
+//		fbVertices = null;
+//		txVertices = null;
+//		colVertices = null;
 	}
 
 	public void deleteBuffer(final Buffer realNioBuffer) {

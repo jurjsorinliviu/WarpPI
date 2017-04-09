@@ -38,6 +38,7 @@ public final class DisplayManager implements RenderingLoop {
 
 	public static Screen screen;
 	public static String displayDebugString = "";
+	public static ObjectArrayList<GUIErrorMessage> errorMessages = new ObjectArrayList<>();
 
 	public DisplayManager(Screen screen) {
 		setScreen(screen);

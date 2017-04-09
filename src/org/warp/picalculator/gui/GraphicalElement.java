@@ -1,4 +1,4 @@
-package org.warp.picalculator.gui.expression;
+package org.warp.picalculator.gui;
 
 public interface GraphicalElement {
 

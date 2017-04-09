@@ -6,6 +6,7 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
 import org.warp.picalculator.gui.DisplayManager;
+import org.warp.picalculator.gui.GUIErrorMessage;
 import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
 import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.gui.screens.Screen;
@@ -31,8 +32,10 @@ public class Keyboard {
 	public static volatile int debugKeyCode = -1;
 	
 	private static volatile boolean refreshRequest = false;
+	
+	private static KeyboardEventListener additionalListener;
 
-	public static void startKeyboard() {
+	public synchronized static void startKeyboard() {
 		final Thread kt = new Thread(() -> {
 			if (Utils.debugOn) {
 				try {
@@ -94,7 +97,7 @@ public class Keyboard {
 		kt.start();
 	}
 
-	private static void debugKeyPressed(int keyCode) {
+	private synchronized static void debugKeyPressed(int keyCode) {
 		switch (keyCode) {
 			case KeyEvent.VK_ESCAPE:
 				Keyboard.keyPressed(Key.POWER);
@@ -398,7 +401,7 @@ public class Keyboard {
 		}
 	}
 
-	private static void keyReleasedRaw(int row, int col) {
+	private synchronized static void keyReleasedRaw(int row, int col) {
 		KeyboardDebugScreen.keyX = row;
 		KeyboardDebugScreen.keyY = col;
 		if (row == 1 && col == 1) {
@@ -406,7 +409,7 @@ public class Keyboard {
 		}
 	}
 
-	static void keyPressedRaw(int row, int col) {
+	static synchronized void keyPressedRaw(int row, int col) {
 		KeyboardDebugScreen.keyX = row;
 		KeyboardDebugScreen.keyY = col;
 		if (row == 1 && col == 1) {
@@ -695,11 +698,25 @@ public class Keyboard {
 		}
 	}
 
-	public static void keyPressed(Key k) {
+	public synchronized static void keyPressed(Key k) {
+		boolean done = false;
+		if (additionalListener != null) {
+			try {
+				done = additionalListener.keyPressed(k);
+			} catch (Exception ex) {
+				new GUIErrorMessage(ex);
+			}
+		}
 		if (DisplayManager.INSTANCE != null) {
 			final Screen scr = DisplayManager.INSTANCE.getScreen();
 			boolean refresh = false;
-			if (scr != null && scr.initialized && scr.keyPressed(k)) {
+			boolean scrdone = false;
+			try {
+				scrdone = scr.keyPressed(k);
+			} catch (Exception ex) {
+				new GUIErrorMessage(ex);
+			}
+			if (scr != null && scr.initialized && scrdone) {
 				refresh = true;
 			} else {
 				switch (k) {
@@ -756,6 +773,8 @@ public class Keyboard {
 			if (refresh) {
 				refreshRequest = true;
 			}
+		} else if (!done) {
+			Utils.debug.println("Key " + k.toString() + " ignored.");
 		}
 	}
 
@@ -763,7 +782,11 @@ public class Keyboard {
 
 	}
 
-	public static void keyReleased(Key k) {
+	public synchronized static void keyReleased(Key k) {
+		boolean done = false;
+		if (additionalListener != null) {
+			done = additionalListener.keyReleased(k);
+		}
 		boolean refresh = false;
 		if (DisplayManager.INSTANCE != null) {
 			final Screen scr = DisplayManager.INSTANCE.getScreen();
@@ -778,9 +801,15 @@ public class Keyboard {
 				}
 			}
 			if (refresh) {
-//				PIDisplay.display.repaint();
+				refreshRequest = true;
 			}
+		} else if (!done) {
+			Utils.debug.println("Key " + k.toString() + " ignored.");
 		}
+	}
+	
+	public static void setAdditionalKeyboardListener(KeyboardEventListener l) {
+		additionalListener = l;
 	}
 
 	public static enum Key {

@@ -1,5 +1,6 @@
 package org.warp.picalculator.gui.expression;
 
+import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
@@ -26,6 +27,8 @@ public abstract class Block implements GraphicalElement {
 
 	@Override
 	public abstract void recomputeDimensions();
+
+	public abstract int computeCaretMaxBound();
 	
 	@Override
 	public int getWidth() {

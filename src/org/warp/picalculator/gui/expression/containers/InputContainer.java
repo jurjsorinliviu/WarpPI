@@ -1,10 +1,10 @@
 package org.warp.picalculator.gui.expression.containers;
 
+import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Block;
 import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
-import org.warp.picalculator.gui.expression.GraphicalElement;
 import org.warp.picalculator.gui.expression.layouts.InputLayout;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
@@ -14,6 +14,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout {
 	private Caret caret;
 	private static final float CARET_DURATION = 0.5f;
 	private float caretTime;
+	private int maxPosition = 0;
 	
 	public InputContainer() {
 		caret = new Caret(CaretState.VISIBLE_ON, 0);
@@ -36,6 +37,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout {
 			caret.resetRemaining();
 			if (root.putBlock(caret, b)) {
 				caret.setPosition(caret.getPosition()+1);
+				maxPosition=root.computeCaretMaxBound();
 				root.recomputeDimensions();
 			}
 		}
@@ -54,21 +56,26 @@ public abstract class InputContainer implements GraphicalElement, InputLayout {
 		}
 		if (caret.getPosition() > 0) {
 			caret.setPosition(caret.getPosition()-1);
+			maxPosition=root.computeCaretMaxBound();
 		}
 		caret.turnOn();
 		caretTime = 0;
 	}
 
 	public void moveLeft() {
-		if (caret.getPosition() > 0) {
-			caret.setPosition(caret.getPosition()-1);
+		int curPos = caret.getPosition();
+		if (curPos > 0) {
+			caret.setPosition(curPos-1);
 		}
 		caret.turnOn();
 		caretTime = 0;
 	}
 
 	public void moveRight() {
-		caret.setPosition(caret.getPosition()+1);
+		int curPos = caret.getPosition();
+		if (curPos+1 < maxPosition) {
+			caret.setPosition(curPos+1);
+		}
 		caret.turnOn();
 		caretTime = 0;
 	}
@@ -108,6 +115,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout {
 				somethingChanged = true;
 			}
 		}
+		
 		return somethingChanged;
 	}
 	
@@ -121,16 +129,12 @@ public abstract class InputContainer implements GraphicalElement, InputLayout {
 	public void draw(GraphicEngine ge, Renderer r, int x, int y) {
 		caret.resetRemaining();
 		root.draw(ge, r, x, y, caret);
-		
-		int remaining = caret.getRemaining();
-		if (remaining >= 0) {
-			caret.setPosition(caret.getPosition()-remaining-1);
-		}
 	}
 
 	public void clear() {
 		caret = new Caret(CaretState.VISIBLE_ON, 0);
 		root.clear();
+		maxPosition=root.computeCaretMaxBound();
 		recomputeDimensions();
 	}
 }

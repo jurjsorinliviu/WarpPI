@@ -1,13 +1,11 @@
 package org.warp.picalculator.gui.expression;
 
-import java.io.IOException;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-import org.warp.picalculator.device.graphicengine.Display;
+import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
-import org.warp.picalculator.gui.graphicengine.gpu.GPUFont;
 
 public class BlockContainer implements GraphicalElement {
 
@@ -283,6 +281,14 @@ public class BlockContainer implements GraphicalElement {
 	
 	private static void checkInitialized() {
 		if (!initialized) throw new ExceptionInInitializerError("Please initialize BlockContainer by running the method BlockContainer.initialize(...) first!");
+	}
+
+	public int computeCaretMaxBound() {
+		int maxpos = 0;
+		for (Block b : content) {
+			maxpos+=1+b.computeCaretMaxBound();
+		}
+		return maxpos+1;
 	}
 	
 }
