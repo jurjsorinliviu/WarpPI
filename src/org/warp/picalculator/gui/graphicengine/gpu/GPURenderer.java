@@ -1,6 +1,5 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import java.awt.FontMetrics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,19 +32,19 @@ public class GPURenderer implements Renderer {
 	int fbElements;
 
 	float[] currentColor = new float[16];
-	float[] currentClearColorARGBf = new float[]{1f, 197f/255f, 194f/255f, 175f/255f};
+	float[] currentClearColorARGBf = new float[] { 1f, 197f / 255f, 194f / 255f, 175f / 255f };
 	boolean currentTexEnabled;
 	Texture currentTex;
 	float currentTexWidth;
 	float currentTexHeight;
-	
+
 	GPUFont currentFont;
 
 	@Override
 	public void glColor3i(int r, int gg, int b) {
-		final float red = ((float)r) / 255f;
-		final float gre = ((float)gg) / 255f;
-		final float blu = ((float)b) / 255f;
+		final float red = (r) / 255f;
+		final float gre = (gg) / 255f;
+		final float blu = (b) / 255f;
 		currentColor = new float[] { red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, };
 	}
 
@@ -70,15 +69,15 @@ public class GPURenderer implements Renderer {
 
 	@Override
 	public int glGetClearColor() {
-		return (int)(currentClearColorARGBf[0] * 255)  << 24 | (int)(currentClearColorARGBf[1] * 255) << 16 | (int)(currentClearColorARGBf[2] * 255) << 8 | (int)(currentClearColorARGBf[3] * 255);
+		return (int) (currentClearColorARGBf[0] * 255) << 24 | (int) (currentClearColorARGBf[1] * 255) << 16 | (int) (currentClearColorARGBf[2] * 255) << 8 | (int) (currentClearColorARGBf[3] * 255);
 	}
 
 	@Override
 	public void glClearColor(int rgb) {
-		final float alpha = (float)((rgb >> 24) & 0xFF) / 255f;
-		final float red = (float)((rgb >> 16) & 0xFF) / 255f;
-		final float green = (float)((rgb >> 8) & 0xFF) / 255f;
-		final float blue = (float)(rgb & 0xFF) / 255f;
+		final float alpha = ((rgb >> 24) & 0xFF) / 255f;
+		final float red = ((rgb >> 16) & 0xFF) / 255f;
+		final float green = ((rgb >> 8) & 0xFF) / 255f;
+		final float blue = (rgb & 0xFF) / 255f;
 		glClearColor4f(red, green, blue, alpha);
 	}
 
@@ -97,12 +96,12 @@ public class GPURenderer implements Renderer {
 		final float gre = (green) / 255f;
 		final float blu = (blue) / 255f;
 		final float alp = (alpha) / 255f;
-		currentClearColorARGBf = new float[]{alp, ros, gre, blu};
+		currentClearColorARGBf = new float[] { alp, ros, gre, blu };
 	}
 
 	@Override
 	public void glClearColor4f(float red, float green, float blue, float alpha) {
-		currentClearColorARGBf = new float[]{alpha, red, green, blue};
+		currentClearColorARGBf = new float[] { alpha, red, green, blue };
 	}
 
 	@Override
@@ -113,16 +112,17 @@ public class GPURenderer implements Renderer {
 
 	@Override
 	public void glDrawLine(float x0, float y0, float x1, float y1) {
-		glFillColor(x0, y0, x1-x0+1, y1-y0+1);
+		glFillColor(x0, y0, x1 - x0 + 1, y1 - y0 + 1);
 	}
 
 	@Override
-	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth, float uvHeight) {
+	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth,
+			float uvHeight) {
 		enableTexture();
-		uvWidth/=currentTexWidth;
-		uvX/=currentTexWidth;
-		uvHeight/=currentTexHeight;
-		uvY = 1 - uvY/currentTexHeight - uvHeight;
+		uvWidth /= currentTexWidth;
+		uvX /= currentTexWidth;
+		uvHeight /= currentTexHeight;
+		uvY = 1 - uvY / currentTexHeight - uvHeight;
 		final float[] vertices = { x, y, 0.0f, x, y + height, 0.0f, x + width, y, 0.0f, x + width, y + height, 0.0f, };
 		final float[] tex_vertices = { uvX, uvY + uvHeight, uvX, uvY, uvX + uvWidth, uvY + uvHeight, uvX + uvWidth, uvY, };
 		fbElements++;
@@ -145,13 +145,13 @@ public class GPURenderer implements Renderer {
 	@Override
 	public void glDrawStringLeft(float x, float y, String text) {
 		final int txtLen = text.length();
-		int[] txtArray = currentFont.getCharIndexes(text);
+		final int[] txtArray = currentFont.getCharIndexes(text);
 		int tableIndexX;
 		int tableIndexY;
 		for (int currentCharIndex = 0; currentCharIndex < txtLen; currentCharIndex++) {
 			tableIndexX = txtArray[currentCharIndex] % currentFont.memoryWidthOfEachColumn;
 			tableIndexY = (txtArray[currentCharIndex] - tableIndexX) / currentFont.memoryWidthOfEachColumn;
-			glFillRect(x + ((float)currentCharIndex) * ((float)(currentFont.charW)), y, currentFont.charW, currentFont.charH, tableIndexX*currentFont.charW, tableIndexY*currentFont.charH, currentFont.charW, currentFont.charH);
+			glFillRect(x + ((float) currentCharIndex) * ((float) (currentFont.charW)), y, currentFont.charW, currentFont.charH, tableIndexX * currentFont.charW, tableIndexY * currentFont.charH, currentFont.charW, currentFont.charH);
 		}
 	}
 
@@ -167,10 +167,10 @@ public class GPURenderer implements Renderer {
 
 	@Override
 	public void glDrawCharLeft(int x, int y, char ch) {
-		int index = currentFont.getCharIndex(ch);
-		int tableIndexX = index % currentFont.memoryWidthOfEachColumn;
-		int tableIndexY = (index - tableIndexX) / currentFont.memoryWidthOfEachColumn;
-		glFillRect(x, y, currentFont.charW, currentFont.charH, tableIndexX*currentFont.charW, tableIndexY*currentFont.charH, currentFont.charW, currentFont.charH);
+		final int index = currentFont.getCharIndex(ch);
+		final int tableIndexX = index % currentFont.memoryWidthOfEachColumn;
+		final int tableIndexY = (index - tableIndexX) / currentFont.memoryWidthOfEachColumn;
+		glFillRect(x, y, currentFont.charW, currentFont.charH, tableIndexX * currentFont.charW, tableIndexY * currentFont.charH, currentFont.charW, currentFont.charH);
 	}
 
 	@Override
@@ -208,7 +208,7 @@ public class GPURenderer implements Renderer {
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 		ImageIO.write(img, "png", os);
 		final InputStream fis = new ByteArrayInputStream(os.toByteArray());
-		Texture tex = TextureIO.newTexture(fis, false, TextureIO.PNG);
+		final Texture tex = TextureIO.newTexture(fis, false, TextureIO.PNG);
 		tex.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 		tex.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 		return tex;
@@ -234,7 +234,7 @@ public class GPURenderer implements Renderer {
 
 	private boolean precTexEnabled;
 	private Texture precTex;
-	
+
 	public void endDrawCycle() {
 		fbVertices.rewind();
 		txVertices.rewind();
@@ -248,14 +248,14 @@ public class GPURenderer implements Renderer {
 			precTexEnabled = currentTexEnabled;
 			precTex = currentTex;
 			if (currentTexEnabled) {
-				gl.glEnable(GL2ES1.GL_TEXTURE_2D);
+				gl.glEnable(GL.GL_TEXTURE_2D);
 				currentTex.bind(gl);
 			} else {
-				gl.glDisable(GL2ES1.GL_TEXTURE_2D);
+				gl.glDisable(GL.GL_TEXTURE_2D);
 			}
 		}
 
-		gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, fbElements*4);
+		gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, fbElements * 4);
 
 //		deleteBuffer(fbVertices);
 //		deleteBuffer(txVertices);

@@ -4,27 +4,27 @@ import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
 public class BlockParenthesis extends Block {
-	
+
 	public static final int CLASS_ID = 0x00000004;
 
 	private final BlockContainer containerNumber;
 
 	public BlockParenthesis() {
-		this.containerNumber = new BlockContainer(false);
+		containerNumber = new BlockContainer(false);
 		recomputeDimensions();
 	}
-	
+
 	@Override
 	public void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret) {
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(BlockContainer.getDefaultColor());
-		containerNumber.draw(ge, r, x+7, y+3, caret);
+		containerNumber.draw(ge, r, x + 7, y + 3, caret);
 	}
 
 	@Override
 	public boolean putBlock(Caret caret, Block newBlock) {
 		boolean added = false;
-		added = added|containerNumber.putBlock(caret, newBlock);
+		added = added | containerNumber.putBlock(caret, newBlock);
 		if (added) {
 			recomputeDimensions();
 		}
@@ -34,7 +34,7 @@ public class BlockParenthesis extends Block {
 	@Override
 	public boolean delBlock(Caret caret) {
 		boolean removed = false;
-		removed = removed|containerNumber.delBlock(caret);
+		removed = removed | containerNumber.delBlock(caret);
 		if (removed) {
 			recomputeDimensions();
 		}
@@ -43,15 +43,15 @@ public class BlockParenthesis extends Block {
 
 	@Override
 	public void recomputeDimensions() {
-		this.width = containerNumber.getWidth()+BlockContainer.getDefaultCharWidth(small)*2;
-		this.height = containerNumber.getHeight();
-		this.line = containerNumber.getLine();
+		width = containerNumber.getWidth() + BlockContainer.getDefaultCharWidth(small) * 2;
+		height = containerNumber.getHeight();
+		line = containerNumber.getLine();
 	}
 
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
-		this.containerNumber.setSmall(small);
+		containerNumber.setSmall(small);
 		recomputeDimensions();
 	}
 

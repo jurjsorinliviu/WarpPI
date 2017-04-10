@@ -6,14 +6,13 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
-import org.warp.picalculator.math.MathematicalSymbols;
 
 public class Tangent extends FunctionSingle {
 
 	public Tangent(MathContext root, Function value) {
 		super(root, value);
 	}
-	
+
 	@Override
 	public ObjectArrayList<Function> solve() throws Error {
 		// TODO Auto-generated method stub

@@ -5,12 +5,12 @@ import org.warp.picalculator.math.parser.features.interfaces.FeatureDouble;
 public abstract class FeatureDoubleImpl implements FeatureDouble {
 	private Object child_1;
 	private Object child_2;
-	
+
 	public FeatureDoubleImpl(Object child1, Object child2) {
 		child_1 = child1;
 		child_2 = child2;
 	}
-	
+
 	@Override
 	public Object getChild1() {
 		return child_1;

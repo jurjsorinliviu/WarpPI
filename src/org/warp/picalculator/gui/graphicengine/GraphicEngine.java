@@ -37,6 +37,6 @@ public interface GraphicEngine {
 	public void waitUntilExit();
 
 	public boolean isSupported();
-	
+
 	public boolean doesRefreshPauses();
 }

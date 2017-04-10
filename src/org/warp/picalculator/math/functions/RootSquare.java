@@ -4,11 +4,9 @@ import java.math.BigInteger;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
-import org.warp.picalculator.math.MathematicalSymbols;
 
 public class RootSquare extends FunctionSingle {
 

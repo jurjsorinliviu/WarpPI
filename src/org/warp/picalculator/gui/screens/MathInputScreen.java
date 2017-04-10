@@ -4,19 +4,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
-import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
+import org.warp.picalculator.gui.expression.Block;
 import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.containers.InputContainer;
 import org.warp.picalculator.gui.expression.containers.NormalInputContainer;
@@ -34,6 +35,8 @@ import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.functions.equations.Equation;
+import org.warp.picalculator.math.parser.MathParser;
+import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Number;
 
 public class MathInputScreen extends Screen {
@@ -52,17 +55,17 @@ public class MathInputScreen extends Screen {
 	@Override
 	public void created() throws InterruptedException {
 		calc = new MathContext();
-		
+
 		try {
 			BlockContainer.initializeFonts(DisplayManager.engine.loadFont("ex"), DisplayManager.engine.loadFont("big"));
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+
 		userInput = new NormalInputContainer();
 		result = new NormalOutputContainer();
-		
+
 		calc.init();
 	}
 
@@ -70,7 +73,7 @@ public class MathInputScreen extends Screen {
 	public void init() throws InterruptedException {
 		/* Fine caricamento */
 	}
-	
+
 	@Override
 	public void beforeRender(float dt) {
 
@@ -88,7 +91,7 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void renderStatusbar() {
-		Renderer renderer = DisplayManager.renderer;
+		final Renderer renderer = DisplayManager.renderer;
 		renderer.glColor3f(1, 1, 1);
 		final int pos = 2;
 		final int spacersNumb = 1;
@@ -107,11 +110,11 @@ public class MathInputScreen extends Screen {
 		final int textColor = 0xFF000000;
 		final int padding = 4;
 		DisplayManager.renderer.glColor(textColor);
-		
+
 		userInput.draw(DisplayManager.engine, DisplayManager.renderer, padding, padding + 20);
-		
+
 		if (!result.root.getContent().isEmpty()) {
-			result.draw(DisplayManager.engine, DisplayManager.renderer, DisplayManager.engine.getWidth() - 2, DisplayManager.engine.getHeight() - 2);
+			result.draw(DisplayManager.engine, DisplayManager.renderer, DisplayManager.engine.getWidth() - result.getWidth() - 2, DisplayManager.engine.getHeight() - result.getHeight() - 2);
 		}
 	}
 
@@ -127,6 +130,7 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(Key k) {
+		Utils.debug.println(k.toString());
 		switch (k) {
 			case STEP:
 //				if (newExpression.length() > 0) {
@@ -160,46 +164,51 @@ public class MathInputScreen extends Screen {
 //				}
 //				return true;
 			case SIMPLIFY:
-//				if (DisplayManager.error != null) {
-//					Utils.debug.println("Resetting after error...");
-//					DisplayManager.error = null;
-//					currentExpression = null;
-//					calc.f = null;
-//					calc.f2 = null;
-//					calc.resultsCount = 0;
-//					return true;
-//				} else {
-//					try {
-//						try {
-//							if (!firstStep) {
-//								step();
-//							} else {
-//								if (newExpression != currentExpression && newExpression.length() > 0) {
-//									changeEquationScreen();
-//									interpreta(true);
-//									showVariablesDialog(() -> {
-//										currentExpression = newExpression;
-//										simplify();
-//									});
-//								}
-//							}
-//						} catch (final Exception ex) {
-//							if (Utils.debugOn) {
-//								ex.printStackTrace();
-//							}
-//							throw new Error(Errors.SYNTAX_ERROR);
-//						}
-//					} catch (final Error e) {
-//						final StringWriter sw = new StringWriter();
-//						final PrintWriter pw = new PrintWriter(sw);
-//						e.printStackTrace(pw);
-//						d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-//						DisplayManager.error = e.id.toString();
-//						System.err.println(e.id);
-//					}
-//					return true;
-//				}
-				return true;
+				if (DisplayManager.error != null) {
+					//TODO: make the error management a global API rather than being relegated to this screen.
+					Utils.debug.println("Resetting after error...");
+					DisplayManager.error = null;
+					calc.f = null;
+					calc.f2 = null;
+					calc.resultsCount = 0;
+					return true;
+				} else {
+					try {
+						try {
+							if (!userInput.isAlreadyParsed() && !userInput.isEmpty()) {
+								Expression expr = MathParser.parseInput(calc, userInput);
+								if (calc.f == null | calc.f2 == null) {
+									calc.f = new ObjectArrayList<>();
+									calc.f2 = new ObjectArrayList<>();
+								} else {
+									calc.f.clear();
+									calc.f2.clear();
+								}
+								calc.f.add(expr);
+								ObjectArrayList<Function> resultExpression = expr.solve();
+								ObjectArrayList<Block> resultBlocks = MathParser.parseOutput(calc, resultExpression);
+								result.setContent(resultBlocks);
+//								showVariablesDialog(() -> {
+//									currentExpression = newExpression;
+//									simplify();
+//								});
+							}
+						} catch (final Exception ex) {
+							if (Utils.debugOn) {
+								ex.printStackTrace();
+							}
+							throw new Error(Errors.SYNTAX_ERROR);
+						}
+					} catch (final Error e) {
+						final StringWriter sw = new StringWriter();
+						final PrintWriter pw = new PrintWriter(sw);
+						e.printStackTrace(pw);
+						d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+						DisplayManager.error = e.id.toString();
+						System.err.println(e.id);
+					}
+					return true;
+				}
 			case NUM0:
 				typeChar('0');
 				return true;
@@ -317,13 +326,13 @@ public class MathInputScreen extends Screen {
 				}
 				return true;
 			case SURD_MODE:
-//				calc.exactMode = !calc.exactMode;
-//				if (calc.exactMode == false) {
-//					calc.f2 = solveExpression(calc.f2);
-//				} else {
-//					currentExpression = "";
-//					Keyboard.keyPressed(Key.SIMPLIFY);
-//				}
+				calc.exactMode = !calc.exactMode;
+				if (calc.exactMode == false) {
+					calc.f2 = solveExpression(calc.f2);
+				} else {
+					result.clear();
+					Keyboard.keyPressed(Key.SIMPLIFY);
+				}
 				return true;
 			case debug1:
 				DisplayManager.INSTANCE.setScreen(new EmptyScreen());
@@ -436,9 +445,6 @@ public class MathInputScreen extends Screen {
 					results.clear();
 					results.addAll(hs);
 					calc.f2 = results;
-					for (final Function rf : calc.f2) {
-						rf.recomputeDimensions(null);
-					}
 				}
 				Utils.debug.println(calc.f2.toString());
 			} catch (final Exception ex) {
@@ -479,9 +485,6 @@ public class MathInputScreen extends Screen {
 					results.clear();
 					results.addAll(hs);
 					calc.f2 = results;
-					for (final Function rf : calc.f2) {
-						rf.recomputeDimensions(null);
-					}
 				}
 			} catch (final Exception ex) {
 				if (Utils.debugOn) {
@@ -499,27 +502,26 @@ public class MathInputScreen extends Screen {
 		}
 	}
 
+	@SuppressWarnings("unused")
+	@Deprecated
 	private void changeEquationScreen() {
-		if (currentExpression != null && currentExpression.length() > 0) {
-			final MathInputScreen cloned = clone();
-			cloned.caretPos = cloned.currentExpression.length();
-			cloned.newExpression = cloned.currentExpression;
-			cloned.scrollX = fontBig.getStringWidth(cloned.currentExpression);
-			try {
-				cloned.interpreta(true);
-			} catch (final Error e) {}
-			DisplayManager.INSTANCE.replaceScreen(cloned);
-			initialized = false;
-			DisplayManager.INSTANCE.setScreen(this);
-
-		}
+		throw new NotImplementedException();
+//		
+//		if (!userInput.isEmpty()) {
+//			final MathInputScreen cloned = clone();
+//			cloned.userInput.setCaretPosition(cloned.userInput.getCaretMaxPosition()-1);
+//			DisplayManager.INSTANCE.replaceScreen(cloned);
+//			initialized = false;
+//			DisplayManager.INSTANCE.setScreen(this);
+//
+//		}
 	}
 
 	public void typeChar(char chr) {
 		userInput.typeChar(chr);
 		mustRefresh = true;
 	}
-	
+
 	@Override
 	public boolean keyReleased(Key k) {
 		return false;
@@ -537,7 +539,7 @@ public class MathInputScreen extends Screen {
 					knownVarsInFunctions.remove(f.v);
 				}
 			}
-			
+
 			boolean cancelled = false;
 			for (final Function f : knownVarsInFunctions) {
 				final ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
@@ -583,7 +585,7 @@ public class MathInputScreen extends Screen {
 			} else if (f instanceof FunctionSingle) {
 				res.addAll(getKnownVariables(new Function[] { ((FunctionSingle) f).getParameter() }));
 			} else if (f instanceof Variable) {
-				if (((Variable)f).getType() == Variable.V_TYPE.KNOWN) {
+				if (((Variable) f).getType() == Variable.V_TYPE.KNOWN) {
 					if (!res.contains(f)) {
 						res.add(f);
 					}
@@ -594,15 +596,17 @@ public class MathInputScreen extends Screen {
 	}
 
 	@Override
+	@Deprecated
 	public MathInputScreen clone() {
-		final MathInputScreen es = this;
-		final MathInputScreen es2 = new MathInputScreen();
-		es2.errorLevel = es.errorLevel;
-		es2.mustRefresh = es.mustRefresh;
-		es2.calc = Utils.cloner.deepClone(es.calc);
-		es2.userInput = Utils.cloner.deepClone(es.userInput);
-		es2.result = Utils.cloner.deepClone(es.result);
-		return es2;
+		throw new NotImplementedException();
+//		final MathInputScreen es = this;
+//		final MathInputScreen es2 = new MathInputScreen();
+//		es2.errorLevel = es.errorLevel;
+//		es2.mustRefresh = es.mustRefresh;
+//		es2.calc = Utils.cloner.deepClone(es.calc);
+//		es2.userInput = Utils.cloner.deepClone(es.userInput);
+//		es2.result = Utils.cloner.deepClone(es.result);
+//		return es2;
 	}
 
 }

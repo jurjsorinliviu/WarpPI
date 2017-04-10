@@ -9,7 +9,6 @@ import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.egl.EGL;
 
 public class GPUEngine implements org.warp.picalculator.gui.graphicengine.GraphicEngine {
 
@@ -18,7 +17,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 	private NEWTWindow wnd;
 	private RenderingLoop d;
 	private GPURenderer r;
-	int[] size = new int[]{Main.screenSize[0], Main.screenSize[1]};
+	int[] size = new int[] { Main.screenSize[0], Main.screenSize[1] };
 
 	@Override
 	public int[] getSize() {
@@ -47,9 +46,9 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public void setDisplayMode(int ww, int wh) {
-		this.size[0] = ww;
-		this.size[1] = wh;
-		wnd.window.setSize(Utils.debugOn?ww*2:ww, Utils.debugOn?wh*2:wh);
+		size[0] = ww;
+		size[1] = wh;
+		wnd.window.setSize(Utils.debugOn ? ww * 2 : ww, Utils.debugOn ? wh * 2 : wh);
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public void repaint() {
-		if (d != null & r != null && r.gl != null) {
+		if (d != null & r != null && GPURenderer.gl != null) {
 			d.refresh();
 		}
 	}
@@ -118,15 +117,15 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 		try {
 			do {
 				Thread.sleep(500);
-			} while(initialized | created);
-		} catch (InterruptedException e) {
-			
+			} while (initialized | created);
+		} catch (final InterruptedException e) {
+
 		}
 	}
 
 	@Override
 	public boolean isSupported() {
-		boolean available = GLProfile.isAvailable(GLProfile.GL2ES1);
+		final boolean available = GLProfile.isAvailable(GLProfile.GL2ES1);
 		if (!available) {
 			System.err.println(GLProfile.glAvailabilityToString());
 		}

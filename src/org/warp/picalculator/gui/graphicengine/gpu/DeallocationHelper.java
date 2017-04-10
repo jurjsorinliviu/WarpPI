@@ -401,15 +401,15 @@ public class DeallocationHelper {
 						attachmentOrByteBufferFieldMap.put(bufferClass, bufferField);
 					}
 				} catch (final ClassNotFoundException cnfe) {// TODO The Java version
-															// isn't very useful
-														// under
-														// Android as it is
-														// always zero, rather
-														// use
-														// android.os.Build.VERSION.RELEASE
-														// to show something
-														// meaningful supported
-														// since the API level 1
+																	// isn't very useful
+																// under
+																// Android as it is
+																// always zero, rather
+																// use
+																// android.os.Build.VERSION.RELEASE
+																// to show something
+																// meaningful supported
+																// since the API level 1
 					final String msg = "The class " + classname + " hasn't been found while initializing the deallocator. Java vendor: " + javaVendor + " Java version: " + javaVersion;
 					logger.log(Level.WARNING, msg, cnfe);
 				}

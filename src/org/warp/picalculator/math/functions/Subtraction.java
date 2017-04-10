@@ -6,7 +6,6 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.ExpandRule5;
 import org.warp.picalculator.math.rules.NumberRule3;
@@ -92,5 +91,5 @@ public class Subtraction extends FunctionOperator {
 	public Subtraction clone() {
 		return new Subtraction(mathContext, parameter1, parameter2);
 	}
-	
+
 }

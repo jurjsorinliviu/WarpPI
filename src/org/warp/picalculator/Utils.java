@@ -37,8 +37,6 @@ import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystemPart;
 
-import com.rits.cloning.Cloner;
-
 public class Utils {
 
 	public static final int scale = 24;
@@ -51,8 +49,6 @@ public class Utils {
 
 	public static boolean debugOn;
 	public static boolean debugThirdScreen;
-
-	public static Cloner cloner = new Cloner();
 
 	public static final class DebugStream extends StringWriter {
 
@@ -123,7 +119,7 @@ public class Utils {
 		for (final char symbol : array) {
 			boolean contained = false;
 			for (final String smb : regexNormalSymbols) {
-				if ((smb).equals(symbol+"")) {
+				if ((smb).equals(symbol + "")) {
 					contained = true;
 					break;
 				}
@@ -138,7 +134,7 @@ public class Utils {
 				if (regex != null) {
 					regex += "|" + symbol;
 				} else {
-					regex = symbol+"";
+					regex = symbol + "";
 				}
 			}
 		}
@@ -198,7 +194,8 @@ public class Utils {
 		return true;
 	}
 
-	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(ObjectArrayList<Function> fl) {
+	public static boolean areThereOnlySettedUpFunctionsSumsMultiplicationsEquationsAndSystems(
+			ObjectArrayList<Function> fl) {
 		for (int i = 0; i < fl.size(); i++) {
 			if (!(fl.get(i) instanceof Number || fl.get(i) instanceof Variable || fl.get(i) instanceof Multiplication || fl.get(i) instanceof Sum || fl.get(i) instanceof SumSubtraction || fl.get(i) instanceof Subtraction || fl.get(i) instanceof Equation || fl.get(i) instanceof EquationsSystemPart || fl.get(i) instanceof Expression)) {
 				if (fl.get(i) instanceof FunctionSingle) {
@@ -536,14 +533,13 @@ public class Utils {
 		}
 		return results;
 	}
-	
 
 	public static Function[][] joinFunctionsResults(ObjectArrayList<ObjectArrayList<Function>> ln) {
 		final int[] sizes = new int[ln.size()];
 		for (int i = 0; i < ln.size(); i++) {
 			sizes[i] = ln.get(i).size();
 		}
-		int[] curs = new int[sizes.length];
+		final int[] curs = new int[sizes.length];
 		int total = 0;
 		for (int i = 0; i < ln.size(); i++) {
 			if (i == 0) {
@@ -615,27 +611,27 @@ public class Utils {
 
 	public static void printSystemResourcesUsage() {
 		System.out.println("============");
-		OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
-		for (Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
+		final OperatingSystemMXBean operatingSystemMXBean = ManagementFactory.getOperatingSystemMXBean();
+		for (final Method method : operatingSystemMXBean.getClass().getDeclaredMethods()) {
 			method.setAccessible(true);
 			if (method.getName().startsWith("get") && Modifier.isPublic(method.getModifiers())) {
 				Object value;
 				try {
 					value = method.invoke(operatingSystemMXBean);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					value = e;
 				} // try
 				boolean percent = false;
 				boolean mb = false;
-				String displayName = method.getName();
-				String displayValue = value.toString();
+				final String displayName = method.getName();
+				final String displayValue = value.toString();
 				if (displayName.endsWith("CpuLoad")) {
 					percent = true;
 				}
 				if (displayName.endsWith("MemorySize")) {
 					mb = true;
 				}
-				ObjectArrayList<String> arr = new ObjectArrayList<>();
+				final ObjectArrayList<String> arr = new ObjectArrayList<>();
 				arr.add("getFreePhysicalMemorySize");
 				arr.add("getProcessCpuLoad");
 				arr.add("getSystemCpuLoad");
@@ -643,14 +639,14 @@ public class Utils {
 				if (arr.contains(displayName)) {
 					if (percent) {
 						try {
-							System.out.println(displayName + " = " + (((int)(Float.parseFloat(displayValue) * 10000f))/100f) + "%");
-						}catch(Exception ex) {
+							System.out.println(displayName + " = " + (((int) (Float.parseFloat(displayValue) * 10000f)) / 100f) + "%");
+						} catch (final Exception ex) {
 							System.out.println(displayName + " = " + displayValue);
 						}
 					} else if (mb) {
 						try {
 							System.out.println(displayName + " = " + (Long.parseLong(displayValue) / 1024L / 1024L) + " MB");
-						}catch(Exception ex) {
+						} catch (final Exception ex) {
 							System.out.println(displayName + " = " + displayValue);
 						}
 					} else {
@@ -664,21 +660,20 @@ public class Utils {
 
 	public static boolean isRunningOnRaspberry() {
 		if (System.getProperty("os.name").equals("Linux")) {
-	        final File file = new File("/etc", "os-release");
-	        try (FileInputStream fis = new FileInputStream(file);
-	             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis))) {
-	            String string;
-	            while ((string = bufferedReader.readLine()) != null) {
-	                if (string.toLowerCase().contains("raspbian")) {
-	                    if (string.toLowerCase().contains("name")) {
-	                    	return true;
-	                    }
-	                }
-	            }
-	        } catch (final Exception e) {
-	            e.printStackTrace();
-	        }
-	    }
+			final File file = new File("/etc", "os-release");
+			try (FileInputStream fis = new FileInputStream(file); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis))) {
+				String string;
+				while ((string = bufferedReader.readLine()) != null) {
+					if (string.toLowerCase().contains("raspbian")) {
+						if (string.toLowerCase().contains("name")) {
+							return true;
+						}
+					}
+				}
+			} catch (final Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return false;
 	}
 }

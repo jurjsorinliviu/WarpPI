@@ -5,11 +5,9 @@ import java.math.BigInteger;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.MathematicalSymbols;
 
 public class Root extends FunctionOperator {
 
@@ -60,7 +58,7 @@ public class Root extends FunctionOperator {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Root) {
@@ -74,5 +72,5 @@ public class Root extends FunctionOperator {
 	public Root clone() {
 		return new Root(mathContext, parameter1, parameter2);
 	}
-	
+
 }

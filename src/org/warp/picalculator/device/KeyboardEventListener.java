@@ -6,7 +6,7 @@ public interface KeyboardEventListener {
 	public default boolean keyPressed(Key k) {
 		return false;
 	}
-	
+
 	public default boolean keyReleased(Key k) {
 		return false;
 	}

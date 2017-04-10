@@ -1,10 +1,6 @@
 package org.warp.picalculator.gui;
 
 import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Main;
@@ -357,7 +353,7 @@ public final class DisplayManager implements RenderingLoop {
 			Main.screenSize[1] = engine.getHeight();
 		}
 	};
-	
+
 	public void loop() {
 		try {
 			load_skin();
@@ -373,7 +369,7 @@ public final class DisplayManager implements RenderingLoop {
 			}
 
 			//Working thread
-			Thread workThread = new Thread(() -> {
+			final Thread workThread = new Thread(() -> {
 				try {
 					while (true) {
 						float dt = 0;
@@ -388,7 +384,7 @@ public final class DisplayManager implements RenderingLoop {
 						 * Calcoli
 						 */
 						checkDisplayResized();
-						
+
 						screen.beforeRender(dt);
 
 						Thread.sleep(50);
@@ -449,9 +445,9 @@ public final class DisplayManager implements RenderingLoop {
 			workThread.setDaemon(true);
 			workThread.setName("Work thread");
 			workThread.start();
-			
+
 			engine.start(getDrawable());
-			
+
 			engine.waitUntilExit();
 		} catch (final Exception ex) {
 			ex.printStackTrace();
@@ -488,13 +484,13 @@ public final class DisplayManager implements RenderingLoop {
 	public static float getBrightness() {
 		return brightness;
 	}
-	
+
 	public static int currentSession = 0;
 	public static Screen[] sessions = new Screen[5];
 
 	@Deprecated
 	public static void colore(float f1, float f2, float f3, float f4) {
-		renderer.glColor4f(f1,f2,f3,f4);
+		renderer.glColor4f(f1, f2, f3, f4);
 	}
 
 	public static RenderingLoop getDrawable() {
@@ -503,6 +499,6 @@ public final class DisplayManager implements RenderingLoop {
 
 	@Deprecated
 	public static void drawSkinPart(int x, int y, int uvX, int uvY, int uvX2, int uvY2) {
-		renderer.glFillRect(x, y, uvX2-uvX, uvY2-uvY, uvX, uvY, uvX2-uvX, uvY2-uvY);
+		renderer.glFillRect(x, y, uvX2 - uvX, uvY2 - uvY, uvX, uvY, uvX2 - uvX, uvY2 - uvY);
 	}
 }

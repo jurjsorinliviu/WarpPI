@@ -4,13 +4,9 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule4;
@@ -76,5 +72,5 @@ public class SumSubtraction extends FunctionOperator {
 	public SumSubtraction clone() {
 		return new SumSubtraction(mathContext, parameter1, parameter2);
 	}
-	
+
 }

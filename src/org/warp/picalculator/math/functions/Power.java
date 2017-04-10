@@ -6,7 +6,6 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule1;
 import org.warp.picalculator.math.rules.ExponentRule2;
 import org.warp.picalculator.math.rules.ExponentRule3;
@@ -78,7 +77,7 @@ public class Power extends FunctionOperator {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Power) {

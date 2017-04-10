@@ -7,8 +7,6 @@ import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 
-import com.rits.cloning.Cloner;
-
 public abstract class FunctionDynamic implements Function {
 	public FunctionDynamic(MathContext root) {
 		this.root = root;
@@ -37,7 +35,7 @@ public abstract class FunctionDynamic implements Function {
 	}
 
 	public FunctionDynamic setParameters(final List<Function> value) {
-		FunctionDynamic f = this.clone();
+		final FunctionDynamic f = clone();
 		final int vsize = value.size();
 		final Function[] tmp = new Function[vsize];
 		for (int i = 0; i < vsize; i++) {
@@ -48,11 +46,11 @@ public abstract class FunctionDynamic implements Function {
 	}
 
 	public FunctionDynamic setParameters(final Function[] value) {
-		FunctionDynamic f = this.clone();
+		final FunctionDynamic f = clone();
 		f.functions = value;
 		return f;
 	}
-	
+
 	@Override
 	public Function getParameter(int index) {
 		return functions[index];
@@ -60,13 +58,13 @@ public abstract class FunctionDynamic implements Function {
 
 	@Override
 	public FunctionDynamic setParameter(int index, Function value) {
-		FunctionDynamic f = this.clone();
+		final FunctionDynamic f = clone();
 		f.functions[index] = value;
 		return f;
 	}
 
 	public FunctionDynamic appendParameter(Function value) {
-		FunctionDynamic f = this.clone();
+		final FunctionDynamic f = clone();
 		f.functions = Arrays.copyOf(f.functions, f.functions.length + 1);
 		f.functions[f.functions.length - 1] = value;
 		return f;
@@ -74,6 +72,7 @@ public abstract class FunctionDynamic implements Function {
 
 	/**
 	 * Retrieve the current number of parameters.
+	 * 
 	 * @return The number of parameters.
 	 */
 	public int getParametersLength() {
@@ -81,11 +80,11 @@ public abstract class FunctionDynamic implements Function {
 	}
 
 	public FunctionDynamic setParametersLength(int length) {
-		FunctionDynamic f = this.clone();
+		final FunctionDynamic f = clone();
 		f.functions = Arrays.copyOf(functions, length);
 		return f;
 	}
-	
+
 	@Override
 	public boolean isSimplified() {
 		for (final Function variable : functions) {
@@ -95,18 +94,21 @@ public abstract class FunctionDynamic implements Function {
 		}
 		return !isSolvable();
 	}
-	
+
 	/**
-	 * The current simplification status of this function, assuming that its children are already simplified.
-	 * @return <strong>true</strong> if this function can be solved, otherwise <strong>false</strong>.
+	 * The current simplification status of this function, assuming that its
+	 * children are already simplified.
+	 * 
+	 * @return <strong>true</strong> if this function can be solved, otherwise
+	 *         <strong>false</strong>.
 	 */
 	protected abstract boolean isSolvable();
 
 	@Override
 	public final ObjectArrayList<Function> simplify() throws Error {
 		boolean solved = true;
-		Function[] fncs = getParameters();
-		for (Function f : fncs) {
+		final Function[] fncs = getParameters();
+		for (final Function f : fncs) {
 			if (f.isSimplified() == false) {
 				solved = false;
 				break;
@@ -118,12 +120,12 @@ public abstract class FunctionDynamic implements Function {
 			result = new ObjectArrayList<>();
 
 			final ObjectArrayList<ObjectArrayList<Function>> ln = new ObjectArrayList<>();
-			for (int i = 0; i < fncs.length; i++) {
-				ObjectArrayList<Function> l = new ObjectArrayList<>();
-				if (fncs[i].isSimplified()) {
-					l.add(fncs[i]);
+			for (final Function fnc : fncs) {
+				final ObjectArrayList<Function> l = new ObjectArrayList<>();
+				if (fnc.isSimplified()) {
+					l.add(fnc);
 				} else {
-					l.addAll(fncs[i].simplify());
+					l.addAll(fnc.simplify());
 				}
 				ln.add(l);
 			}
@@ -137,14 +139,17 @@ public abstract class FunctionDynamic implements Function {
 
 		return result;
 	}
-	
+
 	/**
-	 * Solves only this function, assuming that its children are already simplified and it can be solved.
+	 * Solves only this function, assuming that its children are already
+	 * simplified and it can be solved.
+	 * 
 	 * @return The solved function.
-	 * @throws Error Errors during computation, like a/0 or similar.
+	 * @throws Error
+	 *             Errors during computation, like a/0 or similar.
 	 */
 	protected abstract ObjectArrayList<Function> solve() throws Error;
-	
+
 	@Override
 	public MathContext getMathContext() {
 		return root;

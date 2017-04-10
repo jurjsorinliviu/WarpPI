@@ -1,14 +1,10 @@
 package org.warp.picalculator.math.functions.equations;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.util.List;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
-import org.warp.picalculator.math.MathematicalSymbols;
 
 public class EquationsSystemPart extends FunctionSingle {
 
@@ -38,5 +34,5 @@ public class EquationsSystemPart extends FunctionSingle {
 	public EquationsSystemPart clone() {
 		return new EquationsSystemPart(mathContext, (Equation) parameter);
 	}
-	
+
 }

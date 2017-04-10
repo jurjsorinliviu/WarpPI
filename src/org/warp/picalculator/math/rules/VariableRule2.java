@@ -38,7 +38,6 @@ public class VariableRule2 {
 		final Function a = m1.getParameter1();
 		final Function x = fnc.getParameter2();
 
-
 		FunctionOperator rets;
 		if (fnc instanceof Sum) {
 			rets = new Sum(root, a, new Number(root, 1));

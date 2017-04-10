@@ -1,22 +1,18 @@
 package org.warp.picalculator.gui.expression;
 
-import org.warp.picalculator.Main;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
-import org.warp.picalculator.math.parser.features.interfaces.Feature;
-
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class BlockSquareRoot extends Block {
-	
+
 	public static final int CLASS_ID = 0x00000003;
 
 	private final BlockContainer containerNumber;
-	
+
 	private int h1;
-	
+
 	public BlockSquareRoot() {
-		this.containerNumber = new BlockContainer(false);
+		containerNumber = new BlockContainer(false);
 		recomputeDimensions();
 	}
 
@@ -24,21 +20,21 @@ public class BlockSquareRoot extends Block {
 	public void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret) {
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(BlockContainer.getDefaultColor());
-		r.glDrawLine(x, y+height-10+1, x, y+height-10+2); // /
-		r.glDrawLine(x+1, y+height-10, x+1, y+height-10+1); // /
-		r.glDrawLine(x+2, y+height-10+2, x+2, y+height-10+6); // \
-		r.glDrawLine(x+3, y+height-10+7, x+3, y+height-10+9); // \
-		r.glDrawLine(x+5, y+height-h1-1-2, x+width-1, y+height-h1-1-2); // ----
-		r.glDrawLine(x+5, y+height-h1-1-2, x+5, y+height-(h1-2)/3f*2f-1); // |
-		r.glDrawLine(x+4, y+height-(h1-2)/3f*2f-1, x+4, y+height-(h1-2)/3f-1); // |
-		r.glDrawLine(x+3, y+height-(h1-2)/3f-1, x+3, y+height-1); // |
-		containerNumber.draw(ge, r, x+7, y+3, caret);
+		r.glDrawLine(x, y + height - 10 + 1, x, y + height - 10 + 2); // /
+		r.glDrawLine(x + 1, y + height - 10, x + 1, y + height - 10 + 1); // /
+		r.glDrawLine(x + 2, y + height - 10 + 2, x + 2, y + height - 10 + 6); // \
+		r.glDrawLine(x + 3, y + height - 10 + 7, x + 3, y + height - 10 + 9); // \
+		r.glDrawLine(x + 5, y + height - h1 - 1 - 2, x + width - 1, y + height - h1 - 1 - 2); // ----
+		r.glDrawLine(x + 5, y + height - h1 - 1 - 2, x + 5, y + height - (h1 - 2) / 3f * 2f - 1); // |
+		r.glDrawLine(x + 4, y + height - (h1 - 2) / 3f * 2f - 1, x + 4, y + height - (h1 - 2) / 3f - 1); // |
+		r.glDrawLine(x + 3, y + height - (h1 - 2) / 3f - 1, x + 3, y + height - 1); // |
+		containerNumber.draw(ge, r, x + 7, y + 3, caret);
 	}
 
 	@Override
 	public boolean putBlock(Caret caret, Block newBlock) {
 		boolean added = false;
-		added = added|containerNumber.putBlock(caret, newBlock);
+		added = added | containerNumber.putBlock(caret, newBlock);
 		if (added) {
 			recomputeDimensions();
 		}
@@ -48,7 +44,7 @@ public class BlockSquareRoot extends Block {
 	@Override
 	public boolean delBlock(Caret caret) {
 		boolean removed = false;
-		removed = removed|containerNumber.delBlock(caret);
+		removed = removed | containerNumber.delBlock(caret);
 		if (removed) {
 			recomputeDimensions();
 		}
@@ -60,19 +56,19 @@ public class BlockSquareRoot extends Block {
 		final int w1 = containerNumber.getWidth();
 		h1 = containerNumber.getHeight();
 		final int l1 = containerNumber.getLine();
-		width = 8+w1+2;
-		height = 3+h1;
-		line = 3+l1;
+		width = 8 + w1 + 2;
+		height = 3 + h1;
+		line = 3 + l1;
 		if (height < 9) {
 			height = 9;
-			line+=(9-(3+h1));
+			line += (9 - (3 + h1));
 		}
 	}
 
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
-		this.containerNumber.setSmall(small);
+		containerNumber.setSmall(small);
 		recomputeDimensions();
 	}
 

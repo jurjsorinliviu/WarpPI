@@ -39,8 +39,8 @@ public class FractionsRule11 {
 		Function b;
 		Function c;
 
-		Division div2 = (Division) fnc.getParameter2();
-		
+		final Division div2 = (Division) fnc.getParameter2();
+
 		a = fnc.getParameter1();
 		b = div2.getParameter1();
 		c = div2.getParameter2();

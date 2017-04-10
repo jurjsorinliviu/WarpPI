@@ -30,9 +30,9 @@ public class Keyboard {
 	private static volatile boolean[][] precedentStates = new boolean[8][8];
 	public static volatile boolean[][] debugKeysDown = new boolean[8][8];
 	public static volatile int debugKeyCode = -1;
-	
+
 	private static volatile boolean refreshRequest = false;
-	
+
 	private static KeyboardEventListener additionalListener;
 
 	public synchronized static void startKeyboard() {
@@ -703,7 +703,7 @@ public class Keyboard {
 		if (additionalListener != null) {
 			try {
 				done = additionalListener.keyPressed(k);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				new GUIErrorMessage(ex);
 			}
 		}
@@ -713,7 +713,7 @@ public class Keyboard {
 			boolean scrdone = false;
 			try {
 				scrdone = scr.keyPressed(k);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				new GUIErrorMessage(ex);
 			}
 			if (scr != null && scr.initialized && scrdone) {
@@ -807,7 +807,7 @@ public class Keyboard {
 			Utils.debug.println("Key " + k.toString() + " ignored.");
 		}
 	}
-	
+
 	public static void setAdditionalKeyboardListener(KeyboardEventListener l) {
 		additionalListener = l;
 	}

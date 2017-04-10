@@ -6,7 +6,6 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
-import org.warp.picalculator.math.MathematicalSymbols;
 
 public class ArcTangent extends FunctionSingle {
 

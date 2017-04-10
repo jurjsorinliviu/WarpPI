@@ -3,14 +3,9 @@ package org.warp.picalculator.math.functions;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.GraphicalElement;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
 import org.warp.picalculator.math.rules.FractionsRule11;
 import org.warp.picalculator.math.rules.FractionsRule12;
@@ -26,8 +21,8 @@ public class Division extends FunctionOperator {
 
 	@Override
 	protected boolean isSolvable() {
-		Function variable1 = getParameter1();
-		Function variable2 = getParameter2();
+		final Function variable1 = getParameter1();
+		final Function variable2 = getParameter2();
 		if (FractionsRule1.compare(this)) {
 			return true;
 		}
@@ -49,8 +44,8 @@ public class Division extends FunctionOperator {
 		if (variable1 instanceof Number && variable2 instanceof Number) {
 			if (getMathContext().exactMode) {
 				try {
-					return ((Number)variable1).divide((Number)variable2).isInteger();
-				} catch (Error e) {
+					return ((Number) variable1).divide((Number) variable2).isInteger();
+				} catch (final Error e) {
 					return false;
 				}
 			} else {
@@ -62,8 +57,8 @@ public class Division extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Function> solve() throws Error {
-		Function variable1 = getParameter1();
-		Function variable2 = getParameter2();
+		final Function variable1 = getParameter1();
+		final Function variable2 = getParameter2();
 		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (FractionsRule1.compare(this)) {
 			result = FractionsRule1.execute(this);
@@ -82,7 +77,7 @@ public class Division extends FunctionOperator {
 		}
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Division) {
@@ -94,11 +89,11 @@ public class Division extends FunctionOperator {
 
 	@Override
 	public FunctionOperator clone() {
-		return new Division(this.getMathContext(), this.getParameter1(), this.getParameter2());
+		return new Division(getMathContext(), getParameter1(), getParameter2());
 	}
-	
+
 	@Override
 	public String toString() {
-		return "("+this.getParameter1()+")/("+this.getParameter2()+")";
+		return "(" + getParameter1() + ")/(" + getParameter2() + ")";
 	}
 }

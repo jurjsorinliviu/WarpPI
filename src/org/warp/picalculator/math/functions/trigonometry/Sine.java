@@ -8,7 +8,6 @@ import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Number;
 
 public class Sine extends FunctionSingle {
@@ -16,7 +15,7 @@ public class Sine extends FunctionSingle {
 	public Sine(MathContext root, Function value) {
 		super(root, value);
 	}
-	
+
 	@Override
 	protected boolean isSolvable() {
 		if (parameter instanceof Number) {

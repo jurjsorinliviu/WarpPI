@@ -27,7 +27,6 @@ public class MathematicalSymbols {
 	public static final char ARC_TANGENT = 'Ⓗ';
 	public static final char PI = 'π';
 
-
 	public static final char[] functionsNSN = new char[] { NTH_ROOT, POWER };
 
 	public static final char[] functionsSN = new char[] { SQUARE_ROOT, POWER_OF_TWO, MINUS, SINE, COSINE, TANGENT, ARC_SINE, ARC_COSINE, ARC_TANGENT };
@@ -36,7 +35,7 @@ public class MathematicalSymbols {
 
 	private static final char[] signumsWithoutMultiplication = new char[] { SUM, SUM_SUBTRACTION, SUBTRACTION, DIVISION };
 	private static final char[] signumsWithMultiplication = Utils.add(signumsWithoutMultiplication, MULTIPLICATION);
-	
+
 	public static final char[] signums(boolean withMultiplication) {
 		if (withMultiplication) {
 			return signumsWithMultiplication;
@@ -54,5 +53,5 @@ public class MathematicalSymbols {
 		return string.replace("Ⓑ", "^").replace("Ⓒ", "SIN").replace("Ⓓ", "COS").replace("Ⓔ", "TAN").replace("Ⓕ", "ASIN").replace("Ⓖ", "ACOS").replace("Ⓗ", "ATAN");
 	}
 
-	public static final char[] numbers = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+	public static final char[] numbers = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 }

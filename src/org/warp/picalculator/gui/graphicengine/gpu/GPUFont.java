@@ -1,10 +1,7 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -44,7 +41,7 @@ public class GPUFont implements BinaryFont {
 		tmpFont = font;
 		font = null;
 	}
-	
+
 	public int[] getCharIndexes(String txt) {
 		final int l = txt.length();
 		final int[] indexes = new int[l];
@@ -54,7 +51,7 @@ public class GPUFont implements BinaryFont {
 		}
 		return indexes;
 	}
-	
+
 	public int getCharIndex(char ch) {
 		return (ch & 0xFFFF) - minCharIndex;
 	}
@@ -72,7 +69,7 @@ public class GPUFont implements BinaryFont {
 			if (currentChar != null && currentChar.length > 0) {
 				for (int charY = 0; charY < charH; charY++) {
 					for (int charX = 0; charX < charW; charX++) {
-						if (currentChar[charY*charW+charX]) {
+						if (currentChar[charY * charW + charX]) {
 							bfi.setRGB(indexX * charW + charX, indexY * charH + charY, 0xFFFFFFFF);
 						}
 					}

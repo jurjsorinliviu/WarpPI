@@ -5,45 +5,45 @@ public class Caret {
 	private int pos;
 	private int remaining;
 	private CaretState state;
-	
+
 	public Caret(CaretState state, int pos) {
 		this.state = state;
 		this.pos = pos;
-		this.remaining = pos;
+		remaining = pos;
 	}
-	
+
 	public void skip(int i) {
-		remaining-=i;
+		remaining -= i;
 	}
-	
+
 	public int getPosition() {
 		return pos;
 	}
-	
+
 	public int getRemaining() {
 		return remaining;
 	}
-	
+
 	public CaretState getState() {
 		return state;
 	}
-	
+
 	public void flipState() {
-		if (this.state == CaretState.VISIBLE_ON) {
-			this.state = CaretState.VISIBLE_OFF;
-		} else if (this.state == CaretState.VISIBLE_OFF) {
-			this.state = CaretState.VISIBLE_ON;
+		if (state == CaretState.VISIBLE_ON) {
+			state = CaretState.VISIBLE_OFF;
+		} else if (state == CaretState.VISIBLE_OFF) {
+			state = CaretState.VISIBLE_ON;
 		}
 	}
 
 	public void turnOn() {
-		if (this.state == CaretState.VISIBLE_OFF) {
-			this.state = CaretState.VISIBLE_ON;
+		if (state == CaretState.VISIBLE_OFF) {
+			state = CaretState.VISIBLE_ON;
 		}
 	}
 
 	public void setPosition(int i) {
-		this.pos = i;
+		pos = i;
 	}
 
 	public void resetRemaining() {

@@ -1,12 +1,7 @@
 package org.warp.picalculator.math.functions;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import java.util.List;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 
@@ -17,7 +12,6 @@ public class EmptyNumber implements Function {
 	}
 
 	private final MathContext root;
-
 
 	@Override
 	public ObjectArrayList<Function> simplify() throws Error {
@@ -34,7 +28,7 @@ public class EmptyNumber implements Function {
 	public MathContext getMathContext() {
 		return root;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof EmptyNumber;
@@ -54,5 +48,5 @@ public class EmptyNumber implements Function {
 	public Function getParameter(int index) throws IndexOutOfBoundsException {
 		throw new IndexOutOfBoundsException();
 	}
-	
+
 }

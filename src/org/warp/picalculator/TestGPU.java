@@ -8,17 +8,14 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.KeyboardEventListener;
-import org.warp.picalculator.gui.GUIErrorMessage;
 import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.containers.NormalInputContainer;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Skin;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Root;
 import org.warp.picalculator.math.parser.MathParser;
 
 public class TestGPU {
@@ -107,37 +104,37 @@ public class TestGPU {
 					case EQUAL:
 						Expression expr;
 						try {
-							expr = MathParser.parseInput(new MathContext(), c.root);
-							System.out.println("Parsed input:"+expr.toString());
-						} catch (Error e) {
+							expr = MathParser.parseInput(new MathContext(), c);
+							System.out.println("Parsed input:" + expr.toString());
+						} catch (final Error e) {
 							e.printStackTrace();
 						}
 				}
 				return false;
-				
+
 			}
-			
+
 			@Override
 			public boolean keyReleased(Key k) {
 				return false;
-				
+
 			}
 		});
-		
+
 		final Scene s = new Scene(d);
 	}
-	
+
 	private static NormalInputContainer c = null;
 
 	private static class Scene implements RenderingLoop {
 
-		private BinaryFont exampleFont;
+		private final BinaryFont exampleFont;
 		private final Skin exampleSkin;
 
 		private final Renderer r;
 		private final GraphicEngine d;
 		private long lastTime = 0L;
-		
+
 		public Scene(GraphicEngine d) throws IOException, Error {
 			this.d = d;
 			r = d.getRenderer();
@@ -147,7 +144,6 @@ public class TestGPU {
 			exampleSkin = d.loadSkin("skin.png");
 
 			BlockContainer.initializeFonts(d.loadFont("ex"), d.loadFont("big"));
-			
 
 			//New expression framework test
 			c = new NormalInputContainer(false, 0, 200);
@@ -162,7 +158,7 @@ public class TestGPU {
 			c.typeChar('2');
 			c.typeChar('2');
 			c.recomputeDimensions();
-			
+
 			d.start(this);
 
 //			fonts = new RAWFont[1];
@@ -184,7 +180,7 @@ public class TestGPU {
 					System.exit(0);
 				}
 			}).start();
-			
+
 			d.waitUntilExit();
 		}
 
@@ -198,20 +194,20 @@ public class TestGPU {
 			exampleFont.use(d);
 			r.glColor3f(1, 0, 0);
 			r.glDrawStringLeft(10, 170, "Prova! 123456789 222");
-			
+
 			//MSAA TEST
 			r.glDrawStringLeft(10f, 190.5f, "Test MSAA");
 			exampleSkin.use(d);
 			r.glColor3f(1.0f, 1.0f, 1.0f);
 			r.glFillRect(162, 2.5f, 160, 160, 0, 0, 16, 16);
-			
+
 			//New expression framework test
 			if (lastTime == 0) {
 				lastTime = System.currentTimeMillis();
 			}
-			double delta = System.currentTimeMillis()-lastTime;
+			final double delta = System.currentTimeMillis() - lastTime;
 			lastTime = System.currentTimeMillis();
-			c.beforeRender((float) (delta/1000d));
+			c.beforeRender((float) (delta / 1000d));
 			c.draw(d, r, 10, 220);
 		}
 

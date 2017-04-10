@@ -12,7 +12,7 @@ import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystem;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class MathContext {
 
@@ -122,4 +122,17 @@ public class MathContext {
 		}
 	}*/
 
+	@Override
+	@Deprecated
+	public MathContext clone() {
+//		MathContext mc = new MathContext();
+//		mc.angleMode = this.angleMode;
+//		mc.exactMode = this.exactMode;
+//		mc.f = this.f;
+//		mc.f2 = this.f2;
+//		mc.variablesValues = this.variablesValues;
+//		mc.resultsCount = this.resultsCount;
+//		return mc;
+		throw new NotImplementedException();
+	}
 }

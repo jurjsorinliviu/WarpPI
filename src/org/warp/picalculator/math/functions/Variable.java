@@ -4,12 +4,8 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
-
-import com.rits.cloning.Cloner;
 
 public class Variable implements Function {
 
@@ -47,7 +43,7 @@ public class Variable implements Function {
 	public String toString() {
 		return "" + getChar();
 	}
-	
+
 	public static class VariableValue {
 		public final Variable v;
 		public final Number n;
@@ -87,16 +83,14 @@ public class Variable implements Function {
 	public MathContext getMathContext() {
 		return root;
 	}
-	
+
 	@Override
 	public Variable clone() {
 		return new Variable(root, var, type);
 	}
-	
+
 	public static enum V_TYPE {
-		KNOWN,
-		UNKNOWN,
-		SOLUTION
+		KNOWN, UNKNOWN, SOLUTION
 	}
 
 	@Override

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
@@ -37,7 +36,7 @@ public class Expression extends FunctionDynamic {
 	}
 
 	public Expression(MathContext root, Function value) {
-		super(root, new Function[]{value});
+		super(root, new Function[] { value });
 	}
 
 	private boolean initialParenthesis = false;
@@ -599,7 +598,7 @@ public class Expression extends FunctionDynamic {
 			return ret;
 		}
 	}
-	
+
 	public boolean parenthesisNeeded() {
 		boolean parenthesisneeded = true;
 		if (initialParenthesis) {
@@ -623,21 +622,21 @@ public class Expression extends FunctionDynamic {
 		}
 		return parenthesisneeded;
 	}
-	
+
 	@Override
 	public String toString() {
 		String s = "(";
 		if (functions.length > 0) {
-			for (Function f : functions) {
+			for (final Function f : functions) {
 				if (f == null) {
-					s+="[null],";
+					s += "[null],";
 				} else {
-					s+=f.toString()+",";
+					s += f.toString() + ",";
 				}
 			}
-			s = s.substring(0, s.length()-1);
+			s = s.substring(0, s.length() - 1);
 		}
-		s+=")";
+		s += ")";
 		return s;
 	}
 

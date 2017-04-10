@@ -1,7 +1,5 @@
 package org.warp.picalculator.gui.expression;
 
 public enum CaretState {
-	VISIBLE_ON,
-	VISIBLE_OFF,
-	HIDDEN
+	VISIBLE_ON, VISIBLE_OFF, HIDDEN
 }

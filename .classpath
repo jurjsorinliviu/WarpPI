@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="org/warp/picalculator/deprecatedmath/|org/warp/picalculator/device/PIDisplay.java|org/warp/picalculator/device/graphicengine/Display.java" kind="src" path="src"/>
+	<classpathentry excluding="org/warp/picalculator/deprecatedmath/|org/warp/picalculator/device/PIDisplay.java|org/warp/picalculator/device/graphicengine/Display.java|com/rits/cloning/|com/rits/perspectives/|com/rits/|com/|org/warp/picalculator/TestCalcBenchmark.java" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/JOGL"/>

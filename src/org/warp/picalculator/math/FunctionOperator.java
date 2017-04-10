@@ -6,26 +6,34 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 
 public abstract class FunctionOperator implements Function {
-	
+
 	/**
-	 * Create a new instance of FunctionOperator. The Math Context will be the same of <strong>value1</strong>'s.
-	 * @throws NullPointerException when value1 is null.
-	 * @param value1 The parameter of this function.
-	 * @param value2 The parameter of this function.
+	 * Create a new instance of FunctionOperator. The Math Context will be the
+	 * same of <strong>value1</strong>'s.
+	 * 
+	 * @throws NullPointerException
+	 *             when value1 is null.
+	 * @param value1
+	 *            The parameter of this function.
+	 * @param value2
+	 *            The parameter of this function.
 	 */
 	public FunctionOperator(Function value1, Function value2) throws NullPointerException {
-		this.mathContext = value1.getMathContext();
+		mathContext = value1.getMathContext();
 		parameter1 = value1;
 		parameter2 = value2;
 	}
-	
+
 	/**
 	 * Create a new instance of FunctionOperator.
-	 * @param value1 The parameter of this function.
-	 * @param value2 The parameter of this function.
+	 * 
+	 * @param value1
+	 *            The parameter of this function.
+	 * @param value2
+	 *            The parameter of this function.
 	 */
 	public FunctionOperator(MathContext mc, Function value1, Function value2) {
-		this.mathContext = mc;
+		mathContext = mc;
 		parameter1 = value1;
 		parameter2 = value2;
 	}
@@ -53,33 +61,35 @@ public abstract class FunctionOperator implements Function {
 
 	/**
 	 * 
-	 * @param var First parameter.
+	 * @param var
+	 *            First parameter.
 	 * @return A new instance of this function.
 	 */
 	public FunctionOperator setParameter1(Function var) {
-		FunctionOperator s = this.clone();
+		final FunctionOperator s = clone();
 		s.parameter1 = var;
 		return s;
 	}
 
 	/**
 	 * 
-	 * @param var Second parameter.
+	 * @param var
+	 *            Second parameter.
 	 * @return A new instance of this function.
 	 */
 	public FunctionOperator setParameter2(Function var) {
-		FunctionOperator s = this.clone();
+		final FunctionOperator s = clone();
 		s.parameter2 = var;
 		return s;
 	}
-	
+
 	@Override
 	public FunctionOperator setParameter(int index, Function var) throws IndexOutOfBoundsException {
-		switch(index) {
+		switch (index) {
 			case 0:
-				return this.setParameter1(var);
+				return setParameter1(var);
 			case 1:
-				return this.setParameter2(var);
+				return setParameter2(var);
 			default:
 				throw new IndexOutOfBoundsException();
 		}
@@ -87,11 +97,11 @@ public abstract class FunctionOperator implements Function {
 
 	@Override
 	public Function getParameter(int index) throws IndexOutOfBoundsException {
-		switch(index) {
+		switch (index) {
 			case 0:
-				return this.getParameter1();
+				return getParameter1();
 			case 1:
-				return this.getParameter2();
+				return getParameter2();
 			default:
 				throw new IndexOutOfBoundsException();
 		}
@@ -106,10 +116,13 @@ public abstract class FunctionOperator implements Function {
 	public boolean isSimplified() {
 		return (parameter1.isSimplified() & parameter2.isSimplified()) ? !isSolvable() : false;
 	}
-	
+
 	/**
-	 * The current simplification status of this function, assuming that its children are already simplified.
-	 * @return <strong>true</strong> if this function can be solved, otherwise <strong>false</strong>.
+	 * The current simplification status of this function, assuming that its
+	 * children are already simplified.
+	 * 
+	 * @return <strong>true</strong> if this function can be solved, otherwise
+	 *         <strong>false</strong>.
 	 */
 	protected abstract boolean isSolvable();
 
@@ -137,23 +150,26 @@ public abstract class FunctionOperator implements Function {
 			final Function[][] results = Utils.joinFunctionsResults(l1, l2);
 
 			for (final Function[] f : results) {
-				result.add(this.setParameter1(f[0]).setParameter2(f[1]));
+				result.add(setParameter1(f[0]).setParameter2(f[1]));
 			}
 		}
 
 		return result;
 	}
-	
+
 	/**
-	 * Solves only this function, assuming that its children are already simplified and it can be solved.
+	 * Solves only this function, assuming that its children are already
+	 * simplified and it can be solved.
+	 * 
 	 * @return The solved function.
-	 * @throws Error Errors during computation, like a/0 or similar.
+	 * @throws Error
+	 *             Errors during computation, like a/0 or similar.
 	 */
 	protected abstract ObjectArrayList<Function> solve() throws Error;
 
 	@Override
 	public abstract FunctionOperator clone();
-	
+
 	@Override
 	public int hashCode() {
 		return parameter1.hashCode() + 7 * parameter2.hashCode() + 883 * super.hashCode();

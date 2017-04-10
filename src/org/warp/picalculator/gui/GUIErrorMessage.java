@@ -6,30 +6,30 @@ import org.warp.picalculator.Error;
 
 public class GUIErrorMessage {
 
-	private String err;
-	private long creationTime;
+	private final String err;
+	private final long creationTime;
 
 	public GUIErrorMessage(Error e) {
-		this.err = e.getLocalizedMessage();
-		this.creationTime = System.currentTimeMillis();
+		err = e.getLocalizedMessage();
+		creationTime = System.currentTimeMillis();
 	}
-	
+
 	public GUIErrorMessage(Exception ex) {
 		err = ex.getLocalizedMessage();
-		this.creationTime = System.currentTimeMillis();
+		creationTime = System.currentTimeMillis();
 	}
-	
+
 	public void draw(GraphicEngine g, Renderer r, String msg) {
-		int scrW = g.getWidth();
-		int scrH = g.getHeight();
-		int width = 200;
-		int height = 20;
-		int margin = 4;
+		final int scrW = g.getWidth();
+		final int scrH = g.getHeight();
+		final int width = 200;
+		final int height = 20;
+		final int margin = 4;
 		r.glClearSkin();
 		r.glColor(0x00000000);
-		r.glFillRect(scrW-width-margin, scrH-height-margin, width, height, 0, 0, 0, 0);
+		r.glFillRect(scrW - width - margin, scrH - height - margin, width, height, 0, 0, 0, 0);
 	}
-	
+
 	public long getCreationTime() {
 		return creationTime;
 	}

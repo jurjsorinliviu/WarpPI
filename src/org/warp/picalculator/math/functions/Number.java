@@ -7,15 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
-import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
-
-import com.rits.cloning.Cloner;
 
 public class Number implements Function {
 
@@ -109,7 +104,7 @@ public class Number implements Function {
 	public Number clone() {
 		return new Number(root, term);
 	}
-	
+
 	@Override
 	public boolean isSimplified() {
 		if (root.exactMode) {
@@ -123,20 +118,20 @@ public class Number implements Function {
 	public List<Function> simplify() throws Error {
 		final List<Function> result = new ObjectArrayList<>();
 		if (root.exactMode) {
-			Number divisor = new Number(root, BigInteger.TEN.pow(getNumberOfDecimalPlaces()));
-			Number numb = new Number(root, term.multiply(divisor.term));
-			Division div = new Division(root, numb, divisor);
+			final Number divisor = new Number(root, BigInteger.TEN.pow(getNumberOfDecimalPlaces()));
+			final Number numb = new Number(root, term.multiply(divisor.term));
+			final Division div = new Division(root, numb, divisor);
 			result.add(div);
 		} else {
 			result.add(this);
 		}
 		return result;
 	}
-	
+
 	public int getNumberOfDecimalPlaces() {
-	    return Math.max(0, term.stripTrailingZeros().scale());
+		return Math.max(0, term.stripTrailingZeros().scale());
 	}
-	
+
 	public boolean isInteger() {
 		return getNumberOfDecimalPlaces() <= 0;
 	}

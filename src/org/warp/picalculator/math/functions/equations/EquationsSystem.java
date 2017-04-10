@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
@@ -69,5 +68,5 @@ public class EquationsSystem extends FunctionDynamic {
 	public EquationsSystem clone() {
 		return new EquationsSystem(root, functions);
 	}
-	
+
 }

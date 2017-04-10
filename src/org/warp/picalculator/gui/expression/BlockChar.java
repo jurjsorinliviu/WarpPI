@@ -2,15 +2,13 @@ package org.warp.picalculator.gui.expression;
 
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
-import org.warp.picalculator.math.parser.features.FeatureChar;
-import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockChar extends Block {
-	
+
 	public static final int CLASS_ID = 0x00000001;
-	
+
 	private final char ch;
-	
+
 	public BlockChar(char ch) {
 		this.ch = ch;
 		recomputeDimensions();
@@ -32,12 +30,12 @@ public class BlockChar extends Block {
 	public boolean delBlock(Caret caret) {
 		return false;
 	}
-	
+
 	@Override
 	public void recomputeDimensions() {
 		width = BlockContainer.getDefaultCharWidth(small);
 		height = BlockContainer.getDefaultCharHeight(small);
-		line = height/2;
+		line = height / 2;
 	}
 
 	@Override
@@ -45,7 +43,7 @@ public class BlockChar extends Block {
 		this.small = small;
 		recomputeDimensions();
 	}
-	
+
 	public char getChar() {
 		return ch;
 	}

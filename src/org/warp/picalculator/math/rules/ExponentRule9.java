@@ -7,7 +7,6 @@ import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
 
 /**

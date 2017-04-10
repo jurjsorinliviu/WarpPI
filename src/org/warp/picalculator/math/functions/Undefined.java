@@ -3,9 +3,6 @@ package org.warp.picalculator.math.functions;
 import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 
@@ -16,7 +13,7 @@ public class Undefined implements Function {
 	public Undefined(MathContext root) {
 		this.root = root;
 	}
-	
+
 	@Override
 	public List<Function> simplify() throws Error {
 		return null;

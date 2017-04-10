@@ -5,9 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
-import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.ExponentRule16;
 import org.warp.picalculator.math.rules.FractionsRule14;
@@ -29,8 +27,8 @@ public class Multiplication extends FunctionOperator {
 
 	@Override
 	protected boolean isSolvable() {
-		Function variable1 = getParameter1();
-		Function variable2 = getParameter2();
+		final Function variable1 = getParameter1();
+		final Function variable2 = getParameter2();
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
@@ -103,9 +101,9 @@ public class Multiplication extends FunctionOperator {
 	public Multiplication clone() {
 		return new Multiplication(mathContext, parameter1, parameter2);
 	}
-	
+
 	@Override
 	public String toString() {
-		return "("+parameter1.toString()+")*("+parameter2.toString()+")";
+		return "(" + parameter1.toString() + ")*(" + parameter2.toString() + ")";
 	}
 }

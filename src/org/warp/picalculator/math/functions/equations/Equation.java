@@ -11,19 +11,16 @@ import org.warp.picalculator.Errors;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.SolveMethod;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Subtraction;
-
-import com.rits.cloning.Cloner;
 
 public class Equation extends FunctionOperator {
 
 	public Equation(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
 	}
-	
+
 	@Override
 	protected boolean isSolvable() {
 		if (parameter1 instanceof Number & parameter2 instanceof Number) {
@@ -81,8 +78,7 @@ public class Equation extends FunctionOperator {
 
 	@Override
 	public Equation clone() {
-		final Cloner cloner = new Cloner();
-		return cloner.deepClone(this);
+		return new Equation(mathContext, parameter1, parameter2);
 	}
 
 	@Override

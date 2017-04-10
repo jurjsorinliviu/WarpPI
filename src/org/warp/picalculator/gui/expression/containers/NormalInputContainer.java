@@ -2,31 +2,28 @@ package org.warp.picalculator.gui.expression.containers;
 
 import org.warp.picalculator.gui.expression.Block;
 import org.warp.picalculator.gui.expression.BlockChar;
-import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.BlockDivision;
 import org.warp.picalculator.gui.expression.BlockParenthesis;
 import org.warp.picalculator.gui.expression.BlockSquareRoot;
-import org.warp.picalculator.gui.expression.Caret;
-import org.warp.picalculator.gui.expression.CaretState;
 import org.warp.picalculator.math.MathematicalSymbols;
 
 public class NormalInputContainer extends InputContainer {
-	
+
 	public NormalInputContainer() {
 		super();
 	}
-	
+
 	public NormalInputContainer(boolean small) {
 		super(small);
 	}
-	
+
 	public NormalInputContainer(boolean small, int minWidth, int minHeight) {
 		super(small, minWidth, minHeight);
 	}
-	
+
 	@Override
 	public Block parseChar(char c) {
-		switch(c) {
+		switch (c) {
 			case MathematicalSymbols.DIVISION:
 				return new BlockDivision();
 			case MathematicalSymbols.SQUARE_ROOT:

@@ -45,7 +45,7 @@ public class CPUEngine implements GraphicEngine {
 		g = new BufferedImage(ww, wh, BufferedImage.TYPE_INT_ARGB);
 		INSTANCE.wasResized = false;
 	}
-	
+
 	@Override
 	public void create() {
 		INSTANCE = new SwingWindow(this);
@@ -87,7 +87,7 @@ public class CPUEngine implements GraphicEngine {
 	@Override
 	public void start(RenderingLoop d) {
 		INSTANCE.setRenderingLoop(d);
-		Thread th = new Thread(() -> {
+		final Thread th = new Thread(() -> {
 			try {
 				double extratime = 0;
 				while (initialized) {
@@ -171,7 +171,7 @@ public class CPUEngine implements GraphicEngine {
 
 		@Override
 		public void glClearColor4f(float red, float green, float blue, float alpha) {
-			clearcolor = ((int)(alpha*255) << 24) + ((int)(red*255) << 16) + ((int)(green*255) << 8) + ((int)(blue*255));
+			clearcolor = ((int) (alpha * 255) << 24) + ((int) (red * 255) << 16) + ((int) (green * 255) << 8) + ((int) (blue * 255));
 		}
 
 		@Override
@@ -269,13 +269,13 @@ public class CPUEngine implements GraphicEngine {
 			}
 			if (iy0 == iy1) {
 				for (int x = 0; x <= ix1 - ix0; x++) {
-					if ((ix0+x < size[0]) & (iy0 < size[1])) {
+					if ((ix0 + x < size[0]) & (iy0 < size[1])) {
 						canvas2d[ix0 + x + iy0 * size[0]] = color;
 					}
 				}
 			} else if (ix0 == ix1) {
 				for (int y = 0; y <= iy1 - iy0; y++) {
-					if ((ix0 < size[0]) & (iy0+y < size[1])) {
+					if ((ix0 < size[0]) & (iy0 + y < size[1])) {
 						canvas2d[ix0 + (iy0 + y) * size[0]] = color;
 					}
 				}
@@ -305,12 +305,12 @@ public class CPUEngine implements GraphicEngine {
 		public void glFillColor(float x, float y, float width, float height) {
 			x += Main.screenPos[0];
 			y += Main.screenPos[1];
-			
+
 			final int ix = (int) x;
 			final int iy = (int) y;
 			final int iw = (int) width;
 			final int ih = (int) height;
-			
+
 			int x1 = ix + iw;
 			int y1 = iy + ih;
 			if (ix >= size[0] || iy >= size[0]) {
@@ -337,7 +337,7 @@ public class CPUEngine implements GraphicEngine {
 
 			final int ix = (int) x;
 			final int iy = (int) y;
-			
+
 			final int[] text = currentFont.getCharIndexes(textString);
 			final int[] screen = canvas2d;
 			final int[] screenSize = size;
@@ -418,17 +418,17 @@ public class CPUEngine implements GraphicEngine {
 
 		@Override
 		public void glDrawCharLeft(int x, int y, char ch) {
-			glDrawStringLeft(x, y, ch+"");
+			glDrawStringLeft(x, y, ch + "");
 		}
 
 		@Override
 		public void glDrawCharCenter(int x, int y, char ch) {
-			glDrawStringCenter(x, y, ch+"");
+			glDrawStringCenter(x, y, ch + "");
 		}
 
 		@Override
 		public void glDrawCharRight(int x, int y, char ch) {
-			glDrawStringRight(x, y, ch+"");
+			glDrawStringRight(x, y, ch + "");
 		}
 
 	}
@@ -463,9 +463,9 @@ public class CPUEngine implements GraphicEngine {
 		try {
 			do {
 				Thread.sleep(500);
-			} while(initialized);
-		} catch (InterruptedException e) {
-			
+			} while (initialized);
+		} catch (final InterruptedException e) {
+
 		}
 	}
 
