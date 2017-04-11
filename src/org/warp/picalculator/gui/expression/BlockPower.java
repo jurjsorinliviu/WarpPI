@@ -1,20 +1,24 @@
 package org.warp.picalculator.gui.expression;
 
-import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.expression.Block;
+import org.warp.picalculator.gui.expression.BlockContainer;
+import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
-public class BlockParenthesis extends Block {
+public class BlockPower extends Block {
 
-	public static final int CLASS_ID = 0x00000004;
+	public static final int CLASS_ID = 0x00000005;
 
 	private final BlockContainer containerNumber;
+	private final BlockContainer containerExponent;
 
-	private int chw;
-	private int chh;
+	private int h1;
+	private int w1;
 
-	public BlockParenthesis() {
+	public BlockPower() {
 		containerNumber = new BlockContainer(false);
+		containerExponent = new BlockContainer(true);
 		recomputeDimensions();
 	}
 
@@ -22,19 +26,16 @@ public class BlockParenthesis extends Block {
 	public void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret) {
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(BlockContainer.getDefaultColor());
-		r.glDrawCharLeft(x, y, '╭');
-		r.glDrawCharLeft(x, y+height-chh, '╰');
-		r.glFillColor(x+3, y+6, 2, height-6*2);
-		r.glFillColor(x+width-5, y+6, 2, height-6*2);
-		r.glDrawCharLeft(x+width-chw, y, '╮');
-		r.glDrawCharLeft(x+width-chw, y+height-chh, '╯');
-		containerNumber.draw(ge, r, x+chw, y, caret);
+		containerNumber.draw(ge, r, x, y+height-h1, caret);
+		BlockContainer.getDefaultFont(true).use(ge);
+		containerExponent.draw(ge, r, x+w1+getSpacing(), y, caret);
 	}
 
 	@Override
 	public boolean putBlock(Caret caret, Block newBlock) {
 		boolean added = false;
 		added = added | containerNumber.putBlock(caret, newBlock);
+		added = added | containerExponent.putBlock(caret, newBlock);
 		if (added) {
 			recomputeDimensions();
 		}
@@ -45,6 +46,7 @@ public class BlockParenthesis extends Block {
 	public boolean delBlock(Caret caret) {
 		boolean removed = false;
 		removed = removed | containerNumber.delBlock(caret);
+		removed = removed | containerExponent.delBlock(caret);
 		if (removed) {
 			recomputeDimensions();
 		}
@@ -53,22 +55,30 @@ public class BlockParenthesis extends Block {
 
 	@Override
 	public void recomputeDimensions() {
-		chw = BlockContainer.getDefaultCharWidth(small);
-		chh = BlockContainer.getDefaultCharHeight(small);
-		width = containerNumber.getWidth() + chw * 2 + 3;
-		height = containerNumber.getHeight();
-		line = containerNumber.getLine();
+		w1 = containerNumber.getWidth();
+		final int w2 = containerExponent.getWidth();
+		h1 = containerNumber.getHeight();
+		final int h2 = containerExponent.getHeight();
+		final int l1 = containerNumber.getLine();
+		width = w1+getSpacing()+1+w2;
+		height = h1 + h2 - 3;
+		line = height-h1+l1;
 	}
 
 	@Override
 	public void setSmall(boolean small) {
 		this.small = small;
 		containerNumber.setSmall(small);
+		containerExponent.setSmall(true);
 		recomputeDimensions();
 	}
 
 	public BlockContainer getNumberContainer() {
 		return containerNumber;
+	}
+
+	public BlockContainer getExponentContainer() {
+		return containerExponent;
 	}
 
 	@Override
@@ -78,7 +88,10 @@ public class BlockParenthesis extends Block {
 
 	@Override
 	public int computeCaretMaxBound() {
-		return containerNumber.computeCaretMaxBound();
+		return containerNumber.computeCaretMaxBound() + containerExponent.computeCaretMaxBound();
 	}
-
+	
+	protected int getSpacing() {
+		return 1;
+	}
 }

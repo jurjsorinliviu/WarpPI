@@ -11,29 +11,34 @@ public class BlockContainer implements GraphicalElement {
 
 	private static boolean initialized = false;
 
-	private final int minWidth;
-	private final int minHeight;
+	private int minWidth;
+	private int minHeight;
 	private final ObjectArrayList<Block> content;
 	private boolean small;
 	private int width;
 	private int height;
 	private int line;
 	public final boolean withBorder;
+	private boolean autoMinimums;
 
 	public BlockContainer() {
 		this(false, BlockContainer.getDefaultCharWidth(false), BlockContainer.getDefaultCharHeight(false), true);
+		autoMinimums = true;
 	}
 
 	public BlockContainer(boolean small) {
 		this(small, BlockContainer.getDefaultCharWidth(small), BlockContainer.getDefaultCharHeight(small), true);
+		autoMinimums = true;
 	}
 
 	public BlockContainer(boolean small, boolean withBorder) {
 		this(small, BlockContainer.getDefaultCharWidth(small), BlockContainer.getDefaultCharHeight(small), withBorder);
+		autoMinimums = true;
 	}
 
 	public BlockContainer(boolean small, int minWidth, int minHeight, boolean withBorder) {
 		this(small, minWidth, minHeight, new ObjectArrayList<>(), withBorder);
+		autoMinimums = false;
 	}
 
 	public BlockContainer(boolean small, int minWidth, int minHeight, ObjectArrayList<Block> content, boolean withBorder) {
@@ -111,9 +116,9 @@ public class BlockContainer implements GraphicalElement {
 
 		if (caret.getRemaining() == 0) {
 			if (content.size() > 0) {
-				BlockContainer.drawCaret(ge, r, caret, x, y + line - content.get(0).line, content.get(0).height);
+				BlockContainer.drawCaret(ge, r, caret, small, x, y + line - content.get(0).line, content.get(0).height);
 			} else {
-				BlockContainer.drawCaret(ge, r, caret, x, y, height);
+				BlockContainer.drawCaret(ge, r, caret, small, x, y, height);
 			}
 		}
 
@@ -128,7 +133,7 @@ public class BlockContainer implements GraphicalElement {
 				b.draw(ge, r, x + paddingX, y + line - b.line, caret);
 				paddingX += b.getWidth();
 				if (caret.getRemaining() == 0) {
-					BlockContainer.drawCaret(ge, r, caret, x + paddingX, y + line - b.line, b.height);
+					BlockContainer.drawCaret(ge, r, caret, small, x + paddingX, y + line - b.line, b.height);
 				}
 				paddingX += 1;
 			}
@@ -271,17 +276,22 @@ public class BlockContainer implements GraphicalElement {
 		return defFontSizes[b ? 3 : 1];
 	}
 
-	public static void drawCaret(GraphicEngine ge, Renderer r, Caret caret, int x, int y, int height) {
+	public static void drawCaret(GraphicEngine ge, Renderer r, Caret caret, boolean small, int x, int y, int height) {
 		if (caret.getState() == CaretState.VISIBLE_ON) {
 			r.glColor(getDefaultColor());
-			r.glDrawLine(x, y, x, y - 1 + height);
-			r.glDrawLine(x + 1, y, x + 1, y - 1 + height);
-			r.glDrawLine(x + 2, y, x + 2, y - 1 + height);
+			r.glFillColor(x, y, small?2:3, height);
 		}
 	}
 
 	public void setSmall(boolean small) {
 		this.small = small;
+		if (this.autoMinimums) {
+			this.minWidth = BlockContainer.getDefaultCharWidth(small);
+			this.minHeight = BlockContainer.getDefaultCharHeight(small);
+		}
+		for (Block b : this.content) {
+			b.setSmall(small);
+		}
 		recomputeDimensions();
 	}
 

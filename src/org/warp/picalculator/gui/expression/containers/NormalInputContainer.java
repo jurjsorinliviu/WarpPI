@@ -4,6 +4,7 @@ import org.warp.picalculator.gui.expression.Block;
 import org.warp.picalculator.gui.expression.BlockChar;
 import org.warp.picalculator.gui.expression.BlockDivision;
 import org.warp.picalculator.gui.expression.BlockParenthesis;
+import org.warp.picalculator.gui.expression.BlockPower;
 import org.warp.picalculator.gui.expression.BlockSquareRoot;
 import org.warp.picalculator.math.MathematicalSymbols;
 
@@ -29,8 +30,12 @@ public class NormalInputContainer extends InputContainer {
 			case MathematicalSymbols.SQUARE_ROOT:
 				return new BlockSquareRoot();
 			case MathematicalSymbols.PARENTHESIS_OPEN:
-			case MathematicalSymbols.PARENTHESIS_CLOSE:
 				return new BlockParenthesis();
+			case MathematicalSymbols.PARENTHESIS_CLOSE:
+				return null;
+			case MathematicalSymbols.POWER:
+			case MathematicalSymbols.POWER_OF_TWO:
+				return new BlockPower();
 			case MathematicalSymbols.MULTIPLICATION:
 			case MathematicalSymbols.SUM:
 			case MathematicalSymbols.SUM_SUBTRACTION:
@@ -48,6 +53,14 @@ public class NormalInputContainer extends InputContainer {
 				return new BlockChar(c);
 			default:
 				return new BlockChar(c);
+		}
+	}
+	
+	@Override
+	public void typeChar(char c) {
+		super.typeChar(c);
+		if (c == MathematicalSymbols.PARENTHESIS_CLOSE) {
+			this.moveRight();
 		}
 	}
 }

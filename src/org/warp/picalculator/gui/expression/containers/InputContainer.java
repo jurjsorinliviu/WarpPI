@@ -74,6 +74,8 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		final int curPos = caret.getPosition();
 		if (curPos > 0) {
 			caret.setPosition(curPos - 1);
+		} else {
+			caret.setPosition(maxPosition-1);
 		}
 		caret.turnOn();
 		caretTime = 0;
@@ -83,6 +85,8 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		final int curPos = caret.getPosition();
 		if (curPos + 1 < maxPosition) {
 			caret.setPosition(curPos + 1);
+		} else {
+			caret.setPosition(0);
 		}
 		caret.turnOn();
 		caretTime = 0;

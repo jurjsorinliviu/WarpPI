@@ -10,6 +10,10 @@ import org.warp.picalculator.gui.expression.Block;
 import org.warp.picalculator.gui.expression.BlockChar;
 import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.BlockDivision;
+import org.warp.picalculator.gui.expression.BlockExponentialNotation;
+import org.warp.picalculator.gui.expression.BlockParenthesis;
+import org.warp.picalculator.gui.expression.BlockPower;
+import org.warp.picalculator.gui.expression.BlockSquareRoot;
 import org.warp.picalculator.gui.expression.containers.InputContainer;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
@@ -17,6 +21,8 @@ import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Power;
+import org.warp.picalculator.math.functions.RootSquare;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
@@ -29,12 +35,17 @@ import org.warp.picalculator.math.parser.features.FeatureChar;
 import org.warp.picalculator.math.parser.features.FeatureDivision;
 import org.warp.picalculator.math.parser.features.FeatureMultiplication;
 import org.warp.picalculator.math.parser.features.FeatureNumber;
+import org.warp.picalculator.math.parser.features.FeatureParenthesis;
+import org.warp.picalculator.math.parser.features.FeaturePower;
+import org.warp.picalculator.math.parser.features.FeatureSquareRoot;
 import org.warp.picalculator.math.parser.features.FeatureSum;
 import org.warp.picalculator.math.parser.features.FeatureVariable;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 import org.warp.picalculator.math.parser.features.interfaces.FeatureDouble;
+import org.warp.picalculator.math.parser.features.interfaces.FeatureSingle;
 
 import com.sun.org.apache.xpath.internal.functions.Function2Args;
+import com.sun.org.apache.xpath.internal.operations.Mult;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
@@ -50,7 +61,7 @@ public class MathParser {
 		return result;
 	}
 
-	public static ObjectArrayList<Block> parseOutput(MathContext context, ObjectArrayList<Function> expr) {
+	public static ObjectArrayList<Block> parseOutput(MathContext context, ObjectArrayList<Function> expr) throws Error {
 		final ObjectArrayList<Block> resultBlocks = new ObjectArrayList<>();
 		
 		for (Function f : expr) {
@@ -60,7 +71,7 @@ public class MathParser {
 		return resultBlocks;
 	}
 	
-	private static ObjectArrayList<Block> parseFunction(MathContext context, Function func) {
+	private static ObjectArrayList<Block> parseFunction(MathContext context, Function func) throws Error {
 		ObjectArrayList<Block> result = new ObjectArrayList<>();
 		if (func instanceof FunctionOperator) {
 			ObjectArrayList<Block> sub1 = parseFunction(context, func.getParameter(0));
@@ -71,23 +82,124 @@ public class MathParser {
 				result.addAll(sub2);
 				return result;
 			}
+			if (func instanceof Subtraction) {
+				result.addAll(sub1);
+				result.add(new BlockChar(MathematicalSymbols.SUBTRACTION));
+				result.addAll(sub2);
+				return result;
+			}
+			if (func instanceof SumSubtraction) {
+				result.addAll(sub1);
+				result.add(new BlockChar(MathematicalSymbols.SUM_SUBTRACTION));
+				result.addAll(sub2);
+				return result;
+			}
+			if (func instanceof Multiplication) {
+				Block nearLeft = sub1.get(sub1.size()-1);
+				Block nearRight = sub2.get(0);
+				
+				result.addAll(sub1);
+				if (nearLeft instanceof BlockChar && nearRight instanceof BlockChar) {
+					
+				} else {
+					result.add(new BlockChar(MathematicalSymbols.MULTIPLICATION));
+				}
+				result.addAll(sub2);
+				return result;
+			}
+			if (func instanceof Division) {
+				BlockDivision bd = new BlockDivision();
+				BlockContainer uc = bd.getUpperContainer();
+				BlockContainer lc = bd.getLowerContainer();
+				for (Block b : sub1) {
+					uc.appendBlockUnsafe(b);
+				}
+				for (Block b : sub2) {
+					lc.appendBlockUnsafe(b);
+				}
+				uc.recomputeDimensions();
+				lc.recomputeDimensions();
+				bd.recomputeDimensions();
+				result.add(bd);
+				return result;
+			}
+			if (func instanceof Power) {
+				BlockPower bp = new BlockPower();
+				BlockContainer nc = bp.getNumberContainer();
+				BlockContainer ec = bp.getExponentContainer();
+				for (Block b : sub1) {
+					nc.appendBlockUnsafe(b);
+				}
+				for (Block b : sub2) {
+					ec.appendBlockUnsafe(b);
+				}
+				nc.recomputeDimensions();
+				ec.recomputeDimensions();
+				bp.recomputeDimensions();
+				result.add(bp);
+				return result;
+			}
+		}
+		if (func instanceof FunctionSingle) {
+			ObjectArrayList<Block> sub = parseFunction(context, func.getParameter(0));
+			if (func instanceof RootSquare) {
+				BlockSquareRoot bsqr = new BlockSquareRoot();
+				BlockContainer bsqrc = bsqr.getNumberContainer();
+				for (Block b : sub) {
+					bsqrc.appendBlockUnsafe(b);
+				}
+				bsqrc.recomputeDimensions();
+				bsqr.recomputeDimensions();
+				result.add((bsqr));
+				return result;
+			}
+			
+		}
+		if (func instanceof Expression) {
+			ObjectArrayList<Block> sub = parseFunction(context, ((Expression) func).getParameter(0));
+			BlockParenthesis bp = new BlockParenthesis();
+			BlockContainer bpc = bp.getNumberContainer();
+			for (Block b : sub) {
+				bpc.appendBlockUnsafe(b);
+			}
+			bpc.recomputeDimensions();
+			bp.recomputeDimensions();
+			result.add(bp);
+			return result;
 		}
 		if (func instanceof Number) {
 			Number numb = (Number) func;
-			BigDecimal decimal = numb.getTerm();
-			String numberString;
-			if (numb.isInteger()) {
-				BigInteger integ = decimal.toBigInteger();
-				numberString = integ.toString();
+			String numberString = numb.toString();
+			if (numberString.contains("ℯ℮")) {
+				String[] numberParts = numberString.split("ℯ℮", 2);
+				numberParts[0]+="ℯ℮";
+				BlockPower bp = new BlockExponentialNotation();
+				BlockContainer bpnc = bp.getNumberContainer();
+				BlockContainer bpec = bp.getExponentContainer();
+				for (char c : numberParts[0].toCharArray()) {
+					bpnc.appendBlockUnsafe(new BlockChar(c));
+				}
+				for (char c : numberParts[1].toCharArray()) {
+					bpec.appendBlockUnsafe(new BlockChar(c));
+				}
+				bpnc.recomputeDimensions();
+				bpec.recomputeDimensions();
+				bp.recomputeDimensions();
+				result.add(bp);
+				return result;
 			} else {
-				numberString = decimal.toPlainString();
-			}
-			for (char c : numberString.toCharArray()) {
-				result.add(new BlockChar(c));
+				for (char c : numberString.toCharArray()) {
+					result.add(new BlockChar(c));
+				}
 			}
 			return result;
 		}
-		throw new UnsupportedOperationException("Unknown function " + func.getClass().getSimpleName());
+		if (func instanceof Variable) {
+			//TODO: Temporary solution. In near future Variables will be distint objects and they will have a color. So they will be no longer a BlockChar/FeatureChar
+			result.add(new BlockChar(((Variable) func).getChar()));
+			return result;
+		}
+		throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + func.getClass().getSimpleName());
 	}
 
 	private static Function parseContainer(final MathContext context, final Iterable<Block> blocks) throws Error {
@@ -117,8 +229,24 @@ public class MathParser {
 				final Function lower = parseContainer(context, bd.getLowerContainer().getContent());
 				result = new FeatureDivision(upper, lower);
 				break;
+			case BlockSquareRoot.CLASS_ID:
+				final BlockSquareRoot bsqr = (BlockSquareRoot) block;
+				final Function contnt = parseContainer(context, bsqr.getNumberContainer().getContent());
+				result = new FeatureSquareRoot(contnt);
+				break;
+			case BlockParenthesis.CLASS_ID:
+				final BlockParenthesis bp = (BlockParenthesis) block;
+				final Function cont = parseContainer(context, bp.getNumberContainer().getContent());
+				result = new FeatureParenthesis(cont);
+				break;
+			case BlockPower.CLASS_ID:
+				final BlockPower blp = (BlockPower) block;
+				final Function nmb = parseContainer(context, blp.getNumberContainer().getContent());
+				final Function exp = parseContainer(context, blp.getExponentContainer().getContent());
+				result = new FeaturePower(nmb, exp);
+				break;
 			default:
-				throw new Error(Errors.SYNTAX_ERROR);
+				throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known BLock");
 		}
 
 		return result;
@@ -141,76 +269,117 @@ public class MathParser {
 
 	private static void fixStack(MathContext context, ObjectArrayList<Function> process) throws Error {
 
-		//Phase 1
-		ObjectListIterator<Function> stackIterator = process.listIterator(process.size());
-		Function lastElement = null;
-		while (stackIterator.hasPrevious()) {
-			final Function f = stackIterator.previous();
-
-			if (f instanceof FunctionSingle) {
-				if (((FunctionSingle) f).getParameter() == null) {
-					if (lastElement == null) {
-						throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
-					} else {
-						((FunctionSingle) f).setParameter(lastElement);
-						process.remove(stackIterator.nextIndex());
+		boolean lastLoopDidSomething;
+		
+		ObjectListIterator<Function> stackIterator;
+		
+		//Phase 0: join number and variables ([2][x] => [[2]*[x]])
+		do {
+			lastLoopDidSomething = false;
+			stackIterator = process.listIterator(process.size());
+			Function lastElement = null;
+			while (stackIterator.hasPrevious()) {
+				final Function f = stackIterator.previous();
+				final int curIndex = stackIterator.nextIndex();
+	
+				if (f instanceof Number | f instanceof Variable) {
+					if (lastElement instanceof Variable) {
+						lastLoopDidSomething = true;
+						final Function var = process.get(curIndex + 1);
+						final Function numb = process.get(curIndex);
+						stackIterator.set(new Multiplication(context, numb, var));
+						process.remove(curIndex + 1);
 					}
 				}
+				lastElement = f;
 			}
-			lastElement = f;
-		}
+		} while (lastLoopDidSomething);
+		
+		//Phase 1
+		do {
+			lastLoopDidSomething = false;
+			stackIterator = process.listIterator(process.size());
+			Function lastElement = null;
+			while (stackIterator.hasPrevious()) {
+				final Function f = stackIterator.previous();
+
+				if (f instanceof FunctionSingle) {
+					if (((FunctionSingle) f).getParameter() == null) {
+						lastLoopDidSomething = true;
+						if (lastElement == null) {
+							throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
+						} else {
+							((FunctionSingle) f).setParameter(lastElement);
+							process.remove(stackIterator.nextIndex());
+						}
+					}
+				}
+				lastElement = f;
+			}
+		} while (lastLoopDidSomething);
 
 		//Phase 2
-		stackIterator = process.listIterator();
-		while (stackIterator.hasNext()) {
-			final Function f = stackIterator.next();
-			final int curIndex = stackIterator.previousIndex();
+		do {
+			lastLoopDidSomething = false;
+			stackIterator = process.listIterator();
+			while (stackIterator.hasNext()) {
+				final Function f = stackIterator.next();
+				final int curIndex = stackIterator.previousIndex();
 
-			if (f instanceof Multiplication || f instanceof Division) {
-				if (curIndex - 1 >= 0 && stackIterator.hasNext()) {
-					final Function next = process.get(curIndex + 1);
-					final Function prev = process.get(curIndex - 1);
-					stackIterator.set(f.setParameter(0, prev).setParameter(1, next));
-					process.remove(curIndex + 1);
-					process.remove(curIndex - 1);
-				} else {
-					if (f.getParameter(0) == null || f.getParameter(1) == null) {
-						throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
+				if (f instanceof Multiplication || f instanceof Division) {
+					if (curIndex - 1 >= 0 && stackIterator.hasNext()) {
+						lastLoopDidSomething = true;
+						final Function next = process.get(curIndex + 1);
+						final Function prev = process.get(curIndex - 1);
+						stackIterator.set(f.setParameter(0, prev).setParameter(1, next));
+						process.remove(curIndex + 1);
+						process.remove(curIndex - 1);
+					} else {
+						if (f.getParameter(0) == null || f.getParameter(1) == null) {
+							throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
+						}
 					}
 				}
 			}
-		}
+		} while (lastLoopDidSomething);
 
 		//Phase 3
-		stackIterator = process.listIterator();
-		while (stackIterator.hasNext()) {
-			final Function f = stackIterator.next();
-			final int curIndex = stackIterator.previousIndex();
+		do {
+			lastLoopDidSomething = false;
+			stackIterator = process.listIterator();
+			while (stackIterator.hasNext()) {
+				final Function f = stackIterator.next();
+				final int curIndex = stackIterator.previousIndex();
 
-			if (f instanceof Sum || f instanceof Subtraction || f instanceof SumSubtraction) {
-				if (curIndex - 1 >= 0 && stackIterator.hasNext()) {
-					final Function next = process.get(curIndex + 1);
-					final Function prev = process.get(curIndex - 1);
-					stackIterator.set(f.setParameter(0, prev).setParameter(1, next));
-					process.remove(curIndex + 1);
-					process.remove(curIndex - 1);
-				} else {
-					if (f.getParameter(0) == null || f.getParameter(1) == null) {
-						throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
+				if (f instanceof Sum || f instanceof Subtraction || f instanceof SumSubtraction) {
+					if (curIndex - 1 >= 0 && stackIterator.hasNext()) {
+						lastLoopDidSomething = true;
+						final Function next = process.get(curIndex + 1);
+						final Function prev = process.get(curIndex - 1);
+						stackIterator.set(f.setParameter(0, prev).setParameter(1, next));
+						process.remove(curIndex + 1);
+						process.remove(curIndex - 1);
+					} else {
+						if (f.getParameter(0) == null || f.getParameter(1) == null) {
+							throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
+						}
 					}
 				}
 			}
-		}
+		} while (lastLoopDidSomething);
 
 		//Phase 4
-		stackIterator = process.iterator();
-		while (stackIterator.hasNext()) {
-			final Function f = stackIterator.next();
+		do {
+			lastLoopDidSomething = false;
+			stackIterator = process.iterator();
+			while (stackIterator.hasNext()) {
+				final Function f = stackIterator.next();
 
-			if (f instanceof Function2Args) {
+				if (f instanceof Function2Args) {
 
+				}
 			}
-		}
+		} while (lastLoopDidSomething);
 	}
 
 	private static ObjectArrayList<Function> makeFunctions(MathContext context, ObjectArrayList<Feature> features)
@@ -226,6 +395,12 @@ public class MathParser {
 				process.add(new Variable(context, ((FeatureVariable) f).ch, ((FeatureVariable) f).varType));
 			} else if (f instanceof FeatureSum) {
 				process.add(new Sum(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
+			} else if (f instanceof FeaturePower) {
+				process.add(new Power(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
+			} else if (f instanceof FeatureSquareRoot) {
+				process.add(new RootSquare(context, (Function) ((FeatureSingle) f).getChild()));
+			} else if (f instanceof FeatureParenthesis) {
+				process.add(new Expression(context, (Function) ((FeatureSingle) f).getChild()));
 //			}  else if (f instanceof FeatureSubtraction) {
 //				process.add(new Subtraction(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
 //			}  else if (f instanceof FeatureSumSubtraction) {
@@ -321,7 +496,7 @@ public class MathParser {
 						break;
 					}
 				}
-				if (bcf.ch == '-') {
+				if (bcf.ch == '-' || bcf.ch == '.') {
 					isNumber = true;
 				}
 				if (isNumber) {
