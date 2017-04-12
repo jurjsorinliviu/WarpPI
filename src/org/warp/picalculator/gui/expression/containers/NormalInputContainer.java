@@ -1,11 +1,11 @@
 package org.warp.picalculator.gui.expression.containers;
 
-import org.warp.picalculator.gui.expression.Block;
-import org.warp.picalculator.gui.expression.BlockChar;
-import org.warp.picalculator.gui.expression.BlockDivision;
-import org.warp.picalculator.gui.expression.BlockParenthesis;
-import org.warp.picalculator.gui.expression.BlockPower;
-import org.warp.picalculator.gui.expression.BlockSquareRoot;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
+import org.warp.picalculator.gui.expression.blocks.BlockDivision;
+import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
+import org.warp.picalculator.gui.expression.blocks.BlockPower;
+import org.warp.picalculator.gui.expression.blocks.BlockSquareRoot;
 import org.warp.picalculator.math.MathematicalSymbols;
 
 public class NormalInputContainer extends InputContainer {

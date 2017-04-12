@@ -8,7 +8,7 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.KeyboardEventListener;
-import org.warp.picalculator.gui.expression.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.containers.NormalInputContainer;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Skin;

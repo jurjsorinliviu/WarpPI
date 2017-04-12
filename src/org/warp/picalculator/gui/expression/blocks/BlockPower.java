@@ -1,8 +1,8 @@
-package org.warp.picalculator.gui.expression;
+package org.warp.picalculator.gui.expression.blocks;
 
-import org.warp.picalculator.gui.expression.Block;
-import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.Caret;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 

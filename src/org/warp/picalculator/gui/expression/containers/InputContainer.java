@@ -4,10 +4,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.warp.picalculator.gui.GraphicalElement;
-import org.warp.picalculator.gui.expression.Block;
-import org.warp.picalculator.gui.expression.BlockContainer;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.layouts.InputLayout;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
