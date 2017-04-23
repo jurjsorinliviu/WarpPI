@@ -1,10 +1,7 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -44,15 +41,19 @@ public class GPUFont implements BinaryFont {
 		tmpFont = font;
 		font = null;
 	}
-	
+
 	public int[] getCharIndexes(String txt) {
 		final int l = txt.length();
 		final int[] indexes = new int[l];
 		final char[] chars = txt.toCharArray();
 		for (int i = 0; i < l; i++) {
-			indexes[i] = (chars[i] & 0xFFFF) - minCharIndex;
+			indexes[i] = getCharIndex(chars[i]);
 		}
 		return indexes;
+	}
+
+	public int getCharIndex(char ch) {
+		return (ch & 0xFFFF) - minCharIndex;
 	}
 
 	private void genTexture(boolean[][] chars) {
@@ -68,7 +69,7 @@ public class GPUFont implements BinaryFont {
 			if (currentChar != null && currentChar.length > 0) {
 				for (int charY = 0; charY < charH; charY++) {
 					for (int charX = 0; charX < charW; charX++) {
-						if (currentChar[charY*charW+charX]) {
+						if (currentChar[charY * charW + charX]) {
 							bfi.setRGB(indexX * charW + charX, indexY * charH + charY, 0xFFFFFFFF);
 						}
 					}
@@ -120,9 +121,9 @@ public class GPUFont implements BinaryFont {
 
 	@Override
 	public int getStringWidth(String text) {
-		final int w = (charW + 1) * text.length();
+		final int w = (charW) * text.length();
 		if (text.length() > 0) {
-			return w - 1;
+			return w;
 		} else {
 			return 0;
 		}

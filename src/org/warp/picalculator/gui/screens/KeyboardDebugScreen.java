@@ -29,7 +29,7 @@ public class KeyboardDebugScreen extends Screen {
 
 	@Override
 	public void render() {
-		Renderer renderer = DisplayManager.renderer;
+		final Renderer renderer = DisplayManager.renderer;
 		fonts[2].use(DisplayManager.engine);
 		renderer.glColor4f(0.75f, 0.0f, 0.0f, 1.0f);
 		renderer.glDrawStringRight(Main.screenSize[0] - 10, 30, "-" + keyevent.toUpperCase() + "-");

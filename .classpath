@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="org/warp/picalculator/deprecatedmath/" kind="src" path="src"/>
+	<classpathentry excluding="org/warp/picalculator/deprecatedmath/|org/warp/picalculator/device/PIDisplay.java|org/warp/picalculator/device/graphicengine/Display.java|com/rits/cloning/|com/rits/perspectives/|com/rits/|com/|org/warp/picalculator/TestCalcBenchmark.java" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/JOGL"/>
@@ -27,6 +27,11 @@
 	<classpathentry kind="lib" path="libs/objenesis-2.4/objenesis-2.4.jar" sourcepath="libs/objenesis-2.4/objenesis-2.4-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/objenesis-2.4/objenesis-2.4-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/fastutil/fastutil-7.1.0.jar" sourcepath="libs/fastutil/fastutil-7.1.0-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PICalculator/libs/fastutil/fastutil-7.1.0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

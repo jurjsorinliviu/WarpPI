@@ -24,7 +24,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -267,7 +267,7 @@ public class DeallocationHelper {
 	 */
 	public DeallocationHelper(final boolean ignoreClassesAndFieldsHints) {
 		super();
-		final List<Buffer> buffersToDelete = new ArrayList<>();
+		final List<Buffer> buffersToDelete = new ObjectArrayList<>();
 		/**
 		 * builds the map used to determine the names of the fields containing
 		 * the direct byte buffers. The direct read only buffers and the sliced
@@ -342,7 +342,7 @@ public class DeallocationHelper {
 		}
 		// checks if these classes are in the class library
 		if (!attachmentOrByteBufferFieldNameMap.isEmpty()) {
-			final List<String> classnamesToRemove = new ArrayList<>();
+			final List<String> classnamesToRemove = new ObjectArrayList<>();
 			for (final String classname : attachmentOrByteBufferFieldNameMap.keySet()) {
 				try {
 					Class.forName(classname);
@@ -365,7 +365,7 @@ public class DeallocationHelper {
 					final Class<?> bufferClass = Class.forName(classname);
 					Field bufferField = null;
 					Class<?> bufferIntermediaryClass = bufferClass;
-					final List<Class<?>> intermediaryClassWithoutBufferList = new ArrayList<>();
+					final List<Class<?>> intermediaryClassWithoutBufferList = new ObjectArrayList<>();
 					while (bufferIntermediaryClass != null) {
 						try {
 							bufferField = bufferIntermediaryClass.getDeclaredField(fieldname);
@@ -401,15 +401,15 @@ public class DeallocationHelper {
 						attachmentOrByteBufferFieldMap.put(bufferClass, bufferField);
 					}
 				} catch (final ClassNotFoundException cnfe) {// TODO The Java version
-															// isn't very useful
-														// under
-														// Android as it is
-														// always zero, rather
-														// use
-														// android.os.Build.VERSION.RELEASE
-														// to show something
-														// meaningful supported
-														// since the API level 1
+																	// isn't very useful
+																// under
+																// Android as it is
+																// always zero, rather
+																// use
+																// android.os.Build.VERSION.RELEASE
+																// to show something
+																// meaningful supported
+																// since the API level 1
 					final String msg = "The class " + classname + " hasn't been found while initializing the deallocator. Java vendor: " + javaVendor + " Java version: " + javaVersion;
 					logger.log(Level.WARNING, msg, cnfe);
 				}
@@ -454,7 +454,7 @@ public class DeallocationHelper {
 			final LongBuffer littleEndianReadWriteDirectLongBuffer = ByteBuffer.allocateDirect(1).order(ByteOrder.LITTLE_ENDIAN).asLongBuffer();
 			final ShortBuffer littleEndianReadOnlyDirectShortBuffer = ByteBuffer.allocateDirect(1).order(ByteOrder.LITTLE_ENDIAN).asReadOnlyBuffer().asShortBuffer();
 			final ShortBuffer littleEndianReadWriteDirectShortBuffer = ByteBuffer.allocateDirect(1).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-			final List<Buffer> buffers = new ArrayList<>();
+			final List<Buffer> buffers = new ObjectArrayList<>();
 			buffers.add(slicedBigEndianReadOnlyDirectByteBuffer);
 			buffers.add(slicedBigEndianReadWriteDirectByteBuffer);
 			buffers.add(bigEndianReadOnlyDirectCharBuffer);

@@ -1,11 +1,11 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Undefined;
 
@@ -19,10 +19,10 @@ import org.warp.picalculator.math.functions.Undefined;
 public class UndefinedRule2 {
 
 	public static boolean compare(Function f) {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final Division fnc = (Division) f;
-		if (fnc.getVariable2() instanceof Number) {
-			final Number numb = (Number) fnc.getVariable2();
+		if (fnc.getParameter2() instanceof Number) {
+			final Number numb = (Number) fnc.getParameter2();
 			if (numb.equals(new Number(root, 0))) {
 				return true;
 			}
@@ -30,9 +30,9 @@ public class UndefinedRule2 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
-		final ArrayList<Function> result = new ArrayList<>();
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
+		final MathContext root = f.getMathContext();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		result.add(new Undefined(root));
 		return result;
 	}

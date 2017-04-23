@@ -33,13 +33,10 @@ import com.jogamp.opengl.GL2ES1;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.fixedfunc.GLPointerFunc;
 import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.nativewindow.util.DimensionImmutable;
-import com.jogamp.nativewindow.util.PixelFormat;
-import com.jogamp.nativewindow.util.PixelRectangle;
-import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.WindowEvent;
@@ -49,15 +46,10 @@ import com.jogamp.newt.opengl.GLWindow;
 
 import com.jogamp.opengl.util.*;
 
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.nio.ByteBuffer;
-import java.util.Collection;
-
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 
 /**
  *
@@ -92,15 +84,15 @@ class NEWTWindow implements GLEventListener {
 		caps.setSampleBuffers(false);
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
-		
+
 		glWindow.setTitle("WarpPI Calculator by Andrea Cavalli (XDrake99)");
-		
+
 		glWindow.addWindowListener(new WindowListener() {
 
 			@Override
 			public void windowDestroyNotify(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -111,32 +103,32 @@ class NEWTWindow implements GLEventListener {
 			@Override
 			public void windowGainedFocus(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowLostFocus(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowMoved(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowRepaint(WindowUpdateEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowResized(WindowEvent e) {
-				
+
 			}
-			
+
 		});
 		glWindow.addKeyListener(new KeyListener() {
 			@Override
@@ -271,15 +263,15 @@ class NEWTWindow implements GLEventListener {
 
 		//Vsync
 		gl.setSwapInterval(2);
-		
+
 		//Textures
 		gl.glEnable(GL.GL_TEXTURE_2D);
-		
+
 		//Transparency
-		gl.glEnable(GL2ES1.GL_BLEND);
-		gl.glBlendFunc(GL2ES1.GL_SRC_ALPHA, GL2ES1.GL_ONE_MINUS_SRC_ALPHA);
-		gl.glShadeModel(GL2ES1.GL_SMOOTH);
-		
+		gl.glEnable(GL.GL_BLEND);
+		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+		gl.glShadeModel(GLLightingFunc.GL_FLAT);
+
 		try {
 			renderer.currentTex = ((GPUSkin) disp.loadSkin("test.png")).t;
 		} catch (final Exception e) {
@@ -295,8 +287,8 @@ class NEWTWindow implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
-		disp.size[0] = width;
-		disp.size[1] = height;
+		disp.size[0] = (Utils.debugOn & Utils.debugWindow2x) ? width / 2 : width;
+		disp.size[1] = (Utils.debugOn & Utils.debugWindow2x) ? height / 2 : height;
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 		float max_wh, min_wh;
 		if (width == 0) {
@@ -318,7 +310,7 @@ class NEWTWindow implements GLEventListener {
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		gl.glOrtho(0.0, width, height, 0.0, -1, 1);
+		gl.glOrtho(0.0, (Utils.debugOn & Utils.debugWindow2x) ? width / 2 : width, (Utils.debugOn & Utils.debugWindow2x) ? height / 2 : height, 0.0, -1, 1);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -328,19 +320,19 @@ class NEWTWindow implements GLEventListener {
 	public void display(GLAutoDrawable glad) {
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 
-		renderer.gl = gl;
+		GPURenderer.gl = gl;
 
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_TEXTURE_COORD_ARRAY);
 
 		renderer.startDrawCycle();
-		
+
 		disp.repaint();
 
 		renderer.endDrawCycle();
-		
-		renderer.gl = null;
+
+		GPURenderer.gl = null;
 
 		gl.glDisableClientState(GLPointerFunc.GL_COLOR_ARRAY);
 		gl.glDisableClientState(GLPointerFunc.GL_TEXTURE_COORD_ARRAY);

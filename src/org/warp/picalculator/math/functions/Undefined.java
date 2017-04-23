@@ -3,73 +3,30 @@ package org.warp.picalculator.math.functions;
 import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 
 public class Undefined implements Function {
 
-	protected final Calculator root;
+	protected final MathContext root;
 
-	public Undefined(Calculator root) {
+	public Undefined(MathContext root) {
 		this.root = root;
 	}
 
 	@Override
-	public String getSymbol() {
-		return "undefined";
-	}
-
-	@Override
-	public List<Function> solveOneStep() throws Error {
+	public List<Function> simplify() throws Error {
 		return null;
 	}
 
 	@Override
-	public boolean isSolved() {
+	public boolean isSimplified() {
 		return true;
 	}
 
-	private int width, height, line;
-	private boolean small;
-
 	@Override
-	public void generateGraphics() {
-		width = Utils.getFont(small).getStringWidth("UNDEFINED");
-		height = Utils.getFontHeight(small);
-		line = height / 2;
-	}
-
-	@Override
-	public void draw(int x, int y) {
-		Utils.getFont(small).use(DisplayManager.engine);
-		DisplayManager.renderer.glDrawStringLeft(x, y, "UNDEFINED");
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	@Override
-	public Calculator getRoot() {
+	public MathContext getMathContext() {
 		return root;
-	}
-
-	@Override
-	public void setSmall(boolean small) {
-		this.small = small;
 	}
 
 	@Override
@@ -78,6 +35,21 @@ public class Undefined implements Function {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public Undefined clone() {
+		return new Undefined(root);
+	}
+
+	@Override
+	public Function setParameter(int index, Function var) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public Function getParameter(int index) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
 	}
 
 }

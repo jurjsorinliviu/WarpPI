@@ -1,10 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.ExpandRule5;
 import org.warp.picalculator.math.rules.NumberRule3;
@@ -14,25 +15,15 @@ import org.warp.picalculator.math.rules.VariableRule2;
 import org.warp.picalculator.math.rules.VariableRule3;
 import org.warp.picalculator.math.rules.methods.SumMethod1;
 
-public class Subtraction extends FunctionTwoValues {
+public class Subtraction extends FunctionOperator {
 
-	public Subtraction(Calculator root, Function value1, Function value2) {
+	public Subtraction(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
 	}
 
 	@Override
-	protected Function NewInstance(Calculator root, Function value1, Function value2) {
-		return new Subtraction(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.SUBTRACTION;
-	}
-
-	@Override
 	protected boolean isSolvable() {
-		if (variable1 instanceof Number & variable2 instanceof Number) {
+		if (parameter1 instanceof Number & parameter2 instanceof Number) {
 			return true;
 		}
 		if (VariableRule1.compare(this)) {
@@ -63,8 +54,8 @@ public class Subtraction extends FunctionTwoValues {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		ArrayList<Function> result = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (VariableRule1.compare(this)) {
 			result = VariableRule1.execute(this);
 		} else if (VariableRule2.compare(this)) {
@@ -81,8 +72,8 @@ public class Subtraction extends FunctionTwoValues {
 			result = NumberRule5.execute(this);
 		} else if (SumMethod1.compare(this)) {
 			result = SumMethod1.execute(this);
-		} else if (variable1.isSolved() & variable2.isSolved()) {
-			result.add(((Number) variable1).add(((Number) variable2).multiply(new Number(root, "-1"))));
+		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
+			result.add(((Number) parameter1).add(((Number) parameter2).multiply(new Number(mathContext, "-1"))));
 		}
 		return result;
 	}
@@ -90,9 +81,15 @@ public class Subtraction extends FunctionTwoValues {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Subtraction) {
-			final FunctionTwoValues f = (FunctionTwoValues) o;
-			return variable1.equals(f.variable1) && variable2.equals(f.variable2);
+			final FunctionOperator f = (FunctionOperator) o;
+			return parameter1.equals(f.getParameter1()) && parameter2.equals(f.getParameter2());
 		}
 		return false;
 	}
+
+	@Override
+	public Subtraction clone() {
+		return new Subtraction(mathContext, parameter1, parameter2);
+	}
+
 }

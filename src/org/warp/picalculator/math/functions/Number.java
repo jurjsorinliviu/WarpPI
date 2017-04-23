@@ -2,52 +2,44 @@ package org.warp.picalculator.math.functions;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
-import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.BinaryFont;
-import org.warp.picalculator.math.Calculator;
-
-import com.rits.cloning.Cloner;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 
 public class Number implements Function {
 
-	private final Calculator root;
+	private final MathContext root;
 	protected BigDecimal term;
-	protected int width;
-	protected int height;
-	protected int line;
-	protected boolean small;
 
-	public Number(Calculator root, BigInteger val) {
+	public Number(MathContext root, BigInteger val) {
 		this.root = root;
 		term = new BigDecimal(val).setScale(Utils.scale, Utils.scaleMode2);
 	}
 
-	public Number(Calculator root, BigDecimal val) {
+	public Number(MathContext root, BigDecimal val) {
 		this.root = root;
 		term = val.setScale(Utils.scale, Utils.scaleMode2);
 	}
 
-	public Number(Calculator root, String s) throws Error {
+	public Number(MathContext root, String s) throws Error {
 		this(root, new BigDecimal(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
-	public Number(Calculator root, int s) {
+	public Number(MathContext root, int s) {
 		this(root, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
-	public Number(Calculator root, float s) {
+	public Number(MathContext root, float s) {
 		this(root, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
-	public Number(Calculator root, double s) {
+	public Number(MathContext root, double s) {
 		this(root, BigDecimal.valueOf(s).setScale(Utils.scale, Utils.scaleMode2));
 	}
 
@@ -57,18 +49,6 @@ public class Number implements Function {
 
 	public void setTerm(BigDecimal val) {
 		term = val.setScale(Utils.scale, Utils.scaleMode2);
-	}
-
-	@Override
-	public void generateGraphics() {
-		line = calcLine(); //TODO pp
-		height = calcHeight();
-		width = calcWidth();
-	}
-
-	@Override
-	public String getSymbol() {
-		return toString();
 	}
 
 	public Number add(Number f) {
@@ -120,115 +100,13 @@ public class Number implements Function {
 		return s;
 	}
 
-//	public void draw(int x, int y, PIDisplay g, boolean small, boolean drawMinus) {
-//		boolean beforedrawminus = this.drawMinus;
-//		this.drawMinus = drawMinus;
-//		draw(x, y, small);
-//		this.drawMinus = beforedrawminus;
-//	}
-
-	private boolean drawMinus = true;
-
-	@Override
-	public void draw(int x, int y) {
-		Utils.getFont(small).use(DisplayManager.engine);
-		String t = toString();
-
-		if (t.startsWith("-")) {
-			if (drawMinus) {
-
-			} else {
-				t = t.substring(1);
-			}
-		}
-		if (t.contains("ℯ℮")) {
-			final BinaryFont defaultf = Utils.getFont(small);
-			final BinaryFont smallf = Utils.getFont(true);
-			final String s = t.substring(0, t.indexOf("ℯ℮") + 2);
-			final int sw = defaultf.getStringWidth(s);
-			DisplayManager.renderer.glDrawStringLeft(x + 1, y + smallf.getCharacterHeight() - 2, s);
-			smallf.use(DisplayManager.engine);
-			DisplayManager.renderer.glDrawStringLeft(x + 1 + sw - 3, y, t.substring(t.indexOf("ℯ℮") + 2));
-		} else {
-			DisplayManager.renderer.glDrawStringLeft(x + 1, y, t);
-		}
-	}
-
-	public int getHeight(boolean drawMinus) {
-		final boolean beforedrawminus = this.drawMinus;
-		this.drawMinus = drawMinus;
-		final int h = getHeight();
-		this.drawMinus = beforedrawminus;
-		return h;
-	}
-
-	@Override
-	public int getHeight() {
-		return height;
-	}
-
-	private int calcHeight() {
-		final String t = toString();
-		if (t.contains("ℯ℮")) {
-			return Utils.getFontHeight(small) - 2 + Utils.getFontHeight(true);
-		} else {
-			final int h1 = Utils.getFontHeight(small);
-			return h1;
-		}
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	public int calcWidth() {
-		String t = toString();
-		if (t.startsWith("-")) {
-			if (drawMinus) {
-
-			} else {
-				t = t.substring(1);
-			}
-		}
-		if (t.contains("ℯ℮")) {
-			final BinaryFont defaultf = Utils.getFont(small);
-			final BinaryFont smallf = Utils.getFont(true);
-			final String s = t.substring(0, t.indexOf("ℯ℮") + 2);
-			final int sw = defaultf.getStringWidth(s);
-			return 1 + sw - 3 + smallf.getStringWidth(t.substring(t.indexOf("ℯ℮") + 2));
-		} else {
-			return Utils.getFont(small).getStringWidth(t) + 1;
-		}
-	}
-
-	@Override
-	public int getLine() {
-		return line;
-	}
-
-	private int calcLine() {
-		final String t = toString();
-		if (t.contains("ℯ℮")) {
-			return (Utils.getFontHeight(small) / 2) - 2 + Utils.getFontHeight(true);
-		} else {
-			return Utils.getFontHeight(small) / 2;
-		}
-	}
-
 	@Override
 	public Number clone() {
-		final Cloner cloner = new Cloner();
-		return cloner.deepClone(this);
+		return new Number(root, term);
 	}
 
 	@Override
-	public void setSmall(boolean small) {
-		this.small = small;
-	}
-
-	@Override
-	public boolean isSolved() {
+	public boolean isSimplified() {
 		if (root.exactMode) {
 			return isInteger();
 		} else {
@@ -237,23 +115,23 @@ public class Number implements Function {
 	}
 
 	@Override
-	public List<Function> solveOneStep() throws Error {
-		final List<Function> result = new ArrayList<>();
+	public List<Function> simplify() throws Error {
+		final List<Function> result = new ObjectArrayList<>();
 		if (root.exactMode) {
-			Number divisor = new Number(root, BigInteger.TEN.pow(getNumberOfDecimalPlaces()));
-			Number numb = new Number(root, term.multiply(divisor.term));
-			Division div = new Division(root, numb, divisor);
+			final Number divisor = new Number(root, BigInteger.TEN.pow(getNumberOfDecimalPlaces()));
+			final Number numb = new Number(root, term.multiply(divisor.term));
+			final Division div = new Division(root, numb, divisor);
 			result.add(div);
 		} else {
 			result.add(this);
 		}
 		return result;
 	}
-	
+
 	public int getNumberOfDecimalPlaces() {
-	    return Math.max(0, term.stripTrailingZeros().scale());
+		return Math.max(0, term.stripTrailingZeros().scale());
 	}
-	
+
 	public boolean isInteger() {
 		return getNumberOfDecimalPlaces() <= 0;
 	}
@@ -284,7 +162,7 @@ public class Number implements Function {
 	}
 
 	@Override
-	public Calculator getRoot() {
+	public MathContext getMathContext() {
 		return root;
 	}
 
@@ -339,5 +217,15 @@ public class Number implements Function {
 		}
 
 		return fs;
+	}
+
+	@Override
+	public Function setParameter(int index, Function var) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public Function getParameter(int index) throws IndexOutOfBoundsException {
+		throw new IndexOutOfBoundsException();
 	}
 }

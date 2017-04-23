@@ -1,38 +1,26 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule4;
 import org.warp.picalculator.math.rules.NumberRule5;
 
-public class SumSubtraction extends FunctionTwoValues {
+public class SumSubtraction extends FunctionOperator {
 
-	public SumSubtraction(Calculator root, Function value1, Function value2) {
+	public SumSubtraction(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
 	}
 
 	@Override
-	protected Function NewInstance(Calculator root, Function value1, Function value2) {
-		return new SumSubtraction(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.SUM_SUBTRACTION;
-	}
-
-	@Override
 	protected boolean isSolvable() {
-		if (variable1 instanceof Number & variable2 instanceof Number) {
+		if (parameter1 instanceof Number & parameter2 instanceof Number) {
 			return true;
 		}
 		if (NumberRule3.compare(this)) {
@@ -51,11 +39,11 @@ public class SumSubtraction extends FunctionTwoValues {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		if (variable1 == null || variable2 == null) {
+	public ObjectArrayList<Function> solve() throws Error {
+		if (parameter1 == null || parameter2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		ArrayList<Function> result = new ArrayList<>();
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (NumberRule3.compare(this)) {
 			result = NumberRule3.execute(this);
 		} else if (ExpandRule1.compare(this)) {
@@ -64,63 +52,25 @@ public class SumSubtraction extends FunctionTwoValues {
 			result = NumberRule4.execute(this);
 		} else if (NumberRule5.compare(this)) {
 			result = NumberRule5.execute(this);
-		} else if (variable1.isSolved() & variable2.isSolved()) {
-			result.add(((Number) variable1).add((Number) variable2));
-			result.add(((Number) variable1).add(((Number) variable2).multiply(new Number(root, "-1"))));
+		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
+			result.add(((Number) parameter1).add((Number) parameter2));
+			result.add(((Number) parameter1).add(((Number) parameter2).multiply(new Number(mathContext, "-1"))));
 		}
 		return result;
 	}
 
 	@Override
-	public void generateGraphics() {
-		variable1.setSmall(small);
-		variable1.generateGraphics();
-
-		variable2.setSmall(small);
-		variable2.generateGraphics();
-
-		width = calcWidth();
-		height = calcHeight();
-		line = calcLine();
-	}
-
-	@Override
-	public void draw(int x, int y) {
-//		glColor3f(127, 127-50+new Random().nextInt(50), 255);
-//		glFillRect(x,y,width,height);
-//		glColor3f(0, 0, 0);
-
-		final int ln = getLine();
-		int dx = 0;
-		variable1.draw(dx + x, ln - variable1.getLine() + y);
-		dx += variable1.getWidth();
-		Utils.getFont(small).use(DisplayManager.engine);
-		dx += 1;
-		DisplayManager.renderer.glDrawStringLeft(dx + x, ln - Utils.getFontHeight(small) / 2 + y, getSymbol());
-		dx += Utils.getFont(small).getStringWidth(getSymbol());
-		variable2.draw(dx + x, ln - variable2.getLine() + y);
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	protected int calcWidth() {
-		int dx = 0;
-		dx += variable1.getWidth();
-		dx += 1;
-		dx += Utils.getFont(small).getStringWidth(getSymbol());
-		return dx += variable2.getWidth();
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof SumSubtraction) {
-			final FunctionTwoValues f = (FunctionTwoValues) o;
-			return variable1.equals(f.variable1) && variable2.equals(f.variable2);
+			final FunctionOperator f = (FunctionOperator) o;
+			return parameter1.equals(f.getParameter1()) && parameter2.equals(f.getParameter2());
 		}
 		return false;
 	}
+
+	@Override
+	public SumSubtraction clone() {
+		return new SumSubtraction(mathContext, parameter1, parameter2);
+	}
+
 }

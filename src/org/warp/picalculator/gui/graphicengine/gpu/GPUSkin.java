@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES1;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.util.texture.Texture;
@@ -33,12 +34,12 @@ public class GPUSkin implements Skin {
 	@Override
 	public void initialize(GraphicEngine d) {
 		try {
-			BufferedImage i = GPURenderer.openTexture(texturePath);
-			GL2ES1 gl = ((GPURenderer)d.getRenderer()).gl;
+			final BufferedImage i = GPURenderer.openTexture(texturePath);
+			final GL2ES1 gl = GPURenderer.gl;
 			t = GPURenderer.importTexture(i);
 			w = i.getWidth();
 			h = i.getHeight();
-			t.setTexParameteri(gl, GL2ES1.GL_TEXTURE_MAG_FILTER, GL2ES1.GL_NEAREST);
+			t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 			initialized = true;
 		} catch (GLException | IOException e) {
 			e.printStackTrace();
@@ -52,7 +53,7 @@ public class GPUSkin implements Skin {
 			initialize(d);
 		}
 		final GPURenderer r = (GPURenderer) d.getRenderer();
-		r.useTexture(t,w,h);
+		r.useTexture(t, w, h);
 	}
 
 }

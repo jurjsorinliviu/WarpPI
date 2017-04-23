@@ -24,12 +24,11 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 public class SwingWindow extends JFrame {
 	private static final long serialVersionUID = 2945898937634075491L;
 	public CustomCanvas c;
-	private static RenderingLoop d;
+	private RenderingLoop renderingLoop;
 	public boolean wasResized = false;
 	private final CPUEngine display;
 
-	public SwingWindow(CPUEngine disp, RenderingLoop d) {
-		SwingWindow.d = d;
+	public SwingWindow(CPUEngine disp) {
 		display = disp;
 		c = new CustomCanvas();
 		c.setDoubleBuffered(false);
@@ -223,7 +222,11 @@ public class SwingWindow extends JFrame {
 		return c.getHeight();
 	}
 
-//	private static ArrayList<Double> mediaValori = new ArrayList<Double>();
+	public void setRenderingLoop(RenderingLoop renderingLoop) {
+		this.renderingLoop = renderingLoop;
+	}
+
+//	private static ObjectArrayList<Double> mediaValori = new ObjectArrayList<Double>();
 
 	public class CustomCanvas extends JPanel {
 
@@ -235,22 +238,24 @@ public class SwingWindow extends JFrame {
 		@Override
 		public void paintComponent(Graphics g) {
 //			long time1 = System.nanoTime();
-			d.refresh();
+			if (renderingLoop != null) {
+				renderingLoop.refresh();
 
-			final int[] a = ((DataBufferInt) display.g.getRaster().getDataBuffer()).getData();
-//		        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
-			CPUEngine.canvas2d = a;
-			g.clearRect(0, 0, display.size[0], display.size[1]);
-			g.drawImage(display.g, 0, 0, null);
-//			long time2 = System.nanoTime();
-//			double timeDelta = ((double)(time2-time1))/1000000000d;
-//			double mediaAttuale = timeDelta;
-//			mediaValori.add(mediaAttuale);
-//			double somma = 0;
-//			for (Double val : mediaValori) {
-//				somma+=val;
-//			}
-//			System.out.println(somma/((double)mediaValori.size()));
+				final int[] a = ((DataBufferInt) display.g.getRaster().getDataBuffer()).getData();
+				//		        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
+				CPUEngine.canvas2d = a;
+				g.clearRect(0, 0, display.size[0], display.size[1]);
+				g.drawImage(display.g, 0, 0, null);
+				//			long time2 = System.nanoTime();
+				//			double timeDelta = ((double)(time2-time1))/1000000000d;
+				//			double mediaAttuale = timeDelta;
+				//			mediaValori.add(mediaAttuale);
+				//			double somma = 0;
+				//			for (Double val : mediaValori) {
+				//				somma+=val;
+				//			}
+				//			System.out.println(somma/((double)mediaValori.size()));
+			}
 		}
 	}
 }

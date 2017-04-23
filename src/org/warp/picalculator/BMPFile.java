@@ -116,8 +116,7 @@ public class BMPFile extends Component {
 		final byte rgb[] = new byte[3];
 		size = (biWidth * biHeight) - 1;
 		pad = 4 - ((biWidth * 3) % 4);
-		if (pad == 4)
-		 {
+		if (pad == 4) {
 			pad = 0; // <==== Bug correction
 		}
 		rowCount = 1;

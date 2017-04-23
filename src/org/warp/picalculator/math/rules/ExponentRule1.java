@@ -1,10 +1,10 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
 
@@ -19,16 +19,16 @@ public class ExponentRule1 {
 
 	public static boolean compare(Function f) {
 		final Power fnc = (Power) f;
-		final Calculator root = f.getRoot();
-		if (fnc.getVariable1().equals(new Number(root, 1))) {
+		final MathContext root = f.getMathContext();
+		if (fnc.getParameter1().equals(new Number(root, 1))) {
 			return true;
 		}
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
-		final ArrayList<Function> result = new ArrayList<>();
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
+		final MathContext root = f.getMathContext();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		result.add(new Number(root, 1));
 		return result;
 	}

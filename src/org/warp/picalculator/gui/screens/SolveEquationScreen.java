@@ -1,10 +1,8 @@
 package org.warp.picalculator.gui.screens;
 
-import org.warp.picalculator.Error;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.math.Calculator;
 
 public class SolveEquationScreen extends Screen {
 

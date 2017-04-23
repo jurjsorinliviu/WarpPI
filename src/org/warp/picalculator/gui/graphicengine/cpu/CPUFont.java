@@ -161,9 +161,9 @@ public class CPUFont implements BinaryFont {
 
 	@Override
 	public int getStringWidth(String text) {
-		final int w = (charW + 1) * text.length();
+		final int w = (charW) * text.length();
 		if (text.length() > 0) {
-			return w - 1;
+			return w;
 		} else {
 			return 0;
 		}

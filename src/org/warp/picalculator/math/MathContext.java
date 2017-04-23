@@ -1,31 +1,32 @@
 package org.warp.picalculator.math;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystem;
 
-public class Calculator {
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+public class MathContext {
 
 	public AngleMode angleMode = AngleMode.DEG;
 	public boolean exactMode = false;
-	public ArrayList<Function> f;
-	public ArrayList<Function> f2;
-	public ArrayList<VariableValue> variablesValues;
+	public ObjectArrayList<Function> f;
+	public ObjectArrayList<Function> f2;
+	public ObjectArrayList<VariableValue> variablesValues;
 	public int resultsCount;
 
-	public Calculator() {
-		f = new ArrayList<>();
-		f2 = new ArrayList<>();
-		variablesValues = new ArrayList<>();
+	public MathContext() {
+		f = new ObjectArrayList<>();
+		f2 = new ObjectArrayList<>();
+		variablesValues = new ObjectArrayList<>();
 		resultsCount = 0;
 	}
 
@@ -37,7 +38,7 @@ public class Calculator {
 			final String[] parts = string.substring(1).split("\\{");
 			final EquationsSystem s = new EquationsSystem(this);
 			for (final String part : parts) {
-				s.addFunctionToEnd(parseEquationString(part));
+				s.appendParameter(parseEquationString(part));
 			}
 			return s;
 		} else if (string.contains("=")) {
@@ -50,23 +51,17 @@ public class Calculator {
 	public Function parseEquationString(String string) throws Error {
 		final String[] parts = string.split("=");
 		if (parts.length == 1) {
-			final Equation e = new Equation(this, null, null);
-			e.setVariable1(new Expression(this, parts[0]));
-			e.setVariable2(new Number(this, BigInteger.ZERO));
-			return e;
+			return new Equation(this, new Expression(this, parts[0]), new Number(this, BigInteger.ZERO));
 		} else if (parts.length == 2) {
-			final Equation e = new Equation(this, null, null);
-			e.setVariable1(new Expression(this, parts[0]));
-			e.setVariable2(new Expression(this, parts[1]));
-			return e;
+			return new Equation(this, new Expression(this, parts[0]), new Expression(this, parts[1]));
 		} else {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
 	}
 
-	public ArrayList<Function> solveExpression(ArrayList<Function> input) throws Error {
-		ArrayList<Function> results = new ArrayList<>();
-		final ArrayList<Function> partialResults = new ArrayList<>();
+	public ObjectArrayList<Function> solveExpression(ObjectArrayList<Function> input) throws Error {
+		ObjectArrayList<Function> results = new ObjectArrayList<>();
+		final ObjectArrayList<Function> partialResults = new ObjectArrayList<>();
 		for (final Function f : input) {
 			if (f instanceof Equation) {
 				throw new IllegalArgumentException("Not an expression!");
@@ -74,11 +69,11 @@ public class Calculator {
 				results.add(f);
 				while (Utils.allSolved(results) == false) {
 					for (final Function itm : results) {
-						if (itm.isSolved() == false) {
+						if (itm.isSimplified() == false) {
 							final long t1 = System.currentTimeMillis();
-							final List<Function> dt = itm.solveOneStep();
+							final List<Function> dt = itm.simplify();
 							final long t2 = System.currentTimeMillis();
-							if (t2 - t1 >= 3000) {
+							if (!Utils.debugOn & (t2 - t1 >= 3000)) {
 								throw new Error(Errors.TIMEOUT);
 							}
 							partialResults.addAll(dt);
@@ -86,7 +81,7 @@ public class Calculator {
 							partialResults.add(itm);
 						}
 					}
-					results = new ArrayList<>(partialResults);
+					results = new ObjectArrayList<>(partialResults);
 					partialResults.clear();
 				}
 			}
@@ -100,36 +95,17 @@ public class Calculator {
 
 	public void init() {
 		if (f == null & f2 == null) {
-			f = new ArrayList<>();
-			f2 = new ArrayList<>();
-			variablesValues = new ArrayList<>();
+			f = new ObjectArrayList<>();
+			f2 = new ObjectArrayList<>();
+			variablesValues = new ObjectArrayList<>();
 			resultsCount = 0;
-		}
-	}
-
-	public void parseInputString(String eqn) throws Error {
-		final ArrayList<Function> fncs = new ArrayList<>();
-		if (eqn.length() > 0) {
-			try {
-				fncs.add(parseString(eqn.replace("sqrt", MathematicalSymbols.SQUARE_ROOT).replace("^", MathematicalSymbols.POWER)));
-			} catch (final Exception ex) {
-
-			}
-		}
-		f = fncs;
-		for (final Function f : f) {
-			try {
-				f.generateGraphics();
-			} catch (final NullPointerException ex) {
-				throw new Error(Errors.SYNTAX_ERROR);
-			}
 		}
 	}
 
 	/*public void solve(EquationScreen equationScreen, char letter) throws Error {
 		if (Calculator.currentSession == 0 && Calculator.sessions[0] instanceof EquationScreen) {
 			EquationScreen es = (EquationScreen) Calculator.sessions[0];
-			ArrayList<Function> f = es.f;
+			ObjectArrayList<Function> f = es.f;
 			if (f instanceof Equation) {
 				List<Function> results = ((Equation)f).solve(letter);
 				Collections.reverse(results);
@@ -146,4 +122,17 @@ public class Calculator {
 		}
 	}*/
 
+	@Override
+	@Deprecated
+	public MathContext clone() {
+//		MathContext mc = new MathContext();
+//		mc.angleMode = this.angleMode;
+//		mc.exactMode = this.exactMode;
+//		mc.f = this.f;
+//		mc.f2 = this.f2;
+//		mc.variablesValues = this.variablesValues;
+//		mc.resultsCount = this.resultsCount;
+//		return mc;
+		throw new NotImplementedException();
+	}
 }

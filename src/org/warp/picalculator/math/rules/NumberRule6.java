@@ -1,10 +1,10 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.functions.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Negative;
 import org.warp.picalculator.math.functions.Number;
@@ -19,16 +19,16 @@ import org.warp.picalculator.math.functions.Number;
 public class NumberRule6 {
 
 	public static boolean compare(Function f) {
-		final Calculator root = f.getRoot();
+		final MathContext root = f.getMathContext();
 		final Multiplication mult = (Multiplication) f;
-		if (mult.getVariable1() instanceof Number) {
-			final Number numb = (Number) mult.getVariable1();
+		if (mult.getParameter1() instanceof Number) {
+			final Number numb = (Number) mult.getParameter1();
 			if (numb.equals(new Number(root, -1))) {
 				return true;
 			}
 		}
-		if (mult.getVariable2() instanceof Number) {
-			final Number numb = (Number) mult.getVariable2();
+		if (mult.getParameter2() instanceof Number) {
+			final Number numb = (Number) mult.getParameter2();
 			if (numb.equals(new Number(root, -1))) {
 				return true;
 			}
@@ -36,29 +36,28 @@ public class NumberRule6 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
-		final ArrayList<Function> result = new ArrayList<>();
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
+		final MathContext root = f.getMathContext();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		Function a = null;
 		boolean aFound = false;
 		final Multiplication mult = (Multiplication) f;
-		if (aFound == false & mult.getVariable1() instanceof Number) {
-			final Number numb = (Number) mult.getVariable1();
+		if (aFound == false & mult.getParameter1() instanceof Number) {
+			final Number numb = (Number) mult.getParameter1();
 			if (numb.equals(new Number(root, -1))) {
-				a = mult.getVariable2();
+				a = mult.getParameter2();
 				aFound = true;
 			}
 		}
-		if (aFound == false && mult.getVariable2() instanceof Number) {
-			final Number numb = (Number) mult.getVariable2();
+		if (aFound == false && mult.getParameter2() instanceof Number) {
+			final Number numb = (Number) mult.getParameter2();
 			if (numb.equals(new Number(root, -1))) {
-				a = mult.getVariable1();
+				a = mult.getParameter1();
 				aFound = true;
 			}
 		}
 
-		final Negative minus = new Negative(root, null);
-		minus.setVariable(a);
+		final Negative minus = new Negative(root, a);
 
 		result.add(minus);
 		return result;

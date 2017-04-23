@@ -1,10 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.ExponentRule16;
 import org.warp.picalculator.math.rules.FractionsRule14;
@@ -14,28 +15,20 @@ import org.warp.picalculator.math.rules.NumberRule6;
 import org.warp.picalculator.math.rules.SyntaxRule1;
 import org.warp.picalculator.math.rules.methods.MultiplicationMethod1;
 
-public class Multiplication extends FunctionTwoValues {
+public class Multiplication extends FunctionOperator {
 
-	public Multiplication(Calculator root, Function value1, Function value2) {
+	public Multiplication(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
 		if (value1 instanceof Variable && value2 instanceof Variable == false) {
-			variable1 = value2;
-			variable2 = value1;
+			parameter1 = value2;
+			parameter2 = value1;
 		}
 	}
 
 	@Override
-	protected Function NewInstance(Calculator root, Function value1, Function value2) {
-		return new Multiplication(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.MULTIPLICATION;
-	}
-
-	@Override
 	protected boolean isSolvable() {
+		final Function variable1 = getParameter1();
+		final Function variable2 = getParameter2();
 		if (variable1 instanceof Number & variable2 instanceof Number) {
 			return true;
 		}
@@ -67,8 +60,8 @@ public class Multiplication extends FunctionTwoValues {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		ArrayList<Function> result = new ArrayList<>();
+	public ObjectArrayList<Function> solve() throws Error {
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (SyntaxRule1.compare(this)) {
 			result = SyntaxRule1.execute(this);
 		} else if (NumberRule1.compare(this)) {
@@ -85,92 +78,32 @@ public class Multiplication extends FunctionTwoValues {
 			result = FractionsRule14.execute(this);
 		} else if (MultiplicationMethod1.compare(this)) {
 			result = MultiplicationMethod1.execute(this);
-		} else if (variable1.isSolved() & variable2.isSolved()) {
-			result.add(((Number) variable1).multiply((Number) variable2));
+		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
+			result.add(((Number) parameter1).multiply((Number) parameter2));
 		}
 		return result;
 	}
 
 	@Override
-	public boolean drawSignum() {
-		final Function[] tmpVar = new Function[] { variable1, variable2 };
-		final boolean[] ok = new boolean[] { false, false };
-		for (int val = 0; val < 2; val++) {
-			while (!ok[val]) {
-				if (tmpVar[val] instanceof Division) {
-					ok[0] = true;
-					ok[1] = true;
-				} else if (tmpVar[val] instanceof Variable) {
-					ok[val] = true;
-				} else if (tmpVar[val] instanceof Number) {
-					if (val == 0) {
-						ok[val] = true;
-					} else {
-						if (!(tmpVar[0] instanceof Number)) {
-							ok[val] = true;
-						} else {
-							break;
-						}
-					}
-				} else if (tmpVar[val] instanceof Power) {
-					tmpVar[val] = ((Power) tmpVar[val]).variable1;
-				} else if (tmpVar[val] instanceof Root) {
-					if (val == 0) {
-						break;
-					}
-					ok[val] = true;
-				} else if (tmpVar[val] instanceof RootSquare) {
-					if (val == 0) {
-						break;
-					}
-					ok[val] = true;
-				} else if (tmpVar[val] instanceof Undefined) {
-					break;
-				} else if (tmpVar[val] instanceof Joke) {
-					break;
-				} else if (tmpVar[val] instanceof Negative) {
-					if (val == 1) {
-						break;
-					}
-					ok[val] = true;
-				} else if (tmpVar[val] instanceof Expression) {
-					if (((Expression)tmpVar[val]).parenthesisNeeded() == true) {
-						ok[0] = true;
-						ok[1] = true;
-					} else {
-						break;
-					}
-				} else if (tmpVar[val] instanceof FunctionTwoValues) {
-					if (val == 0) {
-						tmpVar[val] = ((FunctionTwoValues) tmpVar[val]).variable2;
-					} else {
-						tmpVar[val] = ((FunctionTwoValues) tmpVar[val]).variable1;
-					}
-				} else if (tmpVar[val] instanceof AnteriorFunction) {
-					tmpVar[val] = ((AnteriorFunction) tmpVar[val]).variable;
-				} else {
-					ok[val] = true;
-				}
-			}
-		}
-
-		if (ok[0] == true && ok[1] == true) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Multiplication) {
-			final FunctionTwoValues f = (FunctionTwoValues) o;
-			if (variable1.equals(f.variable1) && variable2.equals(f.variable2)) {
+			final FunctionOperator f = (FunctionOperator) o;
+			if (parameter1.equals(f.getParameter1()) && parameter2.equals(f.getParameter2())) {
 				return true;
-			} else if (variable1.equals(f.variable2) && variable2.equals(f.variable1)) {
+			} else if (parameter1.equals(f.getParameter2()) && parameter2.equals(f.getParameter1())) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public Multiplication clone() {
+		return new Multiplication(mathContext, parameter1, parameter2);
+	}
+
+	@Override
+	public String toString() {
+		return "(" + parameter1.toString() + ")*(" + parameter2.toString() + ")";
 	}
 }

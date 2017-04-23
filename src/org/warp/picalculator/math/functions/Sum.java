@@ -1,14 +1,13 @@
 package org.warp.picalculator.math.functions;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.math.Calculator;
-import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule5;
 import org.warp.picalculator.math.rules.NumberRule7;
@@ -18,25 +17,15 @@ import org.warp.picalculator.math.rules.VariableRule2;
 import org.warp.picalculator.math.rules.VariableRule3;
 import org.warp.picalculator.math.rules.methods.SumMethod1;
 
-public class Sum extends FunctionTwoValues {
+public class Sum extends FunctionOperator {
 
-	public Sum(Calculator root, Function value1, Function value2) {
+	public Sum(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
 	}
 
 	@Override
-	protected Function NewInstance(Calculator root, Function value1, Function value2) {
-		return new Sum(root, value1, value2);
-	}
-
-	@Override
-	public String getSymbol() {
-		return MathematicalSymbols.SUM;
-	}
-
-	@Override
 	protected boolean isSolvable() {
-		if (variable1 instanceof Number & variable2 instanceof Number) {
+		if (parameter1 instanceof Number & parameter2 instanceof Number) {
 			return true;
 		}
 		if (SyntaxRule2.compare(this)) {
@@ -67,11 +56,11 @@ public class Sum extends FunctionTwoValues {
 	}
 
 	@Override
-	public ArrayList<Function> solve() throws Error {
-		if (variable1 == null || variable2 == null) {
+	public ObjectArrayList<Function> solve() throws Error {
+		if (parameter1 == null || parameter2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
-		ArrayList<Function> result = new ArrayList<>();
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (SyntaxRule2.compare(this)) {
 			result = SyntaxRule2.execute(this);
 		} else if (VariableRule1.compare(this)) {
@@ -88,61 +77,40 @@ public class Sum extends FunctionTwoValues {
 			result = NumberRule7.execute(this);
 		} else if (SumMethod1.compare(this)) {
 			result = SumMethod1.execute(this);
-		} else if (variable1.isSolved() & variable2.isSolved()) {
-			if ((root.getChild().equals(this))) {
-				if (((Number) variable1).term.compareTo(new BigDecimal(2)) == 0 && ((Number) variable2).term.compareTo(new BigDecimal(2)) == 0) {
-					result.add(new Joke(root, Joke.FISH));
+		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
+			if ((mathContext.getChild().equals(this))) {
+				if (((Number) parameter1).term.compareTo(new BigDecimal(2)) == 0 && ((Number) parameter2).term.compareTo(new BigDecimal(2)) == 0) {
+					result.add(new Joke(mathContext, Joke.FISH));
 					return result;
-				} else if (((Number) variable1).term.compareTo(new BigDecimal(20)) == 0 && ((Number) variable2).term.compareTo(new BigDecimal(20)) == 0) {
-					result.add(new Joke(root, Joke.TORNADO));
+				} else if (((Number) parameter1).term.compareTo(new BigDecimal(20)) == 0 && ((Number) parameter2).term.compareTo(new BigDecimal(20)) == 0) {
+					result.add(new Joke(mathContext, Joke.TORNADO));
 					return result;
-				} else if (((Number) variable1).term.compareTo(new BigDecimal(29)) == 0 && ((Number) variable2).term.compareTo(new BigDecimal(29)) == 0) {
-					result.add(new Joke(root, Joke.SHARKNADO));
+				} else if (((Number) parameter1).term.compareTo(new BigDecimal(29)) == 0 && ((Number) parameter2).term.compareTo(new BigDecimal(29)) == 0) {
+					result.add(new Joke(mathContext, Joke.SHARKNADO));
 					return result;
 				}
 			}
-			result.add(((Number) variable1).add((Number) variable2));
+			result.add(((Number) parameter1).add((Number) parameter2));
 		}
 		return result;
 	}
 
 	@Override
-	public void generateGraphics() {
-		variable1.setSmall(small);
-		variable1.generateGraphics();
-
-		variable2.setSmall(small);
-		variable2.generateGraphics();
-
-		width = calcWidth();
-		height = calcHeight();
-		line = calcLine();
-	}
-
-	@Override
-	public int getWidth() {
-		return width;
-	}
-
-	@Override
-	protected int calcWidth() {
-		int dx = 0;
-		dx += variable1.getWidth();
-		dx += 1;
-		dx += Utils.getFont(small).getStringWidth(getSymbol());
-		return dx += variable2.getWidth();
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Sum) {
-			final FunctionTwoValues f = (FunctionTwoValues) o;
-			if (variable1.equals(f.variable1) && variable2.equals(f.variable2)) {
+			final FunctionOperator f = (FunctionOperator) o;
+			if (parameter1.equals(f.getParameter1()) && parameter2.equals(f.getParameter2())) {
 				return true;
-			} else if (variable1.equals(f.variable2) && variable2.equals(f.variable1)) {
+			} else if (parameter1.equals(f.getParameter2()) && parameter2.equals(f.getParameter1())) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+	@Override
+	public Sum clone() {
+		return new Sum(mathContext, parameter1, parameter2);
+	}
+
 }

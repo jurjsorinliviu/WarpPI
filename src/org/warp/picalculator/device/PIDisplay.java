@@ -25,16 +25,6 @@ import org.warp.picalculator.device.graphicengine.RAWFont;
 import org.warp.picalculator.device.graphicengine.Screen;
 import com.pi4j.wiringpi.Gpio;
 
-/**
- * STB Truetype oversampling demo.
- *
- * <p>
- * This is a Java port of <a href=
- * "https://github.com/nothings/stb/blob/master/tests/oversample/main.c">https:/
- * /github
- * .com/nothings/stb/blob/master/tests/oversample/main.c</a>.
- * </p>
- */
 public final class PIDisplay {
 	public static PIDisplay INSTANCE;
 	private static float brightness;

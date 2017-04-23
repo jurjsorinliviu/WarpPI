@@ -1,12 +1,12 @@
 package org.warp.picalculator.math.rules;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Function;
-import org.warp.picalculator.math.functions.FunctionTwoValues;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Subtraction;
@@ -21,37 +21,31 @@ import org.warp.picalculator.math.functions.Sum;
  */
 public class VariableRule2 {
 
-	public static boolean compare(FunctionTwoValues fnc) {
-		if (fnc.getVariable1() instanceof Multiplication) {
-			final Multiplication m1 = (Multiplication) fnc.getVariable1();
-			if (m1.getVariable2().equals(fnc.getVariable2())) {
+	public static boolean compare(FunctionOperator fnc) {
+		if (fnc.getParameter1() instanceof Multiplication) {
+			final Multiplication m1 = (Multiplication) fnc.getParameter1();
+			if (m1.getParameter2().equals(fnc.getParameter2())) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public static ArrayList<Function> execute(FunctionTwoValues fnc) throws Error {
-		final Calculator root = fnc.getRoot();
-		final ArrayList<Function> result = new ArrayList<>();
-		final Multiplication m1 = (Multiplication) fnc.getVariable1();
-		final Function a = m1.getVariable1();
-		final Function x = fnc.getVariable2();
+	public static ObjectArrayList<Function> execute(FunctionOperator fnc) throws Error {
+		final MathContext root = fnc.getMathContext();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
+		final Multiplication m1 = (Multiplication) fnc.getParameter1();
+		final Function a = m1.getParameter1();
+		final Function x = fnc.getParameter2();
 
-		final Multiplication retm = new Multiplication(root, null, null);
-		final Expression rete = new Expression(root);
-
-		FunctionTwoValues rets;
+		FunctionOperator rets;
 		if (fnc instanceof Sum) {
-			rets = new Sum(root, null, null);
+			rets = new Sum(root, a, new Number(root, 1));
 		} else {
-			rets = new Subtraction(root, null, null);
+			rets = new Subtraction(root, a, new Number(root, 1));
 		}
-		rets.setVariable1(a);
-		rets.setVariable2(new Number(root, 1));
-		rete.addFunctionToEnd(rets);
-		retm.setVariable1(rete);
-		retm.setVariable2(x);
+		final Expression rete = new Expression(root, rets);
+		final Multiplication retm = new Multiplication(root, rete, x);
 		result.add(retm);
 		return result;
 	}

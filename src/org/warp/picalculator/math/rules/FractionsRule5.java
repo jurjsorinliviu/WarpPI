@@ -1,12 +1,12 @@
 package org.warp.picalculator.math.rules;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Calculator;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
 
@@ -21,8 +21,8 @@ public class FractionsRule5 {
 
 	public static boolean compare(Function f) {
 		final Power fnc = (Power) f;
-		if (fnc.getVariable1() instanceof Division && fnc.getVariable2() instanceof Number) {
-			final Number n2 = (Number) fnc.getVariable2();
+		if (fnc.getParameter1() instanceof Division && fnc.getParameter2() instanceof Number) {
+			final Number n2 = (Number) fnc.getParameter2();
 			if (n2.getTerm().compareTo(BigDecimal.ZERO) < 0) {
 				return true;
 			}
@@ -30,13 +30,13 @@ public class FractionsRule5 {
 		return false;
 	}
 
-	public static ArrayList<Function> execute(Function f) throws Error {
-		final Calculator root = f.getRoot();
-		final ArrayList<Function> result = new ArrayList<>();
+	public static ObjectArrayList<Function> execute(Function f) throws Error {
+		final MathContext root = f.getMathContext();
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final Power fnc = (Power) f;
-		final Function a = ((Division) fnc.getVariable1()).getVariable1();
-		final Function b = ((Division) fnc.getVariable1()).getVariable2();
-		final Function c = ((Number) fnc.getVariable2()).multiply(new Number(root, "-1"));
+		final Function a = ((Division) fnc.getParameter1()).getParameter1();
+		final Function b = ((Division) fnc.getParameter1()).getParameter2();
+		final Function c = ((Number) fnc.getParameter2()).multiply(new Number(root, "-1"));
 		final Division dv = new Division(root, b, a);
 		final Power pow = new Power(root, dv, c);
 		result.add(pow);

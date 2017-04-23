@@ -14,6 +14,9 @@ public class Main {
 	public static Main instance;
 	public static boolean haxMode = true;
 	public static String[] args;
+	public static final String calculatorName = "WarpPI";
+	public static final String calculatorNameLOWER = "warppi";
+	public static final String calculatorNameUPPER = "WARPPI";
 
 	public Main(String[] args) throws InterruptedException {
 		this(new LoadingScreen(), args);
@@ -23,7 +26,7 @@ public class Main {
 		instance = this;
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Thread.currentThread().setName("Main thread");
-		this.args = args;
+		Main.args = args;
 		beforeStart();
 		new DisplayManager(screen);
 		Utils.debug.println("Shutdown...");

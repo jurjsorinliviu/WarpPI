@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.warp.picalculator.Main;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine.CPURenderer;
@@ -21,7 +20,7 @@ public class CPUSkin implements Skin {
 
 	@Override
 	public void load(String file) throws IOException {
-		final BufferedImage img = ImageIO.read(Main.instance.getClass().getResource("/"+file));
+		final BufferedImage img = ImageIO.read(this.getClass().getResource("/" + file));
 		skinData = getMatrixOfImage(img);
 		skinSize = new int[] { img.getWidth(), img.getHeight() };
 	}

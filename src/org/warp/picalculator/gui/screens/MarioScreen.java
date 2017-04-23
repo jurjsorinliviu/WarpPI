@@ -1,9 +1,6 @@
 package org.warp.picalculator.gui.screens;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.device.Keyboard;
@@ -37,7 +34,7 @@ public class MarioScreen extends Screen {
 		try {
 			skin = DisplayManager.engine.loadSkin("marioskin.png");
 			groundskin = DisplayManager.engine.loadSkin("marioground.png");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -45,7 +42,7 @@ public class MarioScreen extends Screen {
 	@Override
 	public void created() throws InterruptedException {
 		if (!errored) {
-			
+
 		}
 	}
 
