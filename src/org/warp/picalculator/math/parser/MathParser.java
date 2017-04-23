@@ -125,15 +125,11 @@ public class MathParser {
 			}
 			if (func instanceof Power) {
 				BlockPower bp = new BlockPower();
-				BlockContainer nc = bp.getNumberContainer();
 				BlockContainer ec = bp.getExponentContainer();
-				for (Block b : sub1) {
-					nc.appendBlockUnsafe(b);
-				}
+				result.addAll(sub1);
 				for (Block b : sub2) {
 					ec.appendBlockUnsafe(b);
 				}
-				nc.recomputeDimensions();
 				ec.recomputeDimensions();
 				bp.recomputeDimensions();
 				result.add(bp);
@@ -172,17 +168,14 @@ public class MathParser {
 			String numberString = numb.toString();
 			if (numberString.contains("ℯ℮")) {
 				String[] numberParts = numberString.split("ℯ℮", 2);
-				numberParts[0]+="ℯ℮";
 				BlockPower bp = new BlockExponentialNotation();
-				BlockContainer bpnc = bp.getNumberContainer();
 				BlockContainer bpec = bp.getExponentContainer();
 				for (char c : numberParts[0].toCharArray()) {
-					bpnc.appendBlockUnsafe(new BlockChar(c));
+					result.add(new BlockChar(c));
 				}
 				for (char c : numberParts[1].toCharArray()) {
 					bpec.appendBlockUnsafe(new BlockChar(c));
-				}
-				bpnc.recomputeDimensions();
+				};
 				bpec.recomputeDimensions();
 				bp.recomputeDimensions();
 				result.add(bp);
@@ -241,9 +234,8 @@ public class MathParser {
 				break;
 			case BlockPower.CLASS_ID:
 				final BlockPower blp = (BlockPower) block;
-				final Function nmb = parseContainer(context, blp.getNumberContainer().getContent());
 				final Function exp = parseContainer(context, blp.getExponentContainer().getContent());
-				result = new FeaturePower(nmb, exp);
+				result = new FeaturePower(exp);
 				break;
 			default:
 				throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known BLock");
@@ -385,7 +377,7 @@ public class MathParser {
 	private static ObjectArrayList<Function> makeFunctions(MathContext context, ObjectArrayList<Feature> features)
 			throws Error {
 		final ObjectArrayList<Function> process = new ObjectArrayList<>();
-
+		
 		for (final Feature f : features) {
 			if (f instanceof FeatureDivision) {
 				process.add(new Division(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
@@ -396,7 +388,12 @@ public class MathParser {
 			} else if (f instanceof FeatureSum) {
 				process.add(new Sum(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
 			} else if (f instanceof FeaturePower) {
-				process.add(new Power(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
+				if (process.isEmpty()) {
+					throw new Error(Errors.SYNTAX_ERROR, "There is a power at the beginning of the expression!");
+				} else {
+					Function prec = process.remove(process.size()-1);
+					process.add(new Power(context, prec, (Function) ((FeatureSingle) f).getChild()));
+				}
 			} else if (f instanceof FeatureSquareRoot) {
 				process.add(new RootSquare(context, (Function) ((FeatureSingle) f).getChild()));
 			} else if (f instanceof FeatureParenthesis) {

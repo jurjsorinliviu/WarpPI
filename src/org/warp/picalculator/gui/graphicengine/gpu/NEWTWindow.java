@@ -287,8 +287,8 @@ class NEWTWindow implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
-		disp.size[0] = Utils.debugOn ? width / 2 : width;
-		disp.size[1] = Utils.debugOn ? height / 2 : height;
+		disp.size[0] = (Utils.debugOn & Utils.debugWindow2x) ? width / 2 : width;
+		disp.size[1] = (Utils.debugOn & Utils.debugWindow2x) ? height / 2 : height;
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 		float max_wh, min_wh;
 		if (width == 0) {
@@ -310,7 +310,7 @@ class NEWTWindow implements GLEventListener {
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		gl.glOrtho(0.0, Utils.debugOn ? width / 2 : width, Utils.debugOn ? height / 2 : height, 0.0, -1, 1);
+		gl.glOrtho(0.0, (Utils.debugOn & Utils.debugWindow2x) ? width / 2 : width, (Utils.debugOn & Utils.debugWindow2x) ? height / 2 : height, 0.0, -1, 1);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();

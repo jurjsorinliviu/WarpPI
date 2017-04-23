@@ -49,6 +49,7 @@ public class Utils {
 
 	public static boolean debugOn;
 	public static boolean debugThirdScreen;
+	public static boolean debugWindow2x;
 
 	public static final class DebugStream extends StringWriter {
 

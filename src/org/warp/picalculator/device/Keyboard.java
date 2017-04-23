@@ -733,7 +733,7 @@ public class Keyboard {
 						refresh = true;
 						break;
 					case BRIGHTNESS_CYCLE_REVERSE:
-						DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
+//						DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
 						DisplayManager.cycleBrightness(true);
 						refresh = true;
 						break;

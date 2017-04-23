@@ -2,6 +2,7 @@ package org.warp.picalculator.gui.screens;
 
 import java.io.IOException;
 
+import org.warp.picalculator.Main;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
