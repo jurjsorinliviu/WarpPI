@@ -32,7 +32,7 @@ public class Main {
 		Utils.debug.println("Shutdown...");
 		beforeShutdown();
 		Utils.debug.println("");
-		Utils.debug.println("Closed");
+		Utils.debug.println("Closed.");
 		System.exit(0);
 	}
 
