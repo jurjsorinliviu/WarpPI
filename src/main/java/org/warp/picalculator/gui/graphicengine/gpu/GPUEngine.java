@@ -125,8 +125,15 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public boolean isSupported() {
-		final boolean available = GLProfile.isAvailable(GLProfile.GL2ES1);
-		if (!available) {
+		boolean available = false;
+		boolean errored = false;
+		try {
+			available = GLProfile.isAvailable(GLProfile.GL2ES1);
+        } catch (Exception ex) {
+        	errored = true;
+        	System.err.println(ex.getMessage());
+        }
+		if (!available && !errored) {
 			System.err.println(GLProfile.glAvailabilityToString());
 		}
 		return available;

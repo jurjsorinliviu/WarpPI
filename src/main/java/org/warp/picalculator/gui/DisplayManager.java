@@ -1,6 +1,7 @@
 package org.warp.picalculator.gui;
 
 import java.io.IOException;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.warp.picalculator.Main;
@@ -11,6 +12,7 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
+import org.warp.picalculator.gui.graphicengine.headless.HeadlessEngine;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.screens.Screen;
@@ -81,6 +83,10 @@ public final class DisplayManager implements RenderingLoop {
 		if (d.isSupported()) {
 			Utils.debug.println("Using CPU Graphic Engine");
 			return d;
+		}
+		d = new HeadlessEngine();
+		if (d.isSupported()) {
+			System.err.println("Using Headless Engine! This is a problem! No other graphic engines are available.");
 		}
 		throw new UnsupportedOperationException("No graphic engines available.");
 	}
