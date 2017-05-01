@@ -1,12 +1,4 @@
 eclipse.preferences.version=1
-encoding//src/org/nevec/rjm/BigSurd.java=UTF-8
-encoding//src/org/nevec/rjm/BigSurdVec.java=UTF-8
-encoding//src/org/warp/picalculator/Main.java=UTF-8
-encoding//src/org/warp/picalculator/gui/graphicengine/cpu/CPUEngine.java=UTF-8
-encoding//src/org/warp/picalculator/gui/screens/MathInputScreen.java=UTF-8
-encoding//src/org/warp/picalculator/math/MathematicalSymbols.java=UTF-8
-encoding//src/org/warp/picalculator/math/functions/Expression.java=UTF-8
-encoding//src/org/warp/picalculator/math/functions/Root.java=UTF-8
-encoding//src/org/warp/picalculator/math/functions/RootSquare.java=UTF-8
-encoding//src/org/warp/picalculator/math/functions/Sum.java=UTF-8
-encoding/<project>=UTF-8
+encoding//src/main/java=UTF-8
+encoding//src/main/java/org/warp/picalculator/gui/expression/blocks/BlockParenthesis.java=UTF-8
+encoding//src/main/java/org/warp/picalculator/math/MathematicalSymbols.java=UTF-8
