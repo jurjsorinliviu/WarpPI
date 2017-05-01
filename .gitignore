@@ -4,20 +4,11 @@
 .mtj.tmp/
 
 # Package Files #
-*-test*.jar
-*-sources*.jar
-*-src*.jar
-*javadoc*.jar
-*i586*.jar
-*-android*.jar
-*-mobile*.jar
-*-solaris*.jar
-*oculusvr*.jar
-*noawt*.jar
-joal*.jar
-jocl*.jar
+*.jar
 *.war
 *.ear
+
+/target/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
