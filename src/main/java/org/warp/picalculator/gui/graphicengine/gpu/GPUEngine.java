@@ -125,6 +125,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public boolean isSupported() {
+		if (true) return false;
 		boolean available = false;
 		boolean errored = false;
 		try {

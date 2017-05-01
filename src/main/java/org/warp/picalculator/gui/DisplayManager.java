@@ -87,6 +87,7 @@ public final class DisplayManager implements RenderingLoop {
 		d = new HeadlessEngine();
 		if (d.isSupported()) {
 			System.err.println("Using Headless Engine! This is a problem! No other graphic engines are available.");
+			return d;
 		}
 		throw new UnsupportedOperationException("No graphic engines available.");
 	}
