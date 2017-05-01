@@ -5,6 +5,7 @@ import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.screens.LoadingScreen;
 import org.warp.picalculator.gui.screens.Screen;
 
+import com.pi4j.system.SystemInfo.BoardType;
 import com.pi4j.wiringpi.Gpio;
 
 public class Main {
@@ -37,7 +38,8 @@ public class Main {
 	}
 
 	public void beforeStart() {
-		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args)) {
+		boolean isRaspi = false; try {isRaspi = com.pi4j.system.SystemInfo.getBoardType() != BoardType.UNKNOWN;} catch (Exception e) {}
+		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args) && isRaspi) {
 			Gpio.wiringPiSetupPhys();
 			Gpio.pinMode(12, Gpio.PWM_OUTPUT);
 		} else {
