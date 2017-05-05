@@ -43,6 +43,11 @@ public class BlockPower extends Block {
 		}
 		return removed;
 	}
+	
+	@Override
+	public Block getBlock(Caret caret) {
+		return containerExponent.getBlock(caret);
+	}
 
 	@Override
 	public void recomputeDimensions() {

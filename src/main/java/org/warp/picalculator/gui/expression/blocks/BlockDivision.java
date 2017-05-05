@@ -26,6 +26,7 @@ public class BlockDivision extends Block {
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(BlockContainer.getDefaultColor());
 		containerUp.draw(ge, r, x + 1 + paddingLeftUpper, y, caret);
+		r.glColor(BlockContainer.getDefaultColor());
 		r.glDrawLine(x, y + h1 + 1, x + width - 1, y + h1 + 1);
 		containerDown.draw(ge, r, x + 1 + paddingLeftLower, y + h1 + 3, caret);
 	}
@@ -50,6 +51,17 @@ public class BlockDivision extends Block {
 			recomputeDimensions();
 		}
 		return removed;
+	}
+
+	@Override
+	public Block getBlock(Caret caret) {
+		Block bl = null;
+		bl = containerUp.getBlock(caret);
+		if (bl != null) {
+			return bl;
+		}
+		bl = containerDown.getBlock(caret);
+		return bl;
 	}
 
 	@Override

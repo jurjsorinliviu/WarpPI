@@ -125,6 +125,7 @@ public class BlockContainer implements GraphicalElement {
 		}
 
 		if (withBorder && content.size() == 0) {
+			r.glColor(BlockContainer.getDefaultColor());
 			r.glDrawLine(x + paddingX, y, x + paddingX + width - 1, y);
 			r.glDrawLine(x + paddingX, y, x + paddingX, y + height - 1);
 			r.glDrawLine(x + paddingX + width - 1, y, x + paddingX + width - 1, y + height - 1);
@@ -188,6 +189,28 @@ public class BlockContainer implements GraphicalElement {
 			recomputeDimensions();
 		}
 		return removed;
+	}
+
+	public Block getBlock(Caret caret) {
+		boolean found = false;
+		Block block = null;
+		
+		int pos = 0;
+		for (final Block b : content) {
+			caret.skip(1);
+			pos++;
+			final int deltaCaret = caret.getRemaining();
+			
+			block= b.getBlock(caret);
+			found = found | (block != null);
+			if (caret.getRemaining() == 0 || (found == false && deltaCaret >= 0 && caret.getRemaining() < 0)) {
+				block = getBlockAt(pos - 1);
+				found = true;
+				return block;
+			}
+		}
+		caret.skip(1);
+		return block;
 	}
 
 	@Override
@@ -282,6 +305,8 @@ public class BlockContainer implements GraphicalElement {
 		if (caret.getState() == CaretState.VISIBLE_ON) {
 			r.glColor(getDefaultColor());
 			r.glFillColor(x, y, small?2:3, height);
+			caret.setLastLocation(x, y);
+			caret.setLastSize(small?2:3, height);
 		}
 	}
 

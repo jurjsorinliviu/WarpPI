@@ -471,7 +471,6 @@ public class CPUEngine implements GraphicEngine {
 
 	@Override
 	public boolean isSupported() {
-		if (true) return false;
 		return GraphicsEnvironment.isHeadless() == false;
 	}
 

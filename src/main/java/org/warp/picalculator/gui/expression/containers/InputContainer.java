@@ -3,9 +3,11 @@ package org.warp.picalculator.gui.expression.containers;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.warp.picalculator.device.KeyboardEventListener;
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
+import org.warp.picalculator.gui.expression.ExtraMenu;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.layouts.InputLayout;
@@ -23,6 +25,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	private float caretTime;
 	private int maxPosition = 0;
 	private boolean parsed = false;
+	private ExtraMenu<?> extra;
 
 	public InputContainer() {
 		caret = new Caret(CaretState.VISIBLE_ON, 0);
@@ -51,12 +54,13 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		}
 		caretTime = 0;
 		caret.turnOn();
+		closeExtra();
 	}
 
 	public void typeChar(String c) {
 		typeChar(c.charAt(0));
 	}
-
+	
 	public void del() {
 		caret.resetRemaining();
 		if (root.delBlock(caret)) {
@@ -68,6 +72,13 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		}
 		caret.turnOn();
 		caretTime = 0;
+		closeExtra();
+	}
+
+	
+	public Block getSelectedBlock() {
+		caret.resetRemaining();
+		return root.getBlock(caret);
 	}
 
 	public void moveLeft() {
@@ -79,6 +90,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		}
 		caret.turnOn();
 		caretTime = 0;
+		closeExtra();
 	}
 
 	public void moveRight() {
@@ -90,6 +102,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		}
 		caret.turnOn();
 		caretTime = 0;
+		closeExtra();
 	}
 
 	@Override
@@ -128,6 +141,10 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 				somethingChanged = true;
 			}
 		}
+		
+		if (extra != null) {
+			somethingChanged = somethingChanged|extra.beforeRender(delta, caret);
+		}
 
 		return somethingChanged;
 	}
@@ -146,6 +163,9 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	public void draw(GraphicEngine ge, Renderer r, int x, int y) {
 		caret.resetRemaining();
 		root.draw(ge, r, x, y, caret);
+		if (extra != null) {
+			extra.draw(ge, r, caret);
+		}
 	}
 
 	public void clear() {
@@ -169,6 +189,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		}
 		caret.turnOn();
 		caretTime = 0;
+		closeExtra();
 	}
 
 	public void setParsed(boolean parsed) {
@@ -187,4 +208,33 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	public ObjectArrayList<Block> getContent() {
 		return root.getContent();
 	}
+
+	public void toggleExtra() {
+		if (extra == null) {
+			Block selectedBlock = getSelectedBlock();
+			if (selectedBlock != null) {
+				extra = selectedBlock.getExtraMenu();
+				extra.open();
+			}
+		} else {
+			extra.close();
+			extra = null;
+		}
+	}
+	
+	public void closeExtra() {
+		if (extra != null) {
+			extra.close();
+			extra = null;
+		}
+	}
+	
+	public boolean isExtraOpened() {
+		return extra != null;
+	}
+	
+	public KeyboardEventListener getExtraKeyboardEventListener() {
+		return extra;
+	}
+
 }

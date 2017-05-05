@@ -242,11 +242,31 @@ class NEWTWindow implements GLEventListener {
 						row = 2;
 						col = 3;
 						Keyboard.debugKeysDown[row - 1][col - 1] = false;
+						break;
 					case KeyEvent.VK_RIGHT:
 						//RIGHT
 						row = 2;
 						col = 5;
 						Keyboard.debugKeysDown[row - 1][col - 1] = false;
+						break;
+					case KeyEvent.VK_UP:
+						//UP
+						row = 1;
+						col = 4;
+						Keyboard.debugKeysDown[row - 1][col - 1] = false;
+						break;
+					case KeyEvent.VK_DOWN:
+						//Down
+						row = 3;
+						col = 4;
+						Keyboard.debugKeysDown[row - 1][col - 1] = false;
+						break;
+					case (short) 12:
+						//Down
+						row = 2;
+						col = 4;
+						Keyboard.debugKeysDown[row - 1][col - 1] = false;
+						break;
 				}
 			}
 		});

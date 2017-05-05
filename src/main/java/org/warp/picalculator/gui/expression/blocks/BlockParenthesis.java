@@ -53,6 +53,11 @@ public class BlockParenthesis extends Block {
 	}
 
 	@Override
+	public Block getBlock(Caret caret) {
+		return containerNumber.getBlock(caret);
+	}
+
+	@Override
 	public void recomputeDimensions() {
 		chw = BlockContainer.getDefaultCharWidth(small);
 		chh = BlockContainer.getDefaultCharHeight(small);

@@ -2,6 +2,7 @@ package org.warp.picalculator.gui.expression.blocks;
 
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
+import org.warp.picalculator.gui.expression.ExtraMenu;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
@@ -27,6 +28,8 @@ public abstract class Block implements GraphicalElement {
 	public abstract boolean putBlock(Caret caret, Block newBlock);
 
 	public abstract boolean delBlock(Caret caret);
+
+	public abstract Block getBlock(Caret caret);
 
 	@Override
 	public abstract void recomputeDimensions();
@@ -55,4 +58,8 @@ public abstract class Block implements GraphicalElement {
 	public abstract void setSmall(boolean small);
 
 	public abstract int getClassID();
+
+	public ExtraMenu getExtraMenu() {
+		return null;
+	}
 }

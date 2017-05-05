@@ -344,6 +344,41 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case com.jogamp.newt.event.KeyEvent.VK_UP:
+			case KeyEvent.VK_UP:
+				//UP
+				row = 1;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = true;
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.UP);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case com.jogamp.newt.event.KeyEvent.VK_DOWN:
+			case KeyEvent.VK_DOWN:
+				//DOWN
+				row = 3;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = true;
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.DOWN);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
+			case (short) 12:
+				//DOWN
+				row = 2;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = true;
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.OK);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
 			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD4:
 			case KeyEvent.VK_NUMPAD4:
 				if (!Keyboard.shift && !Keyboard.alpha) {
@@ -607,6 +642,30 @@ public class Keyboard {
 				keyPressed(Key.NONE);
 			} else {
 				keyPressed(Key.RIGHT);
+			}
+		} else if (row == 1 && col == 4) {
+			if (shift) {
+				keyPressed(Key.NONE);
+			} else if (alpha) {
+				keyPressed(Key.NONE);
+			} else {
+				keyPressed(Key.UP);
+			}
+		} else if (row == 2 && col == 4) {
+			if (shift) {
+				keyPressed(Key.NONE);
+			} else if (alpha) {
+				keyPressed(Key.NONE);
+			} else {
+				keyPressed(Key.OK);
+			}
+		} else if (row == 3 && col == 4) {
+			if (shift) {
+				keyPressed(Key.NONE);
+			} else if (alpha) {
+				keyPressed(Key.NONE);
+			} else {
+				keyPressed(Key.DOWN);
 			}
 		} else if (row == 3 && col == 4) {
 			if (shift) {

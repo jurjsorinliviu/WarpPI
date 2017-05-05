@@ -33,6 +33,11 @@ public class BlockChar extends Block {
 	}
 
 	@Override
+	public Block getBlock(Caret caret) {
+		return null;
+	}
+
+	@Override
 	public void recomputeDimensions() {
 		width = BlockContainer.getDefaultCharWidth(small);
 		height = BlockContainer.getDefaultCharHeight(small);
