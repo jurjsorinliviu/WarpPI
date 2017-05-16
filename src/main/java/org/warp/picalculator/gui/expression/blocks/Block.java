@@ -58,8 +58,8 @@ public abstract class Block implements GraphicalElement {
 	public abstract void setSmall(boolean small);
 
 	public abstract int getClassID();
-
-	public ExtraMenu getExtraMenu() {
+	
+	public ExtraMenu<?> getExtraMenu() {
 		return null;
 	}
 }

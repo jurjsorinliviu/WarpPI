@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -200,7 +201,6 @@ public class GPURenderer implements Renderer {
 	}
 
 	static BufferedImage openTexture(String file) throws GLException, IOException {
-		final ByteArrayOutputStream os = new ByteArrayOutputStream();
 		return ImageIO.read(GPURenderer.class.getClassLoader().getResource(file));
 	}
 

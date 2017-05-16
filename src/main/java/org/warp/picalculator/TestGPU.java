@@ -2,15 +2,16 @@ package org.warp.picalculator;
 
 import java.io.IOException;
 
-import org.warp.picalculator.gui.graphicengine.GraphicEngine;
-import org.warp.picalculator.gui.graphicengine.Renderer;
-import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.KeyboardEventListener;
+import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.containers.NormalInputContainer;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
 import org.warp.picalculator.math.MathContext;
@@ -109,6 +110,8 @@ public class TestGPU {
 						} catch (final Error e) {
 							e.printStackTrace();
 						}
+					default:
+						break;
 				}
 				return false;
 
@@ -121,7 +124,7 @@ public class TestGPU {
 			}
 		});
 
-		final Scene s = new Scene(d);
+		new Scene(d);
 	}
 
 	private static NormalInputContainer c = null;
@@ -146,7 +149,7 @@ public class TestGPU {
 			BlockContainer.initializeFonts(d.loadFont("ex"), d.loadFont("big"));
 
 			//New expression framework test
-			c = new NormalInputContainer(false, 0, 200);
+			c = new NormalInputContainer(new InputContext(), false, 0, 200);
 			c.typeChar(MathematicalSymbols.DIVISION);
 			c.typeChar('5');
 			c.typeChar(MathematicalSymbols.MULTIPLICATION);

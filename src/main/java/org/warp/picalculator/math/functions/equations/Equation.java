@@ -1,19 +1,20 @@
 package org.warp.picalculator.math.functions.equations;
 
 import java.math.BigDecimal;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.SolveMethod;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Subtraction;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Equation extends FunctionOperator {
 

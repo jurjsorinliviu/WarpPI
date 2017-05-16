@@ -1,12 +1,12 @@
 package org.warp.picalculator.math.rules;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Negative;
 import org.warp.picalculator.math.functions.Subtraction;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Expand rule<br>
@@ -36,8 +36,7 @@ public class ExpandRule5 {
 
 	public static ObjectArrayList<Function> execute(Function f) throws Error {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
-		final Function a = null;
-
+		
 		if (f instanceof Negative) {
 			final Negative fnc = (Negative) f;
 			result.add(((Negative) ((Expression) fnc.getParameter()).getParameter(0)).getParameter());

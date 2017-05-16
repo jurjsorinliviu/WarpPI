@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
 import com.jogamp.opengl.GLProfile;
@@ -125,6 +125,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public boolean isSupported() {
+		if (Utils.debugOn) return false;
 		boolean available = false;
 		boolean errored = false;
 		try {

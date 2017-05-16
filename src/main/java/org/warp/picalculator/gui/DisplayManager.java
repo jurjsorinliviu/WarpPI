@@ -2,23 +2,23 @@ package org.warp.picalculator.gui;
 
 import java.io.IOException;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
-import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
+import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
 import org.warp.picalculator.gui.graphicengine.headless256.Headless8Engine;
 import org.warp.picalculator.gui.graphicengine.headless8.Headless256Engine;
-import org.warp.picalculator.gui.graphicengine.BinaryFont;
-import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.screens.Screen;
 
 import com.pi4j.wiringpi.Gpio;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class DisplayManager implements RenderingLoop {
 	public static DisplayManager INSTANCE;

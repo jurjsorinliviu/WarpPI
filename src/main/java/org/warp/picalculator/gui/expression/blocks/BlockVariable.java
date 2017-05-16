@@ -4,31 +4,76 @@ import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.ExtraMenu;
+import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
-import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
 
 public class BlockVariable extends Block {
 
 	public static final int CLASS_ID = 0x00000007;
 
+	private InputContext ic;
 	private final char ch;
 	private final VariableMenu menu;
 	private V_TYPE type;
 	private int color;
+	private boolean mustRefresh = true;
+	private BlockVariable typeDirtyID;
 
-	public BlockVariable(char ch) {
+	public BlockVariable(InputContext ic, char ch) {
+		this.ic = ic;
 		this.ch = ch;
 		this.menu = new VariableMenu(this);
 		this.type = V_TYPE.UNKNOWN;
 		this.color = 0xFF304ffe;
+		this.typeDirtyID = this;
+		retrieveValue();
 		recomputeDimensions();
+	}
+
+	private void retrieveValue() {
+		type = ic.variableTypes.getOrDefault(ch, V_TYPE.UNKNOWN);
+		typeDirtyID = ic.variableTypeDirtyID;
+		menu.mustRefreshMenu = true;
+		mustRefresh = true;
+		System.out.println("retrieve:"+type.toString());
+	}
+
+	public void pushValue() {
+		if (ic.variableTypeDirtyID != this) {
+			typeDirtyID = this;
+			ic.variableTypeDirtyID = this;
+		} else {
+			typeDirtyID = null;
+			ic.variableTypeDirtyID = null;
+		}
+		ic.variableTypes.put(ch, type);
+		System.out.println("push:"+type.toString());
 	}
 
 	@Override
 	public void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret) {
+		if(ic.variableTypeDirtyID != typeDirtyID) {
+			retrieveValue();
+		}
+		if (mustRefresh) {
+			mustRefresh = false;
+			switch (type) {
+				case UNKNOWN:
+					color = 0xFF304ffe;
+					break;
+				case COEFFICIENT:
+					color = 0xFF35913F;
+					break;
+				case SOLUTION:
+				default:
+					color = 0xFFf50057;
+					break;
+			}
+		}
+		
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(color);
 		r.glDrawCharLeft(x, y, ch);
@@ -83,9 +128,8 @@ public class BlockVariable extends Block {
 
 	public class VariableMenu extends ExtraMenu<BlockVariable> {
 
-		boolean mustRefresh = true;
 		String text = "";
-		private int color;
+		boolean mustRefreshMenu = true;
 		
 		public VariableMenu(BlockVariable var) {
 			super(var);
@@ -100,7 +144,6 @@ public class BlockVariable extends Block {
 
 		@Override
 		public void close() {
-			
 		}
 
 		@Override
@@ -141,8 +184,10 @@ public class BlockVariable extends Block {
 				default:
 					return false;
 			}
-			
+
+			block.pushValue();
 			mustRefresh = true;
+			mustRefreshMenu = true;
 			return true;
 		}
 
@@ -153,25 +198,14 @@ public class BlockVariable extends Block {
 
 		@Override
 		public boolean beforeRender(float delta, Caret caret) {
-			if (super.beforeRender(delta, caret)||mustRefresh) {
-				mustRefresh = false;
-				switch (block.type) {
-					case UNKNOWN:
-						color = 0xFF304ffe;
-						break;
-					case COEFFICIENT:
-						color = 0xFFf50057;
-						break;
-					case SOLUTION:
-					default:
-						color = 0xFF64dd17;
-						break;
-				}
-				block.color = color;
+			if (mustRefreshMenu) {
+				mustRefreshMenu = false;
 				text = block.type.toString();
 				BinaryFont f = BlockContainer.getDefaultFont(true);
 				width = 2+f.getStringWidth(text)+2;
 				height = 2+f.getCharacterHeight()+2;
+				
+				super.beforeRender(delta, caret);
 				return true;
 			}
 			return false;
@@ -181,9 +215,29 @@ public class BlockVariable extends Block {
 		public void draw(GraphicEngine ge, Renderer r, Caret caret) {
 			BlockContainer.getDefaultFont(true).use(ge);
 			r.glColor3f(1.0f, 1.0f, 1.0f);
-			r.glFillColor(location[0], location[1], width, height);
+			DisplayManager.guiSkin.use(ge);
+			int popupX = location[0];
+			int popupY = location[1];
+			if (popupX < 0) {
+				popupX = 0;
+			}
+			if (popupY < 0) {
+				popupY = 0;
+			}
+			int[] screenSize = ge.getSize();
+			if (popupX+width >= screenSize[0]) {
+				popupX=screenSize[0]-width-1;
+			}
+			if (popupY+height >= screenSize[1]) {
+				popupY=screenSize[1]-height-1;
+			}
+			r.glFillRect(location[0]+width/2-5, popupY+1, 10, 5, 163, 16, 10, 5);
+			
+			r.glFillColor(popupX, popupY+5, width, height);
+			r.glFillColor(popupX+2, popupY+4, width-4, height+2);
+			r.glFillColor(popupX-1, popupY+7, width+2, height-4);
 			r.glColor(color);
-			r.glDrawStringCenter(location[0]+width/2, location[1]+2, text);
+			r.glDrawStringCenter(popupX+width/2, popupY+2+5, text);
 		}
 		
 	}

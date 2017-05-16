@@ -10,8 +10,6 @@ public class LoadingScreen extends Screen {
 	public float endLoading;
 	boolean mustRefresh = true;
 	public float loadingTextTranslation = 0.0f;
-	private boolean loading;
-	private static final String titleString = "Andrea Cavalli's Algebraic Calculator";
 
 	public LoadingScreen() {
 		super();
@@ -32,7 +30,6 @@ public class LoadingScreen extends Screen {
 
 		endLoading += dt;
 		if (endLoading >= 5f) {
-			loading = false;
 			DisplayManager.INSTANCE.setScreen(new MathInputScreen());
 		}
 		mustRefresh = true;

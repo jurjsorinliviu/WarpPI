@@ -1,13 +1,13 @@
 package org.warp.picalculator.gui.expression.blocks;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class BlockContainer implements GraphicalElement {
 

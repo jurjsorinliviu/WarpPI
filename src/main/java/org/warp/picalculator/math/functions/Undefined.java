@@ -3,8 +3,8 @@ package org.warp.picalculator.math.functions;
 import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
 
 public class Undefined implements Function {
 

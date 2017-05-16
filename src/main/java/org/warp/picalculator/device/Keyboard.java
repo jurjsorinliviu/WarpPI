@@ -8,7 +8,6 @@ import org.warp.picalculator.device.chip.SerialToParallel;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.GUIErrorMessage;
 import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
-import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.gui.screens.Screen;
 
 import com.pi4j.wiringpi.Gpio;

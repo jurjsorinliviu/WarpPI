@@ -28,28 +28,27 @@
 
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES1;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.fixedfunc.GLLightingFunc;
-import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
-import com.jogamp.opengl.fixedfunc.GLPointerFunc;
-import com.jogamp.opengl.GLCapabilities;
+import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.gui.DisplayManager;
+
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.event.WindowListener;
 import com.jogamp.newt.event.WindowUpdateEvent;
 import com.jogamp.newt.opengl.GLWindow;
-
-import com.jogamp.opengl.util.*;
-
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.Keyboard.Key;
-import org.warp.picalculator.gui.DisplayManager;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES1;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.fixedfunc.GLLightingFunc;
+import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
+import com.jogamp.opengl.fixedfunc.GLPointerFunc;
+import com.jogamp.opengl.util.Animator;
 
 /**
  *
@@ -310,19 +309,11 @@ class NEWTWindow implements GLEventListener {
 		disp.size[0] = (Utils.debugOn & Utils.debugWindow2x) ? width / 2 : width;
 		disp.size[1] = (Utils.debugOn & Utils.debugWindow2x) ? height / 2 : height;
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
-		float max_wh, min_wh;
 		if (width == 0) {
 			width = 1;
 		}
 		if (height == 0) {
 			height = 1;
-		}
-		if (width > height) {
-			max_wh = width;
-			min_wh = height;
-		} else {
-			max_wh = height;
-			min_wh = width;
 		}
 
 		gl.glViewport(0, 0, width, height);
@@ -362,7 +353,7 @@ class NEWTWindow implements GLEventListener {
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
 		System.out.println("cleanup");
-		final GL2ES1 gl = drawable.getGL().getGL2ES1();
+//		final GL2ES1 gl = drawable.getGL().getGL2ES1();
 		System.exit(0);
 	}
 

@@ -1,14 +1,12 @@
 package org.warp.picalculator.gui.graphicengine.headless256;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.logging.ConsoleHandler;
 
 import org.fusesource.jansi.AnsiConsole;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
-import org.warp.picalculator.gui.graphicengine.Skin;
 
 public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.GraphicEngine {
 
@@ -23,7 +21,7 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 	
 	@Override
 	public int[] getSize() {
-		ConsoleHandler ch = new ConsoleHandler();
+		new ConsoleHandler();
 		return new int[]{C_WIDTH, C_HEIGHT};
 	}
 

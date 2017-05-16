@@ -1,11 +1,9 @@
 package org.warp.picalculator.math.functions;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.ExponentRule16;
 import org.warp.picalculator.math.rules.FractionsRule14;
@@ -14,6 +12,8 @@ import org.warp.picalculator.math.rules.NumberRule2;
 import org.warp.picalculator.math.rules.NumberRule6;
 import org.warp.picalculator.math.rules.SyntaxRule1;
 import org.warp.picalculator.math.rules.methods.MultiplicationMethod1;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Multiplication extends FunctionOperator {
 

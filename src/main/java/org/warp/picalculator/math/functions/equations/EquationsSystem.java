@@ -1,14 +1,15 @@
 package org.warp.picalculator.math.functions.equations;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Number;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EquationsSystem extends FunctionDynamic {
 	static final int spacing = 2;

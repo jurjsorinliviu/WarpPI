@@ -1,16 +1,16 @@
 package org.warp.picalculator.math.rules;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Negative;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Expand rule<br>

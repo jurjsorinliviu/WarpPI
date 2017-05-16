@@ -1,6 +1,5 @@
 package org.warp.picalculator.gui.graphicengine.headless256;
 
-import org.warp.picalculator.Main;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
 public class Headless8Renderer implements Renderer {

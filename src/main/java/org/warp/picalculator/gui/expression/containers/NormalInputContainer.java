@@ -1,5 +1,6 @@
 package org.warp.picalculator.gui.expression.containers;
 
+import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.gui.expression.blocks.BlockDivision;
@@ -11,16 +12,26 @@ import org.warp.picalculator.math.MathematicalSymbols;
 
 public class NormalInputContainer extends InputContainer {
 
+	private static final long serialVersionUID = 5236564695997222322L;
+
+	@Deprecated()
+	/**
+	 * Use NormalInputContainer(InputContext) instead
+	 */
 	public NormalInputContainer() {
 		super();
 	}
-
-	public NormalInputContainer(boolean small) {
-		super(small);
+	
+	public NormalInputContainer(InputContext ic) {
+		super(ic);
 	}
 
-	public NormalInputContainer(boolean small, int minWidth, int minHeight) {
-		super(small, minWidth, minHeight);
+	public NormalInputContainer(InputContext ic, boolean small) {
+		super(ic, small);
+	}
+
+	public NormalInputContainer(InputContext ic, boolean small, int minWidth, int minHeight) {
+		super(ic, small, minWidth, minHeight);
 	}
 
 	@Override
@@ -55,7 +66,7 @@ public class NormalInputContainer extends InputContainer {
 			default:
 				for (char v : MathematicalSymbols.variables) {
 					if (c == v) {
-						return new BlockVariable(c);
+						return new BlockVariable(inputContext, c);
 					}
 				}
 				return new BlockChar(c);

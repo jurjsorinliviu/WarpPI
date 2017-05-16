@@ -4,7 +4,6 @@ import static org.warp.picalculator.Utils.ArrayToRegex;
 import static org.warp.picalculator.Utils.concat;
 
 import java.math.BigDecimal;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,11 +11,11 @@ import java.util.regex.Pattern;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
-import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.FunctionSingle;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.trigonometry.ArcCosine;
 import org.warp.picalculator.math.functions.trigonometry.ArcSine;
@@ -24,6 +23,8 @@ import org.warp.picalculator.math.functions.trigonometry.ArcTangent;
 import org.warp.picalculator.math.functions.trigonometry.Cosine;
 import org.warp.picalculator.math.functions.trigonometry.Sine;
 import org.warp.picalculator.math.functions.trigonometry.Tangent;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Expression extends FunctionDynamic {
 

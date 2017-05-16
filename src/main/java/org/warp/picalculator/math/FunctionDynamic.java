@@ -1,11 +1,12 @@
 package org.warp.picalculator.math;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public abstract class FunctionDynamic implements Function {
 	public FunctionDynamic(MathContext root) {

@@ -1,11 +1,12 @@
 package org.warp.picalculator.gui;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
-import org.warp.picalculator.Error;
 
 public class GUIErrorMessage {
 
+	@SuppressWarnings("unused")
 	private final String err;
 	private final long creationTime;
 

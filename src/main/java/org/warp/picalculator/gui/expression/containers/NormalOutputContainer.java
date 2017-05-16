@@ -1,6 +1,9 @@
 package org.warp.picalculator.gui.expression.containers;
 
 public class NormalOutputContainer extends OutputContainer {
+
+	private static final long serialVersionUID = 5087850494875415142L;
+
 	public NormalOutputContainer() {
 		super();
 	}

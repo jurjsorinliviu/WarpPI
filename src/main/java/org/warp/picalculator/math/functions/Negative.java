@@ -1,14 +1,14 @@
 package org.warp.picalculator.math.functions;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.ExpandRule5;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Negative extends FunctionSingle {
 

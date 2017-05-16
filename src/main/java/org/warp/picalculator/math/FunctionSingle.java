@@ -1,8 +1,8 @@
 package org.warp.picalculator.math;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public abstract class FunctionSingle implements Function {
 

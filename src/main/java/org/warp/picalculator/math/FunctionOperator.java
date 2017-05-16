@@ -1,9 +1,9 @@
 package org.warp.picalculator.math;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public abstract class FunctionOperator implements Function {
 

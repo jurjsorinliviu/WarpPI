@@ -1,13 +1,13 @@
 package org.warp.picalculator.math.rules.methods;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Division method<br>

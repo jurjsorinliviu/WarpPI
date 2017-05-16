@@ -3,9 +3,6 @@ package org.warp.picalculator.gui.screens;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -17,6 +14,7 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
+import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.containers.InputContainer;
@@ -26,22 +24,25 @@ import org.warp.picalculator.gui.expression.containers.OutputContainer;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.AngleMode;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
-import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.FunctionSingle;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.functions.Expression;
+import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.parser.MathParser;
-import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Number;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class MathInputScreen extends Screen {
 
 	public MathContext calc;
+	public InputContext ic;
 	public InputContainer userInput;
 	public OutputContainer result;
 	public int errorLevel = 0; // 0 = nessuno, 1 = risultato, 2 = tutto
@@ -54,6 +55,7 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void created() throws InterruptedException {
+		ic = new InputContext();
 		calc = new MathContext();
 
 		try {
@@ -63,7 +65,7 @@ public class MathInputScreen extends Screen {
 			System.exit(1);
 		}
 
-		userInput = new NormalInputContainer();
+		userInput = new NormalInputContainer(ic);
 		result = new NormalOutputContainer();
 
 		calc.init();
@@ -523,7 +525,7 @@ public class MathInputScreen extends Screen {
 	@SuppressWarnings("unused")
 	@Deprecated
 	private void changeEquationScreen() {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 //		
 //		if (!userInput.isEmpty()) {
 //			final MathInputScreen cloned = clone();
@@ -627,7 +629,7 @@ public class MathInputScreen extends Screen {
 	@Override
 	@Deprecated
 	public MathInputScreen clone() {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 //		final MathInputScreen es = this;
 //		final MathInputScreen es2 = new MathInputScreen();
 //		es2.errorLevel = es.errorLevel;

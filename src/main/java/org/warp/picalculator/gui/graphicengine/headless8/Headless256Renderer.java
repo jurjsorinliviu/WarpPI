@@ -1,6 +1,5 @@
 package org.warp.picalculator.gui.graphicengine.headless8;
 
-import org.warp.picalculator.Main;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
 public class Headless256Renderer implements Renderer {
@@ -253,7 +252,6 @@ public class Headless256Renderer implements Renderer {
 	
 
 	private void glDrawSkin(int x0, int y0, int s0, int t0, int s1, int t1, boolean transparent) {
-		int oldColor;
 		int newColor;
 		final int onex = s0 <= s1 ? 1 : -1;
 		final int oney = t0 <= t1 ? 1 : -1;
@@ -306,7 +304,6 @@ public class Headless256Renderer implements Renderer {
 				pixelY = (y0 + texy * oney + height);
 				if (pixelY < Headless256Engine.C_HEIGHT) {
 					if (pixelX - (pixelX % Headless256Engine.C_WIDTH) == 0) {
-						int bgColor = bgColorMatrix[pixelX + pixelY * Headless256Engine.C_WIDTH];
 						newColor = currentSkin.skinData[(s0 + texx) + (t0 + texy) * currentSkin.skinSize[0]];
 						if (transparent && !((newColor&TRANSPARENT) == TRANSPARENT)) {
 							charmatrix[pixelX + pixelY * Headless256Engine.C_WIDTH] = ' ';

@@ -1,9 +1,5 @@
 package org.warp.picalculator.math.parser;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Arrays;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
@@ -20,6 +16,9 @@ import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Expression;
+import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
 import org.warp.picalculator.math.functions.RootSquare;
@@ -28,9 +27,6 @@ import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
-import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.parser.features.FeatureChar;
 import org.warp.picalculator.math.parser.features.FeatureDivision;
 import org.warp.picalculator.math.parser.features.FeatureMultiplication;
@@ -45,11 +41,9 @@ import org.warp.picalculator.math.parser.features.interfaces.FeatureDouble;
 import org.warp.picalculator.math.parser.features.interfaces.FeatureSingle;
 
 import com.sun.org.apache.xpath.internal.functions.Function2Args;
-import com.sun.org.apache.xpath.internal.operations.Mult;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class MathParser {
 	public static Expression parseInput(MathContext context, InputContainer c) throws Error {

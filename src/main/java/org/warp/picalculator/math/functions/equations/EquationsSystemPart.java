@@ -1,10 +1,11 @@
 package org.warp.picalculator.math.functions.equations;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
+import org.warp.picalculator.math.MathContext;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EquationsSystemPart extends FunctionSingle {
 

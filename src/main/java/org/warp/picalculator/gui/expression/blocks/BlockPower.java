@@ -1,8 +1,6 @@
 package org.warp.picalculator.gui.expression.blocks;
 
 import org.warp.picalculator.gui.expression.Caret;
-import org.warp.picalculator.gui.expression.blocks.Block;
-import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
@@ -53,7 +51,6 @@ public class BlockPower extends Block {
 	public void recomputeDimensions() {
 		final int w2 = containerExponent.getWidth();
 		final int h2 = containerExponent.getHeight();
-		final int l2 = containerExponent.getLine();
 		width = w2+1;
 		height = h2+BlockContainer.getDefaultCharHeight(small)-3;
 		line = h2+BlockContainer.getDefaultCharHeight(small)/2-3;

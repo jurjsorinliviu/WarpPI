@@ -12,8 +12,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine.CPURenderer;
 
 public class CPUFont implements BinaryFont {
@@ -161,9 +161,9 @@ public class CPUFont implements BinaryFont {
 
 	@Override
 	public int getStringWidth(String text) {
-		final int w = (charW) * text.length();
-		if (text.length() > 0) {
-			return w;
+		final int w = (charW+1) * text.length();
+		if (text.length() > 0 && w > 0) {
+			return w-1;
 		} else {
 			return 0;
 		}

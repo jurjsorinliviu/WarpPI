@@ -15,7 +15,6 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
@@ -23,8 +22,8 @@ import org.nevec.rjm.Rational;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.Function;
-import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Multiplication;
@@ -36,6 +35,8 @@ import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystemPart;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Utils {
 
@@ -594,10 +595,11 @@ public class Utils {
 		return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
 	}
 
+	@SafeVarargs
 	public static <T> String arrayToString(T... data) {
 		String sdata = "";
 		for (final T o : data) {
-			sdata += "," + o.toString();
+			sdata += "," + o;
 		}
 		return sdata.substring(1);
 	}

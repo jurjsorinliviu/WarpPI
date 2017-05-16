@@ -1,16 +1,19 @@
 package org.warp.picalculator.math.functions;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Joke implements Function {
 
 	public static final byte FISH = 0;
 	public static final byte TORNADO = 1;
 	public static final byte SHARKNADO = 2;
+	@SuppressWarnings("unused")
 	private static final String[] jokes = new String[] { "♓", "TORNADO", "SHARKNADO" };
+	@SuppressWarnings("unused")
 	private static final int[] jokesFont = new int[] { 4, -1, -1 };
 	private final byte joke;
 	private final MathContext root;

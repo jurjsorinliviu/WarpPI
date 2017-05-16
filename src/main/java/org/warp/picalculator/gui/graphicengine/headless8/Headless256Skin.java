@@ -1,6 +1,5 @@
 package org.warp.picalculator.gui.graphicengine.headless8;
 
-import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -10,7 +9,6 @@ import javax.imageio.ImageIO;
 
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Skin;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine.CPURenderer;
 
 public class Headless256Skin implements Skin {
 

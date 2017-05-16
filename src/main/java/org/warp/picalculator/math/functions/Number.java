@@ -2,15 +2,16 @@ package org.warp.picalculator.math.functions;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Number implements Function {
 

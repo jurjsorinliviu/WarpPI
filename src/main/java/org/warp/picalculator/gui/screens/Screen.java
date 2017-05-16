@@ -1,7 +1,6 @@
 package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.device.KeyboardEventListener;
-import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
 
 public abstract class Screen implements KeyboardEventListener {

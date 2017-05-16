@@ -2,6 +2,7 @@ package org.warp.picalculator.math;
 
 import java.math.BigInteger;
 import java.util.List;
+
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
@@ -12,7 +13,6 @@ import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystem;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class MathContext {
 
@@ -133,6 +133,6 @@ public class MathContext {
 //		mc.variablesValues = this.variablesValues;
 //		mc.resultsCount = this.resultsCount;
 //		return mc;
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 }

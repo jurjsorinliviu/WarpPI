@@ -1,6 +1,5 @@
 package org.warp.picalculator.gui.expression.containers;
 
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.warp.picalculator.device.KeyboardEventListener;
@@ -8,13 +7,13 @@ import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
 import org.warp.picalculator.gui.expression.ExtraMenu;
+import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.layouts.InputLayout;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
-import it.unimi.dsi.fastutil.Arrays;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public abstract class InputContainer implements GraphicalElement, InputLayout, Serializable {
@@ -26,18 +25,29 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	private int maxPosition = 0;
 	private boolean parsed = false;
 	private ExtraMenu<?> extra;
+	protected InputContext inputContext;
 
+	public synchronized InputContext getInputContext() {
+		return inputContext;
+	}
+	@Deprecated()
+	/**
+	 * Use InputContainer(InputContext) instead
+	 */
 	public InputContainer() {
-		caret = new Caret(CaretState.VISIBLE_ON, 0);
-		root = new BlockContainer(false, false);
+		this(new InputContext());
 	}
 
-	public InputContainer(boolean small) {
-		caret = new Caret(CaretState.VISIBLE_ON, 0);
-		root = new BlockContainer(small, false);
+	public InputContainer(InputContext ic) {
+		this(ic, false);
 	}
 
-	public InputContainer(boolean small, int minWidth, int minHeight) {
+	public InputContainer(InputContext ic, boolean small) {
+		this(ic, small, 0, 0);
+	}
+
+	public InputContainer(InputContext ic, boolean small, int minWidth, int minHeight) {
+		inputContext = ic;
 		caret = new Caret(CaretState.VISIBLE_ON, 0);
 		root = new BlockContainer(small, false);
 	}

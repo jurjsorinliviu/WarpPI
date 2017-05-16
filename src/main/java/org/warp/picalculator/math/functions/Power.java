@@ -1,11 +1,9 @@
 package org.warp.picalculator.math.functions;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.rules.ExponentRule1;
 import org.warp.picalculator.math.rules.ExponentRule2;
 import org.warp.picalculator.math.rules.ExponentRule3;
@@ -14,6 +12,8 @@ import org.warp.picalculator.math.rules.ExponentRule9;
 import org.warp.picalculator.math.rules.FractionsRule4;
 import org.warp.picalculator.math.rules.FractionsRule5;
 import org.warp.picalculator.math.rules.UndefinedRule1;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Power extends FunctionOperator {
 

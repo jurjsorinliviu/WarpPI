@@ -1,17 +1,17 @@
 package org.warp.picalculator.math.functions;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.rules.FractionsRule1;
 import org.warp.picalculator.math.rules.FractionsRule11;
 import org.warp.picalculator.math.rules.FractionsRule12;
 import org.warp.picalculator.math.rules.FractionsRule2;
 import org.warp.picalculator.math.rules.FractionsRule3;
 import org.warp.picalculator.math.rules.UndefinedRule2;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Division extends FunctionOperator {
 

@@ -1,14 +1,14 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.AngleMode;
-import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Number;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Sine extends FunctionSingle {
 
@@ -16,6 +16,7 @@ public class Sine extends FunctionSingle {
 		super(root, value);
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	protected boolean isSolvable() {
 		if (parameter instanceof Number) {

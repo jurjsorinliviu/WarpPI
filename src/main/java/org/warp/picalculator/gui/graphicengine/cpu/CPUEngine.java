@@ -8,11 +8,11 @@ import java.io.IOException;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.graphicengine.GraphicEngine;
-import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
-import org.warp.picalculator.gui.graphicengine.Skin;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.gui.graphicengine.RenderingLoop;
+import org.warp.picalculator.gui.graphicengine.Skin;
 
 public class CPUEngine implements GraphicEngine {
 
@@ -311,20 +311,28 @@ public class CPUEngine implements GraphicEngine {
 			final int iw = (int) width;
 			final int ih = (int) height;
 
+			int x0 = ix;
+			int y0 = iy;
 			int x1 = ix + iw;
 			int y1 = iy + ih;
 			if (ix >= size[0] || iy >= size[0]) {
 				return;
 			}
+			if (x0 < 0) {
+				x0 = 0;
+			}
 			if (x1 >= size[0]) {
 				x1 = size[0];
+			}
+			if (y0 < 0) {
+				y0 = 0;
 			}
 			if (y1 >= size[1]) {
 				y1 = size[1];
 			}
 			final int sizeW = size[0];
-			for (int px = ix; px < x1; px++) {
-				for (int py = iy; py < y1; py++) {
+			for (int px = x0; px < x1; px++) {
+				for (int py = y0; py < y1; py++) {
 					canvas2d[(px) + (py) * sizeW] = color;
 				}
 			}

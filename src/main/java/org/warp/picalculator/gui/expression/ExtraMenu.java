@@ -3,7 +3,6 @@ package org.warp.picalculator.gui.expression;
 import java.io.Serializable;
 
 import org.warp.picalculator.device.KeyboardEventListener;
-import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
