@@ -202,7 +202,7 @@ public class BlockVariable extends Block {
 				mustRefreshMenu = false;
 				text = block.type.toString();
 				BinaryFont f = BlockContainer.getDefaultFont(true);
-				width = 2+f.getStringWidth(text)+2;
+				width = 7+f.getStringWidth(text)+7;
 				height = 2+f.getCharacterHeight()+2;
 				
 				super.beforeRender(delta, caret);
@@ -232,10 +232,11 @@ public class BlockVariable extends Block {
 				popupY=screenSize[1]-height-1;
 			}
 			r.glFillRect(location[0]+width/2-5, popupY+1, 10, 5, 163, 16, 10, 5);
-			
 			r.glFillColor(popupX, popupY+5, width, height);
 			r.glFillColor(popupX+2, popupY+4, width-4, height+2);
 			r.glFillColor(popupX-1, popupY+7, width+2, height-4);
+			r.glFillRect(popupX+2, popupY+5+height/2-7/2, 4, 7, 160, 21, 4, 7);
+			r.glFillRect(popupX+width-2-4, popupY+5+height/2-7/2, 4, 7, 172, 21, 4, 7);
 			r.glColor(color);
 			r.glDrawStringCenter(popupX+width/2, popupY+2+5, text);
 		}
