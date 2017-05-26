@@ -1,12 +1,15 @@
 package org.warp.picalculator.gui.expression.blocks;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.parser.features.FeaturePower;
+import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockPower extends Block {
-
-	public static final int CLASS_ID = 0x00000005;
 
 	private final BlockContainer containerExponent;
 
@@ -68,12 +71,13 @@ public class BlockPower extends Block {
 	}
 
 	@Override
-	public int getClassID() {
-		return CLASS_ID;
+	public int computeCaretMaxBound() {
+		return containerExponent.computeCaretMaxBound();
 	}
 
 	@Override
-	public int computeCaretMaxBound() {
-		return containerExponent.computeCaretMaxBound();
+	public Feature toFeature(MathContext context) throws Error {
+		final Function exp = getExponentContainer().toFunction(context);
+		return new FeaturePower(exp);
 	}
 }

@@ -8,6 +8,11 @@ import java.util.List;
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockExponentialNotation;
+import org.warp.picalculator.gui.expression.blocks.BlockPower;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 
@@ -218,6 +223,32 @@ public class Number implements Function {
 		}
 
 		return fs;
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		String numberString = this.toString();
+		if (numberString.contains("ℯ℮")) {
+			String[] numberParts = numberString.split("ℯ℮", 2);
+			BlockPower bp = new BlockExponentialNotation();
+			BlockContainer bpec = bp.getExponentContainer();
+			for (char c : numberParts[0].toCharArray()) {
+				result.add(new BlockChar(c));
+			}
+			for (char c : numberParts[1].toCharArray()) {
+				bpec.appendBlockUnsafe(new BlockChar(c));
+			};
+			bpec.recomputeDimensions();
+			bp.recomputeDimensions();
+			result.add(bp);
+			return result;
+		} else {
+			for (char c : numberString.toCharArray()) {
+				result.add(new BlockChar(c));
+			}
+		}
+		return result;
 	}
 
 	@Override

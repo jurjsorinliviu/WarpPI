@@ -1,9 +1,14 @@
 package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockDivision;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
 import org.warp.picalculator.math.rules.FractionsRule11;
 import org.warp.picalculator.math.rules.FractionsRule12;
@@ -95,5 +100,26 @@ public class Division extends FunctionOperator {
 	@Override
 	public String toString() {
 		return "(" + getParameter1() + ")/(" + getParameter2() + ")";
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
+		ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
+		BlockDivision bd = new BlockDivision();
+		BlockContainer uc = bd.getUpperContainer();
+		BlockContainer lc = bd.getLowerContainer();
+		for (Block b : sub1) {
+			uc.appendBlockUnsafe(b);
+		}
+		for (Block b : sub2) {
+			lc.appendBlockUnsafe(b);
+		}
+		uc.recomputeDimensions();
+		lc.recomputeDimensions();
+		bd.recomputeDimensions();
+		result.add(bd);
+		return result;
 	}
 }

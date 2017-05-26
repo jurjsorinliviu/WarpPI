@@ -2,6 +2,7 @@ package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
@@ -77,5 +78,11 @@ public class Negative extends FunctionSingle {
 	@Override
 	public Negative clone() {
 		return new Negative(mathContext, parameter);
+	}
+	
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + getClass().getSimpleName());
 	}
 }

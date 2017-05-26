@@ -1,9 +1,12 @@
 package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.ExponentRule16;
 import org.warp.picalculator.math.rules.FractionsRule14;
@@ -105,5 +108,23 @@ public class Multiplication extends FunctionOperator {
 	@Override
 	public String toString() {
 		return "(" + parameter1.toString() + ")*(" + parameter2.toString() + ")";
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
+		ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
+		Block nearLeft = sub1.get(sub1.size()-1);
+		Block nearRight = sub2.get(0);
+		
+		result.addAll(sub1);
+		if (nearLeft instanceof BlockChar && nearRight instanceof BlockChar) {
+			
+		} else {
+			result.add(new BlockChar(MathematicalSymbols.MULTIPLICATION));
+		}
+		result.addAll(sub2);
+		return result;
 	}
 }

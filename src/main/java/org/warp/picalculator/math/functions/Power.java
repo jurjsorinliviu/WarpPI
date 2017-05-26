@@ -1,6 +1,9 @@
 package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockPower;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
@@ -90,5 +93,22 @@ public class Power extends FunctionOperator {
 	@Override
 	public Power clone() {
 		return new Power(mathContext, parameter1, parameter2);
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
+		ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
+		BlockPower bp = new BlockPower();
+		BlockContainer ec = bp.getExponentContainer();
+		result.addAll(sub1);
+		for (Block b : sub2) {
+			ec.appendBlockUnsafe(b);
+		}
+		ec.recomputeDimensions();
+		bp.recomputeDimensions();
+		result.add(bp);
+		return result;
 	}
 }

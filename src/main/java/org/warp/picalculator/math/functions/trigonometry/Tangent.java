@@ -1,6 +1,7 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
@@ -33,6 +34,12 @@ public class Tangent extends FunctionSingle {
 
 	@Override
 	public FunctionSingle clone() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
 		// TODO Auto-generated method stub
 		return null;
 	}

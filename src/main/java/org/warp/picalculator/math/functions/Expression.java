@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
 import org.warp.picalculator.math.FunctionOperator;
@@ -622,6 +625,21 @@ public class Expression extends FunctionDynamic {
 			}
 		}
 		return parenthesisneeded;
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
+		BlockParenthesis bp = new BlockParenthesis();
+		BlockContainer bpc = bp.getNumberContainer();
+		for (Block b : sub) {
+			bpc.appendBlockUnsafe(b);
+		}
+		bpc.recomputeDimensions();
+		bp.recomputeDimensions();
+		result.add(bp);
+		return result;
 	}
 
 	@Override

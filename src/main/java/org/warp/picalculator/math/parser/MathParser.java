@@ -49,7 +49,7 @@ public class MathParser {
 	public static Expression parseInput(MathContext context, InputContainer c) throws Error {
 		Expression result;
 
-		final Function resultFunction = parseContainer(context, c.getContent());
+		final Function resultFunction = c.toFunction(context);
 
 		result = new Expression(context, resultFunction);
 		return result;
@@ -59,186 +59,15 @@ public class MathParser {
 		final ObjectArrayList<Block> resultBlocks = new ObjectArrayList<>();
 		
 		for (Function f : expr) {
-			resultBlocks.addAll(parseFunction(context, f));
+			ObjectArrayList<Block> resultPart = f.toBlock(context);
+			if (resultPart == null) throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + f.getClass().getSimpleName());
+			resultBlocks.addAll(resultPart);
 		}
 		
 		return resultBlocks;
 	}
-	
-	private static ObjectArrayList<Block> parseFunction(MathContext context, Function func) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		if (func instanceof FunctionOperator) {
-			ObjectArrayList<Block> sub1 = parseFunction(context, func.getParameter(0));
-			ObjectArrayList<Block> sub2 = parseFunction(context, func.getParameter(1));
-			if (func instanceof Sum) {
-				result.addAll(sub1);
-				result.add(new BlockChar(MathematicalSymbols.SUM));
-				result.addAll(sub2);
-				return result;
-			}
-			if (func instanceof Subtraction) {
-				result.addAll(sub1);
-				result.add(new BlockChar(MathematicalSymbols.SUBTRACTION));
-				result.addAll(sub2);
-				return result;
-			}
-			if (func instanceof SumSubtraction) {
-				result.addAll(sub1);
-				result.add(new BlockChar(MathematicalSymbols.SUM_SUBTRACTION));
-				result.addAll(sub2);
-				return result;
-			}
-			if (func instanceof Multiplication) {
-				Block nearLeft = sub1.get(sub1.size()-1);
-				Block nearRight = sub2.get(0);
-				
-				result.addAll(sub1);
-				if (nearLeft instanceof BlockChar && nearRight instanceof BlockChar) {
-					
-				} else {
-					result.add(new BlockChar(MathematicalSymbols.MULTIPLICATION));
-				}
-				result.addAll(sub2);
-				return result;
-			}
-			if (func instanceof Division) {
-				BlockDivision bd = new BlockDivision();
-				BlockContainer uc = bd.getUpperContainer();
-				BlockContainer lc = bd.getLowerContainer();
-				for (Block b : sub1) {
-					uc.appendBlockUnsafe(b);
-				}
-				for (Block b : sub2) {
-					lc.appendBlockUnsafe(b);
-				}
-				uc.recomputeDimensions();
-				lc.recomputeDimensions();
-				bd.recomputeDimensions();
-				result.add(bd);
-				return result;
-			}
-			if (func instanceof Power) {
-				BlockPower bp = new BlockPower();
-				BlockContainer ec = bp.getExponentContainer();
-				result.addAll(sub1);
-				for (Block b : sub2) {
-					ec.appendBlockUnsafe(b);
-				}
-				ec.recomputeDimensions();
-				bp.recomputeDimensions();
-				result.add(bp);
-				return result;
-			}
-		}
-		if (func instanceof FunctionSingle) {
-			ObjectArrayList<Block> sub = parseFunction(context, func.getParameter(0));
-			if (func instanceof RootSquare) {
-				BlockSquareRoot bsqr = new BlockSquareRoot();
-				BlockContainer bsqrc = bsqr.getNumberContainer();
-				for (Block b : sub) {
-					bsqrc.appendBlockUnsafe(b);
-				}
-				bsqrc.recomputeDimensions();
-				bsqr.recomputeDimensions();
-				result.add((bsqr));
-				return result;
-			}
-			
-		}
-		if (func instanceof Expression) {
-			ObjectArrayList<Block> sub = parseFunction(context, ((Expression) func).getParameter(0));
-			BlockParenthesis bp = new BlockParenthesis();
-			BlockContainer bpc = bp.getNumberContainer();
-			for (Block b : sub) {
-				bpc.appendBlockUnsafe(b);
-			}
-			bpc.recomputeDimensions();
-			bp.recomputeDimensions();
-			result.add(bp);
-			return result;
-		}
-		if (func instanceof Number) {
-			Number numb = (Number) func;
-			String numberString = numb.toString();
-			if (numberString.contains("ℯ℮")) {
-				String[] numberParts = numberString.split("ℯ℮", 2);
-				BlockPower bp = new BlockExponentialNotation();
-				BlockContainer bpec = bp.getExponentContainer();
-				for (char c : numberParts[0].toCharArray()) {
-					result.add(new BlockChar(c));
-				}
-				for (char c : numberParts[1].toCharArray()) {
-					bpec.appendBlockUnsafe(new BlockChar(c));
-				};
-				bpec.recomputeDimensions();
-				bp.recomputeDimensions();
-				result.add(bp);
-				return result;
-			} else {
-				for (char c : numberString.toCharArray()) {
-					result.add(new BlockChar(c));
-				}
-			}
-			return result;
-		}
-		if (func instanceof Variable) {
-			//TODO: Temporary solution. In near future Variables will be distint objects and they will have a color. So they will be no longer a BlockChar/FeatureChar
-			result.add(new BlockChar(((Variable) func).getChar()));
-			return result;
-		}
-		throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + func.getClass().getSimpleName());
-	}
 
-	private static Function parseContainer(final MathContext context, final Iterable<Block> blocks) throws Error {
-		final ObjectArrayList<Feature> blockFeatures = new ObjectArrayList<>();
-
-		for (final Block block : blocks) {
-			final Feature blockFeature = parseBlock(context, block);
-			blockFeatures.add(blockFeature);
-		}
-
-		final Function result = joinFeatures(context, blockFeatures);
-		return result;
-	}
-
-	private static Feature parseBlock(final MathContext context, final Block block) throws Error {
-
-		Feature result;
-
-		final int blockType = block.getClassID();
-		switch (blockType) {
-			case BlockChar.CLASS_ID:
-				result = new FeatureChar(((BlockChar) block).getChar());
-				break;
-			case BlockDivision.CLASS_ID:
-				final BlockDivision bd = (BlockDivision) block;
-				final Function upper = parseContainer(context, bd.getUpperContainer().getContent());
-				final Function lower = parseContainer(context, bd.getLowerContainer().getContent());
-				result = new FeatureDivision(upper, lower);
-				break;
-			case BlockSquareRoot.CLASS_ID:
-				final BlockSquareRoot bsqr = (BlockSquareRoot) block;
-				final Function contnt = parseContainer(context, bsqr.getNumberContainer().getContent());
-				result = new FeatureSquareRoot(contnt);
-				break;
-			case BlockParenthesis.CLASS_ID:
-				final BlockParenthesis bp = (BlockParenthesis) block;
-				final Function cont = parseContainer(context, bp.getNumberContainer().getContent());
-				result = new FeatureParenthesis(cont);
-				break;
-			case BlockPower.CLASS_ID:
-				final BlockPower blp = (BlockPower) block;
-				final Function exp = parseContainer(context, blp.getExponentContainer().getContent());
-				result = new FeaturePower(exp);
-				break;
-			default:
-				throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known BLock");
-		}
-
-		return result;
-	}
-
-	private static Function joinFeatures(final MathContext context, ObjectArrayList<Feature> features) throws Error {
+	public static Function joinFeatures(final MathContext context, ObjectArrayList<Feature> features) throws Error {
 
 		features = fixFeatures(context, features);
 

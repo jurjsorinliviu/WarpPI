@@ -3,10 +3,11 @@ package org.warp.picalculator.gui.expression.blocks;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.parser.features.FeatureChar;
+import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockChar extends Block {
-
-	public static final int CLASS_ID = 0x00000001;
 
 	private final char ch;
 
@@ -55,13 +56,13 @@ public class BlockChar extends Block {
 	}
 
 	@Override
-	public int getClassID() {
-		return CLASS_ID;
+	public int computeCaretMaxBound() {
+		return 0;
 	}
 
 	@Override
-	public int computeCaretMaxBound() {
-		return 0;
+	public Feature toFeature(MathContext context) {
+		return new FeatureChar(getChar());
 	}
 
 }

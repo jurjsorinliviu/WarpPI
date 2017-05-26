@@ -3,6 +3,7 @@ package org.warp.picalculator.math.functions.equations;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
 import org.warp.picalculator.math.MathContext;
@@ -68,6 +69,12 @@ public class EquationsSystem extends FunctionDynamic {
 	@Override
 	public EquationsSystem clone() {
 		return new EquationsSystem(root, functions);
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

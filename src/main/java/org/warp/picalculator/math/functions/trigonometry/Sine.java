@@ -2,6 +2,7 @@ package org.warp.picalculator.math.functions.trigonometry;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
@@ -55,6 +56,12 @@ public class Sine extends FunctionSingle {
 	@Override
 	public Sine clone() {
 		return new Sine(mathContext, parameter);
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

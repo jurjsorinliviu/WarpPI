@@ -1,10 +1,13 @@
 package org.warp.picalculator.gui.expression.blocks;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.ExtraMenu;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public abstract class Block implements GraphicalElement {
 
@@ -56,10 +59,10 @@ public abstract class Block implements GraphicalElement {
 	}
 	
 	public abstract void setSmall(boolean small);
-
-	public abstract int getClassID();
 	
 	public ExtraMenu<?> getExtraMenu() {
 		return null;
 	}
+
+	public abstract Feature toFeature(MathContext context) throws Error;
 }

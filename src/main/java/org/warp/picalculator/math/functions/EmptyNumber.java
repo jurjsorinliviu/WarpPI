@@ -1,6 +1,7 @@
 package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 
@@ -48,6 +49,12 @@ public class EmptyNumber implements Function {
 	@Override
 	public Function getParameter(int index) throws IndexOutOfBoundsException {
 		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

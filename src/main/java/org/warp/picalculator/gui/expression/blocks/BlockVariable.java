@@ -1,5 +1,6 @@
 package org.warp.picalculator.gui.expression.blocks;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.expression.Caret;
@@ -8,11 +9,11 @@ import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
+import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockVariable extends Block {
-
-	public static final int CLASS_ID = 0x00000007;
 
 	private InputContext ic;
 	private final char ch;
@@ -109,11 +110,6 @@ public class BlockVariable extends Block {
 
 	public char getChar() {
 		return ch;
-	}
-
-	@Override
-	public int getClassID() {
-		return CLASS_ID;
 	}
 
 	@Override
@@ -241,5 +237,11 @@ public class BlockVariable extends Block {
 			r.glDrawStringCenter(popupX+width/2, popupY+2+5, text);
 		}
 		
+	}
+
+	@Override
+	public Feature toFeature(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

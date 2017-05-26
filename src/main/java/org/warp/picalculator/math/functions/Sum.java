@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule5;
 import org.warp.picalculator.math.rules.NumberRule7;
@@ -112,6 +115,15 @@ public class Sum extends FunctionOperator {
 	@Override
 	public Sum clone() {
 		return new Sum(mathContext, parameter1, parameter2);
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		result.addAll(getParameter1().toBlock(context));
+		result.add(new BlockChar(MathematicalSymbols.SUM));
+		result.addAll(getParameter2().toBlock(context));
+		return result;
 	}
 
 }

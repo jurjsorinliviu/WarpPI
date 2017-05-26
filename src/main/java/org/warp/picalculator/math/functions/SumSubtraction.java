@@ -2,9 +2,12 @@ package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule4;
@@ -71,6 +74,15 @@ public class SumSubtraction extends FunctionOperator {
 	@Override
 	public SumSubtraction clone() {
 		return new SumSubtraction(mathContext, parameter1, parameter2);
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		result.addAll(getParameter1().toBlock(context));
+		result.add(new BlockChar(MathematicalSymbols.SUM_SUBTRACTION));
+		result.addAll(getParameter2().toBlock(context));
+		return result;
 	}
 
 }

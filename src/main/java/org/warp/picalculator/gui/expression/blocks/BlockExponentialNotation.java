@@ -7,8 +7,6 @@ import org.warp.picalculator.gui.graphicengine.Renderer;
 public class BlockExponentialNotation extends BlockPower {
 	private int bw;
 	private int bh;
-
-	public static final int CLASS_ID = 0x00000006;
 	
 	@Override
 	public void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret) {
@@ -24,10 +22,5 @@ public class BlockExponentialNotation extends BlockPower {
 		bw = (int) (BlockContainer.getDefaultCharWidth(small)*1.5);
 		bh = BlockContainer.getDefaultCharHeight(small);
 		this.width+=bw;
-	}
-
-	@Override
-	public int getClassID() {
-		return CLASS_ID;
 	}
 }

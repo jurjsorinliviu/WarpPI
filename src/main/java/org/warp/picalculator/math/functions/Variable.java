@@ -3,6 +3,8 @@ package org.warp.picalculator.math.functions;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 
@@ -102,5 +104,13 @@ public class Variable implements Function {
 	@Override
 	public Function getParameter(int index) throws IndexOutOfBoundsException {
 		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		//TODO: Temporary solution. In near future Variables will be distint objects and they will have a color. So they will be no longer a BlockChar/FeatureChar
+		result.add(new BlockChar(getChar()));
+		return result;
 	}
 }

@@ -3,6 +3,9 @@ package org.warp.picalculator.math.functions;
 import java.math.BigInteger;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockSquareRoot;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
@@ -63,5 +66,19 @@ public class RootSquare extends FunctionSingle {
 	@Override
 	public RootSquare clone() {
 		return new RootSquare(mathContext, parameter);
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		BlockSquareRoot bsqr = new BlockSquareRoot();
+		BlockContainer bsqrc = bsqr.getNumberContainer();
+		for (Block b : getParameter().toBlock(context)) {
+			bsqrc.appendBlockUnsafe(b);
+		}
+		bsqrc.recomputeDimensions();
+		bsqr.recomputeDimensions();
+		result.add((bsqr));
+		return result;
 	}
 }

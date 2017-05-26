@@ -3,8 +3,12 @@ package org.warp.picalculator.math.functions;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Undefined implements Function {
 
@@ -50,6 +54,12 @@ public class Undefined implements Function {
 	@Override
 	public Function getParameter(int index) throws IndexOutOfBoundsException {
 		throw new IndexOutOfBoundsException();
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + getClass().getSimpleName());
 	}
 
 }

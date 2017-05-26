@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
@@ -72,6 +74,12 @@ public class Root extends FunctionOperator {
 	@Override
 	public Root clone() {
 		return new Root(mathContext, parameter1, parameter2);
+	}
+	
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + getClass().getSimpleName());
 	}
 
 }

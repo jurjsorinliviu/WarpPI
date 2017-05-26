@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
@@ -86,6 +87,12 @@ public class Equation extends FunctionOperator {
 	public boolean equals(Object o) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

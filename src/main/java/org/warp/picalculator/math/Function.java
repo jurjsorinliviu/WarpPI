@@ -3,6 +3,9 @@ package org.warp.picalculator.math;
 import java.util.List;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public interface Function {
 
@@ -62,4 +65,12 @@ public interface Function {
 	 * @return boolean
 	 */
 	public boolean isSimplified();
+
+	/**
+	 * 
+	 * @param context Mathematical Context
+	 * @return An ArrayList of parsed Blocks
+	 * @throws Error 
+	 */
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error;
 }

@@ -1,6 +1,7 @@
 package org.warp.picalculator.math.functions.equations;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
@@ -34,6 +35,12 @@ public class EquationsSystemPart extends FunctionSingle {
 	@Override
 	public EquationsSystemPart clone() {
 		return new EquationsSystemPart(mathContext, (Equation) parameter);
+	}
+
+	@Override
+	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

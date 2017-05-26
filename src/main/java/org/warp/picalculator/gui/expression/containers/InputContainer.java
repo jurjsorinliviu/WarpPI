@@ -2,6 +2,7 @@ package org.warp.picalculator.gui.expression.containers;
 
 import java.io.Serializable;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.device.KeyboardEventListener;
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
@@ -13,6 +14,10 @@ import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.layouts.InputLayout;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.parser.MathParser;
+import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -245,6 +250,9 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	
 	public KeyboardEventListener getExtraKeyboardEventListener() {
 		return extra;
+	}
+	public Function toFunction(MathContext context) throws Error {
+		return root.toFunction(context);
 	}
 
 }

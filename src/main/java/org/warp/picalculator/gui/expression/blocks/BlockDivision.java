@@ -1,12 +1,15 @@
 package org.warp.picalculator.gui.expression.blocks;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.parser.features.FeatureDivision;
+import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockDivision extends Block {
-
-	public static final int CLASS_ID = 0x00000002;
 
 	private final BlockContainer containerUp;
 	private final BlockContainer containerDown;
@@ -105,12 +108,14 @@ public class BlockDivision extends Block {
 	}
 
 	@Override
-	public int getClassID() {
-		return CLASS_ID;
+	public int computeCaretMaxBound() {
+		return containerUp.computeCaretMaxBound() + containerDown.computeCaretMaxBound();
 	}
 
 	@Override
-	public int computeCaretMaxBound() {
-		return containerUp.computeCaretMaxBound() + containerDown.computeCaretMaxBound();
+	public Feature toFeature(MathContext context) throws Error {
+		final Function upper = getUpperContainer().toFunction(context);
+		final Function lower = getLowerContainer().toFunction(context);
+		return new FeatureDivision(upper, lower);
 	}
 }

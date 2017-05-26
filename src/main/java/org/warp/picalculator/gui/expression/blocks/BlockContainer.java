@@ -1,11 +1,17 @@
 package org.warp.picalculator.gui.expression.blocks;
 
+import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.parser.MathParser;
+import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -338,6 +344,20 @@ public class BlockContainer implements GraphicalElement {
 			maxpos += 1 + b.computeCaretMaxBound();
 		}
 		return maxpos + 1;
+	}
+
+	public Function toFunction(MathContext context) throws Error {
+		ObjectArrayList<Block> blocks = getContent();
+		final ObjectArrayList<Feature> blockFeatures = new ObjectArrayList<>();
+
+		for (final Block block : blocks) {
+			final Feature blockFeature = block.toFeature(context);
+			if (blockFeature == null) throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known Block");
+			blockFeatures.add(blockFeature);
+		}
+
+		final Function result = MathParser.joinFeatures(context, blockFeatures);
+		return result;
 	}
 
 }
