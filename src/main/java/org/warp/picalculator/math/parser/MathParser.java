@@ -32,7 +32,7 @@ import org.warp.picalculator.math.parser.features.FeatureDivision;
 import org.warp.picalculator.math.parser.features.FeatureMultiplication;
 import org.warp.picalculator.math.parser.features.FeatureNumber;
 import org.warp.picalculator.math.parser.features.FeatureParenthesis;
-import org.warp.picalculator.math.parser.features.FeaturePower;
+import org.warp.picalculator.math.parser.features.FeaturePowerChar;
 import org.warp.picalculator.math.parser.features.FeatureSquareRoot;
 import org.warp.picalculator.math.parser.features.FeatureSum;
 import org.warp.picalculator.math.parser.features.FeatureVariable;
@@ -55,24 +55,32 @@ public class MathParser {
 		return result;
 	}
 
-	public static ObjectArrayList<Block> parseOutput(MathContext context, ObjectArrayList<Function> expr) throws Error {
-		final ObjectArrayList<Block> resultBlocks = new ObjectArrayList<>();
-		
-		for (Function f : expr) {
-			ObjectArrayList<Block> resultPart = f.toBlock(context);
-			if (resultPart == null) throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + f.getClass().getSimpleName());
-			resultBlocks.addAll(resultPart);
+	public static ObjectArrayList<ObjectArrayList<Block>> parseOutput(MathContext context, ObjectArrayList<ObjectArrayList<Function>> resultExpressions) throws Error {
+		final ObjectArrayList<ObjectArrayList<Block>> result = new ObjectArrayList<>();
+		for (ObjectArrayList<Function> resultExpression : resultExpressions) {
+			final ObjectArrayList<Block> resultBlocks = new ObjectArrayList<>();
+			for (Function f : resultExpression) {
+				ObjectArrayList<Block> resultPart = f.toBlock(context);
+				if (resultPart == null) throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + f.getClass().getSimpleName());
+				resultBlocks.addAll(resultPart);
+			}
+			result.add(resultBlocks);
 		}
-		
-		return resultBlocks;
+		return result;
 	}
 
 	public static Function joinFeatures(final MathContext context, ObjectArrayList<Feature> features) throws Error {
 
 		features = fixFeatures(context, features);
 
-		final ObjectArrayList<Function> process = makeFunctions(context, features);
-
+		final ObjectArrayList<Function> process = new ObjectArrayList<>();
+		
+		for (final Feature f : features) {
+			Function fnc = f.toFunction(context);
+			if (fnc == null) throw new Error(Errors.SYNTAX_ERROR, "\"" + f.getClass().getSimpleName() + "\" can't be converted into a Function!");
+			process.add(fnc);
+		}
+		
 		fixStack(context, process);
 
 		if (process.size() > 1) {
@@ -197,46 +205,6 @@ public class MathParser {
 		} while (lastLoopDidSomething);
 	}
 
-	private static ObjectArrayList<Function> makeFunctions(MathContext context, ObjectArrayList<Feature> features)
-			throws Error {
-		final ObjectArrayList<Function> process = new ObjectArrayList<>();
-		
-		for (final Feature f : features) {
-			if (f instanceof FeatureDivision) {
-				process.add(new Division(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
-			} else if (f instanceof FeatureMultiplication) {
-				process.add(new Multiplication(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
-			} else if (f instanceof FeatureVariable) {
-				process.add(new Variable(context, ((FeatureVariable) f).ch, ((FeatureVariable) f).varType));
-			} else if (f instanceof FeatureSum) {
-				process.add(new Sum(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
-			} else if (f instanceof FeaturePower) {
-				if (process.isEmpty()) {
-					throw new Error(Errors.SYNTAX_ERROR, "There is a power at the beginning of the expression!");
-				} else {
-					Function prec = process.remove(process.size()-1);
-					process.add(new Power(context, prec, (Function) ((FeatureSingle) f).getChild()));
-				}
-			} else if (f instanceof FeatureSquareRoot) {
-				process.add(new RootSquare(context, (Function) ((FeatureSingle) f).getChild()));
-			} else if (f instanceof FeatureParenthesis) {
-				process.add(new Expression(context, (Function) ((FeatureSingle) f).getChild()));
-//			}  else if (f instanceof FeatureSubtraction) {
-//				process.add(new Subtraction(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
-//			}  else if (f instanceof FeatureSumSubtraction) {
-//				process.add(new SumSubtraction(context, (Function) ((FeatureDouble) f).getChild1(), (Function) ((FeatureDouble) f).getChild2()));
-			} else if (f instanceof FeatureNumber) {
-				process.add(new Number(context, ((FeatureNumber) f).getNumberString()));
-			} else if (f instanceof FeatureChar) {
-				//All the char features must have been changed already before
-				throw new Error(Errors.SYNTAX_ERROR, "\"" + f.getClass().getSimpleName() + "\" can't be converted into a Function!");
-			} else {
-				throw new Error(Errors.SYNTAX_ERROR, "\"" + f.getClass().getSimpleName() + "\" can't be converted into a Function!");
-			}
-		}
-		return process;
-	}
-
 	private static ObjectArrayList<Feature> fixFeatures(final MathContext context, ObjectArrayList<Feature> features)
 			throws Error {
 
@@ -267,6 +235,12 @@ public class MathParser {
 				switch (featureChar) {
 					case MathematicalSymbols.SUM:
 						result = new FeatureSum(null, null);
+						break;
+					case MathematicalSymbols.SUM_SUBTRACTION:
+						result = new FeatureSumSubtraction(null, null);
+						break;
+					case MathematicalSymbols.SUBTRACTION:
+						result = new FeatureSubtraction(null, null);
 						break;
 					case MathematicalSymbols.MULTIPLICATION:
 						result = new FeatureMultiplication(null, null);

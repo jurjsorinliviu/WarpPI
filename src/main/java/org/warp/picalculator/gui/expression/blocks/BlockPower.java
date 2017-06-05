@@ -6,7 +6,7 @@ import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.parser.features.FeaturePower;
+import org.warp.picalculator.math.parser.features.FeaturePowerChar;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockPower extends Block {
@@ -78,6 +78,6 @@ public class BlockPower extends Block {
 	@Override
 	public Feature toFeature(MathContext context) throws Error {
 		final Function exp = getExponentContainer().toFunction(context);
-		return new FeaturePower(exp);
+		return new FeaturePowerChar(exp);
 	}
 }

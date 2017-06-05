@@ -115,7 +115,7 @@ public class MathInputScreen extends Screen {
 
 		userInput.draw(DisplayManager.engine, DisplayManager.renderer, padding, padding + 20);
 
-		if (!result.root.getContent().isEmpty()) {
+		if (!result.isContentEmpty()) {
 			result.draw(DisplayManager.engine, DisplayManager.renderer, DisplayManager.engine.getWidth() - result.getWidth() - 2, DisplayManager.engine.getHeight() - result.getHeight() - 2);
 		}
 	}
@@ -203,9 +203,42 @@ public class MathInputScreen extends Screen {
 												calc.f2.clear();
 											}
 											calc.f.add(expr);
-											ObjectArrayList<Function> resultExpression = expr.solve();
-											ObjectArrayList<Block> resultBlocks = MathParser.parseOutput(calc, resultExpression);
-											result.setContent(resultBlocks);
+											int stop = 0;
+											boolean done = false;
+											ObjectArrayList<ObjectArrayList<Function>> resultExpressions = new ObjectArrayList<>();
+											resultExpressions.add(new ObjectArrayList<Function>(expr.getParameters()));
+											while (!done && stop < 3000) {
+												ObjectArrayList<ObjectArrayList<Function>> newResultExpressions = new ObjectArrayList<>();
+												done = true;
+												for (ObjectArrayList<Function> resultExpr : resultExpressions) {
+													ObjectArrayList<Function> newResults = new ObjectArrayList<>();
+													for (Function f : resultExpr) {
+														if (f.isSimplified() == false) {
+															done = false;
+															if (f instanceof Expression) {
+																ObjectArrayList<Function> fncResult = ((Expression)f).solve();
+																for (Function resultItem : fncResult) {
+																	newResultExpressions.add(new ObjectArrayList<Function>(new Function[] {resultItem}));
+																}
+															} else {
+																List<Function> fncResult = f.simplify();
+																for (Function resultItem : fncResult) {
+																	newResultExpressions.add(new ObjectArrayList<Function>(new Function[] {resultItem}));
+																}
+															}
+														} else {
+															newResults.add(f);
+														}
+													}
+													if (newResults.isEmpty() == false) {
+														newResultExpressions.add(newResults);
+													}
+												}
+												resultExpressions = newResultExpressions;
+												stop++;
+											}
+											ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
+											result.setContentAsMultipleGroups(resultBlocks);
 		//									showVariablesDialog(() -> {
 		//										currentExpression = newExpression;
 		//										simplify();

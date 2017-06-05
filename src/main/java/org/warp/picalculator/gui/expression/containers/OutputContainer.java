@@ -14,47 +14,89 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public abstract class OutputContainer implements GraphicalElement, OutputLayout, Serializable {
 	private static final long serialVersionUID = -5714825964892683571L;
-	public final BlockContainer root;
+	public final ObjectArrayList<BlockContainer> roots;
 	private final Caret caret = new Caret(CaretState.HIDDEN, 0);
 
 	public OutputContainer() {
-		root = new BlockContainer();
+		roots = new ObjectArrayList<>();
+		roots.add(new BlockContainer());
 	}
 
 	public OutputContainer(boolean small) {
-		root = new BlockContainer(small);
+		roots = new ObjectArrayList<>();
+		roots.add(new BlockContainer(small));
 	}
 
 	public OutputContainer(boolean small, int minWidth, int minHeight) {
-		root = new BlockContainer(small);
+		roots = new ObjectArrayList<>();
+		roots.add(new BlockContainer(small));
 	}
 	
-	public void setContent(ObjectArrayList<Block> blocks) {
-		root.clear();
-		for (Block b : blocks) {
-			root.appendBlockUnsafe(b);
+	public void setContentAsSingleGroup(ObjectArrayList<Block> blocks) {
+		roots.clear();
+		BlockContainer bcnt = new BlockContainer();
+		for (Block block : blocks) {
+			bcnt.appendBlockUnsafe(block);
+		}
+		roots.add(bcnt);
+		recomputeDimensions();
+	}
+	
+	public void setContentAsMultipleGroups(ObjectArrayList<ObjectArrayList<Block>> roots) {
+		this.roots.clear();
+		for (ObjectArrayList<Block> blocks : roots) {
+			BlockContainer bcnt = new BlockContainer();
+			for (Block block : blocks) {
+				bcnt.appendBlockUnsafe(block);
+			}
+			this.roots.add(bcnt);
+		}
+		recomputeDimensions();
+	}
+	
+	public void setContentAsMultipleElements(ObjectArrayList<Block> elems) {
+		this.roots.clear();
+		for (Block block : elems) {
+			BlockContainer bcnt = new BlockContainer();
+			bcnt.appendBlockUnsafe(block);
+			this.roots.add(bcnt);
 		}
 		recomputeDimensions();
 	}
 
 	@Override
 	public void recomputeDimensions() {
-		root.recomputeDimensions();
+		for (BlockContainer root : roots) {
+			root.recomputeDimensions();
+		}
 	}
 
 	@Override
 	public int getWidth() {
-		return root.getWidth();
+		int maxw = 0;
+		for (BlockContainer root : roots) {
+			int w = root.getWidth();
+			if (w > maxw) maxw = w;
+		}
+		return maxw;
 	}
 
 	@Override
 	public int getHeight() {
-		return root.getHeight();
+		int h = 0;
+		for (BlockContainer root : roots) {
+			h+=root.getHeight()+2;
+		}
+		if (h > 0) {
+			return h-2;
+		} else {
+			return h;
+		}
 	}
 
 	@Override
 	public int getLine() {
-		return root.getLine();
+		return 0;
 	}
 
 	/**
@@ -78,11 +120,26 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	 *            Position relative to the window.
 	 */
 	public void draw(GraphicEngine ge, Renderer r, int x, int y) {
-		root.draw(ge, r, x, y, caret);
+		int offset = 0;
+		for (BlockContainer root : roots) {
+			root.draw(ge, r, x, y+offset, caret);
+			offset+=root.getHeight()+2;
+		}
 	}
 
 	public void clear() {
-		root.clear();
+		roots.clear();
+		roots.add(new BlockContainer());
 		recomputeDimensions();
+	}
+
+	public boolean isContentEmpty() {
+		for(BlockContainer root : roots) {
+			ObjectArrayList<Block> cnt = root.getContent();
+			if (cnt != null && !cnt.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

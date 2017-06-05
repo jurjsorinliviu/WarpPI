@@ -3,17 +3,17 @@ package org.warp.picalculator.math.parser.features;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.functions.Expression;
+import org.warp.picalculator.math.functions.Power;
 
-public class FeatureParenthesis extends FeatureSingleImpl {
+public class FeaturePowerChar extends FeatureSingleImpl {
 
-	public FeatureParenthesis(Object child) {
+	public FeaturePowerChar(Object child) {
 		super(child);
 	}
 
 	@Override
 	public Function toFunction(MathContext context) throws Error {
-		return new Expression(context, this.getFunction1());
+		return null;
 	}
 
 }

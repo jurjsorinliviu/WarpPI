@@ -198,7 +198,6 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public Block getBlock(Caret caret) {
-		boolean found = false;
 		Block block = null;
 		
 		int pos = 0;
@@ -208,10 +207,11 @@ public class BlockContainer implements GraphicalElement {
 			final int deltaCaret = caret.getRemaining();
 			
 			block= b.getBlock(caret);
-			found = found | (block != null);
-			if (caret.getRemaining() == 0 || (found == false && deltaCaret >= 0 && caret.getRemaining() < 0)) {
+			if (block != null) {
+				return block;
+			}
+			if (caret.getRemaining() == 0 || (deltaCaret >= 0 && caret.getRemaining() < 0)) {
 				block = getBlockAt(pos - 1);
-				found = true;
 				return block;
 			}
 		}

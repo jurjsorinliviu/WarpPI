@@ -1,5 +1,6 @@
 package org.warp.picalculator.math.parser.features;
 
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.parser.features.interfaces.FeatureSingle;
 
 public abstract class FeatureSingleImpl implements FeatureSingle {
@@ -12,6 +13,10 @@ public abstract class FeatureSingleImpl implements FeatureSingle {
 	@Override
 	public Object getChild() {
 		return child;
+	}
+	
+	protected Function getFunction1() {
+		return (Function) child;
 	}
 
 	@Override

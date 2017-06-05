@@ -11,6 +11,7 @@ import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
+import org.warp.picalculator.math.parser.features.FeatureVariable;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockVariable extends Block {
@@ -241,7 +242,6 @@ public class BlockVariable extends Block {
 
 	@Override
 	public Feature toFeature(MathContext context) throws Error {
-		// TODO Auto-generated method stub
-		return null;
+		return new FeatureVariable(ch, type);
 	}
 }

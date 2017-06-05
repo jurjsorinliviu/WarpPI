@@ -1,5 +1,9 @@
 package org.warp.picalculator.math.parser.features;
 
+import org.warp.picalculator.Error;
+import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.parser.features.interfaces.FeatureBasic;
 
 public class FeatureNumber implements FeatureBasic {
@@ -23,5 +27,10 @@ public class FeatureNumber implements FeatureBasic {
 
 	public void append(char ch) {
 		numberString += ch;
+	}
+
+	@Override
+	public Number toFunction(MathContext context) throws Error {
+		return new Number(context, getNumberString());
 	}
 }

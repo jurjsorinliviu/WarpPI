@@ -93,7 +93,8 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	
 	public Block getSelectedBlock() {
 		caret.resetRemaining();
-		return root.getBlock(caret);
+		Block selectedBlock = root.getBlock(caret);
+		return selectedBlock;
 	}
 
 	public void moveLeft() {
