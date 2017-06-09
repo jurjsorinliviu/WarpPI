@@ -359,5 +359,5 @@ public class BlockContainer implements GraphicalElement {
 		final Function result = MathParser.joinFeatures(context, blockFeatures);
 		return result;
 	}
-
+	
 }

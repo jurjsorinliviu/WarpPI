@@ -106,11 +106,6 @@ public class Multiplication extends FunctionOperator {
 	}
 
 	@Override
-	public String toString() {
-		return "(" + parameter1.toString() + ")*(" + parameter2.toString() + ")";
-	}
-
-	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
 		ObjectArrayList<Block> result = new ObjectArrayList<>();
 		ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);

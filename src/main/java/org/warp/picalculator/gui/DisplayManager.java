@@ -77,12 +77,12 @@ public final class DisplayManager implements RenderingLoop {
 		GraphicEngine d;
 		d = new GPUEngine();
 		if (d.isSupported()) {
-			Utils.debug.println("Using GPU Graphic Engine");
+			Utils.out.println(1, "Using GPU Graphic Engine");
 			return d;
 		}
 		d = new CPUEngine();
 		if (d.isSupported()) {
-			Utils.debug.println("Using CPU Graphic Engine");
+			Utils.out.println(1, "Using CPU Graphic Engine");
 			return d;
 		}
 		d = new Headless256Engine();
@@ -273,7 +273,7 @@ public final class DisplayManager implements RenderingLoop {
 		if (brightness <= 10) {
 			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * brightness, 16 * 1, 16, 16);
 		} else {
-			Utils.debug.println("Brightness error");
+			Utils.out.println(1, "Brightness error");
 		}
 
 		padding += 18 + 6;
@@ -478,7 +478,7 @@ public final class DisplayManager implements RenderingLoop {
 				Gpio.pwmWrite(12, (int) Math.ceil(brightness * 1024f));
 //				SoftPwm.softPwmWrite(12, (int)(Math.ceil(brightness*10)));
 			} else {
-				Utils.debug.println("Brightness: " + newval);
+				Utils.out.println(1, "Brightness: " + newval);
 			}
 		}
 	}

@@ -46,17 +46,49 @@ public class Utils {
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;
 
-	public static DebugStream debug = new DebugStream();
+	public static AdvancedOutputStream out = new AdvancedOutputStream();
 
 	public static boolean debugOn;
+	public static int outputLevel = 5;
+	public static final int OUTPUTLEVEL_NODEBUG = 0;
+	public static final int OUTPUTLEVEL_DEBUG_MIN = 1;
+	public static final int OUTPUTLEVEL_DEBUG_MAX = 4;
 	public static boolean debugThirdScreen;
 	public static final boolean debugWindow2x = true;
 
-	public static final class DebugStream extends StringWriter {
+	public static final class AdvancedOutputStream extends StringWriter {
 
 		public void println(String str) {
-			if (debugOn) {
-				System.err.println(str);
+			println(0, str);
+		}
+		
+		public void println(int level) {
+			if (outputLevel >= level) {
+				if (outputLevel == 0) {
+					System.out.println();
+				} else {
+					System.err.println();
+				}
+			}
+		}
+		
+		public void println(int level, String str) {
+			if (outputLevel >= level) {
+				if (outputLevel == 0) {
+					System.out.println(str);
+				} else {
+					System.err.println(str);
+				}
+			}
+		}
+		
+		public void print(int level, String str) {
+			if (outputLevel >= level) {
+				if (outputLevel == 0) {
+					System.out.print(str);
+				} else {
+					System.err.print(str);
+				}
 			}
 		}
 

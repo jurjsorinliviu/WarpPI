@@ -25,6 +25,17 @@ public abstract class FunctionSingle implements Function {
 	 * 
 	 * @param mathContext
 	 *            Math Context
+	 */
+	public FunctionSingle(MathContext mathContext) {
+		this.mathContext = mathContext;
+		parameter = null;
+	}
+
+	/**
+	 * Create a new instance of FunctionSingle.
+	 * 
+	 * @param mathContext
+	 *            Math Context
 	 * @param value
 	 *            The parameter of this function.
 	 */

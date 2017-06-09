@@ -832,7 +832,7 @@ public class Keyboard {
 				refreshRequest = true;
 			}
 		} else if (!done) {
-			Utils.debug.println("Key " + k.toString() + " ignored.");
+			Utils.out.println(1, "Key " + k.toString() + " ignored.");
 		}
 	}
 
@@ -862,7 +862,7 @@ public class Keyboard {
 				refreshRequest = true;
 			}
 		} else if (!done) {
-			Utils.debug.println("Key " + k.toString() + " ignored.");
+			Utils.out.println(1, "Key " + k.toString() + " ignored.");
 		}
 	}
 

@@ -27,28 +27,24 @@ public class ExpandRule1 {
 			final Negative fnc = (Negative) f;
 			if (fnc.getParameter() instanceof Expression) {
 				final Expression expr = (Expression) fnc.getParameter();
-				if (expr.getParametersLength() == 1) {
-					if (expr.getParameter(0) instanceof Sum) {
-						return true;
-					} else if (expr.getParameter(0) instanceof Subtraction) {
-						return true;
-					} else if (expr.getParameter(0) instanceof SumSubtraction) {
-						return true;
-					}
+				if (expr.getParameter() instanceof Sum) {
+					return true;
+				} else if (expr.getParameter() instanceof Subtraction) {
+					return true;
+				} else if (expr.getParameter() instanceof SumSubtraction) {
+					return true;
 				}
 			}
 		} else if (f instanceof Subtraction || f instanceof SumSubtraction) {
 			final FunctionOperator fnc = (FunctionOperator) f;
 			if (fnc.getParameter2() instanceof Expression) {
 				final Expression expr = (Expression) fnc.getParameter2();
-				if (expr.getParametersLength() == 1) {
-					if (expr.getParameter(0) instanceof Sum) {
-						return true;
-					} else if (expr.getParameter(0) instanceof Subtraction) {
-						return true;
-					} else if (expr.getParameter(0) instanceof SumSubtraction) {
-						return true;
-					}
+				if (expr.getParameter() instanceof Sum) {
+					return true;
+				} else if (expr.getParameter() instanceof Subtraction) {
+					return true;
+				} else if (expr.getParameter() instanceof SumSubtraction) {
+					return true;
 				}
 			}
 		}
@@ -77,7 +73,7 @@ public class ExpandRule1 {
 
 		}
 
-		final Function fnc = expr.getParameter(0);
+		final Function fnc = expr.getParameter();
 		if (fnc instanceof Sum) {
 			final Function a = ((Sum) fnc).getParameter1();
 			final Function b = ((Sum) fnc).getParameter2();

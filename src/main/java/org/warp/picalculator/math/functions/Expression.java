@@ -29,27 +29,28 @@ import org.warp.picalculator.math.functions.trigonometry.Tangent;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class Expression extends FunctionDynamic {
+public class Expression extends FunctionSingle {
 
 	public Expression(MathContext root) {
 		super(root);
 	}
 
-	public Expression(MathContext root, Function[] values) {
-		super(root, values);
-	}
-
 	public Expression(MathContext root, Function value) {
-		super(root, new Function[] { value });
+		super(root, value);
 	}
 
 	private boolean initialParenthesis = false;
 
+	@Deprecated
 	public Expression(MathContext root, String string) throws Error {
 		this(root, string, "", true);
 	}
 
+	@Deprecated
 	public Expression(MathContext root, String string, String debugSpaces, boolean initialParenthesis) throws Error {
+		super(root);
+		
+		/*
 		super(root);
 		this.initialParenthesis = initialParenthesis;
 		boolean isNumber = false;
@@ -72,7 +73,7 @@ public class Expression extends FunctionDynamic {
 			// If the expression is already a number:
 			// Se l'espressione è già un numero:
 			final Number t = new Number(root, string);
-			functions = new Function[] { t };
+			parameter = t;
 			Utils.debug.println(debugSpaces + "•Result:" + t.toString());
 		} else {
 			// Else prepare the expression:
@@ -223,7 +224,7 @@ public class Expression extends FunctionDynamic {
 
 			// Convert the expression to a list of objects
 			Expression imputRawParenthesis = new Expression(root);
-			imputRawParenthesis = (Expression) imputRawParenthesis.setParameters(new Function[] {});
+			imputRawParenthesis = (Expression) imputRawParenthesis.setParameter(null);
 			String tmp = "";
 			final char[] functions = concat(concat(concat(concat(MathematicalSymbols.functions, MathematicalSymbols.parentheses), MathematicalSymbols.signums(true)), MathematicalSymbols.variables), MathematicalSymbols.genericSyntax);
 			for (int i = 0; i < processExpression.length(); i++) {
@@ -555,48 +556,32 @@ public class Expression extends FunctionDynamic {
 			final String result = toString();
 			Utils.debug.println(debugSpaces + "•Result:" + result);
 		}
+		*/
 	}
 
 	@Override
 	protected boolean isSolvable() {
-		if (getParametersLength() > 1) {
+		final Function f = getParameter();
+		if (f.isSimplified() == false) {
 			return true;
-		} else if (getParametersLength() == 1) {
-			final Function f = getParameter(0);
-			if (f.isSimplified() == false) {
-				return true;
-			} else {
-				return !parenthesisNeeded();
-			}
+		} else {
+			return !parenthesisNeeded();
 		}
-		return false;
 	}
 
 	@Override
 	public ObjectArrayList<Function> solve() throws Error {
 		final ObjectArrayList<Function> ret = new ObjectArrayList<>();
-		if (getParametersLength() == 1) {
-			if (getParameter(0).isSimplified() || !parenthesisNeeded()) {
-				ret.add(getParameter(0));
-				return ret;
-			} else {
-				final List<Function> l = getParameter(0).simplify();
-				for (final Function f : l) {
-					if (f instanceof Number || f instanceof Variable) {
-						ret.add(f);
-					} else {
-						ret.add(new Expression(root, new Function[] { f }));
-					}
-				}
-				return ret;
-			}
+		if (getParameter().isSimplified() || !parenthesisNeeded()) {
+			ret.add(getParameter());
+			return ret;
 		} else {
-			for (final Function f : getParameters()) {
-				if (f.isSimplified() == false) {
-					final List<Function> partial = f.simplify();
-					for (final Function fnc : partial) {
-						ret.add(new Expression(root, new Function[] { fnc }));
-					}
+			final List<Function> l = getParameter().simplify();
+			for (final Function f : l) {
+				if (f instanceof Number || f instanceof Variable) {
+					ret.add(f);
+				} else {
+					ret.add(new Expression(mathContext, f));
 				}
 			}
 			return ret;
@@ -608,19 +593,17 @@ public class Expression extends FunctionDynamic {
 		if (initialParenthesis) {
 			parenthesisneeded = false;
 		} else {
-			if (getParametersLength() == 1) {
-				final Function f = getParameter(0);
-				if (f instanceof Number || f instanceof Variable || f instanceof Expression || f instanceof Division || f instanceof Joke || f instanceof Undefined || f instanceof Power || f instanceof Sine || f instanceof Cosine || f instanceof Tangent || f instanceof ArcSine || f instanceof ArcCosine || f instanceof ArcTangent || f instanceof RootSquare) {
+			final Function f = getParameter(0);
+			if (f instanceof Number || f instanceof Variable || f instanceof Expression || f instanceof Division || f instanceof Joke || f instanceof Undefined || f instanceof Power || f instanceof Sine || f instanceof Cosine || f instanceof Tangent || f instanceof ArcSine || f instanceof ArcCosine || f instanceof ArcTangent || f instanceof RootSquare) {
+				parenthesisneeded = false;
+			}
+			if (f instanceof Multiplication) {
+				if (((Multiplication) f).getParameter1() instanceof Number) {
+					parenthesisneeded = !(((Multiplication) f).getParameter2() instanceof Variable);
+				} else if (((Multiplication) f).getParameter2() instanceof Number) {
+					parenthesisneeded = !(((Multiplication) f).getParameter1() instanceof Variable);
+				} else if (((Multiplication) f).getParameter1() instanceof Variable || ((Multiplication) f).getParameter2() instanceof Variable) {
 					parenthesisneeded = false;
-				}
-				if (f instanceof Multiplication) {
-					if (((Multiplication) f).getParameter1() instanceof Number) {
-						parenthesisneeded = !(((Multiplication) f).getParameter2() instanceof Variable);
-					} else if (((Multiplication) f).getParameter2() instanceof Number) {
-						parenthesisneeded = !(((Multiplication) f).getParameter1() instanceof Variable);
-					} else if (((Multiplication) f).getParameter1() instanceof Variable || ((Multiplication) f).getParameter2() instanceof Variable) {
-						parenthesisneeded = false;
-					}
 				}
 			}
 		}
@@ -645,46 +628,29 @@ public class Expression extends FunctionDynamic {
 	@Override
 	public String toString() {
 		String s = "(";
-		if (functions.length > 0) {
-			for (final Function f : functions) {
-				if (f == null) {
-					s += "[null],";
-				} else {
-					s += f.toString() + ",";
-				}
-			}
-			s = s.substring(0, s.length() - 1);
+		if (parameter == null) {
+			s += "null";
+		} else {
+			s += parameter.toString();
 		}
+		s = s.substring(0, s.length() - 1);
 		s += ")";
 		return s;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof Expression) {
-			final Expression f = (Expression) o;
-			final Function[] exprFuncs1 = getParameters();
-			final Function[] exprFuncs2 = f.getParameters();
-			if (exprFuncs1.length == exprFuncs2.length) {
-				for (int i = 0; i < exprFuncs1.length; i++) {
-					if (exprFuncs1[i].equals(exprFuncs2[i]) == false) {
-						return false;
-					}
-				}
-				return true;
-			}
-		} else if (o != null & getParametersLength() == 1) {
+		if (parameter == null | o == null) {
+			return parameter == o;
+		} else {
 			final Function f = (Function) o;
 			return (getParameter(0).equals(f));
-		} else if (o == null & getParametersLength() == 0) {
-			return true;
 		}
-		return false;
 	}
 
 	@Override
 	public Expression clone() {
-		return new Expression(root, functions);
+		return new Expression(mathContext, parameter);
 	}
 
 }

@@ -22,13 +22,13 @@ public class ExpandRule5 {
 			final Negative fnc = (Negative) f;
 			if (fnc.getParameter() instanceof Expression) {
 				final Expression e = (Expression) fnc.getParameter();
-				return e.getParametersLength() == 1 && e.getParameter(0) instanceof Negative;
+				return e.getParameter() instanceof Negative;
 			}
 		} else if (f instanceof Subtraction) {
 			final Subtraction fnc = (Subtraction) f;
 			if (fnc.getParameter2() instanceof Expression) {
 				final Expression e = (Expression) fnc.getParameter2();
-				return e.getParametersLength() == 1 && e.getParameter(0) instanceof Negative;
+				return e.getParameter() instanceof Negative;
 			}
 		}
 		return false;
@@ -39,10 +39,10 @@ public class ExpandRule5 {
 		
 		if (f instanceof Negative) {
 			final Negative fnc = (Negative) f;
-			result.add(((Negative) ((Expression) fnc.getParameter()).getParameter(0)).getParameter());
+			result.add(((Negative) ((Expression) fnc.getParameter()).getParameter()).getParameter());
 		} else if (f instanceof Subtraction) {
 			final Subtraction fnc = (Subtraction) f;
-			result.add(((Negative) ((Expression) fnc.getParameter2()).getParameter(0)).getParameter());
+			result.add(((Negative) ((Expression) fnc.getParameter2()).getParameter()).getParameter());
 		}
 		return result;
 	}

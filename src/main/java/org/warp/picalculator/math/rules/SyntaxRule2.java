@@ -23,7 +23,7 @@ public class SyntaxRule2 {
 		}
 		if (f.getParameter2() instanceof Expression) {
 			final Expression e = (Expression) f.getParameter2();
-			if (e.getParametersLength() == 1 && e.getParameter(0) instanceof Sum) {
+			if (e.getParameter() instanceof Sum) {
 				return true;
 			}
 		}
@@ -39,8 +39,8 @@ public class SyntaxRule2 {
 			b = ((Sum) f.getParameter2()).getParameter1();
 			c = ((Sum) f.getParameter2()).getParameter2();
 		} else {
-			b = ((Sum) ((Expression) f.getParameter2()).getParameter(0)).getParameter1();
-			c = ((Sum) ((Expression) f.getParameter2()).getParameter(0)).getParameter2();
+			b = ((Sum) ((Expression) f.getParameter2()).getParameter()).getParameter1();
+			c = ((Sum) ((Expression) f.getParameter2()).getParameter()).getParameter2();
 		}
 		final Sum mIn = new Sum(root, a, b);
 		f.setParameter1(mIn);

@@ -132,7 +132,7 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(Key k) {
-		Utils.debug.println(k.toString());
+		Utils.out.println(1, k.toString());
 		switch (k) {
 			case OK:
 				userInput.toggleExtra();
@@ -184,7 +184,7 @@ public class MathInputScreen extends Screen {
 						case SIMPLIFY:
 							if (DisplayManager.error != null) {
 								//TODO: make the error management a global API rather than being relegated to this screen.
-								Utils.debug.println("Resetting after error...");
+								Utils.out.println(1, "Resetting after error...");
 								DisplayManager.error = null;
 								calc.f = null;
 								calc.f2 = null;
@@ -205,37 +205,39 @@ public class MathInputScreen extends Screen {
 											calc.f.add(expr);
 											int stop = 0;
 											boolean done = false;
-											ObjectArrayList<ObjectArrayList<Function>> resultExpressions = new ObjectArrayList<>();
-											resultExpressions.add(new ObjectArrayList<Function>(expr.getParameters()));
+											ObjectArrayList<Function> resultExpressions = new ObjectArrayList<>();
+											resultExpressions.add(expr.getParameter());
 											while (!done && stop < 3000) {
-												ObjectArrayList<ObjectArrayList<Function>> newResultExpressions = new ObjectArrayList<>();
+												ObjectArrayList<Function> newResultExpressions = new ObjectArrayList<>();
 												done = true;
-												for (ObjectArrayList<Function> resultExpr : resultExpressions) {
-													ObjectArrayList<Function> newResults = new ObjectArrayList<>();
-													for (Function f : resultExpr) {
-														if (f.isSimplified() == false) {
-															done = false;
-															if (f instanceof Expression) {
-																ObjectArrayList<Function> fncResult = ((Expression)f).solve();
-																for (Function resultItem : fncResult) {
-																	newResultExpressions.add(new ObjectArrayList<Function>(new Function[] {resultItem}));
-																}
-															} else {
-																List<Function> fncResult = f.simplify();
-																for (Function resultItem : fncResult) {
-																	newResultExpressions.add(new ObjectArrayList<Function>(new Function[] {resultItem}));
-																}
+												for (Function f : resultExpressions) {
+													Function newResult = null;
+													if (f.isSimplified() == false) {
+														done = false;
+														if (f instanceof Expression) {
+															ObjectArrayList<Function> fncResult = ((Expression)f).solve();
+															for (Function resultItem : fncResult) {
+																newResultExpressions.add(resultItem);
 															}
 														} else {
-															newResults.add(f);
+															List<Function> fncResult = f.simplify();
+															for (Function resultItem : fncResult) {
+																newResultExpressions.add(resultItem);
+															}
 														}
+													} else {
+														newResult = f;
 													}
-													if (newResults.isEmpty() == false) {
-														newResultExpressions.add(newResults);
+													if (newResult != null) {
+														newResultExpressions.add(newResult);
 													}
 												}
 												resultExpressions = newResultExpressions;
 												stop++;
+											}
+											Utils.out.println(2, "INPUT: "+expr);
+											for (Function rr : resultExpressions) {
+												Utils.out.println(1, "RESULT: " + rr.toString());
 											}
 											ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
 											result.setContentAsMultipleGroups(resultBlocks);
@@ -372,18 +374,14 @@ public class MathInputScreen extends Screen {
 							userInput.clear();
 							result.clear();
 							if (DisplayManager.error != null) {
-								Utils.debug.println("Resetting after error...");
+								Utils.out.println(1, "Resetting after error...");
 								DisplayManager.error = null;
 							}
 							return true;
 						case SURD_MODE:
 							calc.exactMode = !calc.exactMode;
-							if (calc.exactMode == false) {
-								calc.f2 = solveExpression(calc.f2);
-							} else {
-								result.clear();
-								Keyboard.keyPressed(Key.SIMPLIFY);
-							}
+							result.clear();
+							Keyboard.keyPressed(Key.SIMPLIFY);
 							return true;
 						case debug1:
 							DisplayManager.INSTANCE.setScreen(new EmptyScreen());
@@ -442,7 +440,11 @@ public class MathInputScreen extends Screen {
 		}
 	}
 
+	@SuppressWarnings("unused")
+	@Deprecated
 	private ObjectArrayList<Function> solveExpression(ObjectArrayList<Function> f22) {
+		return null;
+		/*
 		try {
 			try {
 				return calc.solveExpression(f22);
@@ -461,9 +463,12 @@ public class MathInputScreen extends Screen {
 			System.err.println(e.id);
 		}
 		return null;
+		*/
 	}
 
+	@Deprecated
 	protected void step() {
+		/*
 		try {
 			try {
 				showVariablesDialog();
@@ -499,7 +504,7 @@ public class MathInputScreen extends Screen {
 					results.addAll(hs);
 					calc.f2 = results;
 				}
-				Utils.debug.println(calc.f2.toString());
+				Utils.out.println(1, calc.f2.toString());
 			} catch (final Exception ex) {
 				if (Utils.debugOn) {
 					ex.printStackTrace();
@@ -514,9 +519,12 @@ public class MathInputScreen extends Screen {
 			DisplayManager.error = e.id.toString();
 			System.err.println(e.id);
 		}
+		*/
 	}
 
+	@Deprecated
 	protected void simplify() {
+		/*
 		try {
 			try {
 				for (final Function f : calc.f) {
@@ -553,6 +561,7 @@ public class MathInputScreen extends Screen {
 			DisplayManager.error = e.id.toString();
 			System.err.println(e.id);
 		}
+		*/
 	}
 
 	@SuppressWarnings("unused")
@@ -610,7 +619,7 @@ public class MathInputScreen extends Screen {
 				DisplayManager.INSTANCE.setScreen(cvs);
 				try {
 					while (DisplayManager.screen == cvs) {
-						Utils.debug.println(Thread.currentThread().getName());
+						Utils.out.println(1, Thread.currentThread().getName());
 						Thread.sleep(200);
 					}
 				} catch (final InterruptedException e) {}

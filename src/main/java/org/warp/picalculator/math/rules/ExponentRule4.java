@@ -21,7 +21,7 @@ public class ExponentRule4 {
 
 	public static boolean compare(Function f) {
 		final Power fnc = (Power) f;
-		if (fnc.getParameter1() instanceof Expression && ((Expression) fnc.getParameter1()).getParametersLength() == 1 && ((Expression) fnc.getParameter1()).getParameter(0) instanceof Multiplication && fnc.getParameter2() instanceof Number) {
+		if (fnc.getParameter1() instanceof Expression && ((Expression) fnc.getParameter1()).getParameter() instanceof Multiplication && fnc.getParameter2() instanceof Number) {
 			return true;
 		}
 		return false;
@@ -32,7 +32,7 @@ public class ExponentRule4 {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final Power fnc = (Power) f;
 		final Expression expr = (Expression) fnc.getParameter1();
-		final Multiplication mult = (Multiplication) expr.getParameter(0);
+		final Multiplication mult = (Multiplication) expr.getParameter();
 		final Function a = mult.getParameter1();
 		final Function b = mult.getParameter2();
 		final Number n = (Number) fnc.getParameter2();

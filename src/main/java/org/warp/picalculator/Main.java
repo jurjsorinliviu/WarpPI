@@ -30,10 +30,10 @@ public class Main {
 		Main.args = args;
 		beforeStart();
 		new DisplayManager(screen);
-		Utils.debug.println("Shutdown...");
+		Utils.out.println(1, "Shutdown...");
 		beforeShutdown();
-		Utils.debug.println("");
-		Utils.debug.println("Closed.");
+		Utils.out.println(1, "");
+		Utils.out.println(1, "Closed.");
 		System.exit(0);
 	}
 

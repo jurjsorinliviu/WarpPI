@@ -30,7 +30,10 @@ public class MathContext {
 		resultsCount = 0;
 	}
 
+	@Deprecated
 	public Function parseString(String string) throws Error {
+		return null;
+		/*
 		if (string.contains("{")) {
 			if (!string.startsWith("{")) {
 				throw new Error(Errors.SYNTAX_ERROR);
@@ -46,9 +49,13 @@ public class MathContext {
 		} else {
 			return new Expression(this, string);
 		}
+		*/
 	}
 
+	@Deprecated
 	public Function parseEquationString(String string) throws Error {
+		return null;
+		/*
 		final String[] parts = string.split("=");
 		if (parts.length == 1) {
 			return new Equation(this, new Expression(this, parts[0]), new Number(this, BigInteger.ZERO));
@@ -56,10 +63,13 @@ public class MathContext {
 			return new Equation(this, new Expression(this, parts[0]), new Expression(this, parts[1]));
 		} else {
 			throw new Error(Errors.SYNTAX_ERROR);
-		}
+		}*/
 	}
 
+	@Deprecated
 	public ObjectArrayList<Function> solveExpression(ObjectArrayList<Function> input) throws Error {
+		return null;
+		/*
 		ObjectArrayList<Function> results = new ObjectArrayList<>();
 		final ObjectArrayList<Function> partialResults = new ObjectArrayList<>();
 		for (final Function f : input) {
@@ -87,6 +97,7 @@ public class MathContext {
 			}
 		}
 		return results;
+		*/
 	}
 
 	public Function getChild() {

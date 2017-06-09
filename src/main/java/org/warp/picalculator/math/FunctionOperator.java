@@ -177,4 +177,9 @@ public abstract class FunctionOperator implements Function {
 
 	@Override
 	public abstract boolean equals(Object o);
+	
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName()+"("+this.getParameter1()+","+this.getParameter2()+")";
+	}
 }

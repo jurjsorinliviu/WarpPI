@@ -48,7 +48,7 @@ public class EquationsSystem extends FunctionDynamic {
 					if (f instanceof Number) {
 						ret.add(f);
 					} else {
-						ret.add(new Expression(root, new Function[] { f }));
+						ret.add(new Expression(root, f));
 					}
 				}
 				return ret;
@@ -58,7 +58,7 @@ public class EquationsSystem extends FunctionDynamic {
 				if (f.isSimplified() == false) {
 					final List<Function> partial = f.simplify();
 					for (final Function fnc : partial) {
-						ret.add(new Expression(root, new Function[] { fnc }));
+						ret.add(new Expression(root, fnc));
 					}
 				}
 			}

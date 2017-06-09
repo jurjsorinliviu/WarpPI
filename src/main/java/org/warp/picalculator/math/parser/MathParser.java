@@ -2,48 +2,27 @@ package org.warp.picalculator.math.parser;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.IntegerObj;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.expression.blocks.Block;
-import org.warp.picalculator.gui.expression.blocks.BlockChar;
-import org.warp.picalculator.gui.expression.blocks.BlockContainer;
-import org.warp.picalculator.gui.expression.blocks.BlockDivision;
-import org.warp.picalculator.gui.expression.blocks.BlockExponentialNotation;
-import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
-import org.warp.picalculator.gui.expression.blocks.BlockPower;
-import org.warp.picalculator.gui.expression.blocks.BlockSquareRoot;
 import org.warp.picalculator.gui.expression.containers.InputContainer;
 import org.warp.picalculator.math.Function;
-import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Power;
-import org.warp.picalculator.math.functions.RootSquare;
-import org.warp.picalculator.math.functions.Subtraction;
-import org.warp.picalculator.math.functions.Sum;
-import org.warp.picalculator.math.functions.SumSubtraction;
-import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
 import org.warp.picalculator.math.parser.features.FeatureChar;
-import org.warp.picalculator.math.parser.features.FeatureDivision;
 import org.warp.picalculator.math.parser.features.FeatureMultiplication;
 import org.warp.picalculator.math.parser.features.FeatureNumber;
-import org.warp.picalculator.math.parser.features.FeatureParenthesis;
-import org.warp.picalculator.math.parser.features.FeaturePowerChar;
-import org.warp.picalculator.math.parser.features.FeatureSquareRoot;
 import org.warp.picalculator.math.parser.features.FeatureSum;
 import org.warp.picalculator.math.parser.features.FeatureVariable;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
-import org.warp.picalculator.math.parser.features.interfaces.FeatureDouble;
-import org.warp.picalculator.math.parser.features.interfaces.FeatureSingle;
-
-import com.sun.org.apache.xpath.internal.functions.Function2Args;
+import org.warp.picalculator.math.parser.steps.JoinNumberAndVariables;
+import org.warp.picalculator.math.parser.steps.FixMultiplicationsAndDivisions;
+import org.warp.picalculator.math.parser.steps.FixSingleFunctionArgs;
+import org.warp.picalculator.math.parser.steps.FixSumsAndSubtractions;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectListIterator;
 
 public class MathParser {
 	public static Expression parseInput(MathContext context, InputContainer c) throws Error {
@@ -55,15 +34,11 @@ public class MathParser {
 		return result;
 	}
 
-	public static ObjectArrayList<ObjectArrayList<Block>> parseOutput(MathContext context, ObjectArrayList<ObjectArrayList<Function>> resultExpressions) throws Error {
+	public static ObjectArrayList<ObjectArrayList<Block>> parseOutput(MathContext context, ObjectArrayList<Function> resultExpressions) throws Error {
 		final ObjectArrayList<ObjectArrayList<Block>> result = new ObjectArrayList<>();
-		for (ObjectArrayList<Function> resultExpression : resultExpressions) {
-			final ObjectArrayList<Block> resultBlocks = new ObjectArrayList<>();
-			for (Function f : resultExpression) {
-				ObjectArrayList<Block> resultPart = f.toBlock(context);
-				if (resultPart == null) throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + f.getClass().getSimpleName());
-				resultBlocks.addAll(resultPart);
-			}
+		for (Function resultExpression : resultExpressions) {
+			ObjectArrayList<Block> resultBlocks = resultExpression.toBlock(context);
+			if (resultBlocks == null) throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + resultExpression.getClass().getSimpleName());
 			result.add(resultBlocks);
 		}
 		return result;
@@ -73,7 +48,7 @@ public class MathParser {
 
 		features = fixFeatures(context, features);
 
-		final ObjectArrayList<Function> process = new ObjectArrayList<>();
+		ObjectArrayList<Function> process = new ObjectArrayList<>();
 		
 		for (final Feature f : features) {
 			Function fnc = f.toFunction(context);
@@ -81,7 +56,7 @@ public class MathParser {
 			process.add(fnc);
 		}
 		
-		fixStack(context, process);
+		process = fixStack(context, process);
 
 		if (process.size() > 1) {
 			throw new Error(Errors.UNBALANCED_STACK, "The stack is unbalanced. Not all the functions are nested correctly");
@@ -90,119 +65,55 @@ public class MathParser {
 		return process.get(0);
 	}
 
-	private static void fixStack(MathContext context, ObjectArrayList<Function> process) throws Error {
-
+	private static ObjectArrayList<Function> fixStack(MathContext context, ObjectArrayList<Function> functionsList) throws Error {
+		final MathParserStep[] steps = new MathParserStep[] {
+				new JoinNumberAndVariables(context),
+				new FixSingleFunctionArgs(),
+				new FixMultiplicationsAndDivisions(),
+				new FixSumsAndSubtractions(),
+		};
 		boolean lastLoopDidSomething;
+		Function lastElement;
 		
-		ObjectListIterator<Function> stackIterator;
+		for (MathParserStep step : steps) {
+			Utils.out.println(2, "Stack fixing step \""+step.getStepName()+"\"");
+			int stepQty = step.requiresReversedIteration()?-1:1, initialIndex = step.requiresReversedIteration()?functionsList.size()-1:0;
+			do {
+				lastLoopDidSomething = false;
+				lastElement = null;
+				IntegerObj curIndex = new IntegerObj(initialIndex);
+				while(curIndex.i >= 0 && curIndex.i < functionsList.size()) {
+					final Function f = functionsList.get(curIndex.i);
+					
+					if (step.eval(curIndex, lastElement, f, functionsList)) {
+						lastLoopDidSomething = true;
+					}
+					
+					lastElement=f;
+					curIndex.i+=stepQty;
+				}
+			} while (lastLoopDidSomething);
+			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
+			for (Function f : functionsList) {
+				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+			}
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
+		}
 		
-		//Phase 0: join number and variables ([2][x] => [[2]*[x]])
-		do {
-			lastLoopDidSomething = false;
-			stackIterator = process.listIterator(process.size());
-			Function lastElement = null;
-			while (stackIterator.hasPrevious()) {
-				final Function f = stackIterator.previous();
-				final int curIndex = stackIterator.nextIndex();
-	
-				if (f instanceof Number | f instanceof Variable) {
-					if (lastElement instanceof Variable) {
-						lastLoopDidSomething = true;
-						final Function var = process.get(curIndex + 1);
-						final Function numb = process.get(curIndex);
-						stackIterator.set(new Multiplication(context, numb, var));
-						process.remove(curIndex + 1);
-					}
-				}
-				lastElement = f;
-			}
-		} while (lastLoopDidSomething);
+//		//Phase 4
+//		do {
+//			lastLoopDidSomething = false;
+//			functionListIterator = functionsList.iterator();
+//			while (functionListIterator.hasNext()) {
+//				final Function f = functionListIterator.next();
+//
+//				if (f instanceof Function2Args) {
+//
+//				}
+//			}
+//		} while (lastLoopDidSomething);
 		
-		//Phase 1
-		do {
-			lastLoopDidSomething = false;
-			stackIterator = process.listIterator(process.size());
-			Function lastElement = null;
-			while (stackIterator.hasPrevious()) {
-				final Function f = stackIterator.previous();
-
-				if (f instanceof FunctionSingle) {
-					if (((FunctionSingle) f).getParameter() == null) {
-						lastLoopDidSomething = true;
-						if (lastElement == null) {
-							throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
-						} else {
-							((FunctionSingle) f).setParameter(lastElement);
-							process.remove(stackIterator.nextIndex());
-						}
-					}
-				}
-				lastElement = f;
-			}
-		} while (lastLoopDidSomething);
-
-		//Phase 2
-		do {
-			lastLoopDidSomething = false;
-			stackIterator = process.listIterator();
-			while (stackIterator.hasNext()) {
-				final Function f = stackIterator.next();
-				final int curIndex = stackIterator.previousIndex();
-
-				if (f instanceof Multiplication || f instanceof Division) {
-					if (curIndex - 1 >= 0 && stackIterator.hasNext()) {
-						lastLoopDidSomething = true;
-						final Function next = process.get(curIndex + 1);
-						final Function prev = process.get(curIndex - 1);
-						stackIterator.set(f.setParameter(0, prev).setParameter(1, next));
-						process.remove(curIndex + 1);
-						process.remove(curIndex - 1);
-					} else {
-						if (f.getParameter(0) == null || f.getParameter(1) == null) {
-							throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
-						}
-					}
-				}
-			}
-		} while (lastLoopDidSomething);
-
-		//Phase 3
-		do {
-			lastLoopDidSomething = false;
-			stackIterator = process.listIterator();
-			while (stackIterator.hasNext()) {
-				final Function f = stackIterator.next();
-				final int curIndex = stackIterator.previousIndex();
-
-				if (f instanceof Sum || f instanceof Subtraction || f instanceof SumSubtraction) {
-					if (curIndex - 1 >= 0 && stackIterator.hasNext()) {
-						lastLoopDidSomething = true;
-						final Function next = process.get(curIndex + 1);
-						final Function prev = process.get(curIndex - 1);
-						stackIterator.set(f.setParameter(0, prev).setParameter(1, next));
-						process.remove(curIndex + 1);
-						process.remove(curIndex - 1);
-					} else {
-						if (f.getParameter(0) == null || f.getParameter(1) == null) {
-							throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
-						}
-					}
-				}
-			}
-		} while (lastLoopDidSomething);
-
-		//Phase 4
-		do {
-			lastLoopDidSomething = false;
-			stackIterator = process.iterator();
-			while (stackIterator.hasNext()) {
-				final Function f = stackIterator.next();
-
-				if (f instanceof Function2Args) {
-
-				}
-			}
-		} while (lastLoopDidSomething);
+		return functionsList;
 	}
 
 	private static ObjectArrayList<Feature> fixFeatures(final MathContext context, ObjectArrayList<Feature> features)
