@@ -2,6 +2,7 @@ package org.warp.picalculator.math.parser.steps;
 
 import org.warp.picalculator.IntegerObj;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
@@ -10,21 +11,25 @@ import org.warp.picalculator.math.parser.MathParserStep;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public class JoinNumberAndVariables implements MathParserStep {
+public class AddImplicitMultiplications implements MathParserStep {
 
 	private MathContext context;
 	
-	public JoinNumberAndVariables(MathContext context) {
+	public AddImplicitMultiplications(MathContext context) {
 		this.context = context;
 	}
 	
 	@Override
 	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction, ObjectArrayList<Function> functionsList) {
-		if (currentFunction instanceof Number | currentFunction instanceof Variable) {
-			if (lastFunction instanceof Variable | lastFunction instanceof Number | lastFunction instanceof Multiplication) {
-				final Function var = lastFunction;
-				final Function numb = currentFunction;
-				functionsList.set(curIndex.i, new Multiplication(context, numb, var));
+		if (currentFunction instanceof FunctionSingle) {
+			if (lastFunction instanceof Function) {
+				functionsList.set(curIndex.i, new Multiplication(context, currentFunction, lastFunction));
+				functionsList.remove(curIndex.i + 1);
+				return true;
+			}
+		} else if (currentFunction instanceof Function) {
+			if (lastFunction instanceof FunctionSingle) {
+				functionsList.set(curIndex.i, new Multiplication(context, currentFunction, lastFunction));
 				functionsList.remove(curIndex.i + 1);
 				return true;
 			}
@@ -39,7 +44,7 @@ public class JoinNumberAndVariables implements MathParserStep {
 
 	@Override
 	public String getStepName() {
-		return "Join number and variables together";
+		return "Add implicit multiplications before and after Single Functions";
 	}
 
 }

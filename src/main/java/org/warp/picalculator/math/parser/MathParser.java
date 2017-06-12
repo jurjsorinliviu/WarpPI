@@ -18,6 +18,7 @@ import org.warp.picalculator.math.parser.features.FeatureSum;
 import org.warp.picalculator.math.parser.features.FeatureVariable;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 import org.warp.picalculator.math.parser.steps.JoinNumberAndVariables;
+import org.warp.picalculator.math.parser.steps.AddImplicitMultiplications;
 import org.warp.picalculator.math.parser.steps.FixMultiplicationsAndDivisions;
 import org.warp.picalculator.math.parser.steps.FixSingleFunctionArgs;
 import org.warp.picalculator.math.parser.steps.FixSumsAndSubtractions;
@@ -71,9 +72,16 @@ public class MathParser {
 				new FixSingleFunctionArgs(),
 				new FixMultiplicationsAndDivisions(),
 				new FixSumsAndSubtractions(),
+				new AddImplicitMultiplications(context),
 		};
 		boolean lastLoopDidSomething;
 		Function lastElement;
+
+		Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
+		for (Function f : functionsList) {
+			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+		}
+		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
 		
 		for (MathParserStep step : steps) {
 			Utils.out.println(2, "Stack fixing step \""+step.getStepName()+"\"");
@@ -158,9 +166,8 @@ public class MathParser {
 						break;
 				}
 				
-				//TODO: Temporary solution. In near future Variables will be distint objects and they will have a color. So they will be no longer a BlockChar/FeatureChar
 				for (char var : MathematicalSymbols.variables) {
-					if ( featureChar == var) {
+					if (featureChar == var) {
 						result = new FeatureVariable(featureChar, V_TYPE.UNKNOWN);
 						break;
 					}
