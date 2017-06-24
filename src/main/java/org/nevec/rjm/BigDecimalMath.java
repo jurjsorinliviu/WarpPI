@@ -93,7 +93,7 @@ public class BigDecimalMath {
 			 * Euler-Stieltjes as shown in Dilcher, Aequat Math 48 (1) (1994)
 			 * 55-85
 			 */
-			MathContext mcloc = new MathContext(2 + mc.getPrecision());
+			MathContext mcloc = SafeMathContext.newMathContext(2 + mc.getPrecision());
 			BigDecimal resul = BigDecimal.ONE;
 			resul = resul.add(log(2, mcloc));
 			resul = resul.subtract(log(3, mcloc));
@@ -105,7 +105,7 @@ public class BigDecimalMath {
 			 * Log(2) is 0.7
 			 */
 			final int kmax = (int) ((Math.log(eps / 0.7) - 2.) / 4.);
-			mcloc = new MathContext(1 + err2prec(1.2, eps / kmax));
+			mcloc = SafeMathContext.newMathContext(1 + err2prec(1.2, eps / kmax));
 			for (int n = 1;; n++) {
 				/*
 				 * zeta is close to 1. Division of zeta-1 through
@@ -146,7 +146,7 @@ public class BigDecimalMath {
 		final BigDecimal half = new BigDecimal("2");
 
 		/* increase the local accuracy by 2 digits */
-		final MathContext locmc = new MathContext(mc.getPrecision() + 2, mc.getRoundingMode());
+		final MathContext locmc = SafeMathContext.newMathContext(mc.getPrecision() + 2, mc.getRoundingMode());
 
 		/*
 		 * relative accuracy requested is 10^(-precision)
@@ -242,7 +242,7 @@ public class BigDecimalMath {
 		 * slightly larger than what is demanded by 'eps' below.
 		 */
 		final BigDecimal xhighpr = scalePrec(x, 2);
-		final MathContext mc = new MathContext(2 + x.precision());
+		final MathContext mc = SafeMathContext.newMathContext(2 + x.precision());
 
 		/*
 		 * Relative accuracy of the result is eps.
@@ -257,14 +257,14 @@ public class BigDecimalMath {
 			 */
 			BigDecimal c = xhighpr.divide(s.pow(n - 1), mc);
 			c = s.subtract(c);
-			final MathContext locmc = new MathContext(c.precision());
+			final MathContext locmc = SafeMathContext.newMathContext(c.precision());
 			c = c.divide(nth, locmc);
 			s = s.subtract(c);
 			if (Math.abs(c.doubleValue() / s.doubleValue()) < eps) {
 				break;
 			}
 		}
-		return s.round(new MathContext(err2prec(eps)));
+		return s.round(SafeMathContext.newMathContext(err2prec(eps)));
 	} /* BigDecimalMath.root */
 
 	/**
@@ -291,7 +291,7 @@ public class BigDecimalMath {
 		 * digits.
 		 */
 		final BigDecimal zerr = x.abs().multiply(x.ulp()).add(y.abs().multiply(y.ulp()));
-		MathContext mc = new MathContext(2 + err2prec(z, zerr));
+		MathContext mc = SafeMathContext.newMathContext(2 + err2prec(z, zerr));
 
 		/* Pull square root */
 		z = sqrt(z.round(mc));
@@ -300,7 +300,7 @@ public class BigDecimalMath {
 		 * Final rounding. Absolute error in the square root is
 		 * (y*yerr+x*xerr)/z, where zerr holds 2*(x*xerr+y*yerr).
 		 */
-		mc = new MathContext(err2prec(z.doubleValue(), 0.5 * zerr.doubleValue() / z.doubleValue()));
+		mc = SafeMathContext.newMathContext(err2prec(z.doubleValue(), 0.5 * zerr.doubleValue() / z.doubleValue()));
 		return z.round(mc);
 	} /* BigDecimalMath.hypot */
 
@@ -330,7 +330,7 @@ public class BigDecimalMath {
 		 * so this feature does not harm.
 		 */
 		final double zerr = x.doubleValue() * x.ulp().doubleValue();
-		MathContext mc = new MathContext(2 + err2prec(z.doubleValue(), zerr));
+		MathContext mc = SafeMathContext.newMathContext(2 + err2prec(z.doubleValue(), zerr));
 
 		/* Pull square root */
 		z = sqrt(z.round(mc));
@@ -339,7 +339,7 @@ public class BigDecimalMath {
 		 * Final rounding. Absolute error in the square root is x*xerr/z, where
 		 * zerr holds 2*x*xerr.
 		 */
-		mc = new MathContext(err2prec(z.doubleValue(), 0.5 * zerr / z.doubleValue()));
+		mc = SafeMathContext.newMathContext(err2prec(z.doubleValue(), 0.5 * zerr / z.doubleValue()));
 		return z.round(mc);
 	} /* BigDecimalMath.hypot */
 
@@ -375,7 +375,7 @@ public class BigDecimalMath {
 			 * errror in invx.
 			 * This is used to define the precision of the result.
 			 */
-			final MathContext mc = new MathContext(invx.precision());
+			final MathContext mc = SafeMathContext.newMathContext(invx.precision());
 			return BigDecimal.ONE.divide(invx, mc);
 		} else if (x.compareTo(BigDecimal.ZERO) == 0) {
 			/*
@@ -420,7 +420,7 @@ public class BigDecimalMath {
 				 * add noise beyond
 				 * what's already in x.
 				 */
-				final MathContext mcTay = new MathContext(err2prec(1., xUlpDbl / TAYLOR_NTERM));
+				final MathContext mcTay = SafeMathContext.newMathContext(err2prec(1., xUlpDbl / TAYLOR_NTERM));
 				for (int i = 1; i <= TAYLOR_NTERM; i++) {
 					ifac = ifac.multiply(new BigInteger("" + i));
 					xpowi = xpowi.multiply(x);
@@ -435,7 +435,7 @@ public class BigDecimalMath {
 				 * relative error
 				 * in the result equals the absolute error in the argument.
 				 */
-				final MathContext mc = new MathContext(err2prec(xUlpDbl / 2.));
+				final MathContext mc = SafeMathContext.newMathContext(err2prec(xUlpDbl / 2.));
 				return resul.round(mc);
 			} else {
 				/*
@@ -454,7 +454,7 @@ public class BigDecimalMath {
 				 * binomial expansion).
 				 * This looses one digit.
 				 */
-				final MathContext mc = new MathContext(expxby10.precision() - exSc);
+				final MathContext mc = SafeMathContext.newMathContext(expxby10.precision() - exSc);
 				/*
 				 * Rescaling the powers of 10 is done in chunks of a maximum of
 				 * 8 to avoid an invalid operation
@@ -463,7 +463,7 @@ public class BigDecimalMath {
 				while (exSc > 0) {
 					int exsub = Math.min(8, exSc);
 					exSc -= exsub;
-					final MathContext mctmp = new MathContext(expxby10.precision() - exsub + 2);
+					final MathContext mctmp = SafeMathContext.newMathContext(expxby10.precision() - exsub + 2);
 					int pex = 1;
 					while (exsub-- > 0) {
 						pex *= 10;
@@ -539,7 +539,7 @@ public class BigDecimalMath {
 					break;
 				}
 			}
-			final MathContext mc = new MathContext(err2prec(resul.doubleValue(), eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 			return resul.round(mc);
 		} else {
 			final double xDbl = x.doubleValue();
@@ -573,7 +573,7 @@ public class BigDecimalMath {
 			 * in the result equals the relative error in the input,
 			 * xUlpDbl/xDbl .
 			 */
-			final MathContext mc = new MathContext(err2prec(resul.doubleValue(), xUlpDbl / xDbl));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), xUlpDbl / xDbl));
 			return resul.round(mc);
 		}
 	} /* BigDecimalMath.log */
@@ -610,7 +610,7 @@ public class BigDecimalMath {
 				 * S(2,-5,...).
 				 */
 				final int[] a = { 2, -5, -2, -7, -2, -5, 2, -3 };
-				BigDecimal S = broadhurstBBP(2, 1, a, new MathContext(1 + mc.getPrecision()));
+				BigDecimal S = broadhurstBBP(2, 1, a, SafeMathContext.newMathContext(1 + mc.getPrecision()));
 				S = S.multiply(new BigDecimal(8));
 				S = sqrt(divideRound(S, 3));
 				return S.round(mc);
@@ -625,7 +625,7 @@ public class BigDecimalMath {
 			 * so k>= precision/1.87.
 			 */
 			final int kmax = (int) (mc.getPrecision() / 1.87);
-			MathContext mcloc = new MathContext(mc.getPrecision() + 1 + (int) (Math.log10(kmax * 0.693 / 1.098)));
+			MathContext mcloc = SafeMathContext.newMathContext(mc.getPrecision() + 1 + (int) (Math.log10(kmax * 0.693 / 1.098)));
 			BigDecimal log3 = multiplyRound(log(2, mcloc), 19);
 
 			/*
@@ -646,7 +646,7 @@ public class BigDecimalMath {
 				/*
 				 * how many digits of tmp do we need in the sum?
 				 */
-				mcloc = new MathContext(err2prec(tmp.doubleValue(), eps));
+				mcloc = SafeMathContext.newMathContext(err2prec(tmp.doubleValue(), eps));
 				final BigDecimal c = pk.divide(k).BigDecimalValue(mcloc);
 				if (k % 2 != 0) {
 					log3 = log3.add(c);
@@ -667,7 +667,7 @@ public class BigDecimalMath {
 			 * so k>= precision/1.33.
 			 */
 			final int kmax = (int) (mc.getPrecision() / 1.33);
-			MathContext mcloc = new MathContext(mc.getPrecision() + 1 + (int) (Math.log10(kmax * 0.693 / 1.609)));
+			MathContext mcloc = SafeMathContext.newMathContext(mc.getPrecision() + 1 + (int) (Math.log10(kmax * 0.693 / 1.609)));
 			BigDecimal log5 = multiplyRound(log(2, mcloc), 14);
 
 			/*
@@ -688,7 +688,7 @@ public class BigDecimalMath {
 				/*
 				 * how many digits of tmp do we need in the sum?
 				 */
-				mcloc = new MathContext(err2prec(tmp.doubleValue(), eps));
+				mcloc = SafeMathContext.newMathContext(err2prec(tmp.doubleValue(), eps));
 				final BigDecimal c = pk.divide(k).BigDecimalValue(mcloc);
 				log5 = log5.subtract(c);
 				pk = pk.multiply(r);
@@ -705,7 +705,7 @@ public class BigDecimalMath {
 			 * so k>= precision/0.903.
 			 */
 			final int kmax = (int) (mc.getPrecision() / 0.903);
-			MathContext mcloc = new MathContext(mc.getPrecision() + 1 + (int) (Math.log10(kmax * 3 * 0.693 / 1.098)));
+			MathContext mcloc = SafeMathContext.newMathContext(mc.getPrecision() + 1 + (int) (Math.log10(kmax * 3 * 0.693 / 1.098)));
 			BigDecimal log7 = multiplyRound(log(2, mcloc), 3);
 
 			/*
@@ -723,7 +723,7 @@ public class BigDecimalMath {
 				/*
 				 * how many digits of tmp do we need in the sum?
 				 */
-				mcloc = new MathContext(err2prec(tmp.doubleValue(), eps));
+				mcloc = SafeMathContext.newMathContext(err2prec(tmp.doubleValue(), eps));
 				final BigDecimal c = pk.divide(k).BigDecimalValue(mcloc);
 				log7 = log7.subtract(c);
 				pk = pk.multiply(r);
@@ -753,7 +753,7 @@ public class BigDecimalMath {
 			 * Convert this absolute requirement of error in n to a relative
 			 * error in n
 			 */
-			final MathContext mcloc = new MathContext(1 + err2prec(n, eps));
+			final MathContext mcloc = SafeMathContext.newMathContext(1 + err2prec(n, eps));
 			/*
 			 * Padd n with a number of zeros to trigger the required accuracy in
 			 * the standard signature method
@@ -796,7 +796,7 @@ public class BigDecimalMath {
 			 * in r, given that
 			 * epsr/r is also the relative precision of r. Add one safety digit.
 			 */
-			final MathContext mcloc = new MathContext(1 + err2prec(eps));
+			final MathContext mcloc = SafeMathContext.newMathContext(1 + err2prec(eps));
 
 			final BigDecimal resul = log(r.BigDecimalValue(mcloc));
 
@@ -834,7 +834,7 @@ public class BigDecimalMath {
 			 * |log(x)*err(y)|+|y*err(x)/x|
 			 */
 			final double errR = Math.abs(logx.doubleValue() * y.ulp().doubleValue() / 2.) + Math.abs(y.doubleValue() * x.ulp().doubleValue() / 2. / x.doubleValue());
-			final MathContext mcR = new MathContext(err2prec(1.0, errR));
+			final MathContext mcR = SafeMathContext.newMathContext(err2prec(1.0, errR));
 			return resul.round(mcR);
 		}
 	} /* BigDecimalMath.pow */
@@ -867,7 +867,7 @@ public class BigDecimalMath {
 			 * Since the standard BigDecimal.pow can only handle positive n, we
 			 * split the algorithm.
 			 */
-			final MathContext mc = new MathContext(x.precision() - (int) Math.log10((Math.abs(n))));
+			final MathContext mc = SafeMathContext.newMathContext(x.precision() - (int) Math.log10((Math.abs(n))));
 			if (n > 0) {
 				return x.pow(n, mc);
 			} else {
@@ -991,7 +991,7 @@ public class BigDecimalMath {
 						 */
 						eps = nu.divide(de, MathContext.DECIMAL32);
 					} else {
-						final MathContext mc = new MathContext(precDiv);
+						final MathContext mc = SafeMathContext.newMathContext(precDiv);
 						eps = nu.divide(de, mc);
 					}
 
@@ -1006,7 +1006,7 @@ public class BigDecimalMath {
 						 * delete the bits of extra precision kept in this
 						 * working copy.
 						 */
-						final MathContext mc = new MathContext(err2prec(reserr.doubleValue()));
+						final MathContext mc = SafeMathContext.newMathContext(err2prec(reserr.doubleValue()));
 						return res.round(mc);
 					}
 				}
@@ -1019,7 +1019,7 @@ public class BigDecimalMath {
 				 * Delta(q)/q << Delta(x)/x/log(x) .
 				 */
 				final int precq = 3 + err2prec((x.ulp().divide(x, MathContext.DECIMAL64)).doubleValue() / Math.log(x.doubleValue()));
-				final MathContext mc = new MathContext(precq);
+				final MathContext mc = SafeMathContext.newMathContext(precq);
 
 				/*
 				 * Perform the actual calculation as exponentiation of two
@@ -1051,9 +1051,9 @@ public class BigDecimalMath {
 			 */
 			final BigDecimal res = mod2pi(x);
 			final double errpi = 0.5 * Math.abs(x.ulp().doubleValue());
-			MathContext mc = new MathContext(2 + err2prec(3.14159, errpi));
+			MathContext mc = SafeMathContext.newMathContext(2 + err2prec(3.14159, errpi));
 			final BigDecimal p = pi(mc);
-			mc = new MathContext(x.precision());
+			mc = SafeMathContext.newMathContext(x.precision());
 			if (res.compareTo(p) > 0) {
 				/*
 				 * pi<x<=2pi: sin(x)= - sin(x-pi)
@@ -1102,7 +1102,7 @@ public class BigDecimalMath {
 					 * 2k*(-log10(x)) > x.precision; 2k*log10(1/x) > x.precision
 					 */
 					final int k = (int) (res.precision() / Math.log10(1.0 / res.doubleValue())) / 2;
-					final MathContext mcTay = new MathContext(err2prec(res.doubleValue(), xUlpDbl / k));
+					final MathContext mcTay = SafeMathContext.newMathContext(err2prec(res.doubleValue(), xUlpDbl / k));
 					for (int i = 1;; i++) {
 						/*
 						 * TBD: at which precision will 2*i or 2*i+1 overflow?
@@ -1119,7 +1119,7 @@ public class BigDecimalMath {
 					/*
 					 * The error in the result is set by the error in x itself.
 					 */
-					mc = new MathContext(res.precision());
+					mc = SafeMathContext.newMathContext(res.precision());
 					return resul.round(mc);
 				}
 			}
@@ -1146,9 +1146,9 @@ public class BigDecimalMath {
 			 */
 			final BigDecimal res = mod2pi(x);
 			final double errpi = 0.5 * Math.abs(x.ulp().doubleValue());
-			MathContext mc = new MathContext(2 + err2prec(3.14159, errpi));
+			MathContext mc = SafeMathContext.newMathContext(2 + err2prec(3.14159, errpi));
 			final BigDecimal p = pi(mc);
-			mc = new MathContext(x.precision());
+			mc = SafeMathContext.newMathContext(x.precision());
 			if (res.compareTo(p) > 0) {
 				/*
 				 * pi<x<=2pi: cos(x)= - cos(x-pi)
@@ -1198,7 +1198,7 @@ public class BigDecimalMath {
 					 * x^(2k) < xUlpDbl; (2k)*log(x) < log(xUlpDbl);
 					 */
 					final int k = (int) (Math.log(xUlpDbl) / Math.log(res.doubleValue())) / 2;
-					final MathContext mcTay = new MathContext(err2prec(1., xUlpDbl / k));
+					final MathContext mcTay = SafeMathContext.newMathContext(err2prec(1., xUlpDbl / k));
 					for (int i = 1;; i++) {
 						/*
 						 * TBD: at which precision will 2*i-1 or 2*i overflow?
@@ -1216,7 +1216,7 @@ public class BigDecimalMath {
 					 * The error in the result is governed by the error in x
 					 * itself.
 					 */
-					mc = new MathContext(err2prec(resul.doubleValue(), xUlpDbl));
+					mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), xUlpDbl));
 					return resul.round(mc);
 				}
 			}
@@ -1252,7 +1252,7 @@ public class BigDecimalMath {
 			if (xDbl > 0.8) {
 				/* tan(x) = 1/cot(x) */
 				final BigDecimal co = cot(x);
-				final MathContext mc = new MathContext(err2prec(1. / co.doubleValue(), eps));
+				final MathContext mc = SafeMathContext.newMathContext(err2prec(1. / co.doubleValue(), eps));
 				return BigDecimal.ONE.divide(co, mc);
 			} else {
 				final BigDecimal xhighpr = scalePrec(res, 2);
@@ -1282,7 +1282,7 @@ public class BigDecimalMath {
 						break;
 					}
 				}
-				final MathContext mc = new MathContext(err2prec(resul.doubleValue(), eps));
+				final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 				return resul.round(mc);
 			}
 		}
@@ -1318,7 +1318,7 @@ public class BigDecimalMath {
 			final BigDecimal xhighpr = scalePrec(res, 2);
 			final BigDecimal xhighprSq = multiplyRound(xhighpr, xhighpr);
 
-			MathContext mc = new MathContext(err2prec(xhighpr.doubleValue(), eps));
+			MathContext mc = SafeMathContext.newMathContext(err2prec(xhighpr.doubleValue(), eps));
 			BigDecimal resul = BigDecimal.ONE.divide(xhighpr, mc);
 
 			/* x^(2i-1) */
@@ -1348,7 +1348,7 @@ public class BigDecimalMath {
 				fourn = fourn.shiftLeft(2);
 				xpowi = multiplyRound(xpowi, xhighprSq);
 			}
-			mc = new MathContext(err2prec(resul.doubleValue(), eps));
+			mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 			return resul.round(mc);
 		}
 	} /* BigDecimalMath.cot */
@@ -1371,7 +1371,7 @@ public class BigDecimalMath {
 			 * arcsin(1) = pi/2
 			 */
 			final double errpi = Math.sqrt(x.ulp().doubleValue());
-			final MathContext mc = new MathContext(err2prec(3.14159, errpi));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(3.14159, errpi));
 			return pi(mc).divide(new BigDecimal(2));
 		} else if (x.compareTo(BigDecimal.ZERO) < 0) {
 			return asin(x.negate()).negate();
@@ -1417,10 +1417,10 @@ public class BigDecimalMath {
 			xpowi = sqrt(xhighpr.multiply(new BigDecimal(2)));
 			resul = multiplyRound(xpowi, resul);
 
-			MathContext mc = new MathContext(resul.precision());
+			MathContext mc = SafeMathContext.newMathContext(resul.precision());
 			final BigDecimal pihalf = pi(mc).divide(new BigDecimal(2));
 
-			mc = new MathContext(err2prec(resul.doubleValue(), eps));
+			mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 			return pihalf.subtract(resul, mc);
 		} else {
 			/*
@@ -1453,7 +1453,7 @@ public class BigDecimalMath {
 					break;
 				}
 			}
-			final MathContext mc = new MathContext(err2prec(resul.doubleValue(), eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 			return resul.round(mc);
 		}
 	} /* BigDecimalMath.asin */
@@ -1475,7 +1475,7 @@ public class BigDecimalMath {
 		BigDecimal resul = asin(xhighpr);
 		double eps = resul.ulp().doubleValue() / 2.;
 
-		MathContext mc = new MathContext(err2prec(3.14159, eps));
+		MathContext mc = SafeMathContext.newMathContext(err2prec(3.14159, eps));
 		final BigDecimal pihalf = pi(mc).divide(new BigDecimal(2));
 		resul = pihalf.subtract(resul);
 
@@ -1486,7 +1486,7 @@ public class BigDecimalMath {
 		final double xUlpDbl = x.ulp().doubleValue() / 2.;
 		eps = xUlpDbl / 2. / Math.sqrt(1. - Math.pow(xDbl, 2.));
 
-		mc = new MathContext(err2prec(resul.doubleValue(), eps));
+		mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 		return resul.round(mc);
 
 	} /* BigDecimalMath.acos */
@@ -1524,7 +1524,7 @@ public class BigDecimalMath {
 			 * of the ulp.
 			 */
 			final double eps = x.ulp().doubleValue() / (2.0 * Math.hypot(1.0, x.doubleValue()));
-			final MathContext mc = new MathContext(err2prec(resul.doubleValue(), eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 			return resul.round(mc);
 		} else if (x.doubleValue() < 0.71) {
 			/* Taylor expansion around x=0; Abramowitz-Stegun 4.4.42 */
@@ -1552,7 +1552,7 @@ public class BigDecimalMath {
 					break;
 				}
 			}
-			final MathContext mc = new MathContext(err2prec(resul.doubleValue(), eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 			return resul.round(mc);
 		} else {
 			/* Taylor expansion around x=infinity; Abramowitz-Stegun 4.4.42 */
@@ -1567,7 +1567,7 @@ public class BigDecimalMath {
 			 * start with the term pi/2; gather its precision relative to the
 			 * expected result
 			 */
-			MathContext mc = new MathContext(2 + err2prec(3.1416, eps));
+			MathContext mc = SafeMathContext.newMathContext(2 + err2prec(3.1416, eps));
 			final BigDecimal onepi = pi(mc);
 			BigDecimal resul = onepi.divide(new BigDecimal(2));
 
@@ -1586,7 +1586,7 @@ public class BigDecimalMath {
 				}
 				xpowi = multiplyRound(xpowi, xhighprSq);
 			}
-			mc = new MathContext(err2prec(resul.doubleValue(), eps));
+			mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), eps));
 			return resul.round(mc);
 		}
 	} /* BigDecimalMath.atan */
@@ -1644,7 +1644,7 @@ public class BigDecimalMath {
 				 * the absolute value will give a safe relative error estimate
 				 * for the indivdual terms
 				 */
-				final MathContext mcTay = new MathContext(err2prec(1., xUlpDbl / k));
+				final MathContext mcTay = SafeMathContext.newMathContext(err2prec(1., xUlpDbl / k));
 				for (int i = 1;; i++) {
 					/*
 					 * TBD: at which precision will 2*i-1 or 2*i overflow?
@@ -1661,7 +1661,7 @@ public class BigDecimalMath {
 				/*
 				 * The error in the result is governed by the error in x itself.
 				 */
-				final MathContext mc = new MathContext(err2prec(resul.doubleValue(), xUlpDbl));
+				final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), xUlpDbl));
 				return resul.round(mc);
 			}
 		}
@@ -1698,7 +1698,7 @@ public class BigDecimalMath {
 				 * coth(x)*errx = errx/tanh(x)
 				 */
 				final double eps = Math.tanh(x.doubleValue());
-				final MathContext mc = new MathContext(err2prec(0.5 * x.ulp().doubleValue() / eps));
+				final MathContext mc = SafeMathContext.newMathContext(err2prec(0.5 * x.ulp().doubleValue() / eps));
 				return resul.round(mc);
 			} else {
 				final BigDecimal xhighpr = scalePrec(x, 2);
@@ -1727,7 +1727,7 @@ public class BigDecimalMath {
 				 * 2k*(-log10(x)) > x.precision; 2k*log10(1/x) > x.precision
 				 */
 				final int k = (int) (x.precision() / Math.log10(1.0 / xhighpr.doubleValue())) / 2;
-				final MathContext mcTay = new MathContext(err2prec(x.doubleValue(), xUlpDbl / k));
+				final MathContext mcTay = SafeMathContext.newMathContext(err2prec(x.doubleValue(), xUlpDbl / k));
 				for (int i = 1;; i++) {
 					/*
 					 * TBD: at which precision will 2*i or 2*i+1 overflow?
@@ -1744,7 +1744,7 @@ public class BigDecimalMath {
 				/*
 				 * The error in the result is set by the error in x itself.
 				 */
-				final MathContext mc = new MathContext(x.precision());
+				final MathContext mc = SafeMathContext.newMathContext(x.precision());
 				return resul.round(mc);
 			}
 		}
@@ -1776,7 +1776,7 @@ public class BigDecimalMath {
 			 * The error in tanh x is err(x)/cosh^2(x).
 			 */
 			final double eps = 0.5 * x.ulp().doubleValue() / Math.pow(Math.cosh(x.doubleValue()), 2.0);
-			final MathContext mc = new MathContext(err2prec(Math.tanh(x.doubleValue()), eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(Math.tanh(x.doubleValue()), eps));
 			return BigDecimal.ONE.subtract(exp2x).divide(BigDecimal.ONE.add(exp2x), mc);
 		}
 	} /* BigDecimalMath.tanh */
@@ -1806,7 +1806,7 @@ public class BigDecimalMath {
 			 */
 			final double xDbl = x.doubleValue();
 			final double eps = 0.5 * x.ulp().doubleValue() / Math.hypot(1., xDbl);
-			final MathContext mc = new MathContext(err2prec(logx.doubleValue(), eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(logx.doubleValue(), eps));
 			return logx.round(mc);
 		}
 	} /* BigDecimalMath.asinh */
@@ -1838,7 +1838,7 @@ public class BigDecimalMath {
 			 */
 			final double xDbl = x.doubleValue();
 			final double eps = 0.5 * x.ulp().doubleValue() / Math.sqrt(xDbl * xDbl - 1.);
-			final MathContext mc = new MathContext(err2prec(logx.doubleValue(), eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(logx.doubleValue(), eps));
 			return logx.round(mc);
 		}
 	} /* BigDecimalMath.acosh */
@@ -1876,7 +1876,7 @@ public class BigDecimalMath {
 			 * add intermediately 2 digits to the partial sum accumulation
 			 */
 			z = scalePrec(z, 2);
-			MathContext mcloc = new MathContext(z.precision());
+			MathContext mcloc = SafeMathContext.newMathContext(z.precision());
 
 			/*
 			 * measure of the absolute error is the relative error in the first,
@@ -1901,7 +1901,7 @@ public class BigDecimalMath {
 					 * absolute error in z)
 					 */
 					BigDecimal c = divideRound(z.pow(n, mcloc), n);
-					MathContext m = new MathContext(err2prec(n * z.ulp().doubleValue() / 2. / z.doubleValue()));
+					MathContext m = SafeMathContext.newMathContext(err2prec(n * z.ulp().doubleValue() / 2. / z.doubleValue()));
 					c = c.round(m);
 
 					/*
@@ -1917,9 +1917,9 @@ public class BigDecimalMath {
 					 * of the order of 1.
 					 */
 					if (eps / 100. / c.doubleValue() < 0.01) {
-						m = new MathContext(err2prec(eps / 100. / c.doubleValue()));
+						m = SafeMathContext.newMathContext(err2prec(eps / 100. / c.doubleValue()));
 					} else {
-						m = new MathContext(2);
+						m = SafeMathContext.newMathContext(2);
 					}
 					/* zeta(n) -1 */
 					final BigDecimal zetm1 = zeta(n, m).subtract(BigDecimal.ONE);
@@ -1946,7 +1946,7 @@ public class BigDecimalMath {
 			 */
 			final double zdbl = z.doubleValue();
 			eps = psi(zdbl) * x.ulp().doubleValue() / 2.;
-			mcloc = new MathContext(err2prec(eps));
+			mcloc = SafeMathContext.newMathContext(err2prec(eps));
 			return exp(resul).round(mcloc);
 		}
 	} /* BigDecimalMath.gamma */
@@ -2003,7 +2003,7 @@ public class BigDecimalMath {
 			final double qdbl = q.doubleValue();
 			final double deltx = 5. * Math.pow(10., -mc.getPrecision()) / psi(qdbl);
 
-			final MathContext mcx = new MathContext(err2prec(qdbl, deltx));
+			final MathContext mcx = SafeMathContext.newMathContext(err2prec(qdbl, deltx));
 			final BigDecimal x = q.BigDecimalValue(mcx);
 
 			/* forward calculation to the general floating point case */
@@ -2047,10 +2047,10 @@ public class BigDecimalMath {
 			for (int i = 1; i < n; i++) {
 				eps += 0.5 * xUlpDbl / Math.abs(xDbl + i);
 				resul = resul.multiply(xhighpr.add(new BigDecimal(i)));
-				final MathContext mcloc = new MathContext(4 + err2prec(eps));
+				final MathContext mcloc = SafeMathContext.newMathContext(4 + err2prec(eps));
 				resul = resul.round(mcloc);
 			}
-			return resul.round(new MathContext(err2prec(eps)));
+			return resul.round(SafeMathContext.newMathContext(err2prec(eps)));
 		}
 	} /* BigDecimalMath.pochhammer */
 
@@ -2084,7 +2084,7 @@ public class BigDecimalMath {
 		} else {
 			err2pi = 0.5 * Math.abs(x.ulp().doubleValue());
 		}
-		MathContext mc = new MathContext(2 + err2prec(6.283, err2pi));
+		MathContext mc = SafeMathContext.newMathContext(2 + err2prec(6.283, err2pi));
 		final BigDecimal twopi = pi(mc).multiply(new BigDecimal(2));
 
 		/*
@@ -2101,7 +2101,7 @@ public class BigDecimalMath {
 		 * The actual precision is set by the input value, its absolute value of
 		 * x.ulp()/2.
 		 */
-		mc = new MathContext(err2prec(res.doubleValue(), x.ulp().doubleValue() / 2.));
+		mc = SafeMathContext.newMathContext(err2prec(res.doubleValue(), x.ulp().doubleValue() / 2.));
 		return res.round(mc);
 	} /* mod2pi */
 
@@ -2135,7 +2135,7 @@ public class BigDecimalMath {
 		} else {
 			errpi = 0.5 * Math.abs(x.ulp().doubleValue());
 		}
-		MathContext mc = new MathContext(2 + err2prec(3.1416, errpi));
+		MathContext mc = SafeMathContext.newMathContext(2 + err2prec(3.1416, errpi));
 		final BigDecimal onepi = pi(mc);
 		final BigDecimal pihalf = onepi.divide(new BigDecimal(2));
 
@@ -2155,7 +2155,7 @@ public class BigDecimalMath {
 		 * The actual precision is set by the input value, its absolute value of
 		 * x.ulp()/2.
 		 */
-		mc = new MathContext(err2prec(res.doubleValue(), x.ulp().doubleValue() / 2.));
+		mc = SafeMathContext.newMathContext(err2prec(res.doubleValue(), x.ulp().doubleValue() / 2.));
 		return res.round(mc);
 	} /* modpi */
 
@@ -2195,7 +2195,7 @@ public class BigDecimalMath {
 			 * Need one more digit in pi if n=10, two digits if n=100 etc, and
 			 * add one extra digit.
 			 */
-			final MathContext mcpi = new MathContext(mc.getPrecision() + (int) (Math.log10(10.0 * n)));
+			final MathContext mcpi = SafeMathContext.newMathContext(mc.getPrecision() + (int) (Math.log10(10.0 * n)));
 			final BigDecimal piton = pi(mcpi).pow(n, mc);
 			return multiplyRound(piton, b);
 		} else if (n == 3) {
@@ -2225,9 +2225,9 @@ public class BigDecimalMath {
 			final int[] a51 = { 31, -1614, -31, -6212, -31, -1614, 31, 74552 };
 			final int[] a53 = { 173, 284, -173, -457, -173, 284, 173, -111 };
 			final int[] a55 = { 1, 0, -1, -1, -1, 0, 1, 1 };
-			BigDecimal S51 = broadhurstBBP(5, 1, a51, new MathContext(2 + mc.getPrecision()));
-			BigDecimal S53 = broadhurstBBP(5, 3, a53, new MathContext(2 + mc.getPrecision()));
-			BigDecimal S55 = broadhurstBBP(5, 5, a55, new MathContext(1 + mc.getPrecision()));
+			BigDecimal S51 = broadhurstBBP(5, 1, a51, SafeMathContext.newMathContext(2 + mc.getPrecision()));
+			BigDecimal S53 = broadhurstBBP(5, 3, a53, SafeMathContext.newMathContext(2 + mc.getPrecision()));
+			BigDecimal S55 = broadhurstBBP(5, 5, a55, SafeMathContext.newMathContext(1 + mc.getPrecision()));
 			S51 = S51.multiply(new BigDecimal(18432));
 			S53 = S53.multiply(new BigDecimal(14336));
 			S55 = S55.multiply(new BigDecimal(1511424));
@@ -2258,7 +2258,7 @@ public class BigDecimalMath {
 			 * and the precision
 			 * requested for 2*pi is in absolute terms adjusted.
 			 */
-			final MathContext mcloc = new MathContext(2 + mc.getPrecision() + (int) (Math.log10((n))));
+			final MathContext mcloc = SafeMathContext.newMathContext(2 + mc.getPrecision() + (int) (Math.log10((n))));
 			BigDecimal ftrm = pi(mcloc).multiply(new BigDecimal(2));
 			ftrm = ftrm.pow(n);
 			ftrm = multiplyRound(ftrm, betsum.BigDecimalValue(mcloc));
@@ -2286,7 +2286,7 @@ public class BigDecimalMath {
 				 * The absolute error is
 				 * 4*exp(2pi)*err(pi)/(exp(2pi)-1)^2=0.0075*err(pi)
 				 */
-				BigDecimal exp2p = pi(new MathContext(3 + err2prec(3.14, eps / 0.0075)));
+				BigDecimal exp2p = pi(SafeMathContext.newMathContext(3 + err2prec(3.14, eps / 0.0075)));
 				exp2p = exp(exp2p.multiply(new BigDecimal(2)));
 				BigDecimal c = exp2p.subtract(BigDecimal.ONE);
 				exps = divideRound(1, c);
@@ -2319,7 +2319,7 @@ public class BigDecimalMath {
 				 * The absolute error is 0.017*err(pi) at k=9, 0.013*err(pi) at
 				 * k=13, 0.012 at k=17
 				 */
-				BigDecimal twop = pi(new MathContext(3 + err2prec(3.14, eps / 0.017)));
+				BigDecimal twop = pi(SafeMathContext.newMathContext(3 + err2prec(3.14, eps / 0.017)));
 				twop = twop.multiply(new BigDecimal(2));
 				final BigDecimal exp2p = exp(twop);
 				BigDecimal c = exp2p.subtract(BigDecimal.ONE);
@@ -2378,7 +2378,7 @@ public class BigDecimalMath {
 			 * in relative units is higher, because zeta is around 1.
 			 */
 			final double eps = 1.e-18 * Math.pow(2., (-n));
-			final MathContext mc = new MathContext(err2prec(eps));
+			final MathContext mc = SafeMathContext.newMathContext(err2prec(eps));
 			return zeta(n, mc).subtract(BigDecimal.ONE).doubleValue();
 		}
 	} /* zeta */
@@ -2506,7 +2506,7 @@ public class BigDecimalMath {
 			if (Math.abs(r.doubleValue()) < eps) {
 				break;
 			}
-			final MathContext mcloc = new MathContext(1 + err2prec(r.doubleValue(), eps));
+			final MathContext mcloc = SafeMathContext.newMathContext(1 + err2prec(r.doubleValue(), eps));
 			res = res.add(r.BigDecimalValue(mcloc));
 		}
 		return res.round(mc);
@@ -2547,7 +2547,7 @@ public class BigDecimalMath {
 		if (err2prec < 0) {
 			err2prec = 0;
 		}
-		final MathContext mc = new MathContext(err2prec);
+		final MathContext mc = SafeMathContext.newMathContext(err2prec);
 		return resul.round(mc);
 	} /* addRound */
 
@@ -2599,7 +2599,7 @@ public class BigDecimalMath {
 		 * |err(y)|+|err(x)|
 		 */
 		final double errR = Math.abs(y.ulp().doubleValue() / 2.) + Math.abs(x.ulp().doubleValue() / 2.);
-		final MathContext mc = new MathContext(err2prec(resul.doubleValue(), errR));
+		final MathContext mc = SafeMathContext.newMathContext(err2prec(resul.doubleValue(), errR));
 		return resul.round(mc);
 	} /* subtractRound */
 
@@ -2636,7 +2636,7 @@ public class BigDecimalMath {
 		 * relative
 		 * errors |err(y)/y|+|err(x)/x|
 		 */
-		final MathContext mc = new MathContext(Math.min(x.precision(), y.precision()));
+		final MathContext mc = SafeMathContext.newMathContext(Math.min(x.precision(), y.precision()));
 		return resul.round(mc);
 	} /* multiplyRound */
 
@@ -2689,7 +2689,7 @@ public class BigDecimalMath {
 			/*
 			 * Convert the rational value with two digits of extra precision
 			 */
-			final MathContext mc = new MathContext(2 + x.precision());
+			final MathContext mc = SafeMathContext.newMathContext(2 + x.precision());
 			final BigDecimal fbd = f.BigDecimalValue(mc);
 
 			/*
@@ -2715,7 +2715,7 @@ public class BigDecimalMath {
 		/*
 		 * The estimation of the absolute error in the result is |n*err(x)|
 		 */
-		final MathContext mc = new MathContext(n != 0 ? x.precision() : 0);
+		final MathContext mc = SafeMathContext.newMathContext(n != 0 ? x.precision() : 0);
 		return resul.round(mc);
 	}
 
@@ -2734,7 +2734,7 @@ public class BigDecimalMath {
 		/*
 		 * The estimation of the absolute error in the result is |n*err(x)|
 		 */
-		final MathContext mc = new MathContext(n.compareTo(BigInteger.ZERO) != 0 ? x.precision() : 0);
+		final MathContext mc = SafeMathContext.newMathContext(n.compareTo(BigInteger.ZERO) != 0 ? x.precision() : 0);
 		return resul.round(mc);
 	}
 
@@ -2753,7 +2753,7 @@ public class BigDecimalMath {
 		 * The estimation of the relative error in the result is
 		 * |err(y)/y|+|err(x)/x|
 		 */
-		final MathContext mc = new MathContext(Math.min(x.precision(), y.precision()));
+		final MathContext mc = SafeMathContext.newMathContext(Math.min(x.precision(), y.precision()));
 		final BigDecimal resul = x.divide(y, mc);
 		/*
 		 * If x and y are precise integer values that may have common factors,
@@ -2777,13 +2777,13 @@ public class BigDecimalMath {
 			/*
 			 * In this case with vanishing Im(x), the result is simply 1/Re z.
 			 */
-			final MathContext mc = new MathContext(z.re.precision());
+			final MathContext mc = SafeMathContext.newMathContext(z.re.precision());
 			return new BigComplex(BigDecimal.ONE.divide(z.re, mc));
 		} else if (z.re.compareTo(BigDecimal.ZERO) == 0) {
 			/*
 			 * In this case with vanishing Re(z), the result is simply -i/Im z
 			 */
-			final MathContext mc = new MathContext(z.im.precision());
+			final MathContext mc = SafeMathContext.newMathContext(z.im.precision());
 			return new BigComplex(BigDecimal.ZERO, BigDecimal.ONE.divide(z.im, mc).negate());
 		} else {
 			/*
@@ -2791,9 +2791,9 @@ public class BigDecimalMath {
 			 */
 			BigDecimal R = addRound(z.re, divideRound(multiplyRound(z.im, z.im), z.re));
 			BigDecimal I = addRound(z.im, divideRound(multiplyRound(z.re, z.re), z.im));
-			MathContext mc = new MathContext(1 + R.precision());
+			MathContext mc = SafeMathContext.newMathContext(1 + R.precision());
 			R = BigDecimal.ONE.divide(R, mc);
-			mc = new MathContext(1 + I.precision());
+			mc = SafeMathContext.newMathContext(1 + I.precision());
 			I = BigDecimal.ONE.divide(I, mc);
 			return new BigComplex(R, I.negate());
 		}
@@ -2827,7 +2827,7 @@ public class BigDecimalMath {
 		/*
 		 * The estimation of the relative error in the result is |err(x)/x|
 		 */
-		final MathContext mc = new MathContext(x.precision());
+		final MathContext mc = SafeMathContext.newMathContext(x.precision());
 		return x.divide(new BigDecimal(n), mc);
 	}
 
@@ -2845,7 +2845,7 @@ public class BigDecimalMath {
 		/*
 		 * The estimation of the relative error in the result is |err(x)/x|
 		 */
-		final MathContext mc = new MathContext(x.precision());
+		final MathContext mc = SafeMathContext.newMathContext(x.precision());
 		return x.divide(new BigDecimal(n), mc);
 	} /* divideRound */
 
@@ -2863,7 +2863,7 @@ public class BigDecimalMath {
 		/*
 		 * The estimation of the relative error in the result is |err(x)/x|
 		 */
-		final MathContext mc = new MathContext(x.precision());
+		final MathContext mc = SafeMathContext.newMathContext(x.precision());
 		return new BigDecimal(n).divide(x, mc);
 	} /* divideRound */
 
@@ -2910,7 +2910,7 @@ public class BigDecimalMath {
 		/*
 		 * The estimation of the relative error in the result is |err(x)/x|
 		 */
-		final MathContext mc = new MathContext(x.precision());
+		final MathContext mc = SafeMathContext.newMathContext(x.precision());
 		return new BigDecimal(n).divide(x, mc);
 	}
 

@@ -3,6 +3,9 @@ package org.warp.picalculator.math.functions.trigonometry;
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
+import org.warp.picalculator.gui.expression.blocks.BlockSine;
 import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
@@ -60,8 +63,17 @@ public class Sine extends FunctionSingle {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		// TODO Auto-generated method stub
-		return null;
+		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
+		BlockSine bs = new BlockSine();
+		BlockContainer bpc = bs.getNumberContainer();
+		for (Block b : sub) {
+			bpc.appendBlockUnsafe(b);
+		}
+		bpc.recomputeDimensions();
+		bs.recomputeDimensions();
+		result.add(bs);
+		return result;
 	}
 
 }

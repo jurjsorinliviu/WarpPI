@@ -31,6 +31,6 @@ public class InlineInputContainer extends InputContainer {
 
 	@Override
 	public Block parseChar(char c) {
-		return new BlockChar(MathematicalSymbols.DIVISION);
+		return new BlockChar(c);
 	}
 }

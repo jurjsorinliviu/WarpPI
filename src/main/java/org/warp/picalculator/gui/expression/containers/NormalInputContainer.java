@@ -6,6 +6,7 @@ import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.gui.expression.blocks.BlockDivision;
 import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
 import org.warp.picalculator.gui.expression.blocks.BlockPower;
+import org.warp.picalculator.gui.expression.blocks.BlockSine;
 import org.warp.picalculator.gui.expression.blocks.BlockSquareRoot;
 import org.warp.picalculator.gui.expression.blocks.BlockVariable;
 import org.warp.picalculator.math.MathematicalSymbols;
@@ -63,6 +64,8 @@ public class NormalInputContainer extends InputContainer {
 			case '8':
 			case '9':
 				return new BlockChar(c);
+			case MathematicalSymbols.SINE:
+				return new BlockSine();
 			default:
 				for (char v : MathematicalSymbols.variables) {
 					if (c == v) {

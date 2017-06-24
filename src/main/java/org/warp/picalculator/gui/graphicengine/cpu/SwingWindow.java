@@ -14,6 +14,8 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;

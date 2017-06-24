@@ -12,6 +12,7 @@ import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
 import org.warp.picalculator.math.parser.features.FeatureChar;
+import org.warp.picalculator.math.parser.features.FeatureDivision;
 import org.warp.picalculator.math.parser.features.FeatureMultiplication;
 import org.warp.picalculator.math.parser.features.FeatureNumber;
 import org.warp.picalculator.math.parser.features.FeatureSum;
@@ -163,6 +164,9 @@ public class MathParser {
 						break;
 					case MathematicalSymbols.MULTIPLICATION:
 						result = new FeatureMultiplication(null, null);
+						break;
+					case MathematicalSymbols.DIVISION:
+						result = new FeatureDivision(null, null);
 						break;
 				}
 				
