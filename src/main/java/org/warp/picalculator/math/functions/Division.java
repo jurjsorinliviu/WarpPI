@@ -1,5 +1,9 @@
 package org.warp.picalculator.math.functions;
 
+import java.math.BigInteger;
+import java.util.LinkedList;
+
+import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
@@ -49,7 +53,15 @@ public class Division extends FunctionOperator {
 		if (variable1 instanceof Number && variable2 instanceof Number) {
 			if (getMathContext().exactMode) {
 				try {
-					return ((Number) variable1).divide((Number) variable2).isInteger();
+					if (((Number) variable1).isInteger() && ((Number) variable2).isInteger()) {
+						LinkedList<BigInteger> factors1 = ((Number) variable1).getFactors();
+						LinkedList<BigInteger> factors2 = ((Number) variable2).getFactors();
+						return factors1.retainAll(factors2); //True If something changed in the factors list by keeping only the intersection of the two factor lists.
+					} else if (((Number) variable1).divide((Number) variable2).isInteger()) {
+						return true;
+					} else {
+						return false;
+					}
 				} catch (final Error e) {
 					return false;
 				}
@@ -78,7 +90,21 @@ public class Division extends FunctionOperator {
 		} else if (UndefinedRule2.compare(this)) {
 			result = UndefinedRule2.execute(this);
 		} else if (variable1 instanceof Number && variable2 instanceof Number) {
-			result.add(((Number) variable1).divide((Number) variable2));
+			if (getMathContext().exactMode && (((Number) variable1).isInteger() && ((Number) variable2).isInteger())) {
+				LinkedList<BigInteger> factors1 = ((Number) variable1).getFactors();
+				LinkedList<BigInteger> factors2 = ((Number) variable2).getFactors();
+				if(factors1.retainAll(factors2)) { //True If something changed in the factors list by keeping only the intersection of the two factor lists.
+					BigInteger nmb1 = ((Number) this.getParameter1()).term.toBigIntegerExact();
+					BigInteger nmb2 = ((Number) this.getParameter2()).term.toBigIntegerExact();
+					for (BigInteger i : factors1) {
+						nmb1 = nmb1.divide(i);
+						nmb2 = nmb2.divide(i);
+					}
+					result.add(new Division(mathContext, new Number(mathContext, nmb1), new Number(mathContext, nmb2)));
+				}
+			} else {
+				result.add(((Number) variable1).divide((Number) variable2));
+			}
 		}
 		return result;
 	}

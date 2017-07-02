@@ -138,7 +138,8 @@ public class BigIntegerMath {
 	}
 
 	/**
-	 * Compute the list of positive divisors.
+	 * Compute the list of positive divisors.<br>
+	 * <b>Deprecated: This function is extremely slow and inefficient!</b>
 	 * 
 	 * @param n
 	 *            The integer of which the divisors are to be found.
@@ -146,6 +147,7 @@ public class BigIntegerMath {
 	 * @since 2010-08-27
 	 * @author Richard J. Mathar
 	 */
+	@Deprecated
 	static public Vector<BigInteger> divisors(final BigInteger n) {
 		return (new Ifactor(n.abs())).divisors();
 	}

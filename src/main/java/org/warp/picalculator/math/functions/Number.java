@@ -194,7 +194,11 @@ public class Number implements Function {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * @author programmingpraxis
+	 * @return
+	 */
 	public LinkedList<BigInteger> getFactors() {
 		BigInteger n = getTerm().toBigIntegerExact();
 		final BigInteger two = BigInteger.valueOf(2);
