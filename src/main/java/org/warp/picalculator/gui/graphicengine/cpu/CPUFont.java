@@ -14,7 +14,6 @@ import javax.imageio.ImageIO;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine.CPURenderer;
 
 public class CPUFont implements BinaryFont {
 

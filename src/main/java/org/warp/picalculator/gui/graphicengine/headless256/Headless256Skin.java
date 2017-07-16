@@ -10,12 +10,12 @@ import javax.imageio.ImageIO;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
-public class Headless8Skin implements Skin {
+public class Headless256Skin implements Skin {
 
 	public int[] skinData;
 	public int[] skinSize;
 
-	Headless8Skin(String file) throws IOException {
+	Headless256Skin(String file) throws IOException {
 		load(file);
 	}
 
@@ -29,7 +29,7 @@ public class Headless8Skin implements Skin {
 	public static int[] getMatrixOfImage(BufferedImage bufferedImage) {
 		BufferedImage after = new BufferedImage(bufferedImage.getWidth(null), bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		AffineTransform at = new AffineTransform();
-		at.scale(1f/((float)Headless8Engine.C_MUL_X), 1f/((float)Headless8Engine.C_MUL_Y));
+		at.scale(1f/((float)Headless256Engine.C_MUL_X), 1f/((float)Headless256Engine.C_MUL_Y));
 		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
 		after = scaleOp.filter(bufferedImage, after);
 		
@@ -39,7 +39,12 @@ public class Headless8Skin implements Skin {
 		final int[] pixels = new int[width * height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				pixels[i + j * width] = after.getRGB(i, j);
+				int rgb = after.getRGB(i, j);
+				int r = (rgb >> 16) &0xFF;
+				int g = (rgb >> 8) &0xFF;
+				int b = rgb &0xFF;
+				boolean transparent = ((rgb >> 24) & 0xFF) <= 128;
+				pixels[i + j * width] = Headless256Renderer.rgbToX256(r, g, b)|(transparent?Headless256Renderer.TRANSPARENT:0);
 			}
 		}
 
@@ -53,7 +58,7 @@ public class Headless8Skin implements Skin {
 
 	@Override
 	public void use(GraphicEngine d) {
-		((Headless8Renderer) d.getRenderer()).currentSkin = this;
+		((Headless256Renderer) d.getRenderer()).currentSkin = this;
 	}
 
 

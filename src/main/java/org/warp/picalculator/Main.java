@@ -54,6 +54,33 @@ public class Main {
 			Utils.debugOn = true;
 		}
 		Utils.debugThirdScreen = Utils.debugOn & false;
+		for (String arg : args) {
+			if (arg.contains("headless")) {
+				Utils.headlessOverride = true;
+			}
+			if (arg.contains("console-8")) {
+				Utils.headlessOverride = true;
+				Utils.forceEngine = "console-8";
+			}
+			if (arg.contains("console-256")) {
+				Utils.headlessOverride = true;
+				Utils.forceEngine = "console-256";
+			}
+			if (arg.contains("console-24bit")) {
+				Utils.headlessOverride = true;
+				Utils.forceEngine = "console-24bit";
+			}
+			if (arg.contains("cpu")) {
+				Utils.forceEngine = "cpu";
+			}
+			if (arg.contains("gpu")) {
+				Utils.forceEngine = "gpu";
+			}
+			if (arg.contains("ms-dos")) {
+				Utils.headlessOverride = true;
+				Utils.msDosMode = true;
+			}
+		}
 		DisplayManager.setBrightness(0.5f);
 		Keyboard.startKeyboard();
 	}

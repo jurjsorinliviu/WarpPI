@@ -12,8 +12,9 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
-import org.warp.picalculator.gui.graphicengine.headless256.Headless8Engine;
-import org.warp.picalculator.gui.graphicengine.headless8.Headless256Engine;
+import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitEngine;
+import org.warp.picalculator.gui.graphicengine.headless256.Headless256Engine;
+import org.warp.picalculator.gui.graphicengine.headless8.Headless8Engine;
 import org.warp.picalculator.gui.screens.Screen;
 
 import com.pi4j.wiringpi.Gpio;
@@ -83,6 +84,11 @@ public final class DisplayManager implements RenderingLoop {
 		d = new CPUEngine();
 		if (d.isSupported()) {
 			Utils.out.println(1, "Using CPU Graphic Engine");
+			return d;
+		}
+		d = new Headless24bitEngine();
+		if (d.isSupported()) {
+			System.err.println("Using Headless 24 bit Engine! This is a problem! No other graphic engines are available.");
 			return d;
 		}
 		d = new Headless256Engine();

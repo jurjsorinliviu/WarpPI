@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 
-public class Headless8Font implements BinaryFont {
+public class Headless256Font implements BinaryFont {
 
 	@Override
 	public void load(String file) throws IOException {

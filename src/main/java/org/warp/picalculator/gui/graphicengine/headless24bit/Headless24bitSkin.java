@@ -1,5 +1,7 @@
-package org.warp.picalculator.gui.graphicengine.cpu;
+package org.warp.picalculator.gui.graphicengine.headless24bit;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -8,12 +10,12 @@ import javax.imageio.ImageIO;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
-public class CPUSkin implements Skin {
+public class Headless24bitSkin implements Skin {
 
-	public int[] skinData;
+	public int[][] skinData;
 	public int[] skinSize;
 
-	CPUSkin(String file) throws IOException {
+	Headless24bitSkin(String file) throws IOException {
 		load(file);
 	}
 
@@ -24,13 +26,21 @@ public class CPUSkin implements Skin {
 		skinSize = new int[] { img.getWidth(), img.getHeight() };
 	}
 
-	public static int[] getMatrixOfImage(BufferedImage bufferedImage) {
+	public static int[][] getMatrixOfImage(BufferedImage bufferedImage) {
+		
+		
 		final int width = bufferedImage.getWidth(null);
 		final int height = bufferedImage.getHeight(null);
-		final int[] pixels = new int[width * height];
+		final int[][] pixels = new int[width * height][];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				pixels[i + j * width] = bufferedImage.getRGB(i, j);
+				int rgb = bufferedImage.getRGB(i, j);
+				int r = (rgb >> 16) &0xFF;
+				int g = (rgb >> 8) &0xFF;
+				int b = rgb &0xFF;
+				boolean transparent = ((rgb >> 24) & 0xFF) <= 128;
+				int[] curCol = Headless24bitRenderer.rgbToIntArray(r, g, b);
+				pixels[i + j * width] = new int[] {curCol[0], curCol[1], curCol[2], transparent?1:0};
 			}
 		}
 
@@ -39,13 +49,13 @@ public class CPUSkin implements Skin {
 
 	@Override
 	public void initialize(GraphicEngine d) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void use(GraphicEngine d) {
-		((CPURenderer) d.getRenderer()).currentSkin = this;
+		((Headless24bitRenderer) d.getRenderer()).currentSkin = this;
 	}
+
 
 }

@@ -55,6 +55,10 @@ public class Utils {
 	public static final int OUTPUTLEVEL_DEBUG_MAX = 4;
 	public static boolean debugThirdScreen;
 	public static final boolean debugWindow2x = true;
+	public static boolean headlessOverride = false;
+    private static String OS = System.getProperty("os.name").toLowerCase();
+	public static String forceEngine;
+	public static boolean msDosMode;
 
 	public static final class AdvancedOutputStream extends StringWriter {
 
@@ -710,5 +714,9 @@ public class Utils {
 			}
 		}
 		return false;
+	}
+
+	public static boolean isWindows() {
+		return (OS.indexOf("win") >= 0);
 	}
 }

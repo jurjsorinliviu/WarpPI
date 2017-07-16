@@ -245,8 +245,8 @@ public class SwingWindow extends JFrame {
 
 				final int[] a = ((DataBufferInt) display.g.getRaster().getDataBuffer()).getData();
 				//		        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
-				CPUEngine.canvas2d = a;
-				g.clearRect(0, 0, display.size[0], display.size[1]);
+				CPURenderer.canvas2d = a;
+				g.clearRect(0, 0, display.r.size[0], display.r.size[1]);
 				g.drawImage(display.g, 0, 0, null);
 				//			long time2 = System.nanoTime();
 				//			double timeDelta = ((double)(time2-time1))/1000000000d;

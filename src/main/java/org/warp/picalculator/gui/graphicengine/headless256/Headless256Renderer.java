@@ -1,4 +1,4 @@
-package org.warp.picalculator.gui.graphicengine.headless8;
+package org.warp.picalculator.gui.graphicengine.headless256;
 
 import org.warp.picalculator.gui.graphicengine.Renderer;
 

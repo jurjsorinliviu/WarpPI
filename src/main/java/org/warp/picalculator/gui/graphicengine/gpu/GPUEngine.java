@@ -125,7 +125,8 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.debugOn) return false;
+		if (Utils.forceEngine != null && Utils.forceEngine != "gpu") return false;
+		if (Utils.headlessOverride) return false;
 		boolean available = false;
 		boolean errored = false;
 		try {

@@ -1,23 +1,30 @@
-package org.warp.picalculator.gui.graphicengine.headless8;
+package org.warp.picalculator.gui.graphicengine.headless256;
 
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 
 import org.fusesource.jansi.AnsiConsole;
+import org.fusesource.jansi.internal.WindowsSupport;
 import org.warp.picalculator.Main;
+import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
+import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitRenderer;
 
 public class Headless256Engine implements org.warp.picalculator.gui.graphicengine.GraphicEngine {
 
 	private Headless256Renderer r = new Headless256Renderer();
 	private boolean stopped = true;
 	private RenderingLoop renderLoop;
-	protected static final int C_WIDTH = Main.screenSize[0]/2;//;60;
-	protected static final int C_HEIGHT = Main.screenSize[1]/3;//;40;
-	public static final int C_MUL_X = 2;//8;
-	public static final int C_MUL_Y = 3;//8;
+	public static final int C_MUL_X = 4;//8;
+	public static final int C_MUL_Y = 8;//8;
+	protected static final int C_WIDTH = Main.screenSize[0]/C_MUL_X;//Main.screenSize[0]/2;//;60;
+	protected static final int C_HEIGHT = Main.screenSize[1]/C_MUL_Y;//Main.screenSize[1]/3;//;40;
 	private String title = Main.calculatorName;
+	private boolean win = false;
+	private Key precKey = null;
 	
 	@Override
 	public int[] getSize() {
@@ -49,8 +56,75 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 
 	@Override
 	public void create() {
+		Utils.outputLevel = -1;
 		AnsiConsole.systemInstall();
-		AnsiConsole.out.print(Headless256Renderer.ANSI_PREFIX+"?25l");
+		if(Utils.isWindows() && !Utils.msDosMode){
+			win = true;
+			WindowsSupport.setConsoleMode(0x0200);
+			Thread t = new Thread(()-> {
+				int ch = -1;
+				while(true) {
+						if (precKey != null) {
+							Keyboard.keyReleased(precKey);
+							precKey = null;
+						}
+						ch = WindowsSupport.readByte();
+						Key key = null;
+						switch(ch) {
+							case 72: { // UP
+								key = Key.UP;
+								break;
+							}
+							case 80: { // DOWN
+								key = Key.DOWN;
+								break;
+							}
+							case 77: { // RIGHT
+								key = Key.RIGHT;
+								break;
+							}
+							case 75: { // LEFT
+								key = Key.LEFT;
+								break;
+							}
+							case 49: { // 1
+								key = Key.NUM1;
+								break;
+							}
+							case 50: { // 2
+								key = Key.NUM2;
+								break;
+							}
+							case 51: { // 3
+								key = Key.NUM3;
+								break;
+							}
+							case 52: { // 4
+								key = Key.NUM4;
+								break;
+							}
+							case 53: { // 5
+								key = Key.NUM5;
+								break;
+							}
+							case 54: { // 6
+								key = Key.NUM6;
+								break;
+							}
+							default: {
+								key = Key.NONE;
+								break;
+							}
+						}
+						if (key != null) {
+							Keyboard.keyPressed(key);
+						}
+
+				}
+			});
+			t.setDaemon(true);
+			t.start();
+		}
 		stopped = false;
 	}
 
@@ -108,7 +182,15 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 		renderLoop.refresh();
 		r.curColor = 0x1C;
 		r.glDrawStringCenter((C_WIDTH*C_MUL_X)/2, 0, title);
-		AnsiConsole.out.print(Headless256Renderer.ANSI_PREFIX+"1;1H");
+		if (win) {
+			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX+"0;0f");
+			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX+"?12l");
+			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX+"?25l");
+		} else {
+			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX+"0;0f");
+			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX+"?12l");
+			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX+"?25l");
+		}
 		for (int y = 0; y < C_HEIGHT; y++) {
 			int precBgColor = -1;
 			int precFgColor = -1;
@@ -118,19 +200,38 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 				curBgColor = r.bgColorMatrix[x+y*C_WIDTH];
 				curFgColor = r.fgColorMatrix[x+y*C_WIDTH];
 				if (precBgColor != curBgColor) {
-					AnsiConsole.out.print(Headless256Renderer.ANSI_PREFIX+Headless256Renderer.ansiBgColorPrefix+curBgColor+Headless256Renderer.ansiColorSuffix);
+					String str = Headless256Renderer.ANSI_PREFIX+Headless256Renderer.ansiBgColorPrefix+curBgColor+Headless256Renderer.ansiColorSuffix;
+					if (win) {
+						WindowsSupport.writeConsole(str);
+					} else {
+						AnsiConsole.out.print(str);
+					}
 				}
 				if (precFgColor != curFgColor) {
-					AnsiConsole.out.print(Headless256Renderer.ANSI_PREFIX+Headless256Renderer.ansiFgColorPrefix+curFgColor+Headless256Renderer.ansiColorSuffix);
+					String str = Headless256Renderer.ANSI_PREFIX+Headless256Renderer.ansiFgColorPrefix+curFgColor+Headless256Renderer.ansiColorSuffix;
+					if (win) {
+						WindowsSupport.writeConsole(str);
+					} else {
+						AnsiConsole.out.print(str);
+					}
 				}
-				
-				AnsiConsole.out.print(r.charmatrix[x+y*C_WIDTH]);
+
+				String stri = r.charmatrix[x+y*C_WIDTH]+"";
+				if (win) {
+					WindowsSupport.writeConsole(stri);
+				} else {
+					AnsiConsole.out.print(stri);
+				}
 				
 				precBgColor = curBgColor;
 				precFgColor = curFgColor;
 			}
 			
-			AnsiConsole.out.println();
+			if (win) {
+				WindowsSupport.writeConsole("\r\n");
+			} else {
+				AnsiConsole.out.println();
+			}
 		}
 	}
 
@@ -162,6 +263,7 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 
 	@Override
 	public boolean isSupported() {
+		if (Utils.msDosMode || (Utils.forceEngine != null && Utils.forceEngine != "console-256")) return false;
 		return true;
 	}
 
