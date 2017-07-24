@@ -15,7 +15,11 @@ import org.warp.picalculator.math.parser.features.FeatureChar;
 import org.warp.picalculator.math.parser.features.FeatureDivision;
 import org.warp.picalculator.math.parser.features.FeatureMultiplication;
 import org.warp.picalculator.math.parser.features.FeatureNumber;
+import org.warp.picalculator.math.parser.features.FeaturePower;
+import org.warp.picalculator.math.parser.features.FeaturePowerChar;
+import org.warp.picalculator.math.parser.features.FeatureSubtraction;
 import org.warp.picalculator.math.parser.features.FeatureSum;
+import org.warp.picalculator.math.parser.features.FeatureSumSubtraction;
 import org.warp.picalculator.math.parser.features.FeatureVariable;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 import org.warp.picalculator.math.parser.steps.JoinNumberAndVariables;
@@ -92,14 +96,15 @@ public class MathParser {
 				lastElement = null;
 				IntegerObj curIndex = new IntegerObj(initialIndex);
 				while(curIndex.i >= 0 && curIndex.i < functionsList.size()) {
-					final Function f = functionsList.get(curIndex.i);
+					final int i = curIndex.i;
+					final Function f = functionsList.get(i);
 					
 					if (step.eval(curIndex, lastElement, f, functionsList)) {
 						lastLoopDidSomething = true;
 					}
 					
-					lastElement=f;
-					curIndex.i+=stepQty;
+					lastElement = (i >= functionsList.size()) ? null : functionsList.get(i);
+					curIndex.i += stepQty;
 				}
 			} while (lastLoopDidSomething);
 			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
@@ -132,6 +137,8 @@ public class MathParser {
 
 		features = makeNumbers(context, features);
 
+		features = makePowers(context, features);
+		
 		features = convertFunctionChars(context, features);
 
 		return features;
@@ -172,7 +179,7 @@ public class MathParser {
 				
 				for (char var : MathematicalSymbols.variables) {
 					if (featureChar == var) {
-						result = new FeatureVariable(featureChar, V_TYPE.UNKNOWN);
+						result = new FeatureVariable(featureChar, V_TYPE.VARIABLE);
 						break;
 					}
 				}
@@ -212,7 +219,7 @@ public class MathParser {
 						break;
 					}
 				}
-				if (bcf.ch == '-' || bcf.ch == '.') {
+				if (bcf.ch == MathematicalSymbols.MINUS || bcf.ch == '.') {
 					isNumber = true;
 				}
 				if (isNumber) {
@@ -249,13 +256,13 @@ public class MathParser {
 		final ObjectArrayList<Feature> process = new ObjectArrayList<>();
 		Feature lastFeature = null;
 		for (final Feature f : features) {
-			if (f instanceof FeatureChar && ((FeatureChar) f).ch == MathematicalSymbols.SUBTRACTION) {
+			if (f instanceof FeatureChar && (((FeatureChar) f).ch == MathematicalSymbols.SUBTRACTION || ((FeatureChar) f).ch == MathematicalSymbols.MINUS)) {
 				boolean isNegativeOfNumber = false;
 				if (lastFeature == null) {
 					isNegativeOfNumber = true;
 				} else if (lastFeature instanceof FeatureChar) {
 					final FeatureChar lcf = (FeatureChar) lastFeature;
-					final char[] operators = MathematicalSymbols.functionsNSN;
+					final char[] operators = MathematicalSymbols.functionsAndSignums;
 					for (final char operator : operators) {
 						if (lcf.ch == operator) {
 							isNegativeOfNumber = true;
@@ -273,6 +280,34 @@ public class MathParser {
 			}
 			lastFeature = f;
 		}
+		return process;
+	}
+
+	/**
+	 * Make powers [12][^[15]] => [[12]^[15]]
+	 * 
+	 * @param context
+	 * @param features
+	 * @return
+	 * @throws Error 
+	 */
+	private static ObjectArrayList<Feature> makePowers(MathContext context, ObjectArrayList<Feature> features) throws Error {
+		final ObjectArrayList<Feature> process = new ObjectArrayList<>();
+
+		Feature lastFeature = null;
+		for (final Feature f : features) {
+			if (f instanceof FeaturePowerChar) {
+				if (lastFeature != null) {
+					process.set(process.size() - 1, new FeaturePower(lastFeature.toFunction(context), ((FeaturePowerChar) f).getChild()));
+				} else {
+					process.add(f);
+				}
+			} else {
+				process.add(f);
+			}
+			lastFeature = f;
+		}
+
 		return process;
 	}
 }

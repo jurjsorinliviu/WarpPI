@@ -14,7 +14,7 @@ public class Variable implements Function {
 
 	protected char var;
 	protected final MathContext root;
-	protected V_TYPE type = V_TYPE.COEFFICIENT;
+	protected V_TYPE type = V_TYPE.CONSTANT;
 
 	public Variable(MathContext root, char val, V_TYPE type) {
 		this.root = root;
@@ -93,7 +93,7 @@ public class Variable implements Function {
 	}
 
 	public static enum V_TYPE {
-		COEFFICIENT, UNKNOWN, SOLUTION
+		CONSTANT, VARIABLE, SOLUTION
 	}
 
 	@Override

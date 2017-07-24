@@ -36,6 +36,9 @@ public class MathematicalSymbols {
 	private static final char[] signumsWithoutMultiplication = new char[] { SUM, SUM_SUBTRACTION, SUBTRACTION, DIVISION };
 	private static final char[] signumsWithMultiplication = Utils.add(signumsWithoutMultiplication, MULTIPLICATION);
 
+	public static final char[] functionsNSNAndSignums = concat(functionsNSN, signumsWithMultiplication);
+	public static final char[] functionsAndSignums = concat(functions, signumsWithMultiplication);
+
 	public static final char[] signums(boolean withMultiplication) {
 		if (withMultiplication) {
 			return signumsWithMultiplication;

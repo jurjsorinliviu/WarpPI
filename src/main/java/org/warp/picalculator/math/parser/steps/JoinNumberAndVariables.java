@@ -1,8 +1,10 @@
 package org.warp.picalculator.math.parser.steps;
 
 import org.warp.picalculator.IntegerObj;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Variable;
@@ -20,11 +22,11 @@ public class JoinNumberAndVariables implements MathParserStep {
 	
 	@Override
 	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction, ObjectArrayList<Function> functionsList) {
-		if (currentFunction instanceof Number | currentFunction instanceof Variable) {
+		if (currentFunction instanceof Number | currentFunction instanceof Variable | currentFunction instanceof Division) {
 			if (lastFunction instanceof Variable | lastFunction instanceof Number | (lastFunction instanceof Multiplication && ((Multiplication)lastFunction).getParameter2() != null)) {
-				final Function var = lastFunction;
-				final Function numb = currentFunction;
-				functionsList.set(curIndex.i, new Multiplication(context, numb, var));
+				final Function a = currentFunction;
+				final Function b = lastFunction;
+				functionsList.set(curIndex.i, new Multiplication(context, a, b));
 				functionsList.remove(curIndex.i + 1);
 				return true;
 			}

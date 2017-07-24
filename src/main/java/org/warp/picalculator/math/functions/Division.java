@@ -19,6 +19,7 @@ import org.warp.picalculator.math.rules.FractionsRule12;
 import org.warp.picalculator.math.rules.FractionsRule2;
 import org.warp.picalculator.math.rules.FractionsRule3;
 import org.warp.picalculator.math.rules.UndefinedRule2;
+import org.warp.picalculator.math.rules.methods.DivisionRule1;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -50,13 +51,16 @@ public class Division extends FunctionOperator {
 		if (UndefinedRule2.compare(this)) {
 			return true;
 		}
+		if (DivisionRule1.compare(this)) {
+			return true;
+		}
 		if (variable1 instanceof Number && variable2 instanceof Number) {
 			if (getMathContext().exactMode) {
 				try {
 					if (((Number) variable1).isInteger() && ((Number) variable2).isInteger()) {
 						LinkedList<BigInteger> factors1 = ((Number) variable1).getFactors();
 						LinkedList<BigInteger> factors2 = ((Number) variable2).getFactors();
-						return factors1.retainAll(factors2); //True If something changed in the factors list by keeping only the intersection of the two factor lists.
+						return factors1.retainAll(factors2) /* True If something changed in the factors list by keeping only the intersection of the two factor lists */ && factors1.size() > 0 /* true if there is at least one common factor */;
 					} else if (((Number) variable1).divide((Number) variable2).isInteger()) {
 						return true;
 					} else {
@@ -89,6 +93,8 @@ public class Division extends FunctionOperator {
 			result = FractionsRule12.execute(this);
 		} else if (UndefinedRule2.compare(this)) {
 			result = UndefinedRule2.execute(this);
+		} else if (DivisionRule1.compare(this)) {
+			result = DivisionRule1.execute(this);
 		} else if (variable1 instanceof Number && variable2 instanceof Number) {
 			if (getMathContext().exactMode && (((Number) variable1).isInteger() && ((Number) variable2).isInteger())) {
 				LinkedList<BigInteger> factors1 = ((Number) variable1).getFactors();

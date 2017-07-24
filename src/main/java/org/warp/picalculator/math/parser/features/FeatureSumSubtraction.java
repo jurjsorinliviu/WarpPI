@@ -1,10 +1,9 @@
-package org.warp.picalculator.math.parser;
+package org.warp.picalculator.math.parser.features;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.SumSubtraction;
-import org.warp.picalculator.math.parser.features.FeatureDoubleImpl;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class FeatureSumSubtraction extends FeatureDoubleImpl {

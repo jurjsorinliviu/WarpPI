@@ -658,7 +658,7 @@ public class MathInputScreen extends Screen {
 			} else if (f instanceof FunctionSingle) {
 				res.addAll(getKnownVariables(new Function[] { ((FunctionSingle) f).getParameter() }));
 			} else if (f instanceof Variable) {
-				if (((Variable) f).getType() == Variable.V_TYPE.COEFFICIENT) {
+				if (((Variable) f).getType() == Variable.V_TYPE.CONSTANT) {
 					if (!res.contains(f)) {
 						res.add(f);
 					}

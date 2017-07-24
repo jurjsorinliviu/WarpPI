@@ -66,6 +66,8 @@ public class NormalInputContainer extends InputContainer {
 				return new BlockChar(c);
 			case MathematicalSymbols.SINE:
 				return new BlockSine();
+			case MathematicalSymbols.PI:
+				return new BlockVariable(inputContext, c, true);
 			default:
 				for (char v : MathematicalSymbols.variables) {
 					if (c == v) {

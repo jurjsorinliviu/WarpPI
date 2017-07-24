@@ -3,9 +3,12 @@ package org.warp.picalculator.math.functions;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockChar;
+import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
 import org.warp.picalculator.math.rules.ExpandRule5;
 
@@ -19,16 +22,16 @@ public class Negative extends FunctionSingle {
 
 	@Override
 	protected boolean isSolvable() {
-		if (parameter instanceof Number) {
-			return true;
-		}
 		if (ExpandRule1.compare(this)) {
 			return true;
 		}
 		if (ExpandRule5.compare(this)) {
 			return true;
 		}
-		return false;
+		if (parameter instanceof Number) {
+			return true;
+		}
+		return true;
 	}
 
 	@Override
@@ -41,10 +44,10 @@ public class Negative extends FunctionSingle {
 			result = ExpandRule1.execute(this);
 		} else if (ExpandRule5.compare(this)) {
 			result = ExpandRule5.execute(this);
-		} else if (parameter.isSimplified()) {
+		} else if (parameter instanceof Number) {
 			try {
 				final Number var = (Number) getParameter();
-				result.add(var.multiply(new Number(mathContext, "-1")));
+				result.add(var.multiply(new Number(mathContext, -1)));
 			} catch (final NullPointerException ex) {
 				throw new Error(Errors.ERROR);
 			} catch (final NumberFormatException ex) {
@@ -53,16 +56,7 @@ public class Negative extends FunctionSingle {
 				throw new Error(Errors.NUMBER_TOO_SMALL);
 			}
 		} else {
-			final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
-			if (parameter.isSimplified()) {
-				l1.add(parameter);
-			} else {
-				l1.addAll(parameter.simplify());
-			}
-
-			for (final Function f : l1) {
-				result.add(new Negative(mathContext, f));
-			}
+			result.add(new Multiplication(parameter.getMathContext(), new Number(parameter.getMathContext(), -1), parameter));
 		}
 		return result;
 	}
@@ -82,7 +76,20 @@ public class Negative extends FunctionSingle {
 	
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		// TODO Auto-generated method stub
-		throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + getClass().getSimpleName());
+		ObjectArrayList<Block> blocks = new ObjectArrayList<Block>();
+		blocks.add(new BlockChar(MathematicalSymbols.MINUS));
+		if (new Expression(context, getParameter()).parenthesisNeeded()) {
+			BlockParenthesis par = new BlockParenthesis();
+			ObjectArrayList<Block> parBlocks = getParameter().toBlock(context);
+			for (Block b: parBlocks) {
+				par.getNumberContainer().appendBlockUnsafe(b); // Skips recomputeDimension
+			}
+			par.recomputeDimensions(); // Recompute dimensions after appendBlockUnsafe
+			blocks.add(par);
+		} else {
+			blocks.addAll(getParameter().toBlock(context));
+		}
+		return blocks;
+		// throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + getClass().getSimpleName());
 	}
 }

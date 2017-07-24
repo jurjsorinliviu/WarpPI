@@ -3,7 +3,6 @@ package org.warp.picalculator.math.rules;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Division;
-import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Multiplication;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -62,21 +61,21 @@ public class FractionsRule14 {
 			b = div1.getParameter2();
 			c = div2.getParameter1();
 			d = div2.getParameter2();
-			final Division div = new Division(fnc.getMathContext(), new Multiplication(fnc.getMathContext(), new Expression(fnc.getMathContext(), a), new Expression(fnc.getMathContext(), c)), new Multiplication(fnc.getMathContext(), new Expression(fnc.getMathContext(), b), new Expression(fnc.getMathContext(), d)));
+			final Division div = new Division(fnc.getMathContext(), new Multiplication(fnc.getMathContext(), a, c), new Multiplication(fnc.getMathContext(), b, d));
 			result.add(div);
 		} else if (fnc.getParameter1() instanceof Division) {
 			final Division div1 = (Division) fnc.getParameter1();
 			a = div1.getParameter1();
 			b = div1.getParameter2();
 			c = fnc.getParameter2();
-			final Division div = new Division(fnc.getMathContext(), new Multiplication(fnc.getMathContext(), new Expression(fnc.getMathContext(), a), new Expression(fnc.getMathContext(), c)), b);
+			final Division div = new Division(fnc.getMathContext(), new Multiplication(fnc.getMathContext(), a, c), b);
 			result.add(div);
 		} else if (fnc.getParameter2() instanceof Division) {
 			final Division div2 = (Division) fnc.getParameter2();
 			a = fnc.getParameter1();
 			c = div2.getParameter1();
 			d = div2.getParameter2();
-			final Division div = new Division(fnc.getMathContext(), new Multiplication(fnc.getMathContext(), new Expression(fnc.getMathContext(), a), new Expression(fnc.getMathContext(), c)), d);
+			final Division div = new Division(fnc.getMathContext(), new Multiplication(fnc.getMathContext(), a, c), d);
 			result.add(div);
 		}
 		return result;

@@ -3,6 +3,7 @@ package org.warp.picalculator.math.parser.features;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.parser.features.interfaces.FeatureBasic;
 
@@ -31,6 +32,16 @@ public class FeatureNumber implements FeatureBasic {
 
 	@Override
 	public Number toFunction(MathContext context) throws Error {
-		return new Number(context, getNumberString());
+		String nmbstr = getNumberString();
+		if (nmbstr.charAt(0) == '.') {
+			nmbstr = '0' + nmbstr;
+		} else if (nmbstr.charAt(nmbstr.length() - 1) == '.') {
+			nmbstr += "0";
+		} else if (nmbstr.charAt(0) == MathematicalSymbols.MINUS) {
+			nmbstr += "1";
+		} else if (nmbstr.charAt(0) == MathematicalSymbols.SUBTRACTION) {
+			nmbstr += "1";
+		}
+		return new Number(context, nmbstr);
 	}
 }

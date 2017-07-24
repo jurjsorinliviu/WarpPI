@@ -23,22 +23,29 @@ public class BlockVariable extends Block {
 	private int color;
 	private boolean mustRefresh = true;
 	private BlockVariable typeDirtyID;
+	private final boolean typeLocked;
 
 	public BlockVariable(InputContext ic, char ch) {
+		this(ic, ch, false);
+	}
+	public BlockVariable(InputContext ic, char ch, boolean typeLocked) {
 		this.ic = ic;
 		this.ch = ch;
-		this.menu = new VariableMenu(this);
-		this.type = V_TYPE.UNKNOWN;
+		this.type = V_TYPE.VARIABLE;
 		this.color = 0xFF304ffe;
 		this.typeDirtyID = this;
+		this.typeLocked = typeLocked;
+		this.menu = typeLocked ? null : new VariableMenu(this);
 		retrieveValue();
 		recomputeDimensions();
 	}
 
 	private void retrieveValue() {
-		type = ic.variableTypes.getOrDefault(ch, V_TYPE.UNKNOWN);
+		type = ic.variableTypes.getOrDefault(ch, V_TYPE.VARIABLE);
 		typeDirtyID = ic.variableTypeDirtyID;
-		menu.mustRefreshMenu = true;
+		if (menu != null) {
+			menu.mustRefreshMenu = true;
+		}
 		mustRefresh = true;
 		System.out.println("retrieve:"+type.toString());
 	}
@@ -63,11 +70,11 @@ public class BlockVariable extends Block {
 		if (mustRefresh) {
 			mustRefresh = false;
 			switch (type) {
-				case UNKNOWN:
+				case VARIABLE:
 					color = 0xFF304ffe;
 					break;
-				case COEFFICIENT:
-					color = 0xFF35913F;
+				case CONSTANT:
+					color = typeLocked ? 0xFF000000 : 0xFF35913F;
 					break;
 				case SOLUTION:
 				default:
@@ -149,15 +156,15 @@ public class BlockVariable extends Block {
 				case LEFT:
 				case UP:
 					switch (block.type) {
-						case UNKNOWN:
+						case VARIABLE:
 							block.type = V_TYPE.SOLUTION;
 							break;
-						case COEFFICIENT:
-							block.type = V_TYPE.UNKNOWN;
+						case CONSTANT:
+							block.type = V_TYPE.VARIABLE;
 							break;
 						case SOLUTION:
 						default:
-							block.type = V_TYPE.COEFFICIENT;
+							block.type = V_TYPE.CONSTANT;
 							break;
 					}
 					break;
@@ -166,15 +173,15 @@ public class BlockVariable extends Block {
 				case EQUAL:
 				case SIMPLIFY:
 					switch (block.type) {
-						case UNKNOWN:
-							block.type = V_TYPE.COEFFICIENT;
+						case VARIABLE:
+							block.type = V_TYPE.CONSTANT;
 							break;
-						case COEFFICIENT:
+						case CONSTANT:
 							block.type = V_TYPE.SOLUTION;
 							break;
 						case SOLUTION:
 						default:
-							block.type = V_TYPE.UNKNOWN;
+							block.type = V_TYPE.VARIABLE;
 							break;
 					}
 					break;
