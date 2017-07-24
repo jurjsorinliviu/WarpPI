@@ -202,11 +202,26 @@ public class Number implements Function {
 	public LinkedList<BigInteger> getFactors() {
 		BigInteger n = getTerm().toBigIntegerExact();
 		final BigInteger two = BigInteger.valueOf(2);
+		final BigInteger zero = BigInteger.ZERO;
 		final LinkedList<BigInteger> fs = new LinkedList<>();
 
-		if (n.compareTo(two) < 0) {
-			throw new IllegalArgumentException("must be greater than one");
+		final int comparedToZero = n.compareTo(zero);
+		final int comparedToTwo = n.compareTo(two);
+		if (comparedToZero == 0) {
+			return fs;
 		}
+		if (comparedToTwo < 0) {
+			if (comparedToZero > 0) {
+				return fs;
+			} else {
+				fs.add(BigInteger.valueOf(-1));
+				n = n.multiply(BigInteger.valueOf(-1));
+			}
+		}
+
+			if (n.compareTo(two) < 0) {
+				throw new IllegalArgumentException("must be greater than one");
+			}
 
 		while (n.mod(two).equals(BigInteger.ZERO)) {
 			fs.add(two);

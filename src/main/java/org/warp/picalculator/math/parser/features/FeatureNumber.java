@@ -37,10 +37,12 @@ public class FeatureNumber implements FeatureBasic {
 			nmbstr = '0' + nmbstr;
 		} else if (nmbstr.charAt(nmbstr.length() - 1) == '.') {
 			nmbstr += "0";
-		} else if (nmbstr.charAt(0) == MathematicalSymbols.MINUS) {
-			nmbstr += "1";
-		} else if (nmbstr.charAt(0) == MathematicalSymbols.SUBTRACTION) {
-			nmbstr += "1";
+		} else if (nmbstr.length() == 1) {
+			if (nmbstr.charAt(0) == MathematicalSymbols.MINUS) {
+				nmbstr += "1";
+			} else if (nmbstr.charAt(0) == MathematicalSymbols.SUBTRACTION) {
+				nmbstr += "1";
+			}
 		}
 		return new Number(context, nmbstr);
 	}
