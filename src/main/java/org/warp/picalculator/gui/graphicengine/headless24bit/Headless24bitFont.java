@@ -39,4 +39,9 @@ public class Headless24bitFont implements BinaryFont {
 		return 5;
 	}
 
+	@Override
+	public boolean isInitialized() {
+		return true;
+	}
+
 }

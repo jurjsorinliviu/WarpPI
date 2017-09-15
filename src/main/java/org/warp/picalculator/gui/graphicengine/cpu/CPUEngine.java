@@ -4,6 +4,7 @@ import java.awt.FontMetrics;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -45,14 +46,21 @@ public class CPUEngine implements GraphicEngine {
 		g = new BufferedImage(ww, wh, BufferedImage.TYPE_INT_ARGB);
 		INSTANCE.wasResized = false;
 	}
-
+	
 	@Override
 	public void create() {
+		create(null);
+	}
+	
+	@Override
+	public void create(Runnable onInitialized) {
 		INSTANCE = new SwingWindow(this);
 		setResizable(Utils.debugOn & !Utils.debugThirdScreen);
 		setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		INSTANCE.setVisible(true);
 		initialized = true;
+		if (onInitialized != null)
+			onInitialized.run();
 	}
 
 	@Override
@@ -184,5 +192,17 @@ public class CPUEngine implements GraphicEngine {
 	@Override
 	public boolean doesRefreshPauses() {
 		return true;
+	}
+
+	@Override
+	public boolean supportsFontRegistering() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public ArrayList<BinaryFont> getRegisteredFonts() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

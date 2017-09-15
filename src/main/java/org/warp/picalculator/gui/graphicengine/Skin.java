@@ -7,6 +7,8 @@ public interface Skin {
 	public void load(String file) throws IOException;
 
 	public void initialize(GraphicEngine d);
+	
+	public boolean isInitialized();
 
 	public void use(GraphicEngine d);
 }

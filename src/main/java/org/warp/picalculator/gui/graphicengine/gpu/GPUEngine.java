@@ -1,10 +1,12 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
+import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
@@ -18,6 +20,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 	private RenderingLoop d;
 	private GPURenderer r;
 	int[] size = new int[] { Main.screenSize[0], Main.screenSize[1] };
+	private final ArrayList<BinaryFont> registeredFonts = new ArrayList<BinaryFont>();
 
 	@Override
 	public int[] getSize() {
@@ -53,6 +56,11 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public void create() {
+		create(null);
+	}
+	
+	@Override
+	public void create(Runnable onInitialized) {
 		created = true;
 		r = new GPURenderer();
 		wnd = new NEWTWindow(this);
@@ -60,6 +68,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 		setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
 		setResizable(Utils.debugOn & !Utils.debugThirdScreen);
 		initialized = true;
+		wnd.onInitialized = onInitialized;
 	}
 
 	@Override
@@ -104,12 +113,12 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 
 	@Override
 	public BinaryFont loadFont(String file) throws IOException {
-		return new GPUFont(file);
+		return new GPUFont(this, file);
 	}
 
 	@Override
 	public Skin loadSkin(String file) throws IOException {
-		return new GPUSkin(file);
+		return new GPUSkin(this, file);
 	}
 
 	@Override
@@ -144,6 +153,20 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 	@Override
 	public boolean doesRefreshPauses() {
 		return false;
+	}
+	
+	public void registerFont(GPUFont gpuFont) {
+		registeredFonts.add(gpuFont);
+	}
+
+	@Override
+	public boolean supportsFontRegistering() {
+		return true;
+	}
+
+	@Override
+	public ArrayList<BinaryFont> getRegisteredFonts() {
+		return registeredFonts;
 	}
 
 }

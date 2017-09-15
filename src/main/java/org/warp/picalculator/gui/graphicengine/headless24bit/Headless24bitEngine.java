@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 
 import org.fusesource.jansi.AnsiConsole;
@@ -16,6 +17,7 @@ import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 
@@ -64,6 +66,11 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 	
 	@Override
 	public void create() {
+		this.create(null);
+	}
+	
+	@Override
+	public void create(Runnable onInitialized) {
 		Utils.outputLevel = -1;
 		AnsiConsole.systemInstall();
 		if(Utils.isWindows() && !Utils.msDosMode){
@@ -134,6 +141,8 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 			t.start();
 		}
 		stopped = false;
+		if (onInitialized != null)
+			onInitialized.run();
 	}
 
 	@Override
@@ -320,5 +329,15 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 	@Override
 	public boolean doesRefreshPauses() {
 		return true;
+	}
+
+	@Override
+	public boolean supportsFontRegistering() {
+		return false;
+	}
+
+	@Override
+	public ArrayList<BinaryFont> getRegisteredFonts() {
+		return null;
 	}
 }

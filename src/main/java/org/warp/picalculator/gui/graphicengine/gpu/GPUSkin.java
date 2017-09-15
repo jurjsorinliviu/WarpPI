@@ -20,7 +20,7 @@ public class GPUSkin implements Skin {
 	private String texturePath;
 	private boolean initialized = false;
 
-	GPUSkin(String file) throws IOException {
+	GPUSkin(GraphicEngine d, String file) throws IOException {
 		load(file);
 	}
 
@@ -55,6 +55,11 @@ public class GPUSkin implements Skin {
 		}
 		final GPURenderer r = (GPURenderer) d.getRenderer();
 		r.useTexture(t, w, h);
+	}
+
+	@Override
+	public boolean isInitialized() {
+		return initialized;
 	}
 
 }

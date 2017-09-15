@@ -75,9 +75,12 @@ public class Number implements Function {
 	public Number pow(Number f) throws Error {
 		Number ret = new Number(root, BigDecimal.ONE);
 		if (Utils.isIntegerValue(f.term)) {
-			final BigInteger bi = f.term.toBigInteger();
+			final BigInteger bi = f.term.toBigInteger().abs();
 			for (BigInteger i = BigInteger.ZERO; i.compareTo(bi) < 0; i = i.add(BigInteger.ONE)) {
 				ret = ret.multiply(new Number(root, getTerm()));
+			}
+			if (f.term.signum() == -1) {
+				ret = new Number(root, 1).divide(ret);
 			}
 		} else {
 			ret.term = BigDecimalMath.pow(term, f.term);

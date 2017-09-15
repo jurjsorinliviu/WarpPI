@@ -56,5 +56,10 @@ public class Headless8Skin implements Skin {
 		((Headless8Renderer) d.getRenderer()).currentSkin = this;
 	}
 
+	@Override
+	public boolean isInitialized() {
+		return true;
+	}
+
 
 }

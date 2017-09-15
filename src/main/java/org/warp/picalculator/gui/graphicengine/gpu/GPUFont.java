@@ -25,10 +25,11 @@ public class GPUFont implements BinaryFont {
 	public int memoryWidthOfEachColumn;
 
 	private boolean initialized = false;
-	private CPUFont tmpFont;
+	private BufferedImage tmpFont;
 
-	GPUFont(String file) throws IOException {
+	GPUFont(GraphicEngine g, String file) throws IOException {
 		load(file);
+		((GPUEngine) g).registerFont(this);
 	}
 
 	@Override
@@ -38,7 +39,7 @@ public class GPUFont implements BinaryFont {
 		charH = font.charH;
 		minCharIndex = font.minBound;
 		maxCharIndex = font.maxBound;
-		tmpFont = font;
+		pregenTexture(font.rawchars);
 		font = null;
 	}
 
@@ -56,7 +57,7 @@ public class GPUFont implements BinaryFont {
 		return (ch & 0xFFFF) - minCharIndex;
 	}
 
-	private void genTexture(boolean[][] chars) {
+	private void pregenTexture(boolean[][] chars) {
 		final double totalChars = maxCharIndex - minCharIndex;
 		final int w = powerOf2((int) (Math.ceil(Math.sqrt(totalChars) * charW)));
 		final int h = powerOf2((int) (Math.ceil(Math.sqrt(totalChars) * charH)));
@@ -86,11 +87,17 @@ public class GPUFont implements BinaryFont {
 			memoryWidth = w;
 			memoryHeight = h;
 			memoryWidthOfEachColumn = maxIndexW;
-			texture = GPURenderer.importTexture(bfi);
 			textureW = bfi.getWidth();
 			textureH = bfi.getHeight();
-			bfi.flush();
-			bfi = null;
+			this.tmpFont = bfi;
+		} catch (GLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void genTexture() {
+		try {
+			texture = GPURenderer.importTexture(tmpFont);
 		} catch (GLException | IOException e) {
 			e.printStackTrace();
 		}
@@ -102,9 +109,7 @@ public class GPUFont implements BinaryFont {
 
 	@Override
 	public void initialize(GraphicEngine d) {
-		genTexture(tmpFont.rawchars);
-		tmpFont.chars32 = null;
-		tmpFont.rawchars = null;
+		genTexture();
 		tmpFont = null;
 		initialized = true;
 	}
@@ -137,5 +142,10 @@ public class GPUFont implements BinaryFont {
 	@Override
 	public int getCharacterHeight() {
 		return charH;
+	}
+
+	@Override
+	public boolean isInitialized() {
+		return initialized;
 	}
 }

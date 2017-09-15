@@ -48,4 +48,9 @@ public class CPUSkin implements Skin {
 		((CPURenderer) d.getRenderer()).currentSkin = this;
 	}
 
+	@Override
+	public boolean isInitialized() {
+		return true;
+	}
+
 }

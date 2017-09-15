@@ -57,5 +57,10 @@ public class Headless24bitSkin implements Skin {
 		((Headless24bitRenderer) d.getRenderer()).currentSkin = this;
 	}
 
+	@Override
+	public boolean isInitialized() {
+		return true;
+	}
+
 
 }

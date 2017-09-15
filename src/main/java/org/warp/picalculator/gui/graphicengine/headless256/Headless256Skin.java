@@ -61,5 +61,10 @@ public class Headless256Skin implements Skin {
 		((Headless256Renderer) d.getRenderer()).currentSkin = this;
 	}
 
+	@Override
+	public boolean isInitialized() {
+		return true;
+	}
+
 
 }

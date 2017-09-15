@@ -1,6 +1,7 @@
 package org.warp.picalculator.gui;
 
 import java.io.IOException;
+import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
@@ -234,6 +235,13 @@ public final class DisplayManager implements RenderingLoop {
 	}
 
 	private void draw_init() {
+		if (engine.supportsFontRegistering()) {
+			for (BinaryFont f : engine.getRegisteredFonts()) {
+				if (!f.isInitialized()) {
+					f.initialize(engine);
+				}
+			}
+		}
 		renderer.glClear(engine.getWidth(), engine.getHeight());
 	}
 
@@ -375,11 +383,12 @@ public final class DisplayManager implements RenderingLoop {
 
 	public void loop() {
 		try {
-			load_skin();
-			load_fonts();
 			engine.create();
 			renderer = engine.getRenderer();
 
+			load_skin();
+			load_fonts();
+			
 			try {
 				screen.initialize();
 			} catch (final Exception e) {

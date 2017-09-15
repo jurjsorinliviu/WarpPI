@@ -60,6 +60,7 @@ class NEWTWindow implements GLEventListener {
 
 	private final GPUEngine disp;
 	private final GPURenderer renderer;
+	public Runnable onInitialized;
 
 	public NEWTWindow(GPUEngine disp) {
 		this.disp = disp;
@@ -279,7 +280,7 @@ class NEWTWindow implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		final GL2ES1 gl = drawable.getGL().getGL2ES1();
-
+		
 		//Vsync
 		gl.setSwapInterval(2);
 
@@ -291,6 +292,10 @@ class NEWTWindow implements GLEventListener {
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glShadeModel(GLLightingFunc.GL_FLAT);
 
+		if (onInitialized != null) {
+			onInitialized.run();
+			onInitialized = null;
+		}
 		try {
 			renderer.currentTex = ((GPUSkin) disp.loadSkin("test.png")).t;
 		} catch (final Exception e) {
@@ -330,7 +335,7 @@ class NEWTWindow implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable glad) {
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
-
+		
 		GPURenderer.gl = gl;
 
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);

@@ -39,4 +39,9 @@ public class Headless256Font implements BinaryFont {
 		return 5;
 	}
 
+	@Override
+	public boolean isInitialized() {
+		return true;
+	}
+
 }

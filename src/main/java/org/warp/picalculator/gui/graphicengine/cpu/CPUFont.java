@@ -149,8 +149,6 @@ public class CPUFont implements BinaryFont {
 
 	@Override
 	public void initialize(GraphicEngine d) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -176,6 +174,11 @@ public class CPUFont implements BinaryFont {
 	@Override
 	public int getCharacterHeight() {
 		return charH;
+	}
+
+	@Override
+	public boolean isInitialized() {
+		return true;
 	}
 
 }

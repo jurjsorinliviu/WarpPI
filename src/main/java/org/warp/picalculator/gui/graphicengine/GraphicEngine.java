@@ -1,6 +1,7 @@
 package org.warp.picalculator.gui.graphicengine;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public interface GraphicEngine {
 
@@ -15,6 +16,8 @@ public interface GraphicEngine {
 	public void setDisplayMode(final int ww, final int wh);
 
 	public void create();
+	
+	public void create(Runnable object);
 
 	public boolean wasResized();
 
@@ -39,4 +42,8 @@ public interface GraphicEngine {
 	public boolean isSupported();
 
 	public boolean doesRefreshPauses();
+
+	public boolean supportsFontRegistering();
+	
+	public ArrayList<BinaryFont> getRegisteredFonts();
 }
