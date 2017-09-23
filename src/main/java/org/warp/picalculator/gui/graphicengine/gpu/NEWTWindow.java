@@ -342,11 +342,11 @@ class NEWTWindow implements GLEventListener {
 		gl.glEnableClientState(GLPointerFunc.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_TEXTURE_COORD_ARRAY);
 
-		renderer.startDrawCycle();
+		renderer.updateDrawCycle(true, false);
 
 		disp.repaint();
 
-		renderer.endDrawCycle();
+		renderer.updateDrawCycle(false, true);
 
 		GPURenderer.gl = null;
 

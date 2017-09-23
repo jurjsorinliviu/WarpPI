@@ -58,15 +58,15 @@ public class Main {
 			if (arg.contains("headless")) {
 				Utils.headlessOverride = true;
 			}
-			if (arg.contains("console-8")) {
+			if (arg.contains("headless-8")) {
 				Utils.headlessOverride = true;
 				Utils.forceEngine = "console-8";
 			}
-			if (arg.contains("console-256")) {
+			if (arg.contains("headless-256")) {
 				Utils.headlessOverride = true;
 				Utils.forceEngine = "console-256";
 			}
-			if (arg.contains("console-24bit")) {
+			if (arg.contains("headless-24bit")) {
 				Utils.headlessOverride = true;
 				Utils.forceEngine = "console-24bit";
 			}
@@ -81,7 +81,8 @@ public class Main {
 				Utils.msDosMode = true;
 			}
 		}
-		DisplayManager.setBrightness(0.5f);
+		DisplayManager.preInitialization();
+		DisplayManager.setBrightness(0.2f);
 		Keyboard.startKeyboard();
 	}
 

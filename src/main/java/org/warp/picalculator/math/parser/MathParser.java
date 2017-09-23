@@ -82,14 +82,18 @@ public class MathParser {
 		boolean lastLoopDidSomething;
 		Function lastElement;
 
-		Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
-		for (Function f : functionsList) {
-			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+		if (Utils.debugOn) {
+			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
+			for (Function f : functionsList) {
+				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+			}
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
 		}
-		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
 		
 		for (MathParserStep step : steps) {
-			Utils.out.println(2, "Stack fixing step \""+step.getStepName()+"\"");
+			if (Utils.debugOn) {
+				Utils.out.println(2, "Stack fixing step \""+step.getStepName()+"\"");
+			}
 			int stepQty = step.requiresReversedIteration()?-1:1, initialIndex = step.requiresReversedIteration()?functionsList.size()-1:0;
 			do {
 				lastLoopDidSomething = false;
@@ -107,11 +111,14 @@ public class MathParser {
 					curIndex.i += stepQty;
 				}
 			} while (lastLoopDidSomething);
-			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
-			for (Function f : functionsList) {
-				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+			
+			if (Utils.debugOn) {
+				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
+				for (Function f : functionsList) {
+					Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+				}
+				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
 			}
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
 		}
 		
 //		//Phase 4

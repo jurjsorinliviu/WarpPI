@@ -1,7 +1,8 @@
 package org.warp.picalculator.gui.graphicengine;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public interface GraphicEngine {
 
@@ -43,7 +44,11 @@ public interface GraphicEngine {
 
 	public boolean doesRefreshPauses();
 
-	public boolean supportsFontRegistering();
+	public default boolean supportsFontRegistering() {
+		return false;
+	}
 	
-	public ArrayList<BinaryFont> getRegisteredFonts();
+	public default List<BinaryFont> getRegisteredFonts() {
+		return null;
+	}
 }

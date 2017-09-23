@@ -330,14 +330,4 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 	public boolean doesRefreshPauses() {
 		return true;
 	}
-
-	@Override
-	public boolean supportsFontRegistering() {
-		return false;
-	}
-
-	@Override
-	public ArrayList<BinaryFont> getRegisteredFonts() {
-		return null;
-	}
 }

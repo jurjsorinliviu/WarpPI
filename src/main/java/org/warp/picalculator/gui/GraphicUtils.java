@@ -28,7 +28,7 @@ public class GraphicUtils {
 		RAD = (float) Math.PI / 180.0f;
 		DEG = 180.0f / (float) Math.PI;
 
-		SIN_BITS = 12;
+		SIN_BITS = 8;
 		SIN_MASK = ~(-1 << SIN_BITS);
 		SIN_COUNT = SIN_MASK + 1;
 

@@ -2,6 +2,10 @@ package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
@@ -12,7 +16,7 @@ import org.warp.picalculator.gui.graphicengine.Skin;
 
 import com.jogamp.opengl.GLProfile;
 
-public class GPUEngine implements org.warp.picalculator.gui.graphicengine.GraphicEngine {
+public class GPUEngine implements GraphicEngine {
 
 	private volatile boolean initialized = false;
 	private volatile boolean created = false;
@@ -20,7 +24,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 	private RenderingLoop d;
 	private GPURenderer r;
 	int[] size = new int[] { Main.screenSize[0], Main.screenSize[1] };
-	private final ArrayList<BinaryFont> registeredFonts = new ArrayList<BinaryFont>();
+	private final CopyOnWriteArrayList<BinaryFont> registeredFonts = new CopyOnWriteArrayList<BinaryFont>();
 
 	@Override
 	public int[] getSize() {
@@ -165,7 +169,7 @@ public class GPUEngine implements org.warp.picalculator.gui.graphicengine.Graphi
 	}
 
 	@Override
-	public ArrayList<BinaryFont> getRegisteredFonts() {
+	public CopyOnWriteArrayList<BinaryFont> getRegisteredFonts() {
 		return registeredFonts;
 	}
 

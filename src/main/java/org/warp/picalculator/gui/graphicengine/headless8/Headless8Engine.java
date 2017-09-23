@@ -281,16 +281,4 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 	public boolean doesRefreshPauses() {
 		return true;
 	}
-
-	@Override
-	public boolean supportsFontRegistering() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public ArrayList<BinaryFont> getRegisteredFonts() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

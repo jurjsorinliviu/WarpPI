@@ -1,6 +1,9 @@
 package org.warp.picalculator.gui;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.Main;
@@ -26,21 +29,33 @@ public final class DisplayManager implements RenderingLoop {
 	public static DisplayManager INSTANCE;
 	private static float brightness;
 
-	public static final GraphicEngine engine = chooseGraphicEngine();
-	public static final boolean supportsPauses = engine.doesRefreshPauses();
+	public static final GraphicEngine engine;
+	public static final boolean supportsPauses;
 	public static Renderer renderer;
 
 	public static Skin guiSkin;
 	public static BinaryFont[] fonts;
 
-	public static String error = null;
-	public String[] errorStackTrace = null;
-	public final static int[] glyphsHeight = new int[] { 9, 6, 12, 9 };
+	public static String error;
+	public String[] errorStackTrace;
+	public final static int[] glyphsHeight;
 
 	public static Screen screen;
-	public static String displayDebugString = "";
-	public static ObjectArrayList<GUIErrorMessage> errorMessages = new ObjectArrayList<>();
-
+	public static String displayDebugString;
+	public static ObjectArrayList<GUIErrorMessage> errorMessages;
+	
+	static {
+		engine = chooseGraphicEngine();
+		supportsPauses = engine.doesRefreshPauses();
+		glyphsHeight = new int[] { 9, 6, 12, 9 };
+		displayDebugString = "";
+		errorMessages = new ObjectArrayList<>();
+	}
+	
+	public static void preInitialization() {
+		//Nothing. When called for the first time the static methods will be loaded
+	}
+	
 	public DisplayManager(Screen screen) {
 		setScreen(screen);
 		INSTANCE = this;
@@ -236,7 +251,8 @@ public final class DisplayManager implements RenderingLoop {
 
 	private void draw_init() {
 		if (engine.supportsFontRegistering()) {
-			for (BinaryFont f : engine.getRegisteredFonts()) {
+			List<BinaryFont> fontsIterator = engine.getRegisteredFonts();
+			for (BinaryFont f : fontsIterator) {
 				if (!f.isInitialized()) {
 					f.initialize(engine);
 				}
