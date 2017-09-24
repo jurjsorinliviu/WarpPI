@@ -73,7 +73,7 @@ public class Negative extends FunctionSingle {
 	public Negative clone() {
 		return new Negative(mathContext, parameter);
 	}
-	
+
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
 		ObjectArrayList<Block> blocks = new ObjectArrayList<Block>();
@@ -81,7 +81,7 @@ public class Negative extends FunctionSingle {
 		if (new Expression(context, getParameter()).parenthesisNeeded()) {
 			BlockParenthesis par = new BlockParenthesis();
 			ObjectArrayList<Block> parBlocks = getParameter().toBlock(context);
-			for (Block b: parBlocks) {
+			for (Block b : parBlocks) {
 				par.getNumberContainer().appendBlockUnsafe(b); // Skips recomputeDimension
 			}
 			par.recomputeDimensions(); // Recompute dimensions after appendBlockUnsafe

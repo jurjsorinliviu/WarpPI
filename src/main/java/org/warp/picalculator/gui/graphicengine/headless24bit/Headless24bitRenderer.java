@@ -5,32 +5,30 @@ import org.warp.picalculator.gui.graphicengine.Renderer;
 public class Headless24bitRenderer implements Renderer {
 
 	Headless24bitFont currentFont;
-	public int[] size = new int[] { Headless24bitEngine.C_WIDTH*Headless24bitEngine.C_MUL_X, Headless24bitEngine.C_HEIGHT*Headless24bitEngine.C_MUL_Y };
-	protected int[][] fgColorMatrixSs = new int[size[0]*size[1]][3];
-	protected int[][] bgColorMatrixSs = new int[size[0]*size[1]][3];
-	
-	
-	protected char[] charmatrix = new char[Headless24bitEngine.C_WIDTH*Headless24bitEngine.C_HEIGHT];
-	protected int[][] fgColorMatrix = new int[Headless24bitEngine.C_WIDTH*Headless24bitEngine.C_HEIGHT][3];
-	protected int[][] bgColorMatrix = new int[Headless24bitEngine.C_WIDTH*Headless24bitEngine.C_HEIGHT][3];
+	public int[] size = new int[] { Headless24bitEngine.C_WIDTH * Headless24bitEngine.C_MUL_X, Headless24bitEngine.C_HEIGHT * Headless24bitEngine.C_MUL_Y };
+	protected int[][] fgColorMatrixSs = new int[size[0] * size[1]][3];
+	protected int[][] bgColorMatrixSs = new int[size[0] * size[1]][3];
+
+	protected char[] charmatrix = new char[Headless24bitEngine.C_WIDTH * Headless24bitEngine.C_HEIGHT];
+	protected int[][] fgColorMatrix = new int[Headless24bitEngine.C_WIDTH * Headless24bitEngine.C_HEIGHT][3];
+	protected int[][] bgColorMatrix = new int[Headless24bitEngine.C_WIDTH * Headless24bitEngine.C_HEIGHT][3];
 	protected int[] clearColor = rgbToIntArray(0xc5, 0xc2, 0xaf);
-	protected int[] curColor = new int[] {clearColor[0], clearColor[1], clearColor[2]};
+	protected int[] curColor = new int[] { clearColor[0], clearColor[1], clearColor[2] };
 	public Headless24bitSkin currentSkin;
 
 	public static final String ANSI_PREFIX = "\u001B[";
 	public static final String ansiFgColorPrefix = "38;2;";
 	public static final String ansiBgColorPrefix = "48;2;";
 	public static final String ansiColorSuffix = "m";
-	
+
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final char FILL = 0xDB;
-	public static final int[] TRANSPARENT = new int[] {0,0,0, 1};
+	public static final int[] TRANSPARENT = new int[] { 0, 0, 0, 1 };
 
-	
 	public static int[] rgbToIntArray(int r_U, int g_U, int b_U) {
-		return new int[] {r_U, g_U, b_U};
+		return new int[] { r_U, g_U, b_U };
 	}
-	
+
 	@Override
 	public void glColor3i(int r, int gg, int b) {
 		curColor = rgbToIntArray(r, gg, b);
@@ -48,12 +46,12 @@ public class Headless24bitRenderer implements Renderer {
 
 	@Override
 	public void glColor3f(float red, float green, float blue) {
-		curColor = rgbToIntArray((int)(red*255), (int)(green*255), (int)(blue*255));
+		curColor = rgbToIntArray((int) (red * 255), (int) (green * 255), (int) (blue * 255));
 	}
 
 	@Override
 	public void glColor4f(float red, float green, float blue, float alpha) {
-		curColor = rgbToIntArray((int)(red*255), (int)(green*255), (int)(blue*255));
+		curColor = rgbToIntArray((int) (red * 255), (int) (green * 255), (int) (blue * 255));
 	}
 
 	@Override
@@ -63,7 +61,7 @@ public class Headless24bitRenderer implements Renderer {
 
 	@Override
 	public void glClearColor4f(float red, float green, float blue, float alpha) {
-		clearColor = rgbToIntArray((int)(red*255), (int)(green*255), (int)(blue*255));
+		clearColor = rgbToIntArray((int) (red * 255), (int) (green * 255), (int) (blue * 255));
 	}
 
 	@Override
@@ -83,7 +81,7 @@ public class Headless24bitRenderer implements Renderer {
 
 	@Override
 	public void glDrawLine(float x1, float y1, float x2, float y2) {
-		
+
 		int dx = (int) Math.abs(x2 - x1);
 		int dy = (int) Math.abs(y2 - y1);
 
@@ -93,33 +91,33 @@ public class Headless24bitRenderer implements Renderer {
 		int err = dx - dy;
 
 		while (true) {
-			if (((int)x1) >= size[0] || ((int)y1) >= size[1] ||
-					((int)x2) >= size[0] || ((int)y2) >= size[1]) {
+			if (((int) x1) >= size[0] || ((int) y1) >= size[1] || ((int) x2) >= size[0] || ((int) y2) >= size[1]) {
 				break;
 			}
-			bgColorMatrixSs[((int)x1) + ((int)y1) * size[0]] = curColor;
-			charmatrix[((int)x1/Headless24bitEngine.C_MUL_X) + ((int)y1/Headless24bitEngine.C_MUL_Y) * Headless24bitEngine.C_WIDTH] = ' ';
+			bgColorMatrixSs[((int) x1) + ((int) y1) * size[0]] = curColor;
+			charmatrix[((int) x1 / Headless24bitEngine.C_MUL_X) + ((int) y1 / Headless24bitEngine.C_MUL_Y) * Headless24bitEngine.C_WIDTH] = ' ';
 
-		    if (x1 == x2 && y1 == y2) {
-		        break;
-		    }
+			if (x1 == x2 && y1 == y2) {
+				break;
+			}
 
-		    int e2 = 2 * err;
+			int e2 = 2 * err;
 
-		    if (e2 > -dy) {
-		        err = err - dy;
-		        x1 = x1 + sx;
-		    }
+			if (e2 > -dy) {
+				err = err - dy;
+				x1 = x1 + sx;
+			}
 
-		    if (e2 < dx) {
-		        err = err + dx;
-		        y1 = y1 + sy;
-		    }
+			if (e2 < dx) {
+				err = err + dx;
+				y1 = y1 + sy;
+			}
 		}
 	}
 
 	@Override
-	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth, float uvHeight) {
+	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth,
+			float uvHeight) {
 		if (currentSkin != null) {
 			glDrawSkin((int) (x), (int) (y), (int) (uvX), (int) (uvY), (int) ((uvWidth + uvX)), (int) ((uvHeight + uvY)), true);
 		} else {
@@ -150,11 +148,10 @@ public class Headless24bitRenderer implements Renderer {
 			for (int py = iy; py < y1; py++) {
 				drawPixelAt(' ', curColor, px, py);
 				bgColorMatrixSs[(px) + (py) * sizeW] = curColor;
-				charmatrix[(px/Headless24bitEngine.C_MUL_X) + (py/Headless24bitEngine.C_MUL_Y) * sizeW/Headless24bitEngine.C_MUL_X] = ' ';
+				charmatrix[(px / Headless24bitEngine.C_MUL_X) + (py / Headless24bitEngine.C_MUL_Y) * sizeW / Headless24bitEngine.C_MUL_X] = ' ';
 			}
 		}
 	}
-	
 
 	@Override
 	public void glDrawCharLeft(int x, int y, char ch) {
@@ -163,52 +160,52 @@ public class Headless24bitRenderer implements Renderer {
 		if (cx >= size[0] || cy >= size[1]) {
 			return;
 		}
-		charmatrix[cx/Headless24bitEngine.C_MUL_X+cy/Headless24bitEngine.C_MUL_Y*Headless24bitEngine.C_WIDTH] = ch;
-		fgColorMatrixSs[cx+cy*size[0]] = curColor;
+		charmatrix[cx / Headless24bitEngine.C_MUL_X + cy / Headless24bitEngine.C_MUL_Y * Headless24bitEngine.C_WIDTH] = ch;
+		fgColorMatrixSs[cx + cy * size[0]] = curColor;
 	}
 
 	@Override
 	public void glDrawCharCenter(int x, int y, char ch) {
-		glDrawCharLeft(x,y,ch);
+		glDrawCharLeft(x, y, ch);
 	}
 
 	@Override
 	public void glDrawCharRight(int x, int y, char ch) {
-		final int cx = x-1*Headless24bitEngine.C_MUL_X;
+		final int cx = x - 1 * Headless24bitEngine.C_MUL_X;
 		final int cy = y;
 		if (cx >= size[0] || cy >= size[1]) {
 			return;
 		}
-		charmatrix[cx/Headless24bitEngine.C_MUL_X+cy/Headless24bitEngine.C_MUL_Y*Headless24bitEngine.C_WIDTH] = ch;
-		fgColorMatrixSs[cx+cy*size[0]] = curColor;
+		charmatrix[cx / Headless24bitEngine.C_MUL_X + cy / Headless24bitEngine.C_MUL_Y * Headless24bitEngine.C_WIDTH] = ch;
+		fgColorMatrixSs[cx + cy * size[0]] = curColor;
 	}
 
 	@Override
 	public void glDrawStringLeft(float x, float y, String text) {
-		final int cx = (int)x;
-		final int cy = (int)y;
+		final int cx = (int) x;
+		final int cy = (int) y;
 		int i = 0;
 		for (char c : text.toCharArray()) {
-			if (cx+i >= size[0] || cy >= size[1]) {
+			if (cx + i >= size[0] || cy >= size[1]) {
 				break;
 			}
-			charmatrix[cx/Headless24bitEngine.C_MUL_X+i+cy/Headless24bitEngine.C_MUL_Y*Headless24bitEngine.C_WIDTH] = c;
-			fgColorMatrixSs[cx+i+cy*size[0]] = curColor;
+			charmatrix[cx / Headless24bitEngine.C_MUL_X + i + cy / Headless24bitEngine.C_MUL_Y * Headless24bitEngine.C_WIDTH] = c;
+			fgColorMatrixSs[cx + i + cy * size[0]] = curColor;
 			i++;
 		}
 	}
 
 	@Override
 	public void glDrawStringCenter(float x, float y, String text) {
-		final int cx = ((int)x)-(text.length()/2)*Headless24bitEngine.C_MUL_X;
-		final int cy = ((int)y);
+		final int cx = ((int) x) - (text.length() / 2) * Headless24bitEngine.C_MUL_X;
+		final int cy = ((int) y);
 		int i = 0;
 		for (char c : text.toCharArray()) {
-			if (cx+i >= size[0] || cy >= size[1]) {
+			if (cx + i >= size[0] || cy >= size[1]) {
 				break;
 			}
-			charmatrix[cx/Headless24bitEngine.C_MUL_X+i+cy/Headless24bitEngine.C_MUL_Y*Headless24bitEngine.C_WIDTH] = c;
-			fgColorMatrixSs[cx+i+cy*size[0]] = curColor;
+			charmatrix[cx / Headless24bitEngine.C_MUL_X + i + cy / Headless24bitEngine.C_MUL_Y * Headless24bitEngine.C_WIDTH] = c;
+			fgColorMatrixSs[cx + i + cy * size[0]] = curColor;
 			i++;
 		}
 	}
@@ -216,9 +213,8 @@ public class Headless24bitRenderer implements Renderer {
 	@Override
 	public void glDrawStringRight(float x, float y, String text) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 	private void glDrawSkin(int x0, int y0, int s0, int t0, int s1, int t1, boolean transparent) {
 		int[] newColor;
@@ -276,7 +272,7 @@ public class Headless24bitRenderer implements Renderer {
 						newColor = currentSkin.skinData[(s0 + texx) + (t0 + texy) * currentSkin.skinSize[0]];
 						if (transparent) {
 							if (newColor.length == 3 || (newColor.length == 4 && newColor[3] != 1)) {
-								charmatrix[pixelX/Headless24bitEngine.C_MUL_X + pixelY/Headless24bitEngine.C_MUL_Y * Headless24bitEngine.C_WIDTH] = ' ';
+								charmatrix[pixelX / Headless24bitEngine.C_MUL_X + pixelY / Headless24bitEngine.C_MUL_Y * Headless24bitEngine.C_WIDTH] = ' ';
 								bgColorMatrixSs[pixelX + pixelY * size[0]] = newColor;
 							}
 						}
@@ -285,23 +281,23 @@ public class Headless24bitRenderer implements Renderer {
 			}
 		}
 	}
-	
+
 	private void drawPixelAt(char ch, int[] color, double x, double y) {
-		
+
 	}
 
 	@Override
 	public void glClearSkin() {
 		currentSkin = null;
 	}
-	
+
 	protected void clearAll() {
-		for (int i = 0; i < Headless24bitEngine.C_WIDTH*Headless24bitEngine.C_HEIGHT; i++) {
-			charmatrix[i]=' ';
+		for (int i = 0; i < Headless24bitEngine.C_WIDTH * Headless24bitEngine.C_HEIGHT; i++) {
+			charmatrix[i] = ' ';
 		}
-		for (int i = 0; i < size[0]*size[1]; i++) {
+		for (int i = 0; i < size[0] * size[1]; i++) {
 			bgColorMatrixSs[i] = clearColor;
-			fgColorMatrixSs[i] = new int[] {0,0,0};
+			fgColorMatrixSs[i] = new int[] { 0, 0, 0 };
 		}
 	}
 
@@ -309,5 +305,5 @@ public class Headless24bitRenderer implements Renderer {
 	public Headless24bitFont getCurrentFont() {
 		return currentFont;
 	}
-	
+
 }

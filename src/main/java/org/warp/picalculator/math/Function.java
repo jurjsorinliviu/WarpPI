@@ -68,9 +68,10 @@ public interface Function {
 
 	/**
 	 * 
-	 * @param context Mathematical Context
+	 * @param context
+	 *            Mathematical Context
 	 * @return An ArrayList of parsed Blocks
-	 * @throws Error 
+	 * @throws Error
 	 */
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error;
 }

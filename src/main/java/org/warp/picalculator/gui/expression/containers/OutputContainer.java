@@ -31,7 +31,7 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 		roots = new ObjectArrayList<>();
 		roots.add(new BlockContainer(small));
 	}
-	
+
 	public void setContentAsSingleGroup(ObjectArrayList<Block> blocks) {
 		roots.clear();
 		BlockContainer bcnt = new BlockContainer();
@@ -41,7 +41,7 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 		roots.add(bcnt);
 		recomputeDimensions();
 	}
-	
+
 	public void setContentAsMultipleGroups(ObjectArrayList<ObjectArrayList<Block>> roots) {
 		this.roots.clear();
 		for (ObjectArrayList<Block> blocks : roots) {
@@ -53,7 +53,7 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 		}
 		recomputeDimensions();
 	}
-	
+
 	public void setContentAsMultipleElements(ObjectArrayList<Block> elems) {
 		this.roots.clear();
 		for (Block block : elems) {
@@ -76,7 +76,8 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 		int maxw = 0;
 		for (BlockContainer root : roots) {
 			int w = root.getWidth();
-			if (w > maxw) maxw = w;
+			if (w > maxw)
+				maxw = w;
 		}
 		return maxw;
 	}
@@ -85,10 +86,10 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	public int getHeight() {
 		int h = 0;
 		for (BlockContainer root : roots) {
-			h+=root.getHeight()+2;
+			h += root.getHeight() + 2;
 		}
 		if (h > 0) {
-			return h-2;
+			return h - 2;
 		} else {
 			return h;
 		}
@@ -122,8 +123,8 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	public void draw(GraphicEngine ge, Renderer r, int x, int y) {
 		int offset = 0;
 		for (BlockContainer root : roots) {
-			root.draw(ge, r, x, y+offset, caret);
-			offset+=root.getHeight()+2;
+			root.draw(ge, r, x, y + offset, caret);
+			offset += root.getHeight() + 2;
 		}
 	}
 
@@ -134,7 +135,7 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	}
 
 	public boolean isContentEmpty() {
-		for(BlockContainer root : roots) {
+		for (BlockContainer root : roots) {
 			ObjectArrayList<Block> cnt = root.getContent();
 			if (cnt != null && !cnt.isEmpty()) {
 				return false;

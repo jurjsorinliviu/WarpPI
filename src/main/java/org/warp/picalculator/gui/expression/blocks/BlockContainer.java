@@ -199,14 +199,14 @@ public class BlockContainer implements GraphicalElement {
 
 	public Block getBlock(Caret caret) {
 		Block block = null;
-		
+
 		int pos = 0;
 		for (final Block b : content) {
 			caret.skip(1);
 			pos++;
 			final int deltaCaret = caret.getRemaining();
-			
-			block= b.getBlock(caret);
+
+			block = b.getBlock(caret);
 			if (block != null) {
 				return block;
 			}
@@ -310,9 +310,9 @@ public class BlockContainer implements GraphicalElement {
 	public static void drawCaret(GraphicEngine ge, Renderer r, Caret caret, boolean small, int x, int y, int height) {
 		if (caret.getState() == CaretState.VISIBLE_ON) {
 			r.glColor(getDefaultColor());
-			r.glFillColor(x, y, small?2:3, height);
+			r.glFillColor(x, y, small ? 2 : 3, height);
 			caret.setLastLocation(x, y);
-			caret.setLastSize(small?2:3, height);
+			caret.setLastSize(small ? 2 : 3, height);
 		}
 	}
 
@@ -352,12 +352,13 @@ public class BlockContainer implements GraphicalElement {
 
 		for (final Block block : blocks) {
 			final Feature blockFeature = block.toFeature(context);
-			if (blockFeature == null) throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known Block");
+			if (blockFeature == null)
+				throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known Block");
 			blockFeatures.add(blockFeature);
 		}
 
 		final Function result = MathParser.joinFeatures(context, blockFeatures);
 		return result;
 	}
-	
+
 }

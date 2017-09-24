@@ -8,7 +8,6 @@ import org.warp.picalculator.device.chip.SerialToParallel;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.GUIErrorMessage;
 import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
-import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.gui.screens.Screen;
 
 import com.pi4j.wiringpi.Gpio;
@@ -780,7 +779,7 @@ public class Keyboard {
 			} else {
 				switch (k) {
 					case POWER:
-						DisplayManager.engine.destroy();
+						DisplayManager.INSTANCE.engine.destroy();
 						break;
 					case NONE:
 						break;
@@ -788,12 +787,12 @@ public class Keyboard {
 						letterPressed('X');
 						break;
 					case BRIGHTNESS_CYCLE:
-						DisplayManager.cycleBrightness(false);
+						DisplayManager.INSTANCE.cycleBrightness(false);
 						refresh = true;
 						break;
 					case BRIGHTNESS_CYCLE_REVERSE:
-						DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
-						DisplayManager.cycleBrightness(true);
+						//DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
+						DisplayManager.INSTANCE.cycleBrightness(true);
 						refresh = true;
 						break;
 					case HISTORY_BACK:

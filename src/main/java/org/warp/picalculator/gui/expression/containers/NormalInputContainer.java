@@ -22,7 +22,7 @@ public class NormalInputContainer extends InputContainer {
 	public NormalInputContainer() {
 		super();
 	}
-	
+
 	public NormalInputContainer(InputContext ic) {
 		super(ic);
 	}
@@ -77,7 +77,7 @@ public class NormalInputContainer extends InputContainer {
 				return new BlockChar(c);
 		}
 	}
-	
+
 	@Override
 	public void typeChar(char c) {
 		super.typeChar(c);

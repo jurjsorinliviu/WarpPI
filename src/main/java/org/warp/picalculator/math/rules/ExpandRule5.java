@@ -36,7 +36,7 @@ public class ExpandRule5 {
 
 	public static ObjectArrayList<Function> execute(Function f) throws Error {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
-		
+
 		if (f instanceof Negative) {
 			final Negative fnc = (Negative) f;
 			result.add(((Negative) ((Expression) fnc.getParameter()).getParameter()).getParameter());

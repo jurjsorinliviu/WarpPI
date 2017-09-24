@@ -1,7 +1,5 @@
 package org.warp.picalculator.gui.graphicengine.headless24bit;
 
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -27,20 +25,19 @@ public class Headless24bitSkin implements Skin {
 	}
 
 	public static int[][] getMatrixOfImage(BufferedImage bufferedImage) {
-		
-		
+
 		final int width = bufferedImage.getWidth(null);
 		final int height = bufferedImage.getHeight(null);
 		final int[][] pixels = new int[width * height][];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				int rgb = bufferedImage.getRGB(i, j);
-				int r = (rgb >> 16) &0xFF;
-				int g = (rgb >> 8) &0xFF;
-				int b = rgb &0xFF;
+				int r = (rgb >> 16) & 0xFF;
+				int g = (rgb >> 8) & 0xFF;
+				int b = rgb & 0xFF;
 				boolean transparent = ((rgb >> 24) & 0xFF) <= 128;
 				int[] curCol = Headless24bitRenderer.rgbToIntArray(r, g, b);
-				pixels[i + j * width] = new int[] {curCol[0], curCol[1], curCol[2], transparent?1:0};
+				pixels[i + j * width] = new int[] { curCol[0], curCol[1], curCol[2], transparent ? 1 : 0 };
 			}
 		}
 
@@ -49,7 +46,7 @@ public class Headless24bitSkin implements Skin {
 
 	@Override
 	public void initialize(GraphicEngine d) {
-		
+
 	}
 
 	@Override
@@ -61,6 +58,5 @@ public class Headless24bitSkin implements Skin {
 	public boolean isInitialized() {
 		return true;
 	}
-
 
 }

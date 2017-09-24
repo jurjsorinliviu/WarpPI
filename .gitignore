@@ -7,6 +7,9 @@
 *.jar
 *.war
 *.ear
+Thumbs.db
+font_easter.png
+font_easter.rft
 
 /target/
 /backups/

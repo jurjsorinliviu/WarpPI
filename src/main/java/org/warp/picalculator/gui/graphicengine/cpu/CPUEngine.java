@@ -1,21 +1,15 @@
 package org.warp.picalculator.gui.graphicengine.cpu;
 
-import java.awt.FontMetrics;
 import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
-
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
-import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
@@ -48,12 +42,12 @@ public class CPUEngine implements GraphicEngine {
 		g = new BufferedImage(ww, wh, BufferedImage.TYPE_INT_ARGB);
 		INSTANCE.wasResized = false;
 	}
-	
+
 	@Override
 	public void create() {
 		create(null);
 	}
-	
+
 	@Override
 	public void create(Runnable onInitialized) {
 		INSTANCE = new SwingWindow(this);
@@ -126,7 +120,7 @@ public class CPUEngine implements GraphicEngine {
 
 	@Deprecated()
 	public void refresh() {
-		if (DisplayManager.getScreen() == null || (DisplayManager.error != null && DisplayManager.error.length() > 0) || DisplayManager.getScreen() == null || DisplayManager.getScreen().mustBeRefreshed()) {
+		if (DisplayManager.INSTANCE.getScreen() == null || (DisplayManager.INSTANCE.error != null && DisplayManager.INSTANCE.error.length() > 0) || DisplayManager.INSTANCE.getScreen() == null || DisplayManager.INSTANCE.getScreen().mustBeRefreshed()) {
 			INSTANCE.c.repaint();
 		}
 	}
@@ -176,16 +170,16 @@ public class CPUEngine implements GraphicEngine {
 	}
 
 	@Override
-	public void waitUntilExit() {
+	public void waitForExit() {
 		try {
 			exitSemaphore.acquire();
-		} catch (InterruptedException e) {
-		}
+		} catch (InterruptedException e) {}
 	}
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.forceEngine != null && Utils.forceEngine != "cpu") return false;
+		if (Utils.forceEngine != null && Utils.forceEngine != "cpu")
+			return false;
 		return (Utils.headlessOverride || GraphicsEnvironment.isHeadless()) == false;
 	}
 

@@ -11,6 +11,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
  * Puts the argument of Single Functions inside them
+ * 
  * @author Andrea Cavalli
  *
  */
@@ -25,7 +26,7 @@ public class FixSingleFunctionArgs implements MathParserStep {
 					throw new Error(Errors.MISSING_ARGUMENTS, "There is a function at the end without any argument specified.");
 				} else {
 					((FunctionSingle) currentFunction).setParameter(lastFunction);
-					functionsList.remove(curIndex.i+1);
+					functionsList.remove(curIndex.i + 1);
 				}
 				return true;
 			}

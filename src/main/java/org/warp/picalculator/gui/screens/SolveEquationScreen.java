@@ -24,12 +24,12 @@ public class SolveEquationScreen extends Screen {
 
 	@Override
 	public void render() {
-		DisplayManager.renderer.glColor4i(0, 0, 0, 64);
-		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 4, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 4 + 1, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 4 + 1, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.renderer.glColor3i(255, 0, 0);
-		DisplayManager.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 4, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glColor4i(0, 0, 0, 64);
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 4, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 4 + 1, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 4 + 1, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glColor3i(255, 0, 0);
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 4, "WORK IN PROGRESS. THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
 	}
 
 	@Override

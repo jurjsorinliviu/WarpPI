@@ -54,7 +54,7 @@ public class BlockSquareRoot extends Block {
 		}
 		return removed;
 	}
-	
+
 	@Override
 	public Block getBlock(Caret caret) {
 		return containerNumber.getBlock(caret);

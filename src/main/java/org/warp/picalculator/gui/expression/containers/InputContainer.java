@@ -16,8 +16,6 @@ import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.parser.MathParser;
-import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -35,6 +33,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	public synchronized InputContext getInputContext() {
 		return inputContext;
 	}
+
 	@Deprecated()
 	/**
 	 * Use InputContainer(InputContext) instead
@@ -75,7 +74,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 	public void typeChar(String c) {
 		typeChar(c.charAt(0));
 	}
-	
+
 	public void del() {
 		caret.resetRemaining();
 		if (root.delBlock(caret)) {
@@ -90,7 +89,6 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		closeExtra();
 	}
 
-	
 	public Block getSelectedBlock() {
 		caret.resetRemaining();
 		Block selectedBlock = root.getBlock(caret);
@@ -102,7 +100,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		if (curPos > 0) {
 			caret.setPosition(curPos - 1);
 		} else {
-			caret.setPosition(maxPosition-1);
+			caret.setPosition(maxPosition - 1);
 		}
 		caret.turnOn();
 		caretTime = 0;
@@ -157,9 +155,9 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 				somethingChanged = true;
 			}
 		}
-		
+
 		if (extra != null) {
-			somethingChanged = somethingChanged|extra.beforeRender(delta, caret);
+			somethingChanged = somethingChanged | extra.beforeRender(delta, caret);
 		}
 
 		return somethingChanged;
@@ -237,21 +235,22 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 			extra = null;
 		}
 	}
-	
+
 	public void closeExtra() {
 		if (extra != null) {
 			extra.close();
 			extra = null;
 		}
 	}
-	
+
 	public boolean isExtraOpened() {
 		return extra != null;
 	}
-	
+
 	public KeyboardEventListener getExtraKeyboardEventListener() {
 		return extra;
 	}
+
 	public Function toFunction(MathContext context) throws Error {
 		return root.toFunction(context);
 	}

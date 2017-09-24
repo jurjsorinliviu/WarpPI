@@ -1,16 +1,7 @@
 package org.warp.picalculator.math;
 
-import java.math.BigInteger;
-import java.util.List;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
-import org.warp.picalculator.math.functions.equations.Equation;
-import org.warp.picalculator.math.functions.equations.EquationsSystem;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

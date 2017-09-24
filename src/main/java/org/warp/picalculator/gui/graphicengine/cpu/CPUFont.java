@@ -148,8 +148,7 @@ public class CPUFont implements BinaryFont {
 	}
 
 	@Override
-	public void initialize(GraphicEngine d) {
-	}
+	public void initialize(GraphicEngine d) {}
 
 	@Override
 	public void use(GraphicEngine d) {

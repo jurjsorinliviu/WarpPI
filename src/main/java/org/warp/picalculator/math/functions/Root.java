@@ -75,7 +75,7 @@ public class Root extends FunctionOperator {
 	public Root clone() {
 		return new Root(mathContext, parameter1, parameter2);
 	}
-	
+
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
 		// TODO Auto-generated method stub

@@ -17,10 +17,10 @@ public class CacheFile {
 	private FileOutputStream lastFOS;
 	private ObjectInputStream lastOIS;
 	private FileInputStream lastFIS;
-	
+
 	public CacheFile() {
 		do {
-			path = UUID.randomUUID().toString()+".ser";
+			path = UUID.randomUUID().toString() + ".ser";
 		} while (Files.exists(Paths.get(path)));
 		try {
 			Files.createTempFile(Main.calculatorNameLOWER, "");
@@ -28,7 +28,7 @@ public class CacheFile {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public ObjectOutputStream getObjectOutputStram() {
 		if (lastOOS == null) {
 			try {
@@ -41,7 +41,7 @@ public class CacheFile {
 			return lastOOS;
 		}
 	}
-	
+
 	public ObjectInputStream getObjectInputStram() {
 		if (lastOIS == null) {
 			try {

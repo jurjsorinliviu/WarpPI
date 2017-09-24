@@ -22,11 +22,11 @@ import org.warp.picalculator.math.parser.features.FeatureSum;
 import org.warp.picalculator.math.parser.features.FeatureSumSubtraction;
 import org.warp.picalculator.math.parser.features.FeatureVariable;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
-import org.warp.picalculator.math.parser.steps.JoinNumberAndVariables;
 import org.warp.picalculator.math.parser.steps.AddImplicitMultiplications;
 import org.warp.picalculator.math.parser.steps.FixMultiplicationsAndDivisions;
 import org.warp.picalculator.math.parser.steps.FixSingleFunctionArgs;
 import org.warp.picalculator.math.parser.steps.FixSumsAndSubtractions;
+import org.warp.picalculator.math.parser.steps.JoinNumberAndVariables;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -40,11 +40,13 @@ public class MathParser {
 		return result;
 	}
 
-	public static ObjectArrayList<ObjectArrayList<Block>> parseOutput(MathContext context, ObjectArrayList<Function> resultExpressions) throws Error {
+	public static ObjectArrayList<ObjectArrayList<Block>> parseOutput(MathContext context,
+			ObjectArrayList<Function> resultExpressions) throws Error {
 		final ObjectArrayList<ObjectArrayList<Block>> result = new ObjectArrayList<>();
 		for (Function resultExpression : resultExpressions) {
 			ObjectArrayList<Block> resultBlocks = resultExpression.toBlock(context);
-			if (resultBlocks == null) throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + resultExpression.getClass().getSimpleName());
+			if (resultBlocks == null)
+				throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + resultExpression.getClass().getSimpleName());
 			result.add(resultBlocks);
 		}
 		return result;
@@ -55,13 +57,14 @@ public class MathParser {
 		features = fixFeatures(context, features);
 
 		ObjectArrayList<Function> process = new ObjectArrayList<>();
-		
+
 		for (final Feature f : features) {
 			Function fnc = f.toFunction(context);
-			if (fnc == null) throw new Error(Errors.SYNTAX_ERROR, "\"" + f.getClass().getSimpleName() + "\" can't be converted into a Function!");
+			if (fnc == null)
+				throw new Error(Errors.SYNTAX_ERROR, "\"" + f.getClass().getSimpleName() + "\" can't be converted into a Function!");
 			process.add(fnc);
 		}
-		
+
 		process = fixStack(context, process);
 
 		if (process.size() > 1) {
@@ -71,14 +74,9 @@ public class MathParser {
 		return process.get(0);
 	}
 
-	private static ObjectArrayList<Function> fixStack(MathContext context, ObjectArrayList<Function> functionsList) throws Error {
-		final MathParserStep[] steps = new MathParserStep[] {
-				new JoinNumberAndVariables(context),
-				new FixSingleFunctionArgs(),
-				new FixMultiplicationsAndDivisions(),
-				new FixSumsAndSubtractions(),
-				new AddImplicitMultiplications(context),
-		};
+	private static ObjectArrayList<Function> fixStack(MathContext context, ObjectArrayList<Function> functionsList)
+			throws Error {
+		final MathParserStep[] steps = new MathParserStep[] { new JoinNumberAndVariables(context), new FixSingleFunctionArgs(), new FixMultiplicationsAndDivisions(), new FixSumsAndSubtractions(), new AddImplicitMultiplications(context), };
 		boolean lastLoopDidSomething;
 		Function lastElement;
 
@@ -89,29 +87,30 @@ public class MathParser {
 			}
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
 		}
-		
+
 		for (MathParserStep step : steps) {
 			if (Utils.debugOn) {
-				Utils.out.println(2, "Stack fixing step \""+step.getStepName()+"\"");
+				Utils.out.println(2, "Stack fixing step \"" + step.getStepName() + "\"");
 			}
-			int stepQty = step.requiresReversedIteration()?-1:1, initialIndex = step.requiresReversedIteration()?functionsList.size()-1:0;
+			int stepQty = step.requiresReversedIteration() ? -1 : 1,
+					initialIndex = step.requiresReversedIteration() ? functionsList.size() - 1 : 0;
 			do {
 				lastLoopDidSomething = false;
 				lastElement = null;
 				IntegerObj curIndex = new IntegerObj(initialIndex);
-				while(curIndex.i >= 0 && curIndex.i < functionsList.size()) {
+				while (curIndex.i >= 0 && curIndex.i < functionsList.size()) {
 					final int i = curIndex.i;
 					final Function f = functionsList.get(i);
-					
+
 					if (step.eval(curIndex, lastElement, f, functionsList)) {
 						lastLoopDidSomething = true;
 					}
-					
+
 					lastElement = (i >= functionsList.size()) ? null : functionsList.get(i);
 					curIndex.i += stepQty;
 				}
 			} while (lastLoopDidSomething);
-			
+
 			if (Utils.debugOn) {
 				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
 				for (Function f : functionsList) {
@@ -120,7 +119,7 @@ public class MathParser {
 				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
 			}
 		}
-		
+
 //		//Phase 4
 //		do {
 //			lastLoopDidSomething = false;
@@ -133,7 +132,7 @@ public class MathParser {
 //				}
 //			}
 //		} while (lastLoopDidSomething);
-		
+
 		return functionsList;
 	}
 
@@ -145,7 +144,7 @@ public class MathParser {
 		features = makeNumbers(context, features);
 
 		features = makePowers(context, features);
-		
+
 		features = convertFunctionChars(context, features);
 
 		return features;
@@ -183,7 +182,7 @@ public class MathParser {
 						result = new FeatureDivision(null, null);
 						break;
 				}
-				
+
 				for (char var : MathematicalSymbols.variables) {
 					if (featureChar == var) {
 						result = new FeatureVariable(featureChar, V_TYPE.VARIABLE);
@@ -296,9 +295,10 @@ public class MathParser {
 	 * @param context
 	 * @param features
 	 * @return
-	 * @throws Error 
+	 * @throws Error
 	 */
-	private static ObjectArrayList<Feature> makePowers(MathContext context, ObjectArrayList<Feature> features) throws Error {
+	private static ObjectArrayList<Feature> makePowers(MathContext context, ObjectArrayList<Feature> features)
+			throws Error {
 		final ObjectArrayList<Feature> process = new ObjectArrayList<>();
 
 		Feature lastFeature = null;

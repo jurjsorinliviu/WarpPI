@@ -5,8 +5,6 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.parser.MathParserStep;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -14,13 +12,14 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class AddImplicitMultiplications implements MathParserStep {
 
 	private MathContext context;
-	
+
 	public AddImplicitMultiplications(MathContext context) {
 		this.context = context;
 	}
-	
+
 	@Override
-	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction, ObjectArrayList<Function> functionsList) {
+	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction,
+			ObjectArrayList<Function> functionsList) {
 		if (currentFunction instanceof FunctionSingle) {
 			if (lastFunction instanceof Function) {
 				functionsList.set(curIndex.i, new Multiplication(context, currentFunction, lastFunction));
@@ -36,7 +35,7 @@ public class AddImplicitMultiplications implements MathParserStep {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean requiresReversedIteration() {
 		return true;

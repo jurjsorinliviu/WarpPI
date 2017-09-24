@@ -3,7 +3,6 @@ package org.warp.picalculator.gui.expression.blocks;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.parser.features.FeatureParenthesis;
 import org.warp.picalculator.math.parser.features.FeatureSine;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 

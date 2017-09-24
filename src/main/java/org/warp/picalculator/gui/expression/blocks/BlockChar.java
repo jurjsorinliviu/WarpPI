@@ -40,7 +40,7 @@ public class BlockChar extends Block {
 
 	@Override
 	public void recomputeDimensions() {
-		width = BlockContainer.getDefaultCharWidth(small)-1;
+		width = BlockContainer.getDefaultCharWidth(small) - 1;
 		height = BlockContainer.getDefaultCharHeight(small);
 		line = height / 2;
 	}

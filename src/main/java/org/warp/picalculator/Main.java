@@ -1,16 +1,9 @@
 package org.warp.picalculator;
 
-import java.math.BigInteger;
-import java.util.LinkedList;
-import java.util.Vector;
-
-import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.screens.LoadingScreen;
 import org.warp.picalculator.gui.screens.Screen;
-import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.functions.Number;
 
 import com.pi4j.system.SystemInfo.BoardType;
 import com.pi4j.wiringpi.Gpio;
@@ -37,6 +30,8 @@ public class Main {
 		Main.args = args;
 		beforeStart();
 		new DisplayManager(screen);
+		afterStart();
+		DisplayManager.INSTANCE.waitForExit();
 		Utils.out.println(1, "Shutdown...");
 		beforeShutdown();
 		Utils.out.println(1, "");
@@ -45,7 +40,10 @@ public class Main {
 	}
 
 	public void beforeStart() {
-		boolean isRaspi = false; try {isRaspi = com.pi4j.system.SystemInfo.getBoardType() != BoardType.UNKNOWN;} catch (Exception e) {}
+		boolean isRaspi = false;
+		try {
+			isRaspi = com.pi4j.system.SystemInfo.getBoardType() != BoardType.UNKNOWN;
+		} catch (Exception e) {}
 		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args) && isRaspi) {
 			Gpio.wiringPiSetupPhys();
 			Gpio.pinMode(12, Gpio.PWM_OUTPUT);
@@ -81,9 +79,11 @@ public class Main {
 				Utils.msDosMode = true;
 			}
 		}
-		DisplayManager.preInitialization();
-		DisplayManager.setBrightness(0.2f);
 		Keyboard.startKeyboard();
+	}
+
+	public void afterStart() {
+		DisplayManager.INSTANCE.setBrightness(0.2f);
 	}
 
 	public void beforeShutdown() {
@@ -120,7 +120,7 @@ public class Main {
 		time2 = System.currentTimeMillis();
 		System.out.println("BigIntegerMath HCN: "+(time2-time1)+" ("+empty.toString()+")");
 		
-
+		
 		bigintegers[0] = BigInteger.valueOf(LCN);
 		for (int i = 0; i < max; i++) {
 			bigintegers[i] = bigintegers[0];
@@ -139,7 +139,7 @@ public class Main {
 		}
 		time2 = System.currentTimeMillis();
 		System.out.println("BigIntegerMath HCN: "+(time2-time1)+" ("+empty2.toString()+")");
-
+		
 		numbers[0] = new Number(mc, LCN);
 		for (int i = 0; i < max; i++) {
 			numbers[i] = numbers[0];

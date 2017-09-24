@@ -1,7 +1,6 @@
 package org.warp.picalculator.gui.graphicengine.headless8;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 
 import org.fusesource.jansi.AnsiConsole;
@@ -10,8 +9,6 @@ import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
-import org.warp.picalculator.gui.graphicengine.BinaryFont;
-import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitRenderer;
@@ -23,16 +20,16 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 	private RenderingLoop renderLoop;
 	public static final int C_MUL_X = 4;//8;
 	public static final int C_MUL_Y = 8;//8;
-	protected static final int C_WIDTH = Main.screenSize[0]/C_MUL_X;//Main.screenSize[0]/2;//;60;
-	protected static final int C_HEIGHT = Main.screenSize[1]/C_MUL_Y;//Main.screenSize[1]/3;//;40;
+	protected static final int C_WIDTH = Main.screenSize[0] / C_MUL_X;//Main.screenSize[0]/2;//;60;
+	protected static final int C_HEIGHT = Main.screenSize[1] / C_MUL_Y;//Main.screenSize[1]/3;//;40;
 	private String title = Main.calculatorName;
 	private boolean win = false;
 	private Key precKey = null;
-	
+
 	@Override
 	public int[] getSize() {
 		new ConsoleHandler();
-		return new int[]{C_WIDTH, C_HEIGHT};
+		return new int[] { C_WIDTH, C_HEIGHT };
 	}
 
 	@Override
@@ -48,85 +45,85 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 	@Override
 	public void setResizable(boolean r) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setDisplayMode(int ww, int wh) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void create() {
 		this.create(null);
 	}
-	
+
 	@Override
 	public void create(Runnable onInitialized) {
 		Utils.outputLevel = -1;
 		AnsiConsole.systemInstall();
-		if(Utils.isWindows() && !Utils.msDosMode){
+		if (Utils.isWindows() && !Utils.msDosMode) {
 			win = true;
 			WindowsSupport.setConsoleMode(0x0200);
-			Thread t = new Thread(()-> {
+			Thread t = new Thread(() -> {
 				int ch = -1;
-				while(true) {
-						if (precKey != null) {
-							Keyboard.keyReleased(precKey);
-							precKey = null;
+				while (true) {
+					if (precKey != null) {
+						Keyboard.keyReleased(precKey);
+						precKey = null;
+					}
+					ch = WindowsSupport.readByte();
+					Key key = null;
+					switch (ch) {
+						case 72: { // UP
+							key = Key.UP;
+							break;
 						}
-						ch = WindowsSupport.readByte();
-						Key key = null;
-						switch(ch) {
-							case 72: { // UP
-								key = Key.UP;
-								break;
-							}
-							case 80: { // DOWN
-								key = Key.DOWN;
-								break;
-							}
-							case 77: { // RIGHT
-								key = Key.RIGHT;
-								break;
-							}
-							case 75: { // LEFT
-								key = Key.LEFT;
-								break;
-							}
-							case 49: { // 1
-								key = Key.NUM1;
-								break;
-							}
-							case 50: { // 2
-								key = Key.NUM2;
-								break;
-							}
-							case 51: { // 3
-								key = Key.NUM3;
-								break;
-							}
-							case 52: { // 4
-								key = Key.NUM4;
-								break;
-							}
-							case 53: { // 5
-								key = Key.NUM5;
-								break;
-							}
-							case 54: { // 6
-								key = Key.NUM6;
-								break;
-							}
-							default: {
-								key = Key.NONE;
-								break;
-							}
+						case 80: { // DOWN
+							key = Key.DOWN;
+							break;
 						}
-						if (key != null) {
-							Keyboard.keyPressed(key);
+						case 77: { // RIGHT
+							key = Key.RIGHT;
+							break;
 						}
+						case 75: { // LEFT
+							key = Key.LEFT;
+							break;
+						}
+						case 49: { // 1
+							key = Key.NUM1;
+							break;
+						}
+						case 50: { // 2
+							key = Key.NUM2;
+							break;
+						}
+						case 51: { // 3
+							key = Key.NUM3;
+							break;
+						}
+						case 52: { // 4
+							key = Key.NUM4;
+							break;
+						}
+						case 53: { // 5
+							key = Key.NUM5;
+							break;
+						}
+						case 54: { // 6
+							key = Key.NUM6;
+							break;
+						}
+						default: {
+							key = Key.NONE;
+							break;
+						}
+					}
+					if (key != null) {
+						Keyboard.keyPressed(key);
+					}
 
 				}
 			});
@@ -145,12 +142,12 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 
 	@Override
 	public int getWidth() {
-		return C_WIDTH*C_MUL_X;
+		return C_WIDTH * C_MUL_X;
 	}
 
 	@Override
 	public int getHeight() {
-		return C_HEIGHT*C_MUL_Y;
+		return C_HEIGHT * C_MUL_Y;
 	}
 
 	@Override
@@ -191,15 +188,15 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 	public void repaint() {
 		renderLoop.refresh();
 		r.curColor = 0x1C;
-		r.glDrawStringCenter((C_WIDTH*C_MUL_X)/2, 0, title);
+		r.glDrawStringCenter((C_WIDTH * C_MUL_X) / 2, 0, title);
 		if (win) {
-			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX+"0;0f");
-			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX+"?12l");
-			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX+"?25l");
+			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX + "0;0f");
+			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX + "?12l");
+			WindowsSupport.writeConsole(Headless24bitRenderer.ANSI_PREFIX + "?25l");
 		} else {
-			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX+"0;0f");
-			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX+"?12l");
-			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX+"?25l");
+			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX + "0;0f");
+			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX + "?12l");
+			AnsiConsole.out.print(Headless24bitRenderer.ANSI_PREFIX + "?25l");
 		}
 		for (int y = 0; y < C_HEIGHT; y++) {
 			int precBgColor = -1;
@@ -207,10 +204,10 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 			int curBgColor = -1;
 			int curFgColor = -1;
 			for (int x = 0; x < C_WIDTH; x++) {
-				curBgColor = (r.colorMatrix[x+y*C_WIDTH]&0xF0)>>4;
-				curFgColor = r.colorMatrix[x+y*C_WIDTH]&0x0F;
+				curBgColor = (r.colorMatrix[x + y * C_WIDTH] & 0xF0) >> 4;
+				curFgColor = r.colorMatrix[x + y * C_WIDTH] & 0x0F;
 				if (precBgColor != curBgColor) {
-					String str = Headless8Renderer.ANSI_PREFIX+Headless8Renderer.ansiBgColorPrefix+Headless8Renderer.colorANSI[curBgColor]+Headless8Renderer.ansiColorSuffix;
+					String str = Headless8Renderer.ANSI_PREFIX + Headless8Renderer.ansiBgColorPrefix + Headless8Renderer.colorANSI[curBgColor] + Headless8Renderer.ansiColorSuffix;
 					if (win) {
 						WindowsSupport.writeConsole(str);
 					} else {
@@ -218,25 +215,25 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 					}
 				}
 				if (precFgColor != curFgColor) {
-					String str = Headless8Renderer.ANSI_PREFIX+Headless8Renderer.ansiFgColorPrefix+Headless8Renderer.colorANSI[curFgColor]+Headless8Renderer.ansiColorSuffix;
+					String str = Headless8Renderer.ANSI_PREFIX + Headless8Renderer.ansiFgColorPrefix + Headless8Renderer.colorANSI[curFgColor] + Headless8Renderer.ansiColorSuffix;
 					if (win) {
 						WindowsSupport.writeConsole(str);
 					} else {
 						AnsiConsole.out.print(str);
 					}
 				}
-				
-				String stri = r.charmatrix[x+y*C_WIDTH]+"";
+
+				String stri = r.charmatrix[x + y * C_WIDTH] + "";
 				if (win) {
 					WindowsSupport.writeConsole(stri);
 				} else {
 					AnsiConsole.out.print(stri);
 				}
-				
+
 				precBgColor = curBgColor;
 				precFgColor = curFgColor;
 			}
-			
+
 			if (win) {
 				WindowsSupport.writeConsole("\r\n");
 			} else {
@@ -261,11 +258,11 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 	}
 
 	@Override
-	public void waitUntilExit() {
+	public void waitForExit() {
 		try {
 			do {
 				Thread.sleep(500);
-			} while (stopped==false);
+			} while (stopped == false);
 		} catch (final InterruptedException e) {
 
 		}
@@ -273,7 +270,8 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.forceEngine != null && Utils.forceEngine != "console-8") return false;
+		if (Utils.forceEngine != null && Utils.forceEngine != "console-8")
+			return false;
 		return true;
 	}
 

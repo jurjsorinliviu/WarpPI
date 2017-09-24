@@ -28,6 +28,7 @@ public class BlockVariable extends Block {
 	public BlockVariable(InputContext ic, char ch) {
 		this(ic, ch, false);
 	}
+
 	public BlockVariable(InputContext ic, char ch, boolean typeLocked) {
 		this.ic = ic;
 		this.ch = ch;
@@ -47,7 +48,7 @@ public class BlockVariable extends Block {
 			menu.mustRefreshMenu = true;
 		}
 		mustRefresh = true;
-		System.out.println("retrieve:"+type.toString());
+		System.out.println("retrieve:" + type.toString());
 	}
 
 	public void pushValue() {
@@ -59,12 +60,12 @@ public class BlockVariable extends Block {
 			ic.variableTypeDirtyID = null;
 		}
 		ic.variableTypes.put(ch, type);
-		System.out.println("push:"+type.toString());
+		System.out.println("push:" + type.toString());
 	}
 
 	@Override
 	public void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret) {
-		if(ic.variableTypeDirtyID != typeDirtyID) {
+		if (ic.variableTypeDirtyID != typeDirtyID) {
 			retrieveValue();
 		}
 		if (mustRefresh) {
@@ -82,7 +83,7 @@ public class BlockVariable extends Block {
 					break;
 			}
 		}
-		
+
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(color);
 		r.glDrawCharLeft(x, y, ch);
@@ -124,7 +125,7 @@ public class BlockVariable extends Block {
 	public int computeCaretMaxBound() {
 		return 0;
 	}
-	
+
 	@Override
 	public ExtraMenu<?> getExtraMenu() {
 		return menu;
@@ -134,7 +135,7 @@ public class BlockVariable extends Block {
 
 		String text = "";
 		boolean mustRefreshMenu = true;
-		
+
 		public VariableMenu(BlockVariable var) {
 			super(var);
 		}
@@ -143,12 +144,11 @@ public class BlockVariable extends Block {
 
 		@Override
 		public void open() {
-			
+
 		}
 
 		@Override
-		public void close() {
-		}
+		public void close() {}
 
 		@Override
 		public boolean keyPressed(Key k) {
@@ -206,9 +206,9 @@ public class BlockVariable extends Block {
 				mustRefreshMenu = false;
 				text = block.type.toString();
 				BinaryFont f = BlockContainer.getDefaultFont(true);
-				width = 7+f.getStringWidth(text)+7;
-				height = 2+f.getCharacterHeight()+2;
-				
+				width = 7 + f.getStringWidth(text) + 7;
+				height = 2 + f.getCharacterHeight() + 2;
+
 				super.beforeRender(delta, caret);
 				return true;
 			}
@@ -218,7 +218,7 @@ public class BlockVariable extends Block {
 		@Override
 		public void draw(GraphicEngine ge, Renderer r, Caret caret) {
 			r.glColor3f(1.0f, 1.0f, 1.0f);
-			DisplayManager.guiSkin.use(ge);
+			DisplayManager.INSTANCE.guiSkin.use(ge);
 			int popupX = location[0];
 			int popupY = location[1];
 			if (popupX < 0) {
@@ -228,23 +228,23 @@ public class BlockVariable extends Block {
 				popupY = 0;
 			}
 			int[] screenSize = ge.getSize();
-			if (popupX+width >= screenSize[0]) {
-				popupX=screenSize[0]-width-1;
+			if (popupX + width >= screenSize[0]) {
+				popupX = screenSize[0] - width - 1;
 			}
-			if (popupY+height >= screenSize[1]) {
-				popupY=screenSize[1]-height-1;
+			if (popupY + height >= screenSize[1]) {
+				popupY = screenSize[1] - height - 1;
 			}
-			r.glFillRect(location[0]+width/2-5, popupY+1, 10, 5, 163, 16, 10, 5);
-			r.glFillColor(popupX, popupY+5, width, height);
-			r.glFillColor(popupX+2, popupY+4, width-4, height+2);
-			r.glFillColor(popupX-1, popupY+7, width+2, height-4);
-			r.glFillRect(popupX+2, popupY+5+height/2-7/2, 4, 7, 160, 21, 4, 7);
-			r.glFillRect(popupX+width-2-4, popupY+5+height/2-7/2, 4, 7, 172, 21, 4, 7);
+			r.glFillRect(location[0] + width / 2 - 5, popupY + 1, 10, 5, 163, 16, 10, 5);
+			r.glFillColor(popupX, popupY + 5, width, height);
+			r.glFillColor(popupX + 2, popupY + 4, width - 4, height + 2);
+			r.glFillColor(popupX - 1, popupY + 7, width + 2, height - 4);
+			r.glFillRect(popupX + 2, popupY + 5 + height / 2 - 7 / 2, 4, 7, 160, 21, 4, 7);
+			r.glFillRect(popupX + width - 2 - 4, popupY + 5 + height / 2 - 7 / 2, 4, 7, 172, 21, 4, 7);
 			r.glColor(color);
 			BlockContainer.getDefaultFont(true).use(ge);
-			r.glDrawStringCenter(popupX+width/2, popupY+2+5, text);
+			r.glDrawStringCenter(popupX + width / 2, popupY + 2 + 5, text);
 		}
-		
+
 	}
 
 	@Override

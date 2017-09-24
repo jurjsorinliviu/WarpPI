@@ -3,7 +3,6 @@ package org.warp.picalculator.gui.graphicengine.gpu;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +28,7 @@ public class GPURenderer implements Renderer {
 
 	private static final int ELEMENT_VERTICES_COUNT = 6;
 	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = 128;
-	
+
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();
 	FloatBuffer fbVertices;
 	FloatBuffer txVertices;
@@ -51,40 +50,19 @@ public class GPURenderer implements Renderer {
 		final float gre = (gg) / 255f;
 		final float blu = (b) / 255f;
 		//currentColor = new float[] { red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, };
-		currentColor = new float[] {
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-		}; //OK
+		currentColor = new float[] { red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, }; //OK
 	}
 
 	@Override
 	public void glColor3f(float red, float gre, float blu) {
 		// currentColor = new float[] { red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, };
-		currentColor = new float[] {
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-				red, gre, blu, 1.0f,
-		};//OK
+		currentColor = new float[] { red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, red, gre, blu, 1.0f, };//OK
 	}
 
 	@Override
 	public void glColor4f(float red, float gre, float blu, float alp) {
 		// currentColor = new float[] { red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, };
-		currentColor = new float[] {
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-		};//ok
+		currentColor = new float[] { red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, };//ok
 
 	}
 
@@ -118,14 +96,7 @@ public class GPURenderer implements Renderer {
 		final float blu = (b) / 255f;
 		final float alp = (a) / 255f;
 		//currentColor = new float[] { red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, };
-		currentColor = new float[] {
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-				red, gre, blu, alp,
-		};//OK
+		currentColor = new float[] { red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, red, gre, blu, alp, };//OK
 	}
 
 	@Override
@@ -167,31 +138,17 @@ public class GPURenderer implements Renderer {
 		//V1	x, y + height, 0.0f
 		//V2	x + width, y, 0.0f
 		//V3	x + width, y + height, 0.0f
-		
+
 		//NV0 = V1
 		//NV1 = V3
 		//NV2 = V0
-		
+
 		//NV3 = V0
 		//NV4 = V3
 		//NV5 = V2
-		
-		final float[] vertices = {
-				x, y + height, 0.0f,
-				x + width, y + height, 0.0f,
-				x, y, 0.0f,
-				x, y, 0.0f,
-				x + width, y + height, 0.0f,
-				x + width, y, 0.0f
-			};
-		final float[] tex_vertices = {
-				uvX, uvY,
-				uvX + uvWidth, uvY,
-				uvX, uvY + uvHeight,
-				uvX, uvY + uvHeight,
-				uvX + uvWidth, uvY,
-				uvX + uvWidth, uvY + uvHeight
-			};
+
+		final float[] vertices = { x, y + height, 0.0f, x + width, y + height, 0.0f, x, y, 0.0f, x, y, 0.0f, x + width, y + height, 0.0f, x + width, y, 0.0f };
+		final float[] tex_vertices = { uvX, uvY, uvX + uvWidth, uvY, uvX, uvY + uvHeight, uvX, uvY + uvHeight, uvX + uvWidth, uvY, uvX + uvWidth, uvY + uvHeight };
 		fbElements++;
 		fbVertices.put(vertices);
 		txVertices.put(tex_vertices);
@@ -207,31 +164,17 @@ public class GPURenderer implements Renderer {
 		//V1	x0, y0 + h1, 0.0f
 		//V2	x0 + w1, y0, 0.0f
 		//V3	x0 + w1, y0 + h1, 0.0f
-		
+
 		//NV0 = V1
 		//NV1 = V3
 		//NV2 = V0
-		
+
 		//NV3 = V0
 		//NV4 = V3
 		//NV5 = V2
-		
-		final float[] vertices = {
-				x0, y0 + h1, 0.0f,
-				x0 + w1, y0 + h1, 0.0f,
-				x0, y0, 0.0f,
-				x0, y0, 0.0f,
-				x0 + w1, y0 + h1, 0.0f,
-				x0 + w1, y0, 0.0f,
-			};
-		final float[] tex_vertices = {
-				0.0f, 0.0f,
-				1.0f, 0.0f,
-				0.0f, 1.0f,
-				0.0f, 1.0f,
-				1.0f, 0.0f,
-				1.0f, 1.0f,
-			};
+
+		final float[] vertices = { x0, y0 + h1, 0.0f, x0 + w1, y0 + h1, 0.0f, x0, y0, 0.0f, x0, y0, 0.0f, x0 + w1, y0 + h1, 0.0f, x0 + w1, y0, 0.0f, };
+		final float[] tex_vertices = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, };
 		fbElements++;
 		fbVertices.put(vertices);
 		txVertices.put(tex_vertices);
@@ -328,7 +271,7 @@ public class GPURenderer implements Renderer {
 	public void updateDrawCycle() {
 		updateDrawCycle(false, false);
 	}
-	
+
 	public void updateDrawCycle(boolean first, boolean last) {
 		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
 		final boolean changeRequired = last || fbElements >= ELEMENTS_MAX_COUNT_PER_BUFFER;
@@ -359,7 +302,7 @@ public class GPURenderer implements Renderer {
 			}
 		}
 	}
-	
+
 	public void endDrawCycle() {
 		fbVertices.limit(fbVertices.position());
 		txVertices.limit(txVertices.position());
@@ -400,7 +343,7 @@ public class GPURenderer implements Renderer {
 			updateDrawCycle();
 		}
 	}
-	
+
 	void disableTexture() {
 		currentTexEnabled = false;
 		updateDrawCycle();

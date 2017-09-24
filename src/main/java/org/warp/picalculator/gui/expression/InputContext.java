@@ -9,12 +9,12 @@ import org.warp.picalculator.math.functions.Variable.V_TYPE;
 public class InputContext {
 	public final HashMap<Character, V_TYPE> variableTypes;
 	public BlockVariable variableTypeDirtyID = null;
-	
+
 	public InputContext() {
 		this.variableTypes = new HashMap<>();
 		this.variableTypes.put(MathematicalSymbols.PI, V_TYPE.CONSTANT);
 	}
-	
+
 	public InputContext(HashMap<Character, V_TYPE> variableTypes) {
 		this.variableTypes = variableTypes;
 	}

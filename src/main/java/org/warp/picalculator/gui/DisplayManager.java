@@ -1,9 +1,7 @@
 package org.warp.picalculator.gui;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.Main;
@@ -27,37 +25,30 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public final class DisplayManager implements RenderingLoop {
 	public static DisplayManager INSTANCE;
-	private static float brightness;
+	private float brightness;
 
-	public static final GraphicEngine engine;
-	public static final boolean supportsPauses;
-	public static Renderer renderer;
+	public final GraphicEngine engine;
+	public final boolean supportsPauses;
+	public Renderer renderer;
 
-	public static Skin guiSkin;
-	public static BinaryFont[] fonts;
+	public Skin guiSkin;
+	public BinaryFont[] fonts;
 
-	public static String error;
+	public String error;
 	public String[] errorStackTrace;
-	public final static int[] glyphsHeight;
+	public final int[] glyphsHeight;
 
-	private static Screen screen;
-	public static Semaphore screenChange = new Semaphore(0);
-	public static String displayDebugString;
-	public static ObjectArrayList<GUIErrorMessage> errorMessages;
-	
-	static {
+	private Screen screen;
+	public Semaphore screenChange = new Semaphore(0);
+	public String displayDebugString;
+	public ObjectArrayList<GUIErrorMessage> errorMessages;
+
+	public DisplayManager(Screen screen) {
 		engine = chooseGraphicEngine();
 		supportsPauses = engine.doesRefreshPauses();
 		glyphsHeight = new int[] { 9, 6, 12, 9 };
 		displayDebugString = "";
 		errorMessages = new ObjectArrayList<>();
-	}
-	
-	public static void preInitialization() {
-		//Nothing. When called for the first time the static methods will be loaded
-	}
-	
-	public DisplayManager(Screen screen) {
 		setScreen(screen);
 		INSTANCE = this;
 		loop();
@@ -91,7 +82,7 @@ public final class DisplayManager implements RenderingLoop {
 	 * }
 	 */
 
-	private static GraphicEngine chooseGraphicEngine() {
+	private GraphicEngine chooseGraphicEngine() {
 		GraphicEngine d;
 		d = new GPUEngine();
 		if (d.isSupported()) {
@@ -124,19 +115,19 @@ public final class DisplayManager implements RenderingLoop {
 	public void setScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
-				DisplayManager.currentSession = 0;
-				for (int i = DisplayManager.sessions.length - 1; i >= 1; i--) {
-					DisplayManager.sessions[i] = DisplayManager.sessions[i - 1];
+				DisplayManager.INSTANCE.currentSession = 0;
+				for (int i = DisplayManager.INSTANCE.sessions.length - 1; i >= 1; i--) {
+					DisplayManager.INSTANCE.sessions[i] = DisplayManager.INSTANCE.sessions[i - 1];
 				}
-				DisplayManager.sessions[0] = screen;
+				DisplayManager.INSTANCE.sessions[0] = screen;
 			} else {
-				DisplayManager.currentSession = -1;
+				DisplayManager.INSTANCE.currentSession = -1;
 			}
 		}
 		screen.d = this;
 		try {
 			screen.create();
-			DisplayManager.screen = screen;
+			DisplayManager.INSTANCE.screen = screen;
 			screenChange.release();
 			if (screen.initialized == false) {
 				screen.initialize();
@@ -150,18 +141,18 @@ public final class DisplayManager implements RenderingLoop {
 	public void replaceScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
-				DisplayManager.sessions[DisplayManager.currentSession] = screen;
+				DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession] = screen;
 			} else {
-				DisplayManager.currentSession = -1;
-				for (int i = 0; i < DisplayManager.sessions.length - 2; i++) {
-					DisplayManager.sessions[i] = DisplayManager.sessions[i + 1];
+				DisplayManager.INSTANCE.currentSession = -1;
+				for (int i = 0; i < DisplayManager.INSTANCE.sessions.length - 2; i++) {
+					DisplayManager.INSTANCE.sessions[i] = DisplayManager.INSTANCE.sessions[i + 1];
 				}
 			}
 		}
 		screen.d = this;
 		try {
 			screen.create();
-			DisplayManager.screen = screen;
+			DisplayManager.INSTANCE.screen = screen;
 			screenChange.release();
 			if (screen.initialized == false) {
 				screen.initialize();
@@ -173,13 +164,13 @@ public final class DisplayManager implements RenderingLoop {
 	}
 
 	public boolean canGoBack() {
-		if (DisplayManager.currentSession == -1) {
-			return DisplayManager.sessions[0] != null;
+		if (DisplayManager.INSTANCE.currentSession == -1) {
+			return DisplayManager.INSTANCE.sessions[0] != null;
 		}
-		if (DisplayManager.screen != DisplayManager.sessions[DisplayManager.currentSession]) {
+		if (DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {
 
-		} else if (DisplayManager.currentSession + 1 < DisplayManager.sessions.length) {
-			if (DisplayManager.sessions[DisplayManager.currentSession + 1] != null) {
+		} else if (DisplayManager.INSTANCE.currentSession + 1 < DisplayManager.INSTANCE.sessions.length) {
+			if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession + 1] != null) {
 
 			} else {
 				return false;
@@ -187,7 +178,7 @@ public final class DisplayManager implements RenderingLoop {
 		} else {
 			return false;
 		}
-		if (DisplayManager.sessions[DisplayManager.currentSession] != null) {
+		if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession] != null) {
 			return true;
 		}
 		return false;
@@ -195,22 +186,22 @@ public final class DisplayManager implements RenderingLoop {
 
 	public void goBack() {
 		if (canGoBack()) {
-			if (DisplayManager.currentSession >= 0 && DisplayManager.screen != DisplayManager.sessions[DisplayManager.currentSession]) {} else {
-				DisplayManager.currentSession += 1;
+			if (DisplayManager.INSTANCE.currentSession >= 0 && DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {} else {
+				DisplayManager.INSTANCE.currentSession += 1;
 			}
-			DisplayManager.screen = DisplayManager.sessions[DisplayManager.currentSession];
+			DisplayManager.INSTANCE.screen = DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession];
 			screenChange.release();
 		}
 	}
 
 	public boolean canGoForward() {
-		if (DisplayManager.currentSession <= 0) { // -1 e 0
+		if (DisplayManager.INSTANCE.currentSession <= 0) { // -1 e 0
 			return false;
 		}
-		if (DisplayManager.screen != DisplayManager.sessions[DisplayManager.currentSession]) {
+		if (DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {
 
-		} else if (DisplayManager.currentSession > 0) {
-			if (DisplayManager.sessions[DisplayManager.currentSession - 1] != null) {
+		} else if (DisplayManager.INSTANCE.currentSession > 0) {
+			if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession - 1] != null) {
 
 			} else {
 				return false;
@@ -218,7 +209,7 @@ public final class DisplayManager implements RenderingLoop {
 		} else {
 			return false;
 		}
-		if (DisplayManager.sessions[DisplayManager.currentSession] != null) {
+		if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession] != null) {
 			return true;
 		}
 		return false;
@@ -226,18 +217,18 @@ public final class DisplayManager implements RenderingLoop {
 
 	public void goForward() {
 		if (canGoForward()) {
-			if (DisplayManager.screen != DisplayManager.sessions[DisplayManager.currentSession]) {
+			if (DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {
 
 			} else {
-				DisplayManager.currentSession -= 1;
+				DisplayManager.INSTANCE.currentSession -= 1;
 			}
-			DisplayManager.screen = DisplayManager.sessions[DisplayManager.currentSession];
+			DisplayManager.INSTANCE.screen = DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession];
 			screenChange.release();
 		}
 	}
 
-	public static Screen getScreen() {
-		return DisplayManager.screen;
+	public Screen getScreen() {
+		return DisplayManager.INSTANCE.screen;
 	}
 
 	private void load_skin() throws IOException {
@@ -250,7 +241,7 @@ public final class DisplayManager implements RenderingLoop {
 		fonts[1] = engine.loadFont("small");
 		fonts[2] = engine.loadFont("ex");
 		fonts[3] = engine.loadFont("big");
-		fonts[4] = engine.loadFont("32");
+		//4
 		fonts[5] = engine.loadFont("square");
 	}
 
@@ -304,7 +295,7 @@ public final class DisplayManager implements RenderingLoop {
 
 		int padding = 2;
 
-		final int brightness = (int) (Math.ceil(DisplayManager.brightness * 9));
+		final int brightness = (int) (Math.ceil(DisplayManager.INSTANCE.brightness * 9));
 		if (brightness <= 10) {
 			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * brightness, 16 * 1, 16, 16);
 		} else {
@@ -343,15 +334,15 @@ public final class DisplayManager implements RenderingLoop {
 	private void draw_bottom() {
 		renderer.glDrawStringLeft(2, 90, displayDebugString);
 
-		Utils.getFont(true, false).use(DisplayManager.engine);
-		DisplayManager.renderer.glColor4i(255, 0, 0, 40);
-		DisplayManager.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 - 7 + 1, "WORK IN");
-		DisplayManager.renderer.glColor4i(255, 0, 0, 80);
-		DisplayManager.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7 - 7, "WORK IN");
-		DisplayManager.renderer.glColor4i(255, 0, 0, 40);
-		DisplayManager.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 + 1, "PROGRESS.");
-		DisplayManager.renderer.glColor4i(255, 0, 0, 80);
-		DisplayManager.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7, "PROGRESS.");
+		Utils.getFont(true, false).use(DisplayManager.INSTANCE.engine);
+		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 40);
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 - 7 + 1, "WORK IN");
+		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 80);
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7 - 7, "WORK IN");
+		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 40);
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 + 1, "PROGRESS.");
+		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 80);
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7, "PROGRESS.");
 	}
 
 	private void draw_world() {
@@ -410,7 +401,7 @@ public final class DisplayManager implements RenderingLoop {
 
 			load_skin();
 			load_fonts();
-			
+
 			try {
 				screen.initialize();
 			} catch (final Exception e) {
@@ -497,18 +488,16 @@ public final class DisplayManager implements RenderingLoop {
 			workThread.start();
 
 			engine.start(getDrawable());
-
-			engine.waitUntilExit();
 		} catch (final Exception ex) {
 			ex.printStackTrace();
 		} finally {}
 	}
 
-	public static void changeBrightness(float change) {
+	public void changeBrightness(float change) {
 		setBrightness(brightness + change);
 	}
 
-	public static void setBrightness(float newval) {
+	public void setBrightness(float newval) {
 		if (newval >= 0 && newval <= 1) {
 			brightness = newval;
 			if (Utils.debugOn == false) {
@@ -520,7 +509,7 @@ public final class DisplayManager implements RenderingLoop {
 		}
 	}
 
-	public static void cycleBrightness(boolean reverse) {
+	public void cycleBrightness(boolean reverse) {
 		final float step = reverse ? -0.1f : 0.1f;
 		if (brightness + step > 1f) {
 			setBrightness(0f);
@@ -531,24 +520,28 @@ public final class DisplayManager implements RenderingLoop {
 		}
 	}
 
-	public static float getBrightness() {
+	public float getBrightness() {
 		return brightness;
 	}
 
-	public static int currentSession = 0;
-	public static Screen[] sessions = new Screen[5];
+	public int currentSession = 0;
+	public Screen[] sessions = new Screen[5];
 
 	@Deprecated
-	public static void colore(float f1, float f2, float f3, float f4) {
+	public void colore(float f1, float f2, float f3, float f4) {
 		renderer.glColor4f(f1, f2, f3, f4);
 	}
 
-	public static RenderingLoop getDrawable() {
+	public RenderingLoop getDrawable() {
 		return INSTANCE;
 	}
 
 	@Deprecated
-	public static void drawSkinPart(int x, int y, int uvX, int uvY, int uvX2, int uvY2) {
+	public void drawSkinPart(int x, int y, int uvX, int uvY, int uvX2, int uvY2) {
 		renderer.glFillRect(x, y, uvX2 - uvX, uvY2 - uvY, uvX, uvY, uvX2 - uvX, uvY2 - uvY);
+	}
+
+	public void waitForExit() {
+		engine.waitForExit();
 	}
 }

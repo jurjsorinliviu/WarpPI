@@ -40,9 +40,8 @@ public class DivisionRule1 {
 				prec = new Multiplication(root, a, b);
 			}
 		}*/
-		
 
-		final int[] size = new int[] {elements[0].size(), elements[1].size()};
+		final int[] size = new int[] { elements[0].size(), elements[1].size() };
 		Function separatedDivision = new Division(root, elem1, elem2);
 
 		Function[] resultDivisionArray = new Function[2];
@@ -90,12 +89,12 @@ public class DivisionRule1 {
 			denomMult = ((Multiplication) denomMult).getParameter2();
 		}
 		elementsDenominator.add(denomMult);
-		
-		return new ObjectArrayList[] {elementsNumerator, elementsDenominator};
+
+		return new ObjectArrayList[] { elementsNumerator, elementsDenominator };
 	}
 
 	private static int[] getFirstWorkingDivisionCouple(ObjectArrayList<Function>[] elements) {
-		final int[] size = new int[] {elements[0].size(), elements[1].size()};
+		final int[] size = new int[] { elements[0].size(), elements[1].size() };
 		Function a;
 		Function b;
 		if (elements[0].size() + elements[1].size() <= 2) {

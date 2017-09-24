@@ -97,7 +97,7 @@ class NEWTWindow implements GLEventListener {
 
 			@Override
 			public void windowDestroyed(WindowEvent e) {
-				DisplayManager.engine.destroy();
+				DisplayManager.INSTANCE.engine.destroy();
 			}
 
 			@Override
@@ -280,7 +280,7 @@ class NEWTWindow implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		final GL2ES1 gl = drawable.getGL().getGL2ES1();
-		
+
 		//Vsync
 		gl.setSwapInterval(2);
 
@@ -335,7 +335,7 @@ class NEWTWindow implements GLEventListener {
 	@Override
 	public void display(GLAutoDrawable glad) {
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
-		
+
 		GPURenderer.gl = gl;
 
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);

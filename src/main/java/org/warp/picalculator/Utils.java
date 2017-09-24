@@ -56,7 +56,7 @@ public class Utils {
 	public static boolean debugThirdScreen;
 	public static final boolean debugWindow2x = true;
 	public static boolean headlessOverride = false;
-    private static String OS = System.getProperty("os.name").toLowerCase();
+	private static String OS = System.getProperty("os.name").toLowerCase();
 	public static String forceEngine;
 	public static boolean msDosMode;
 
@@ -65,7 +65,7 @@ public class Utils {
 		public void println(String str) {
 			println(0, str);
 		}
-		
+
 		public void println(int level) {
 			if (outputLevel >= level) {
 				if (outputLevel == 0) {
@@ -75,7 +75,7 @@ public class Utils {
 				}
 			}
 		}
-		
+
 		public void println(int level, String str) {
 			if (outputLevel >= level) {
 				if (outputLevel == 0) {
@@ -85,7 +85,7 @@ public class Utils {
 				}
 			}
 		}
-		
+
 		public void print(int level, String str) {
 			if (outputLevel >= level) {
 				if (outputLevel == 0) {
@@ -451,12 +451,12 @@ public class Utils {
 //
 //		var.draw(x + wsegno, y + (hsegno - h1), null, null);
 //
-//		DisplayManager.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 1, y + hsegno - 3);
-//		DisplayManager.renderer.glDrawLine(x + 2, y + hsegno - 2, x + 2, y + hsegno - 2);
-//		DisplayManager.renderer.glDrawLine(x + 3, y + hsegno - 1, x + 3, y + hsegno - 1);
-//		DisplayManager.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
-//		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
-//		DisplayManager.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
+//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 1, y + hsegno - 3);
+//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 2, y + hsegno - 2, x + 2, y + hsegno - 2);
+//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 3, y + hsegno - 1, x + 3, y + hsegno - 1);
+//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
+//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
+//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
 	}
 
 	public static final int getFontHeight() {
@@ -468,7 +468,7 @@ public class Utils {
 	}
 
 	public static final BinaryFont getFont(boolean small, boolean zoomed) {
-		return DisplayManager.fonts[getFontIndex(small, zoomed)];
+		return DisplayManager.INSTANCE.fonts[getFontIndex(small, zoomed)];
 	}
 
 	public static final int getFontIndex(boolean small, boolean zoomed) {
@@ -494,15 +494,15 @@ public class Utils {
 	public static final int getFontHeight(boolean small, boolean zoomed) {
 		if (small) {
 			if (zoomed) {
-				return DisplayManager.glyphsHeight[3];
+				return DisplayManager.INSTANCE.glyphsHeight[3];
 			} else {
-				return DisplayManager.glyphsHeight[1];
+				return DisplayManager.INSTANCE.glyphsHeight[1];
 			}
 		} else {
 			if (zoomed) {
-				return DisplayManager.glyphsHeight[2];
+				return DisplayManager.INSTANCE.glyphsHeight[2];
 			} else {
-				return DisplayManager.glyphsHeight[0];
+				return DisplayManager.INSTANCE.glyphsHeight[0];
 			}
 		}
 	}

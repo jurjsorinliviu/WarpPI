@@ -44,7 +44,7 @@ public class BlockPower extends Block {
 		}
 		return removed;
 	}
-	
+
 	@Override
 	public Block getBlock(Caret caret) {
 		return containerExponent.getBlock(caret);
@@ -54,9 +54,9 @@ public class BlockPower extends Block {
 	public void recomputeDimensions() {
 		final int w2 = containerExponent.getWidth();
 		final int h2 = containerExponent.getHeight();
-		width = w2+1;
-		height = h2+BlockContainer.getDefaultCharHeight(small)-3;
-		line = h2+BlockContainer.getDefaultCharHeight(small)/2-3;
+		width = w2 + 1;
+		height = h2 + BlockContainer.getDefaultCharHeight(small) - 3;
+		line = h2 + BlockContainer.getDefaultCharHeight(small) / 2 - 3;
 	}
 
 	@Override

@@ -402,7 +402,7 @@ public class DeallocationHelper {
 						attachmentOrByteBufferFieldMap.put(bufferClass, bufferField);
 					}
 				} catch (final ClassNotFoundException cnfe) {// TODO The Java version
-																	// isn't very useful
+																// isn't very useful
 																// under
 																// Android as it is
 																// always zero, rather
@@ -419,7 +419,7 @@ public class DeallocationHelper {
 		// if a known implementation has drastically changed or if the current
 		// implementation is unknown
 		if (attachmentOrByteBufferFieldNameMap.isEmpty()) {// detects everything
-																// with the
+															// with the
 															// reflection API
 															// creates all
 															// possible kinds of
@@ -581,7 +581,7 @@ public class DeallocationHelper {
 		}
 		// if there is no known implementation class of the direct byte buffers
 		if (deallocatableBufferClassSet.isEmpty()) {// creates a read write
-														// direct byte buffer
+													// direct byte buffer
 			final ByteBuffer dummyReadWriteDirectByteBuffer = ByteBuffer.allocateDirect(1);
 			// gets its class
 			final Class<?> readWriteDirectByteBufferClass = dummyReadWriteDirectByteBuffer.getClass();
@@ -625,7 +625,7 @@ public class DeallocationHelper {
 		final ByteBuffer deallocatableDirectByteBuffer;
 		// looks only for the direct buffers
 		if (buffer != null && buffer.isDirect()) {// looks for any contained
-														// buffer in the passed buffer
+													// buffer in the passed buffer
 			final Class<?> bufferClass = buffer.getClass();
 			final Field attachmentOrByteBufferField = attachmentOrByteBufferFieldMap == null ? null : attachmentOrByteBufferFieldMap.get(bufferClass);
 			final Buffer attachmentBufferOrByteBuffer;
@@ -650,20 +650,20 @@ public class DeallocationHelper {
 			}
 			// if there is no buffer inside the buffer given in input
 			if (attachmentBufferOrByteBuffer == null) {// if it's a direct byte
-															// buffer and if it's an
+														// buffer and if it's an
 														// instance of
 														// a deallocatable buffer
 														// class
 				if (buffer instanceof ByteBuffer && deallocatableBufferClassSet.contains(bufferClass)) {
 					deallocatableDirectByteBuffer = (ByteBuffer) buffer;
 				} else {// it's not a byte buffer or it's not a
-							// deallocatable buffer
+						// deallocatable buffer
 					deallocatableDirectByteBuffer = null;
 					final String bufferClassName = bufferClass.getName();
 					logger.warning("No deallocatable buffer has been found for an instance of the class " + bufferClassName + " whereas it is a direct NIO buffer");
 				}
 			} else {// the passed buffer contains another buffer, looks for a
-						// deallocatable buffer inside it
+					// deallocatable buffer inside it
 				deallocatableDirectByteBuffer = findDeallocatableBuffer(attachmentBufferOrByteBuffer);
 			}
 		} else {// there is no need to clean the heap based buffers

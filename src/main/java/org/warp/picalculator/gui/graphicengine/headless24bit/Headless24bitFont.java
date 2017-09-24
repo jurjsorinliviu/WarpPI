@@ -9,24 +9,24 @@ public class Headless24bitFont implements BinaryFont {
 
 	@Override
 	public void load(String file) throws IOException {
-		
+
 	}
 
 	@Override
 	public void initialize(GraphicEngine d) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void use(GraphicEngine d) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public int getStringWidth(String text) {
-		return 5*text.length();
+		return 5 * text.length();
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.IntegerObj;
 import org.warp.picalculator.math.Function;
-import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;

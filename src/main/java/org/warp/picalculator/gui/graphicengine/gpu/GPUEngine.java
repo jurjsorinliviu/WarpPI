@@ -1,10 +1,6 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -64,7 +60,7 @@ public class GPUEngine implements GraphicEngine {
 	public void create() {
 		create(null);
 	}
-	
+
 	@Override
 	public void create(Runnable onInitialized) {
 		created = true;
@@ -129,25 +125,26 @@ public class GPUEngine implements GraphicEngine {
 	}
 
 	@Override
-	public void waitUntilExit() {
+	public void waitForExit() {
 		try {
 			exitSemaphore.acquire();
-		} catch (InterruptedException e) {
-		}
+		} catch (InterruptedException e) {}
 	}
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.forceEngine != null && Utils.forceEngine != "gpu") return false;
-		if (Utils.headlessOverride) return false;
+		if (Utils.forceEngine != null && Utils.forceEngine != "gpu")
+			return false;
+		if (Utils.headlessOverride)
+			return false;
 		boolean available = false;
 		boolean errored = false;
 		try {
 			available = GLProfile.isAvailable(GLProfile.GL2ES1);
-        } catch (Exception ex) {
-        	errored = true;
-        	System.err.println(ex.getMessage());
-        }
+		} catch (Exception ex) {
+			errored = true;
+			System.err.println(ex.getMessage());
+		}
 		if (!available && !errored) {
 			System.err.println(GLProfile.glAvailabilityToString());
 		}
@@ -158,7 +155,7 @@ public class GPUEngine implements GraphicEngine {
 	public boolean doesRefreshPauses() {
 		return false;
 	}
-	
+
 	public void registerFont(GPUFont gpuFont) {
 		registeredFonts.add(gpuFont);
 	}

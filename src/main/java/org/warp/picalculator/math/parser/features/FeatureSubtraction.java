@@ -4,8 +4,6 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Subtraction;
-import org.warp.picalculator.math.parser.features.interfaces.Feature;
-import org.warp.picalculator.math.parser.features.interfaces.FeatureDouble;
 
 public class FeatureSubtraction extends FeatureDoubleImpl {
 

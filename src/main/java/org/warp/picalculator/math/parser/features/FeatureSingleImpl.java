@@ -14,7 +14,7 @@ public abstract class FeatureSingleImpl implements FeatureSingle {
 	public Object getChild() {
 		return child;
 	}
-	
+
 	protected Function getFunction1() {
 		return (Function) child;
 	}

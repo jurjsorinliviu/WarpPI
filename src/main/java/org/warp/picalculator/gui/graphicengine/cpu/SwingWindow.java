@@ -14,8 +14,6 @@ import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
@@ -61,7 +59,7 @@ public class SwingWindow extends JFrame {
 		addComponentListener(new ComponentListener() {
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				DisplayManager.engine.destroy();
+				DisplayManager.INSTANCE.engine.destroy();
 			}
 
 			@Override

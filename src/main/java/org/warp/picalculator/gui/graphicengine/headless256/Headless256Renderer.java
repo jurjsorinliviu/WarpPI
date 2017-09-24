@@ -5,9 +5,9 @@ import org.warp.picalculator.gui.graphicengine.Renderer;
 public class Headless256Renderer implements Renderer {
 
 	Headless256Font currentFont;
-	protected char[] charmatrix = new char[Headless256Engine.C_WIDTH*Headless256Engine.C_HEIGHT];
-	protected int[] fgColorMatrix = new int[Headless256Engine.C_WIDTH*Headless256Engine.C_HEIGHT];
-	protected int[] bgColorMatrix = new int[Headless256Engine.C_WIDTH*Headless256Engine.C_HEIGHT];
+	protected char[] charmatrix = new char[Headless256Engine.C_WIDTH * Headless256Engine.C_HEIGHT];
+	protected int[] fgColorMatrix = new int[Headless256Engine.C_WIDTH * Headless256Engine.C_HEIGHT];
+	protected int[] bgColorMatrix = new int[Headless256Engine.C_WIDTH * Headless256Engine.C_HEIGHT];
 	protected int clearColor = rgbToX256(0xc5, 0xc2, 0xaf);
 	protected int curColor = clearColor;
 	public Headless256Skin currentSkin;
@@ -16,11 +16,10 @@ public class Headless256Renderer implements Renderer {
 	public static final String ansiFgColorPrefix = "38;5;";
 	public static final String ansiBgColorPrefix = "48;5;";
 	public static final String ansiColorSuffix = "m";
-	
+
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final char FILL = 0xDB;
 	public static final int TRANSPARENT = 0xF0000;
-
 
 	public static int v2ci(int v_U) {
 		return v_U < 48 ? 0 : v_U < 115 ? 1 : (v_U - 35) / 40;
@@ -37,7 +36,7 @@ public class Headless256Renderer implements Renderer {
 	/**
 	 * Calculate the represented colors back from the index
 	 */
-	public static int[] i2cv = {0, 0x5f, 0x87, 0xaf, 0xd7, 0xff};
+	public static int[] i2cv = { 0, 0x5f, 0x87, 0xaf, 0xd7, 0xff };
 
 	public static int rgbToX256(int r_U, int g_U, int b_U) {
 		// Calculate the nearest 0-based color index at 16 .. 231
@@ -58,7 +57,7 @@ public class Headless256Renderer implements Renderer {
 		int grayErr = distSquare(gv, gv, gv, r_U, g_U, b_U);
 		return colorErr <= grayErr ? 16 + colorIndex(ir, ig, ib) : 232 + grayIndex;
 	}
-	
+
 	@Override
 	public void glColor3i(int r, int gg, int b) {
 		curColor = rgbToX256(r, gg, b);
@@ -76,12 +75,12 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glColor3f(float red, float green, float blue) {
-		curColor = rgbToX256((int)(red*255), (int)(green*255), (int)(blue*255));
+		curColor = rgbToX256((int) (red * 255), (int) (green * 255), (int) (blue * 255));
 	}
 
 	@Override
 	public void glColor4f(float red, float green, float blue, float alpha) {
-		curColor = rgbToX256((int)(red*255), (int)(green*255), (int)(blue*255));
+		curColor = rgbToX256((int) (red * 255), (int) (green * 255), (int) (blue * 255));
 	}
 
 	@Override
@@ -91,7 +90,7 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glClearColor4f(float red, float green, float blue, float alpha) {
-		clearColor = rgbToX256((int)(red*255), (int)(green*255), (int)(blue*255));
+		clearColor = rgbToX256((int) (red * 255), (int) (green * 255), (int) (blue * 255));
 	}
 
 	@Override
@@ -111,11 +110,11 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glDrawLine(float x1, float y1, float x2, float y2) {
-		x1/=Headless256Engine.C_MUL_X;
-		x2/=Headless256Engine.C_MUL_X;
-		y1/=Headless256Engine.C_MUL_Y;
-		y2/=Headless256Engine.C_MUL_Y;
-		
+		x1 /= Headless256Engine.C_MUL_X;
+		x2 /= Headless256Engine.C_MUL_X;
+		y1 /= Headless256Engine.C_MUL_Y;
+		y2 /= Headless256Engine.C_MUL_Y;
+
 		int dx = (int) Math.abs(x2 - x1);
 		int dy = (int) Math.abs(y2 - y1);
 
@@ -125,35 +124,35 @@ public class Headless256Renderer implements Renderer {
 		int err = dx - dy;
 
 		while (true) {
-			if (((int)x1) >= Headless256Engine.C_WIDTH || ((int)y1) >= Headless256Engine.C_HEIGHT ||
-					((int)x2) >= Headless256Engine.C_WIDTH || ((int)y2) >= Headless256Engine.C_HEIGHT) {
+			if (((int) x1) >= Headless256Engine.C_WIDTH || ((int) y1) >= Headless256Engine.C_HEIGHT || ((int) x2) >= Headless256Engine.C_WIDTH || ((int) y2) >= Headless256Engine.C_HEIGHT) {
 				break;
 			}
-			bgColorMatrix[((int)x1) + ((int)y1) * Headless256Engine.C_WIDTH] = curColor;
-			charmatrix[((int)x1) + ((int)y1) * Headless256Engine.C_WIDTH] = ' ';
+			bgColorMatrix[((int) x1) + ((int) y1) * Headless256Engine.C_WIDTH] = curColor;
+			charmatrix[((int) x1) + ((int) y1) * Headless256Engine.C_WIDTH] = ' ';
 
-		    if (x1 == x2 && y1 == y2) {
-		        break;
-		    }
+			if (x1 == x2 && y1 == y2) {
+				break;
+			}
 
-		    int e2 = 2 * err;
+			int e2 = 2 * err;
 
-		    if (e2 > -dy) {
-		        err = err - dy;
-		        x1 = x1 + sx;
-		    }
+			if (e2 > -dy) {
+				err = err - dy;
+				x1 = x1 + sx;
+			}
 
-		    if (e2 < dx) {
-		        err = err + dx;
-		        y1 = y1 + sy;
-		    }
+			if (e2 < dx) {
+				err = err + dx;
+				y1 = y1 + sy;
+			}
 		}
 	}
 
 	@Override
-	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth, float uvHeight) {
+	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth,
+			float uvHeight) {
 		if (currentSkin != null) {
-			glDrawSkin((int) (x/Headless256Engine.C_MUL_X), (int) (y/Headless256Engine.C_MUL_Y), (int) (uvX/Headless256Engine.C_MUL_X), (int) (uvY/Headless256Engine.C_MUL_Y), (int) ((uvWidth + uvX)/Headless256Engine.C_MUL_X), (int) ((uvHeight + uvY)/Headless256Engine.C_MUL_Y), true);
+			glDrawSkin((int) (x / Headless256Engine.C_MUL_X), (int) (y / Headless256Engine.C_MUL_Y), (int) (uvX / Headless256Engine.C_MUL_X), (int) (uvY / Headless256Engine.C_MUL_Y), (int) ((uvWidth + uvX) / Headless256Engine.C_MUL_X), (int) ((uvHeight + uvY) / Headless256Engine.C_MUL_Y), true);
 		} else {
 			glFillColor(x, y, width, height);
 		}
@@ -161,10 +160,10 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glFillColor(float x, float y, float width, float height) {
-		final int ix = (int) x/Headless256Engine.C_MUL_X;
-		final int iy = (int) y/Headless256Engine.C_MUL_Y;
-		final int iw = (int) width/Headless256Engine.C_MUL_X;
-		final int ih = (int) height/Headless256Engine.C_MUL_Y;
+		final int ix = (int) x / Headless256Engine.C_MUL_X;
+		final int iy = (int) y / Headless256Engine.C_MUL_Y;
+		final int iw = (int) width / Headless256Engine.C_MUL_X;
+		final int ih = (int) height / Headless256Engine.C_MUL_Y;
 
 		int x1 = ix + iw;
 		int y1 = iy + ih;
@@ -185,61 +184,60 @@ public class Headless256Renderer implements Renderer {
 			}
 		}
 	}
-	
 
 	@Override
 	public void glDrawCharLeft(int x, int y, char ch) {
-		final int cx = ((int)x)/Headless256Engine.C_MUL_X;
-		final int cy = ((int)y)/Headless256Engine.C_MUL_Y;
+		final int cx = ((int) x) / Headless256Engine.C_MUL_X;
+		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
 		if (cx >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 			return;
 		}
-		charmatrix[cx+cy*Headless256Engine.C_WIDTH] = ch;
-		fgColorMatrix[cx+cy*Headless256Engine.C_WIDTH] = curColor;
+		charmatrix[cx + cy * Headless256Engine.C_WIDTH] = ch;
+		fgColorMatrix[cx + cy * Headless256Engine.C_WIDTH] = curColor;
 	}
 
 	@Override
 	public void glDrawCharCenter(int x, int y, char ch) {
-		glDrawCharLeft(x,y,ch);
+		glDrawCharLeft(x, y, ch);
 	}
 
 	@Override
 	public void glDrawCharRight(int x, int y, char ch) {
-		final int cx = ((int)x)/Headless256Engine.C_MUL_X-1;
-		final int cy = ((int)y)/Headless256Engine.C_MUL_Y;
+		final int cx = ((int) x) / Headless256Engine.C_MUL_X - 1;
+		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
 		if (cx >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 			return;
 		}
-		charmatrix[cx+cy*Headless256Engine.C_WIDTH] = ch;
-		fgColorMatrix[cx+cy*Headless256Engine.C_WIDTH] = curColor;
+		charmatrix[cx + cy * Headless256Engine.C_WIDTH] = ch;
+		fgColorMatrix[cx + cy * Headless256Engine.C_WIDTH] = curColor;
 	}
 
 	@Override
 	public void glDrawStringLeft(float x, float y, String text) {
-		final int cx = ((int)x)/Headless256Engine.C_MUL_X;
-		final int cy = ((int)y)/Headless256Engine.C_MUL_Y;
+		final int cx = ((int) x) / Headless256Engine.C_MUL_X;
+		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
 		int i = 0;
 		for (char c : text.toCharArray()) {
-			if (cx+i >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
+			if (cx + i >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 				break;
 			}
-			charmatrix[cx+i+cy*Headless256Engine.C_WIDTH] = c;
-			fgColorMatrix[cx+i+cy*Headless256Engine.C_WIDTH] = curColor;
+			charmatrix[cx + i + cy * Headless256Engine.C_WIDTH] = c;
+			fgColorMatrix[cx + i + cy * Headless256Engine.C_WIDTH] = curColor;
 			i++;
 		}
 	}
 
 	@Override
 	public void glDrawStringCenter(float x, float y, String text) {
-		final int cx = ((int)x)/Headless256Engine.C_MUL_X-text.length()/2;
-		final int cy = ((int)y)/Headless256Engine.C_MUL_Y;
+		final int cx = ((int) x) / Headless256Engine.C_MUL_X - text.length() / 2;
+		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
 		int i = 0;
 		for (char c : text.toCharArray()) {
-			if (cx+i >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
+			if (cx + i >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 				break;
 			}
-			charmatrix[cx+i+cy*Headless256Engine.C_WIDTH] = c;
-			fgColorMatrix[cx+i+cy*Headless256Engine.C_WIDTH] = curColor;
+			charmatrix[cx + i + cy * Headless256Engine.C_WIDTH] = c;
+			fgColorMatrix[cx + i + cy * Headless256Engine.C_WIDTH] = curColor;
 			i++;
 		}
 	}
@@ -247,9 +245,8 @@ public class Headless256Renderer implements Renderer {
 	@Override
 	public void glDrawStringRight(float x, float y, String text) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 	private void glDrawSkin(int x0, int y0, int s0, int t0, int s1, int t1, boolean transparent) {
 		int newColor;
@@ -305,7 +302,7 @@ public class Headless256Renderer implements Renderer {
 				if (pixelY < Headless256Engine.C_HEIGHT) {
 					if (pixelX - (pixelX % Headless256Engine.C_WIDTH) == 0) {
 						newColor = currentSkin.skinData[(s0 + texx) + (t0 + texy) * currentSkin.skinSize[0]];
-						if (transparent && !((newColor&TRANSPARENT) == TRANSPARENT)) {
+						if (transparent && !((newColor & TRANSPARENT) == TRANSPARENT)) {
 							charmatrix[pixelX + pixelY * Headless256Engine.C_WIDTH] = ' ';
 							bgColorMatrix[pixelX + pixelY * Headless256Engine.C_WIDTH] = newColor;
 						}
@@ -313,16 +310,16 @@ public class Headless256Renderer implements Renderer {
 				}
 			}
 		}
-	}	
+	}
 
 	@Override
 	public void glClearSkin() {
 		currentSkin = null;
 	}
-	
+
 	protected void clearAll() {
-		for (int i = 0; i < Headless256Engine.C_WIDTH*Headless256Engine.C_HEIGHT; i++) {
-			charmatrix[i]=' ';
+		for (int i = 0; i < Headless256Engine.C_WIDTH * Headless256Engine.C_HEIGHT; i++) {
+			charmatrix[i] = ' ';
 			bgColorMatrix[i] = clearColor;
 			fgColorMatrix[i] = 0;
 		}
@@ -332,5 +329,5 @@ public class Headless256Renderer implements Renderer {
 	public Headless256Font getCurrentFont() {
 		return currentFont;
 	}
-	
+
 }

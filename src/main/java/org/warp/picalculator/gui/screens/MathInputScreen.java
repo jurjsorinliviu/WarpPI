@@ -3,10 +3,7 @@ package org.warp.picalculator.gui.screens;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
@@ -34,7 +31,6 @@ import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
-import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.parser.MathParser;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -59,7 +55,7 @@ public class MathInputScreen extends Screen {
 		calc = new MathContext();
 
 		try {
-			BlockContainer.initializeFonts(DisplayManager.engine.loadFont("ex"), DisplayManager.engine.loadFont("big"));
+			BlockContainer.initializeFonts(DisplayManager.INSTANCE.engine.loadFont("ex"), DisplayManager.INSTANCE.engine.loadFont("big"));
 		} catch (final IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -79,10 +75,10 @@ public class MathInputScreen extends Screen {
 	@Override
 	public void beforeRender(float dt) {
 
-		if (DisplayManager.error == null) {
-			DisplayManager.renderer.glClearColor(0xFFc5c2af);
+		if (DisplayManager.INSTANCE.error == null) {
+			DisplayManager.INSTANCE.renderer.glClearColor(0xFFc5c2af);
 		} else {
-			DisplayManager.renderer.glClearColor(0xFFDC3C32);
+			DisplayManager.INSTANCE.renderer.glClearColor(0xFFDC3C32);
 		}
 		if (userInput.beforeRender(dt)) {
 			mustRefresh = true;
@@ -93,7 +89,7 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void renderStatusbar() {
-		final Renderer renderer = DisplayManager.renderer;
+		final Renderer renderer = DisplayManager.INSTANCE.renderer;
 		renderer.glColor3f(1, 1, 1);
 		final int pos = 2;
 		final int spacersNumb = 1;
@@ -108,15 +104,15 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void render() {
-		fontBig.use(DisplayManager.engine);
+		fontBig.use(DisplayManager.INSTANCE.engine);
 		final int textColor = 0xFF000000;
 		final int padding = 4;
-		DisplayManager.renderer.glColor(textColor);
+		DisplayManager.INSTANCE.renderer.glColor(textColor);
 
-		userInput.draw(DisplayManager.engine, DisplayManager.renderer, padding, padding + 20);
+		userInput.draw(DisplayManager.INSTANCE.engine, DisplayManager.INSTANCE.renderer, padding, padding + 20);
 
 		if (!result.isContentEmpty()) {
-			result.draw(DisplayManager.engine, DisplayManager.renderer, DisplayManager.engine.getWidth() - result.getWidth() - 2, DisplayManager.engine.getHeight() - result.getHeight() - 2);
+			result.draw(DisplayManager.INSTANCE.engine, DisplayManager.INSTANCE.renderer, DisplayManager.INSTANCE.engine.getWidth() - result.getWidth() - 2, DisplayManager.INSTANCE.engine.getHeight() - result.getHeight() - 2);
 		}
 	}
 
@@ -151,41 +147,41 @@ public class MathInputScreen extends Screen {
 					switch (k) {
 
 						case STEP:
-		//					if (newExpression.length() > 0) {
-		//						if (firstStep) {
-		//							try {
-		//								try {
-		//									interpreta(true);
-		//									showVariablesDialog(() -> {
-		//										currentExpression = newExpression;
-		//										calc.f2 = calc.f;
-		//										firstStep = false;
-		//										step();
-		//									});
-		//								} catch (final Exception ex) {
-		//									if (Utils.debugOn) {
-		//										ex.printStackTrace();
-		//									}
-		//									throw new Error(Errors.SYNTAX_ERROR);
-		//								}
-		//							} catch (final Error e) {
-		//								final StringWriter sw = new StringWriter();
-		//								final PrintWriter pw = new PrintWriter(sw);
-		//								e.printStackTrace(pw);
-		//								d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-		//								DisplayManager.error = e.id.toString();
-		//								System.err.println(e.id);
-		//							}
-		//						} else {
-		//							step();
-		//						}
-		//					}
-		//					return true;
+							//					if (newExpression.length() > 0) {
+							//						if (firstStep) {
+							//							try {
+							//								try {
+							//									interpreta(true);
+							//									showVariablesDialog(() -> {
+							//										currentExpression = newExpression;
+							//										calc.f2 = calc.f;
+							//										firstStep = false;
+							//										step();
+							//									});
+							//								} catch (final Exception ex) {
+							//									if (Utils.debugOn) {
+							//										ex.printStackTrace();
+							//									}
+							//									throw new Error(Errors.SYNTAX_ERROR);
+							//								}
+							//							} catch (final Error e) {
+							//								final StringWriter sw = new StringWriter();
+							//								final PrintWriter pw = new PrintWriter(sw);
+							//								e.printStackTrace(pw);
+							//								d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+							//								DisplayManager.INSTANCE.error = e.id.toString();
+							//								System.err.println(e.id);
+							//							}
+							//						} else {
+							//							step();
+							//						}
+							//					}
+							//					return true;
 						case SIMPLIFY:
-							if (DisplayManager.error != null) {
+							if (DisplayManager.INSTANCE.error != null) {
 								//TODO: make the error management a global API rather than being relegated to this screen.
 								Utils.out.println(1, "Resetting after error...");
-								DisplayManager.error = null;
+								DisplayManager.INSTANCE.error = null;
 								calc.f = null;
 								calc.f2 = null;
 								calc.resultsCount = 0;
@@ -215,7 +211,7 @@ public class MathInputScreen extends Screen {
 													if (f.isSimplified() == false) {
 														done = false;
 														if (f instanceof Expression) {
-															ObjectArrayList<Function> fncResult = ((Expression)f).solve();
+															ObjectArrayList<Function> fncResult = ((Expression) f).solve();
 															for (Function resultItem : fncResult) {
 																newResultExpressions.add(resultItem);
 															}
@@ -235,16 +231,16 @@ public class MathInputScreen extends Screen {
 												resultExpressions = newResultExpressions;
 												stop++;
 											}
-											Utils.out.println(2, "INPUT: "+expr);
+											Utils.out.println(2, "INPUT: " + expr);
 											for (Function rr : resultExpressions) {
 												Utils.out.println(1, "RESULT: " + rr.toString());
 											}
 											ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
 											result.setContentAsMultipleGroups(resultBlocks);
-		//									showVariablesDialog(() -> {
-		//										currentExpression = newExpression;
-		//										simplify();
-		//									});
+											//									showVariablesDialog(() -> {
+											//										currentExpression = newExpression;
+											//										simplify();
+											//									});
 										}
 									} catch (final Exception ex) {
 										if (Utils.debugOn) {
@@ -257,7 +253,7 @@ public class MathInputScreen extends Screen {
 									final PrintWriter pw = new PrintWriter(sw);
 									e.printStackTrace(pw);
 									d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-									DisplayManager.error = e.id.toString();
+									DisplayManager.INSTANCE.error = e.id.toString();
 									System.err.println(e.id);
 								}
 								return true;
@@ -373,9 +369,9 @@ public class MathInputScreen extends Screen {
 						case RESET:
 							userInput.clear();
 							result.clear();
-							if (DisplayManager.error != null) {
+							if (DisplayManager.INSTANCE.error != null) {
 								Utils.out.println(1, "Resetting after error...");
-								DisplayManager.error = null;
+								DisplayManager.INSTANCE.error = null;
 							}
 							return true;
 						case SURD_MODE:
@@ -387,24 +383,24 @@ public class MathInputScreen extends Screen {
 							DisplayManager.INSTANCE.setScreen(new EmptyScreen());
 							return true;
 						case HISTORY_BACK:
-		//					if (DisplayManager.INSTANCE.canGoBack()) {
-		//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession + 1] instanceof MathInputScreen) {
-		//							newExpression = currentExpression;
-		//							try {
-		//								interpreta(true);
-		//							} catch (final Error e) {}
-		//						}
-		//					}
+							//					if (DisplayManager.INSTANCE.canGoBack()) {
+							//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession + 1] instanceof MathInputScreen) {
+							//							newExpression = currentExpression;
+							//							try {
+							//								interpreta(true);
+							//							} catch (final Error e) {}
+							//						}
+							//					}
 							return false;
 						case HISTORY_FORWARD:
-		//					if (DisplayManager.INSTANCE.canGoForward()) {
-		//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.sessions[DisplayManager.currentSession - 1] instanceof MathInputScreen) {
-		//							newExpression = currentExpression;
-		//							try {
-		//								interpreta(true);
-		//							} catch (final Error e) {}
-		//						}
-		//					}
+							//					if (DisplayManager.INSTANCE.canGoForward()) {
+							//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession - 1] instanceof MathInputScreen) {
+							//							newExpression = currentExpression;
+							//							try {
+							//								interpreta(true);
+							//							} catch (final Error e) {}
+							//						}
+							//					}
 							return false;
 						case debug_DEG:
 							if (calc.angleMode.equals(AngleMode.DEG) == false) {
@@ -459,7 +455,7 @@ public class MathInputScreen extends Screen {
 			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			DisplayManager.error = e.id.toString();
+			DisplayManager.INSTANCE.error = e.id.toString();
 			System.err.println(e.id);
 		}
 		return null;
@@ -491,7 +487,7 @@ public class MathInputScreen extends Screen {
 						partialResults.clear();
 					}
 				}
-
+		
 				if (results.size() == 0) {
 					calc.resultsCount = 0;
 				} else {
@@ -516,7 +512,7 @@ public class MathInputScreen extends Screen {
 			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			DisplayManager.error = e.id.toString();
+			DisplayManager.INSTANCE.error = e.id.toString();
 			System.err.println(e.id);
 		}
 		*/
@@ -533,7 +529,7 @@ public class MathInputScreen extends Screen {
 						return;
 					}
 				}
-
+		
 				final ObjectArrayList<Function> results = solveExpression(calc.f);
 				if (results.size() == 0) {
 					calc.resultsCount = 0;
@@ -558,7 +554,7 @@ public class MathInputScreen extends Screen {
 			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			DisplayManager.error = e.id.toString();
+			DisplayManager.INSTANCE.error = e.id.toString();
 			System.err.println(e.id);
 		}
 		*/
@@ -618,7 +614,7 @@ public class MathInputScreen extends Screen {
 				final ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
 				DisplayManager.INSTANCE.setScreen(cvs);
 				try {
-					DisplayManager.screenChange.acquire();
+					DisplayManager.INSTANCE.screenChange.acquire();
 				} catch (final InterruptedException e) {}
 				if (cvs.resultNumberValue == null) {
 					cancelled = true;

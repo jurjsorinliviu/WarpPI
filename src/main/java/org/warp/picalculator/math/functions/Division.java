@@ -3,16 +3,13 @@ package org.warp.picalculator.math.functions;
 import java.math.BigInteger;
 import java.util.LinkedList;
 
-import org.nevec.rjm.BigIntegerMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
-import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.blocks.BlockDivision;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.FractionsRule1;
 import org.warp.picalculator.math.rules.FractionsRule11;
 import org.warp.picalculator.math.rules.FractionsRule12;

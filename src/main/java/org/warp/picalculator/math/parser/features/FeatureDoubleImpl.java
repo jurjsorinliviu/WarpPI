@@ -1,7 +1,7 @@
 package org.warp.picalculator.math.parser.features;
 
-import org.warp.picalculator.math.parser.features.interfaces.FeatureDouble;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.parser.features.interfaces.FeatureDouble;
 
 public abstract class FeatureDoubleImpl implements FeatureDouble {
 	private Object child_1;
@@ -31,11 +31,11 @@ public abstract class FeatureDoubleImpl implements FeatureDouble {
 	public void setChild2(Object obj) {
 		child_2 = obj;
 	}
-	
+
 	protected Function getFunction1() {
 		return (Function) child_1;
 	}
-	
+
 	protected Function getFunction2() {
 		return (Function) child_2;
 	}

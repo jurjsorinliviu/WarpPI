@@ -94,7 +94,7 @@ public class GPUFont implements BinaryFont {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void genTexture() {
 		try {
 			texture = GPURenderer.importTexture(tmpFont);

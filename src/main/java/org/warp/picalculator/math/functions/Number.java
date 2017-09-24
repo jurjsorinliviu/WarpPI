@@ -197,7 +197,7 @@ public class Number implements Function {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * @author programmingpraxis
 	 * @return
@@ -222,9 +222,9 @@ public class Number implements Function {
 			}
 		}
 
-			if (n.compareTo(two) < 0) {
-				throw new IllegalArgumentException("must be greater than one");
-			}
+		if (n.compareTo(two) < 0) {
+			throw new IllegalArgumentException("must be greater than one");
+		}
 
 		while (n.mod(two).equals(BigInteger.ZERO)) {
 			fs.add(two);
@@ -260,7 +260,7 @@ public class Number implements Function {
 			}
 			for (char c : numberParts[1].toCharArray()) {
 				bpec.appendBlockUnsafe(new BlockChar(c));
-			};
+			} ;
 			bpec.recomputeDimensions();
 			bp.recomputeDimensions();
 			result.add(bp);

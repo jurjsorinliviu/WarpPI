@@ -184,7 +184,7 @@ public class TestGPU {
 				}
 			}).start();
 
-			d.waitUntilExit();
+			d.waitForExit();
 		}
 
 		@Override

@@ -113,15 +113,15 @@ public class Multiplication extends FunctionOperator {
 		Function par2 = getParameter2();
 		ObjectArrayList<Block> sub1 = par1.toBlock(context);
 		ObjectArrayList<Block> sub2 = par2.toBlock(context);
-		Block nearLeft = sub1.get(sub1.size()-1);
+		Block nearLeft = sub1.get(sub1.size() - 1);
 		Block nearRight = sub2.get(0);
-		
-		if (par1 instanceof Number && ((Number)par1).equals(new Number(context, -1))) {
+
+		if (par1 instanceof Number && ((Number) par1).equals(new Number(context, -1))) {
 			result.add(new BlockChar(MathematicalSymbols.MINUS));
 			if (new Expression(context, par2).parenthesisNeeded()) {
 				BlockParenthesis par = new BlockParenthesis();
 				ObjectArrayList<Block> parBlocks = par2.toBlock(context);
-				for (Block b: parBlocks) {
+				for (Block b : parBlocks) {
 					par.getNumberContainer().appendBlockUnsafe(b); // Skips recomputeDimension
 				}
 				par.recomputeDimensions(); // Recompute dimensions after appendBlockUnsafe
@@ -133,7 +133,7 @@ public class Multiplication extends FunctionOperator {
 		} else {
 			result.addAll(sub1);
 			if ((nearLeft instanceof BlockChar && nearRight instanceof BlockChar) && !(par2 instanceof Negative)) {
-				
+
 			} else {
 				result.add(new BlockChar(MathematicalSymbols.MULTIPLICATION));
 			}

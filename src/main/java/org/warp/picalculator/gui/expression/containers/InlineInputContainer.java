@@ -3,7 +3,6 @@ package org.warp.picalculator.gui.expression.containers;
 import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
-import org.warp.picalculator.math.MathematicalSymbols;
 
 public class InlineInputContainer extends InputContainer {
 
@@ -16,7 +15,7 @@ public class InlineInputContainer extends InputContainer {
 	public InlineInputContainer() {
 		super();
 	}
-	
+
 	public InlineInputContainer(InputContext ic) {
 		super(ic);
 	}

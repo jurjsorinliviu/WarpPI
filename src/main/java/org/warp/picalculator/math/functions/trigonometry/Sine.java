@@ -4,7 +4,6 @@ import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
-import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
 import org.warp.picalculator.gui.expression.blocks.BlockSine;
 import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Function;
