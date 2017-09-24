@@ -44,13 +44,13 @@ public final class DisplayManager implements RenderingLoop {
 	public ObjectArrayList<GUIErrorMessage> errorMessages;
 
 	public DisplayManager(Screen screen) {
+		INSTANCE = this;
 		engine = chooseGraphicEngine();
 		supportsPauses = engine.doesRefreshPauses();
 		glyphsHeight = new int[] { 9, 6, 12, 9 };
 		displayDebugString = "";
 		errorMessages = new ObjectArrayList<>();
 		setScreen(screen);
-		INSTANCE = this;
 		loop();
 	}
 	/*
