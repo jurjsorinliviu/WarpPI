@@ -40,7 +40,8 @@ public final class DisplayManager implements RenderingLoop {
 	public String[] errorStackTrace;
 	public final static int[] glyphsHeight;
 
-	public static Screen screen;
+	private static Screen screen;
+	public static Semaphore screenChange = new Semaphore(0);
 	public static String displayDebugString;
 	public static ObjectArrayList<GUIErrorMessage> errorMessages;
 	
@@ -136,6 +137,7 @@ public final class DisplayManager implements RenderingLoop {
 		try {
 			screen.create();
 			DisplayManager.screen = screen;
+			screenChange.release();
 			if (screen.initialized == false) {
 				screen.initialize();
 			}
@@ -160,6 +162,7 @@ public final class DisplayManager implements RenderingLoop {
 		try {
 			screen.create();
 			DisplayManager.screen = screen;
+			screenChange.release();
 			if (screen.initialized == false) {
 				screen.initialize();
 			}
@@ -196,6 +199,7 @@ public final class DisplayManager implements RenderingLoop {
 				DisplayManager.currentSession += 1;
 			}
 			DisplayManager.screen = DisplayManager.sessions[DisplayManager.currentSession];
+			screenChange.release();
 		}
 	}
 
@@ -228,10 +232,11 @@ public final class DisplayManager implements RenderingLoop {
 				DisplayManager.currentSession -= 1;
 			}
 			DisplayManager.screen = DisplayManager.sessions[DisplayManager.currentSession];
+			screenChange.release();
 		}
 	}
 
-	public Screen getScreen() {
+	public static Screen getScreen() {
 		return DisplayManager.screen;
 	}
 
@@ -353,9 +358,10 @@ public final class DisplayManager implements RenderingLoop {
 		renderer.glColor3i(255, 255, 255);
 
 		if (error != null) {
-			Utils.getFont(false, false).use(engine);
+			BinaryFont fnt = Utils.getFont(false, false);
+			fnt.use(engine);
 			renderer.glColor3i(129, 28, 22);
-			renderer.glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1] - DisplayManager.glyphsHeight[1] - 2, "ANDREA CAVALLI'S CALCULATOR");
+			renderer.glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1] - (fnt.getCharacterHeight() + 2), Main.calculatorNameUPPER + " CALCULATOR");
 			renderer.glColor3i(149, 32, 26);
 			renderer.glDrawStringCenter((Main.screenSize[0] / 2), 22, error);
 			renderer.glColor3i(164, 34, 28);

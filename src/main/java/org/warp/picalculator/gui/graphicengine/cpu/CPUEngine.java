@@ -5,6 +5,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -24,6 +25,7 @@ public class CPUEngine implements GraphicEngine {
 	public final CPURenderer r = new CPURenderer();
 	public BufferedImage g = new BufferedImage(r.size[0], r.size[1], BufferedImage.TYPE_INT_RGB);
 	public volatile boolean initialized = false;
+	public Semaphore exitSemaphore = new Semaphore(0);
 
 	@Override
 	public void setTitle(String title) {
@@ -88,6 +90,7 @@ public class CPUEngine implements GraphicEngine {
 	@Override
 	public void destroy() {
 		initialized = false;
+		exitSemaphore.release();
 		INSTANCE.setVisible(false);
 		INSTANCE.dispose();
 	}
@@ -123,7 +126,7 @@ public class CPUEngine implements GraphicEngine {
 
 	@Deprecated()
 	public void refresh() {
-		if (DisplayManager.screen == null || (DisplayManager.error != null && DisplayManager.error.length() > 0) || DisplayManager.screen == null || DisplayManager.screen.mustBeRefreshed()) {
+		if (DisplayManager.getScreen() == null || (DisplayManager.error != null && DisplayManager.error.length() > 0) || DisplayManager.getScreen() == null || DisplayManager.getScreen().mustBeRefreshed()) {
 			INSTANCE.c.repaint();
 		}
 	}
@@ -175,11 +178,8 @@ public class CPUEngine implements GraphicEngine {
 	@Override
 	public void waitUntilExit() {
 		try {
-			do {
-				Thread.sleep(500);
-			} while (initialized);
-		} catch (final InterruptedException e) {
-
+			exitSemaphore.acquire();
+		} catch (InterruptedException e) {
 		}
 	}
 

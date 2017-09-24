@@ -217,7 +217,6 @@ public class BlockVariable extends Block {
 
 		@Override
 		public void draw(GraphicEngine ge, Renderer r, Caret caret) {
-			BlockContainer.getDefaultFont(true).use(ge);
 			r.glColor3f(1.0f, 1.0f, 1.0f);
 			DisplayManager.guiSkin.use(ge);
 			int popupX = location[0];
@@ -242,6 +241,7 @@ public class BlockVariable extends Block {
 			r.glFillRect(popupX+2, popupY+5+height/2-7/2, 4, 7, 160, 21, 4, 7);
 			r.glFillRect(popupX+width-2-4, popupY+5+height/2-7/2, 4, 7, 172, 21, 4, 7);
 			r.glColor(color);
+			BlockContainer.getDefaultFont(true).use(ge);
 			r.glDrawStringCenter(popupX+width/2, popupY+2+5, text);
 		}
 		

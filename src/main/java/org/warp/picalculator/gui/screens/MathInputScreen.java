@@ -618,10 +618,7 @@ public class MathInputScreen extends Screen {
 				final ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
 				DisplayManager.INSTANCE.setScreen(cvs);
 				try {
-					while (DisplayManager.screen == cvs) {
-						Utils.out.println(1, Thread.currentThread().getName());
-						Thread.sleep(200);
-					}
+					DisplayManager.screenChange.acquire();
 				} catch (final InterruptedException e) {}
 				if (cvs.resultNumberValue == null) {
 					cancelled = true;

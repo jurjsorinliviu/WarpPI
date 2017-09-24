@@ -229,7 +229,7 @@ public class CPURenderer implements Renderer {
 			int j;
 			final int l = text.length;
 			for (int i = 0; i < l; i++) {
-				cpos = (i * (currentFont.charW + 1));
+				cpos = (i * (currentFont.charW));
 				final int charIndex = text[i];
 				for (int dy = 0; dy < currentFont.charH; dy++) {
 					for (int dx = 0; dx < currentFont.charW; dx++) {

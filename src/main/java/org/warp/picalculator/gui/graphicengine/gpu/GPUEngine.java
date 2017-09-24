@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
@@ -25,6 +26,7 @@ public class GPUEngine implements GraphicEngine {
 	private GPURenderer r;
 	int[] size = new int[] { Main.screenSize[0], Main.screenSize[1] };
 	private final CopyOnWriteArrayList<BinaryFont> registeredFonts = new CopyOnWriteArrayList<BinaryFont>();
+	private Semaphore exitSemaphore = new Semaphore(0);
 
 	@Override
 	public int[] getSize() {
@@ -94,6 +96,7 @@ public class GPUEngine implements GraphicEngine {
 	public void destroy() {
 		initialized = false;
 		created = false;
+		exitSemaphore.release();
 		wnd.window.destroy();
 	}
 
@@ -128,11 +131,8 @@ public class GPUEngine implements GraphicEngine {
 	@Override
 	public void waitUntilExit() {
 		try {
-			do {
-				Thread.sleep(500);
-			} while (initialized | created);
-		} catch (final InterruptedException e) {
-
+			exitSemaphore.acquire();
+		} catch (InterruptedException e) {
 		}
 	}
 
