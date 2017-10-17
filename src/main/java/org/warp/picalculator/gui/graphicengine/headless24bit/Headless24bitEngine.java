@@ -5,7 +5,7 @@ import java.util.logging.ConsoleHandler;
 
 import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.internal.WindowsSupport;
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
@@ -19,9 +19,9 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 	private RenderingLoop renderLoop;
 	public static final int C_MUL_X = 4;//8;
 	public static final int C_MUL_Y = 8;//8;
-	protected static final int C_WIDTH = Main.screenSize[0] / C_MUL_X;//Main.screenSize[0]/2;//;60;
-	protected static final int C_HEIGHT = Main.screenSize[1] / C_MUL_Y;//Main.screenSize[1]/3;//;40;
-	private String title = Main.calculatorName;
+	protected static final int C_WIDTH = StaticVars.screenSize[0] / C_MUL_X;//Main.screenSize[0]/2;//;60;
+	protected static final int C_HEIGHT = StaticVars.screenSize[1] / C_MUL_Y;//Main.screenSize[1]/3;//;40;
+	private String title = StaticVars.calculatorName;
 	private boolean win = false;
 	private Key precKey = null;
 
@@ -62,7 +62,7 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 
 	@Override
 	public void create(Runnable onInitialized) {
-		Utils.outputLevel = -1;
+		StaticVars.outputLevel = -1;
 		AnsiConsole.systemInstall();
 		if (Utils.isWindows() && !Utils.msDosMode) {
 			win = true;

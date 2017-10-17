@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 
 public class CacheFile {
 	private String path;
@@ -23,7 +23,7 @@ public class CacheFile {
 			path = UUID.randomUUID().toString() + ".ser";
 		} while (Files.exists(Paths.get(path)));
 		try {
-			Files.createTempFile(Main.calculatorNameLOWER, "");
+			Files.createTempFile(StaticVars.calculatorNameLOWER, "");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

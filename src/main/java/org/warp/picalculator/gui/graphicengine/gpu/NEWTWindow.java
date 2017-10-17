@@ -28,7 +28,7 @@
 
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import org.warp.picalculator.Utils;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
@@ -76,7 +76,9 @@ class NEWTWindow implements GLEventListener {
 			System.err.println("Le OpenGL non sono presenti su questo computer!");
 			return;
 		}
-		System.setProperty("jnlp.newt.window.icons", "res/icons/calculator-016.png res/icons/calculator-018.png res/icons/calculator-256.png");
+		if (StaticVars.debugOn) {
+			System.setProperty("jnlp.newt.window.icons", "res/icons/calculator-016.png res/icons/calculator-018.png res/icons/calculator-256.png");
+		}
 		final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES1));
 		System.out.println("Loaded OpenGL");
 		// We may at this point tweak the caps and request a translucent drawable
@@ -311,8 +313,8 @@ class NEWTWindow implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
-		disp.size[0] = (Utils.debugOn & Utils.debugWindow2x) ? width / 2 : width;
-		disp.size[1] = (Utils.debugOn & Utils.debugWindow2x) ? height / 2 : height;
+		disp.size[0] = (StaticVars.debugOn & StaticVars.debugWindow2x) ? width / 2 : width;
+		disp.size[1] = (StaticVars.debugOn & StaticVars.debugWindow2x) ? height / 2 : height;
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 		if (width == 0) {
 			width = 1;
@@ -326,7 +328,7 @@ class NEWTWindow implements GLEventListener {
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		gl.glOrtho(0.0, (Utils.debugOn & Utils.debugWindow2x) ? width / 2 : width, (Utils.debugOn & Utils.debugWindow2x) ? height / 2 : height, 0.0, -1, 1);
+		gl.glOrtho(0.0, (StaticVars.debugOn & StaticVars.debugWindow2x) ? width / 2 : width, (StaticVars.debugOn & StaticVars.debugWindow2x) ? height / 2 : height, 0.0, -1, 1);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -337,11 +339,11 @@ class NEWTWindow implements GLEventListener {
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 
 		GPURenderer.gl = gl;
-
+		
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_TEXTURE_COORD_ARRAY);
-
+		
 		renderer.updateDrawCycle(true, false);
 
 		disp.repaint();

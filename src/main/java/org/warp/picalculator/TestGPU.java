@@ -24,7 +24,7 @@ public class TestGPU {
 	public static final GraphicEngine d = new GPUEngine();
 
 	public static void main(String[] args) throws IOException, Error {
-		Utils.debugOn = true;
+		StaticVars.debugOn = true;
 		Utils.debugThirdScreen = false;
 		d.create();
 
@@ -178,7 +178,7 @@ public class TestGPU {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if (!Utils.debugOn) {
+				if (!StaticVars.debugOn) {
 					d.destroy();
 					System.exit(0);
 				}

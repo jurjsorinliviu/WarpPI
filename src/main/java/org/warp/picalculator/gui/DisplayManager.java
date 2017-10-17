@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -242,7 +242,7 @@ public final class DisplayManager implements RenderingLoop {
 		fonts[2] = engine.loadFont("ex");
 		fonts[3] = engine.loadFont("big");
 		//4
-		fonts[5] = engine.loadFont("square");
+		//fonts[5] = engine.loadFont("square");
 	}
 
 	private void draw_init() {
@@ -297,7 +297,7 @@ public final class DisplayManager implements RenderingLoop {
 
 		final int brightness = (int) (Math.ceil(DisplayManager.INSTANCE.brightness * 9));
 		if (brightness <= 10) {
-			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * brightness, 16 * 1, 16, 16);
+			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * brightness, 16 * 1, 16, 16);
 		} else {
 			Utils.out.println(1, "Brightness error");
 		}
@@ -307,19 +307,19 @@ public final class DisplayManager implements RenderingLoop {
 		final boolean canGoBack = canGoBack();
 		final boolean canGoForward = canGoForward();
 
-		if (Main.haxMode) {
-			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 18, 16 * 0, 16, 16);
+		if (StaticVars.haxMode) {
+			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 18, 16 * 0, 16, 16);
 			padding += 18 + 6;
 		}
 
 		if (canGoBack && canGoForward) {
-			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 14, 16 * 0, 16, 16);
+			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 14, 16 * 0, 16, 16);
 		} else if (canGoBack) {
-			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 15, 16 * 0, 16, 16);
+			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 15, 16 * 0, 16, 16);
 		} else if (canGoForward) {
-			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 16, 16 * 0, 16, 16);
+			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 16, 16 * 0, 16, 16);
 		} else {
-			renderer.glFillRect(Main.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 17, 16 * 0, 16, 16);
+			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 17, 16 * 0, 16, 16);
 		}
 
 		padding += 18;
@@ -336,13 +336,13 @@ public final class DisplayManager implements RenderingLoop {
 
 		Utils.getFont(true, false).use(DisplayManager.INSTANCE.engine);
 		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 40);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 - 7 + 1, "WORK IN");
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, StaticVars.screenSize[1] - 7 - 7 + 1, "WORK IN");
 		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 80);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7 - 7, "WORK IN");
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, StaticVars.screenSize[1] - 7 - 7, "WORK IN");
 		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 40);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, Main.screenSize[1] - 7 + 1, "PROGRESS.");
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, StaticVars.screenSize[1] - 7 + 1, "PROGRESS.");
 		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 80);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, Main.screenSize[1] - 7, "PROGRESS.");
+		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, StaticVars.screenSize[1] - 7, "PROGRESS.");
 	}
 
 	private void draw_world() {
@@ -352,9 +352,9 @@ public final class DisplayManager implements RenderingLoop {
 			BinaryFont fnt = Utils.getFont(false, false);
 			fnt.use(engine);
 			renderer.glColor3i(129, 28, 22);
-			renderer.glDrawStringRight(Main.screenSize[0] - 2, Main.screenSize[1] - (fnt.getCharacterHeight() + 2), Main.calculatorNameUPPER + " CALCULATOR");
+			renderer.glDrawStringRight(StaticVars.screenSize[0] - 2, StaticVars.screenSize[1] - (fnt.getCharacterHeight() + 2), StaticVars.calculatorNameUPPER + " CALCULATOR");
 			renderer.glColor3i(149, 32, 26);
-			renderer.glDrawStringCenter((Main.screenSize[0] / 2), 22, error);
+			renderer.glDrawStringCenter((StaticVars.screenSize[0] / 2), 22, error);
 			renderer.glColor3i(164, 34, 28);
 			int i = 22;
 			for (final String stackPart : errorStackTrace) {
@@ -363,7 +363,7 @@ public final class DisplayManager implements RenderingLoop {
 			}
 			fonts[0].use(engine);
 			renderer.glColor3i(129, 28, 22);
-			renderer.glDrawStringCenter((Main.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
+			renderer.glDrawStringCenter((StaticVars.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
 		} else {
 			fonts[0].use(engine);
 			draw_screen();
@@ -389,8 +389,8 @@ public final class DisplayManager implements RenderingLoop {
 
 	private void checkDisplayResized() {
 		if (engine.wasResized()) {
-			Main.screenSize[0] = engine.getWidth();
-			Main.screenSize[1] = engine.getHeight();
+			StaticVars.screenSize[0] = engine.getWidth();
+			StaticVars.screenSize[1] = engine.getHeight();
 		}
 	};
 
@@ -500,7 +500,7 @@ public final class DisplayManager implements RenderingLoop {
 	public void setBrightness(float newval) {
 		if (newval >= 0 && newval <= 1) {
 			brightness = newval;
-			if (Utils.debugOn == false) {
+			if (StaticVars.debugOn == false) {
 				Gpio.pwmWrite(12, (int) Math.ceil(brightness * 1024f));
 //				SoftPwm.softPwmWrite(12, (int)(Math.ceil(brightness*10)));
 			} else {

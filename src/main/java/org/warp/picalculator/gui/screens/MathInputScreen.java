@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
@@ -243,7 +244,7 @@ public class MathInputScreen extends Screen {
 											//									});
 										}
 									} catch (final Exception ex) {
-										if (Utils.debugOn) {
+										if (StaticVars.debugOn) {
 											ex.printStackTrace();
 										}
 										throw new Error(Errors.SYNTAX_ERROR);

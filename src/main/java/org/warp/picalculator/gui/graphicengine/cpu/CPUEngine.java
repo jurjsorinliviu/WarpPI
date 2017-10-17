@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -51,8 +51,8 @@ public class CPUEngine implements GraphicEngine {
 	@Override
 	public void create(Runnable onInitialized) {
 		INSTANCE = new SwingWindow(this);
-		setResizable(Utils.debugOn & !Utils.debugThirdScreen);
-		setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
+		setResizable(StaticVars.debugOn & !Utils.debugThirdScreen);
+		setDisplayMode(StaticVars.screenSize[0], StaticVars.screenSize[1]);
 		INSTANCE.setVisible(true);
 		initialized = true;
 		if (onInitialized != null)
@@ -73,12 +73,12 @@ public class CPUEngine implements GraphicEngine {
 
 	@Override
 	public int getWidth() {
-		return INSTANCE.getWidth() - Main.screenPos[0];
+		return INSTANCE.getWidth() - StaticVars.screenPos[0];
 	}
 
 	@Override
 	public int getHeight() {
-		return INSTANCE.getHeight() - Main.screenPos[1];
+		return INSTANCE.getHeight() - StaticVars.screenPos[1];
 	}
 
 	@Override

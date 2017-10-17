@@ -1,6 +1,6 @@
 package org.warp.picalculator.gui.screens;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
@@ -30,19 +30,19 @@ public class ChooseVariableValueScreen extends Screen {
 	public void render() {
 		Utils.getFont(false, true).use(DisplayManager.INSTANCE.engine);
 		DisplayManager.INSTANCE.renderer.glColor4i(0, 0, 0, 64);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
 		DisplayManager.INSTANCE.renderer.glColor3i(255, 0, 0);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
 
 		Utils.getFont(false, false).use(DisplayManager.INSTANCE.engine);
 		DisplayManager.INSTANCE.renderer.glColor4i(0, 0, 0, 64);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2 + 1, Main.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
 		DisplayManager.INSTANCE.renderer.glColor3i(255, 0, 0);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(Main.screenSize[0] / 2, Main.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
 	}
 
 	@Override

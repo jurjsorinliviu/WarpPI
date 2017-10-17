@@ -3,6 +3,7 @@ package org.warp.picalculator.math.parser;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.IntegerObj;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.containers.InputContainer;
@@ -80,7 +81,7 @@ public class MathParser {
 		boolean lastLoopDidSomething;
 		Function lastElement;
 
-		if (Utils.debugOn) {
+		if (StaticVars.debugOn) {
 			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
 			for (Function f : functionsList) {
 				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
@@ -89,7 +90,7 @@ public class MathParser {
 		}
 
 		for (MathParserStep step : steps) {
-			if (Utils.debugOn) {
+			if (StaticVars.debugOn) {
 				Utils.out.println(2, "Stack fixing step \"" + step.getStepName() + "\"");
 			}
 			int stepQty = step.requiresReversedIteration() ? -1 : 1,
@@ -111,7 +112,7 @@ public class MathParser {
 				}
 			} while (lastLoopDidSomething);
 
-			if (Utils.debugOn) {
+			if (StaticVars.debugOn) {
 				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
 				for (Function f : functionsList) {
 					Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());

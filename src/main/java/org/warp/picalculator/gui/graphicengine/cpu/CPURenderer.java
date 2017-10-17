@@ -2,7 +2,7 @@ package org.warp.picalculator.gui.graphicengine.cpu;
 
 import java.awt.FontMetrics;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
@@ -54,8 +54,8 @@ public class CPURenderer implements Renderer {
 	}
 
 	private void glDrawSkin(int x0, int y0, int s0, int t0, int s1, int t1, boolean transparent) {
-		x0 += Main.screenPos[0];
-		y0 += Main.screenPos[1];
+		x0 += StaticVars.screenPos[0];
+		y0 += StaticVars.screenPos[1];
 		int oldColor;
 		int newColor;
 		final int onex = s0 <= s1 ? 1 : -1;
@@ -126,10 +126,10 @@ public class CPURenderer implements Renderer {
 
 	@Override
 	public void glDrawLine(float x0, float y0, float x1, float y1) {
-		x0 += Main.screenPos[0];
-		x1 += Main.screenPos[0];
-		y0 += Main.screenPos[1];
-		y1 += Main.screenPos[1];
+		x0 += StaticVars.screenPos[0];
+		x1 += StaticVars.screenPos[0];
+		y0 += StaticVars.screenPos[1];
+		y1 += StaticVars.screenPos[1];
 		final int ix0 = (int) x0;
 		final int ix1 = (int) x1;
 		final int iy0 = (int) y0;
@@ -173,8 +173,8 @@ public class CPURenderer implements Renderer {
 
 	@Override
 	public void glFillColor(float x, float y, float width, float height) {
-		x += Main.screenPos[0];
-		y += Main.screenPos[1];
+		x += StaticVars.screenPos[0];
+		y += StaticVars.screenPos[1];
 
 		final int ix = (int) x;
 		final int iy = (int) y;
@@ -210,8 +210,8 @@ public class CPURenderer implements Renderer {
 
 	@Override
 	public void glDrawStringLeft(float x, float y, String textString) {
-		x += Main.screenPos[0];
-		y += Main.screenPos[1];
+		x += StaticVars.screenPos[0];
+		y += StaticVars.screenPos[1];
 
 		final int ix = (int) x;
 		final int iy = (int) y;

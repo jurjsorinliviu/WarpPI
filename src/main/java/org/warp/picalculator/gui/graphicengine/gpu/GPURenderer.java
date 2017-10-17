@@ -11,6 +11,7 @@ import java.nio.FloatBuffer;
 
 import javax.imageio.ImageIO;
 
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
@@ -27,7 +28,7 @@ public class GPURenderer implements Renderer {
 	public static GL2ES1 gl;
 
 	private static final int ELEMENT_VERTICES_COUNT = 6;
-	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = 128;
+	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
 
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();
 	FloatBuffer fbVertices;

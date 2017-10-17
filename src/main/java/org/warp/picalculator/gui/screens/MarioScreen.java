@@ -2,7 +2,7 @@ package org.warp.picalculator.gui.screens;
 
 import java.io.IOException;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
@@ -162,23 +162,23 @@ public class MarioScreen extends Screen {
 			if (easterfont != null) {
 				easterfont.use(DisplayManager.INSTANCE.engine);
 				DisplayManager.INSTANCE.renderer.glColor(0xFF000000);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(Main.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "A");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "A");
 				DisplayManager.INSTANCE.renderer.glColor(0xFF800000);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(Main.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "B");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "B");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFeea28e);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(Main.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "C");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "C");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFee7255);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(Main.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "D");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "D");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFeac0b0);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(Main.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "E");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "E");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFf3d8ce);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(Main.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "F");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "F");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFffede7);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(Main.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "G");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "G");
 			}
 			if (easterskin != null) {
 				easterskin.use(DisplayManager.INSTANCE.engine);
-				DisplayManager.INSTANCE.renderer.glFillRect(0, Main.screenSize[1] - 128, 224, 128, easterNum * 224, 0, 224, 128);
+				DisplayManager.INSTANCE.renderer.glFillRect(0, StaticVars.screenSize[1] - 128, 224, 128, easterNum * 224, 0, 224, 128);
 				easterNum = (easterNum < easterMax) ? easterNum + 1 : 0;
 			}
 

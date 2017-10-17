@@ -2,6 +2,7 @@ package org.warp.picalculator.device;
 
 import java.awt.event.KeyEvent;
 
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
@@ -36,7 +37,7 @@ public class Keyboard {
 
 	public synchronized static void startKeyboard() {
 		final Thread kt = new Thread(() -> {
-			if (Utils.debugOn) {
+			if (StaticVars.debugOn) {
 				try {
 					while (true) {
 						if (debugKeyCode != -1) {
@@ -238,7 +239,7 @@ public class Keyboard {
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.NUM7);
 				} else if (Keyboard.shift) {
-					if (Utils.debugOn) {
+					if (StaticVars.debugOn) {
 						Keyboard.keyPressed(Key.DIVIDE);
 					}
 				}
@@ -428,7 +429,7 @@ public class Keyboard {
 	}
 
 	public static boolean isKeyDown(int row, int col) {
-		if (Utils.debugOn == false) {
+		if (StaticVars.debugOn == false) {
 			return precedentStates[row - 1][col - 1];
 		} else {
 			return debugKeysDown[row - 1][col - 1];
@@ -746,7 +747,7 @@ public class Keyboard {
 	}
 
 	public static void stopKeyboard() {
-		if (Utils.debugOn == false) {
+		if (StaticVars.debugOn == false) {
 			Gpio.digitalWrite(33, false);
 			Gpio.digitalWrite(35, false);
 			Gpio.digitalWrite(36, false);
@@ -819,7 +820,7 @@ public class Keyboard {
 				default:
 					break;
 			}
-			if (Utils.debugOn == false) {
+			if (StaticVars.debugOn == false) {
 				if (k != Key.SHIFT && Keyboard.shift) {
 					Keyboard.shift = false;
 					refresh = true;

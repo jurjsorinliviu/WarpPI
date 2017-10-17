@@ -1,10 +1,15 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
@@ -20,7 +25,8 @@ public class GPUEngine implements GraphicEngine {
 	private NEWTWindow wnd;
 	private RenderingLoop d;
 	private GPURenderer r;
-	int[] size = new int[] { Main.screenSize[0], Main.screenSize[1] };
+	private Map<String, GPUFont> fontCache = new HashMap<String, GPUFont>();
+	int[] size = new int[] { StaticVars.screenSize[0], StaticVars.screenSize[1] };
 	private final CopyOnWriteArrayList<BinaryFont> registeredFonts = new CopyOnWriteArrayList<BinaryFont>();
 	private Semaphore exitSemaphore = new Semaphore(0);
 
@@ -53,7 +59,7 @@ public class GPUEngine implements GraphicEngine {
 	public void setDisplayMode(int ww, int wh) {
 		size[0] = ww;
 		size[1] = wh;
-		wnd.window.setSize((Utils.debugOn & Utils.debugWindow2x) ? ww * 2 : ww, (Utils.debugOn & Utils.debugWindow2x) ? wh * 2 : wh);
+		wnd.window.setSize((StaticVars.debugOn & StaticVars.debugWindow2x) ? ww * 2 : ww, (StaticVars.debugOn & StaticVars.debugWindow2x) ? wh * 2 : wh);
 	}
 
 	@Override
@@ -67,15 +73,15 @@ public class GPUEngine implements GraphicEngine {
 		r = new GPURenderer();
 		wnd = new NEWTWindow(this);
 		wnd.create();
-		setDisplayMode(Main.screenSize[0], Main.screenSize[1]);
-		setResizable(Utils.debugOn & !Utils.debugThirdScreen);
+		setDisplayMode(StaticVars.screenSize[0], StaticVars.screenSize[1]);
+		setResizable(StaticVars.debugOn & !Utils.debugThirdScreen);
 		initialized = true;
 		wnd.onInitialized = onInitialized;
 	}
 
 	@Override
 	public boolean wasResized() {
-		return Main.screenSize[0] != size[0] | Main.screenSize[1] != size[1];
+		return StaticVars.screenSize[0] != size[0] | StaticVars.screenSize[1] != size[1];
 	}
 
 	@Override
@@ -116,7 +122,14 @@ public class GPUEngine implements GraphicEngine {
 
 	@Override
 	public BinaryFont loadFont(String file) throws IOException {
-		return new GPUFont(this, file);
+		for (Entry<String, GPUFont> entry : fontCache.entrySet()) {
+			if (entry.getKey().equals(file)) {
+				return entry.getValue();
+			}
+		}
+		GPUFont font = new GPUFont(this, file);
+		fontCache.put(file, font);
+		return font;
 	}
 
 	@Override
@@ -140,7 +153,7 @@ public class GPUEngine implements GraphicEngine {
 		boolean available = false;
 		boolean errored = false;
 		try {
-			available = GLProfile.isAvailable(GLProfile.GL2ES1);
+			available = GLProfile.isAvailable(GLProfile.GL2ES2);
 		} catch (Exception ex) {
 			errored = true;
 			System.err.println(ex.getMessage());

@@ -15,6 +15,7 @@ import java.awt.image.DataBufferInt;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.Keyboard.Key;
@@ -27,6 +28,7 @@ public class SwingWindow extends JFrame {
 	private RenderingLoop renderingLoop;
 	public boolean wasResized = false;
 	private final CPUEngine display;
+	private int mult = 1;
 
 	public SwingWindow(CPUEngine disp) {
 		display = disp;
@@ -38,7 +40,8 @@ public class SwingWindow extends JFrame {
 		// Transparent 16 x 16 pixel cursor image.
 		final BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 
-		if (Utils.debugOn) {
+		if (StaticVars.debugOn) {
+			if (StaticVars.debugWindow2x) mult = 3;
 			if (Utils.debugThirdScreen) {
 				this.setLocation(2880, 900);
 				setResizable(false);
@@ -202,24 +205,24 @@ public class SwingWindow extends JFrame {
 
 	@Override
 	public void setSize(int width, int height) {
-		c.setSize(width, height);
-		super.getContentPane().setPreferredSize(new Dimension(width, height));
+		c.setSize(width*mult, height*mult);
+		super.getContentPane().setPreferredSize(new Dimension(width*mult, height*mult));
 		super.pack();
 	}
 
 	@Override
 	public Dimension getSize() {
-		return c.getSize();
+		return new Dimension(getWidth(), getHeight());
 	}
 
 	@Override
 	public int getWidth() {
-		return c.getWidth();
+		return c.getWidth()/mult;
 	}
 
 	@Override
 	public int getHeight() {
-		return c.getHeight();
+		return c.getHeight()/mult;
 	}
 
 	public void setRenderingLoop(RenderingLoop renderingLoop) {
@@ -244,8 +247,8 @@ public class SwingWindow extends JFrame {
 				final int[] a = ((DataBufferInt) display.g.getRaster().getDataBuffer()).getData();
 				//		        System.arraycopy(canvas2d, 0, a, 0, canvas2d.length);
 				CPURenderer.canvas2d = a;
-				g.clearRect(0, 0, display.r.size[0], display.r.size[1]);
-				g.drawImage(display.g, 0, 0, null);
+				g.clearRect(0, 0, display.r.size[0]*mult, display.r.size[1]*mult);
+				g.drawImage(display.g, 0, 0, display.r.size[0]*mult, display.r.size[1]*mult, null);
 				//			long time2 = System.nanoTime();
 				//			double timeDelta = ((double)(time2-time1))/1000000000d;
 				//			double mediaAttuale = timeDelta;

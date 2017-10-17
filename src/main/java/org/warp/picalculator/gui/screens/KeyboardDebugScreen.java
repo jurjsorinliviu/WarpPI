@@ -1,6 +1,6 @@
 package org.warp.picalculator.gui.screens;
 
-import org.warp.picalculator.Main;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.Renderer;
@@ -30,7 +30,7 @@ public class KeyboardDebugScreen extends Screen {
 		final Renderer renderer = DisplayManager.INSTANCE.renderer;
 		DisplayManager.INSTANCE.fonts[2].use(DisplayManager.INSTANCE.engine);
 		renderer.glColor4f(0.75f, 0.0f, 0.0f, 1.0f);
-		renderer.glDrawStringRight(Main.screenSize[0] - 10, 30, "-" + keyevent.toUpperCase() + "-");
+		renderer.glDrawStringRight(StaticVars.screenSize[0] - 10, 30, "-" + keyevent.toUpperCase() + "-");
 		if (keyevent != "NONE") {
 			DisplayManager.INSTANCE.fonts[2].use(DisplayManager.INSTANCE.engine);
 			renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
