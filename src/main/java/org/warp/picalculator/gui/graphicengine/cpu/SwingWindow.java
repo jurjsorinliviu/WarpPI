@@ -74,7 +74,11 @@ public class SwingWindow extends JFrame {
 			}
 
 			@Override
-			public void componentShown(ComponentEvent e) {}
+			public void componentShown(ComponentEvent e) {
+				if (StaticVars.debugOn && !Utils.debugThirdScreen) {
+					SwingWindow.this.centerWindow();
+				}
+			}
 		});
 		addKeyListener(new KeyListener() {
 			@Override
@@ -229,6 +233,13 @@ public class SwingWindow extends JFrame {
 		this.renderingLoop = renderingLoop;
 	}
 
+	public void centerWindow() {
+	    Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+	    int x = (int) ((dimension.getWidth() - super.getWidth()) / 2);
+	    int y = (int) ((dimension.getHeight() - super.getHeight()) / 2);
+	    super.setLocation(x, y);
+	}
+	
 //	private static ObjectArrayList<Double> mediaValori = new ObjectArrayList<Double>();
 
 	public class CustomCanvas extends JPanel {

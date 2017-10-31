@@ -23,10 +23,10 @@ public class Multiplication extends FunctionOperator {
 
 	public Multiplication(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
-		if (value1 instanceof Variable && value2 instanceof Variable == false) {
+		/*if (value1 instanceof Variable && value2 instanceof Variable == false) {
 			parameter1 = value2;
 			parameter2 = value1;
-		}
+		}*/
 	}
 
 	@Override

@@ -74,16 +74,16 @@ public class Keyboard {
 						chip1.write(data);
 
 						data = chip2.read();
-						KeyboardDebugScreen.ks[col] = data;
+//						KeyboardDebugScreen.ks[col] = data;
 
 						for (int row = 0; row < 8; row++) {
 							if (data[row] == true && precedentStates[row][col] == false) {
-								System.out.println("Pressed button at " + (row + 1) + ", " + (col + 1));
-								KeyboardDebugScreen.log("Pressed button at " + (row + 1) + ", " + (col + 1));
-								keyPressedRaw(row + 1, col + 1);
+//								System.out.println("Pressed button at " + (row + 1) + ", " + (col + 1));
+//								KeyboardDebugScreen.log("Pressed button at " + (row + 1) + ", " + (col + 1));
+								keyPressedRaw(row, col);
 							} else if (data[row] == false && precedentStates[row][col] == true) {
-								keyReleasedRaw(row + 1, col + 1);
-								KeyboardDebugScreen.log("Released button at " + (row + 1) + ", " + (col + 1));
+								keyReleasedRaw(row, col);
+//								KeyboardDebugScreen.log("Released button at " + (row + 1) + ", " + (col + 1));
 							}
 							precedentStates[row][col] = data[row];
 						}
@@ -92,7 +92,7 @@ public class Keyboard {
 			}
 		});
 		kt.setName("Keyboard thread");
-		kt.setPriority(Thread.NORM_PRIORITY);
+		kt.setPriority(Thread.NORM_PRIORITY + 1);
 		kt.setDaemon(true);
 		kt.start();
 	}
@@ -437,313 +437,110 @@ public class Keyboard {
 	}
 
 	private synchronized static void keyReleasedRaw(int row, int col) {
-		KeyboardDebugScreen.keyX = row;
-		KeyboardDebugScreen.keyY = col;
+//		KeyboardDebugScreen.keyX = row;
+//		KeyboardDebugScreen.keyY = col;
 		if (row == 1 && col == 1) {
 			//keyReleased(Key.BRIGHTNESS_CYCLE);
 		}
 	}
 
+	static final Key[][][] keyMap = /* [ROW, COLUMN, (0:normal 1:shift 2:alpha)] */
+		{
+				{ /* ROW 0 */
+					{Key.SHIFT, Key.SHIFT, Key.SHIFT}, /* 0,0 */
+					{Key.ALPHA, Key.ALPHA, Key.ALPHA}, /* 0,1 */
+					{Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.NONE}, /* 0,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 0,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 0,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 0,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 0,6 */
+					{Key.SIMPLIFY, Key.STEP, Key.NONE}  /* 0,7 */
+				},
+				{ /* ROW 1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 1,0 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 1,1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 1,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 1,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 1,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 1,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 1,6 */
+					{Key.NONE, Key.PI, Key.DRG_CYCLE}  /* 1,7 */
+				},
+				{ /* ROW 2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 2,0 */
+					{Key.SQRT, Key.NONE, Key.LETTER_Y}, /* 2,1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 2,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 2,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 2,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 2,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 2,6 */
+					{Key.NONE, Key.NONE, Key.NONE}  /* 2,7 */
+				},
+				{ /* ROW 3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 3,0 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 3,1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 3,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 3,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 3,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 3,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 3,6 */
+					{Key.NONE, Key.NONE, Key.NONE}  /* 3,7 */
+				},
+				{ /* ROW 4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 4,0 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 4,1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 4,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 4,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 4,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 4,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 4,6 */
+					{Key.NONE, Key.NONE, Key.NONE}  /* 4,7 */
+				},
+				{ /* ROW 5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 5,0 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 5,1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 5,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 5,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 5,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 5,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 5,6 */
+					{Key.NONE, Key.NONE, Key.NONE}  /* 5,7 */
+				},
+				{ /* ROW 6 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 6,0 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 6,1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 6,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 6,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 6,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 6,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 6,6 */
+					{Key.NONE, Key.NONE, Key.NONE}  /* 6,7 */
+				},
+				{ /* ROW 7 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 7,0 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 7,1 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 7,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 7,3 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 7,4 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 7,5 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 7,6 */
+					{Key.NONE, Key.NONE, Key.NONE}  /* 7,7 */
+				}
+		};
+	
 	static synchronized void keyPressedRaw(int row, int col) {
-		KeyboardDebugScreen.keyX = row;
-		KeyboardDebugScreen.keyY = col;
-		if (row == 1 && col == 1) {
-			keyPressed(Key.SHIFT);
-		} else if (row == 1 && col == 2) {
-			keyPressed(Key.ALPHA);
-		} else if (row == 1 && col == 7) {
-			if (shift) {
-				keyPressed(Key.BRIGHTNESS_CYCLE_REVERSE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.BRIGHTNESS_CYCLE);
-			}
-		} else if (row == 1 && col == 8) {
-			if (shift) {
-				keyPressed(Key.STEP);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.SIMPLIFY);
-			}
-		} else if (row == 2 && col == 8) {
-			if (shift) {
-				keyPressed(Key.PI);
-			} else if (alpha) {
-				keyPressed(Key.DRG_CYCLE);
+//		KeyboardDebugScreen.keyX = row;
+//		KeyboardDebugScreen.keyY = col;
+		final Key k = keyMap[row][col][shift ? 1 : alpha ? 2 : 0];
+		if (k != null) {
+			keyPressed(k);
+		} else {
+			if (false) {
+			
 			} else {
 				keyPressed(Key.NONE);
 			}
-		} else if (row == 3 && col == 2) {
-			if (shift) {
-				keyPressed(Key.ROOT);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.SQRT);
-			}
-		} else if (row == 4 && col == 8) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.LETTER_Y);
-			} else {
-				keyPressed(Key.DOT);
-			}
-		} else if (row == 5 && col == 8) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.LETTER_X);
-			} else {
-				keyPressed(Key.NUM0);
-			}
-		} else if (row == 8 && col == 1) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM1);
-			}
-		} else if (row == 8 && col == 2) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM2);
-			}
-		} else if (row == 8 && col == 3) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM3);
-			}
-		} else if (row == 7 && col == 1) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM4);
-			}
-		} else if (row == 7 && col == 2) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM5);
-			}
-		} else if (row == 7 && col == 3) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM6);
-			}
-		} else if (row == 6 && col == 1) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM7);
-			}
-		} else if (row == 6 && col == 2) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM8);
-			}
-		} else if (row == 6 && col == 3) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.NUM9);
-			}
-		} else if (row == 8 && col == 4) {
-			if (shift) {
-				keyPressed(Key.PLUS_MINUS);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.PLUS);
-			}
-		} else if (row == 8 && col == 5) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.MINUS);
-			}
-		} else if (row == 7 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.MULTIPLY);
-			}
-		} else if (row == 7 && col == 5) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.DIVIDE);
-			}
-		} else if (row == 6 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.DELETE);
-			}
-		} else if (row == 6 && col == 5) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.RESET);
-			}
-		} else if (row == 1 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.UP);
-			}
-		} else if (row == 2 && col == 3) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.LEFT);
-			}
-		} else if (row == 2 && col == 5) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.RIGHT);
-			}
-		} else if (row == 1 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.UP);
-			}
-		} else if (row == 2 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.OK);
-			}
-		} else if (row == 3 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.DOWN);
-			}
-		} else if (row == 3 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.DOWN);
-			}
-		} else if (row == 4 && col == 3) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.POWER_OF_2);
-			}
-		} else if (row == 4 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.POWER_OF_x);
-			}
-		} else if (row == 5 && col == 3) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.PARENTHESIS_OPEN);
-			}
-		} else if (row == 5 && col == 4) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.PARENTHESIS_CLOSE);
-			}
-		} else if (row == 5 && col == 6) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.SURD_MODE);
-			}
-		} else if (row == 2 && col == 1) {
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				keyPressed(Key.EQUAL);
-			}
-		} else if (row == 2 && col == 6) {
-			System.out.println("PREMUTO <");
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				System.out.println("PREMUTO <");
-				keyPressed(Key.HISTORY_BACK);
-			}
-		} else if (row == 2 && col == 7) {
-			System.out.println("PREMUTO >");
-			if (shift) {
-				keyPressed(Key.NONE);
-			} else if (alpha) {
-				keyPressed(Key.NONE);
-			} else {
-				System.out.println("PREMUTO >");
-				keyPressed(Key.HISTORY_FORWARD);
-			}
-		} else {}
+		}
 	}
 
 	public static void stopKeyboard() {
@@ -894,39 +691,39 @@ public class Keyboard {
  ALPHA
 -------
 
-|1,1---|1,2---|------|1,4---|------|------|1,7---|
+|0,0---|0,1---|------|0,3---|------|------|0,6---|
 |SHIFT |ALPHA |------|  ^   |------|------|+BRIGH|
 |SHIFT |ALPHA |------|      |------|------|-BRIGH|
 |SHIFT |ALPHA |------|      |------|------|      |
-|2,1---|2,2---|2,3---|2,4---|2,5---|2,6---|2,7---|
+|1,0---|1,1---|1,2---|1,3---|1,4---|1,5---|1,6---|
 | =    |      |  <   |  OK  |   >  | Back | Fwd  |
 |      |      |      |      |      |      |      |
 |      |      |      |      |      |      |      |
-|3,1---|3,2---|------|3,4---|------|3,6---|3,7---|
+|2,0---|2,1---|------|2,3---|------|2,5---|2,6---|
 |      | SQRT |------|  v   |------|      |      |
 |      | ROOT |------|      |------|      |      |
 |      |      |------|      |------|      |      |
-|4,1---|4,2---|4,3---|4,4---|4,5---|4,6---|4,7---|
+|3,0---|3,1---|3,2---|3,3---|3,4---|3,5---|3,6---|
 |      |      | POW 2| POW x|      |      |      |
 |      |      |      |      |      |      |      |
 |      |      |      |      |      |      |      |
-|5,1---|5,2---|5,3---|5,4---|5,5---|5,6---|5,7---|
+|4,0---|4,1---|4,2---|4,3---|4,4---|4,5---|4,6---|
 |      |      |      |      |      |S<=>D |      |
 |      |      |      |      |      |      |      |
 |      |      |      |      |      |      |      |
-|6,1---|6,2---|6,3---|6,4---|6,5---|6,6---|6,7---|
+|5,0---|5,1---|5,2---|5,3---|5,4---|5,5---|5,6---|
 | 7    | 8    | 9    | DEL  | RESET              |
 |      |      |      |      |                    |
 |      |      |      |      |                    |
-|7,1---|7,2---|7,3---|7,4---|7,5-----------------|
+|6,0---|6,1---|6,2---|6,3---|6,4-----------------|
 | 4    | 5    | 6    | *    | /                  |
 |      |      |      |      |                    |
 |      |      |      |      |                    |
-|8,1---|8,2---|8,3---|8,4---|8,5-----------------|
+|7,0---|7,1---|7,2---|7,3---|7,4-----------------|
 | 1    | 2    | 3    |  +   | -                  |
 |      |      |      |      |                    |
 |      |      |      |      |                    |
-|5,8---|4,8---|3,8---|2,8---|1,8-----------------|
+|4,7---|3,7---|2,7---|1,7---|0,7-----------------|
 | 0    | .    |      |      | SIMPLIFY           |
 |      |      |      |PI    | STEP               |
 | X    | Y    | Z    |DRGCYCL|SOLVE FOR [x]      |

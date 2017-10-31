@@ -29,7 +29,7 @@ public class LoadingScreen extends Screen {
 		loadingTextTranslation = GraphicUtils.sinDeg(endLoading * 90f) * 10f;
 
 		endLoading += dt;
-		if (endLoading >= 5f) {
+		if (StaticVars.debugOn || endLoading >= 5f) {
 			DisplayManager.INSTANCE.setScreen(new MathInputScreen());
 		}
 		mustRefresh = true;

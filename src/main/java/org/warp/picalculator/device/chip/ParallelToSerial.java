@@ -20,7 +20,7 @@ public class ParallelToSerial {
 		final boolean[] data = new boolean[8];
 		Gpio.digitalWrite(CLK_INH, Gpio.HIGH);
 		Gpio.digitalWrite(SH_LD, Gpio.LOW);
-		Gpio.delay(1);
+		Gpio.delayMicroseconds(1);
 		Gpio.digitalWrite(SH_LD, Gpio.HIGH);
 		Gpio.digitalWrite(CLK_INH, Gpio.LOW);
 
