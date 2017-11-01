@@ -39,6 +39,11 @@ public class BlockContainer implements GraphicalElement {
 		autoMinimums = true;
 	}
 
+	public BlockContainer(boolean small, ObjectArrayList<Block> content) {
+		this(small, BlockContainer.getDefaultCharWidth(small), BlockContainer.getDefaultCharHeight(small), content, true);
+		autoMinimums = true;
+	}
+
 	public BlockContainer(boolean small, boolean withBorder) {
 		this(small, BlockContainer.getDefaultCharWidth(small), BlockContainer.getDefaultCharHeight(small), withBorder);
 		autoMinimums = true;

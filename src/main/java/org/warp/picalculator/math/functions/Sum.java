@@ -13,7 +13,6 @@ import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.NumberRule3;
 import org.warp.picalculator.math.rules.NumberRule5;
 import org.warp.picalculator.math.rules.NumberRule7;
-import org.warp.picalculator.math.rules.SyntaxRule2;
 import org.warp.picalculator.math.rules.VariableRule1;
 import org.warp.picalculator.math.rules.VariableRule2;
 import org.warp.picalculator.math.rules.VariableRule3;
@@ -30,9 +29,6 @@ public class Sum extends FunctionOperator {
 	@Override
 	protected boolean isSolvable() {
 		if (parameter1 instanceof Number & parameter2 instanceof Number) {
-			return true;
-		}
-		if (SyntaxRule2.compare(this)) {
 			return true;
 		}
 		if (VariableRule1.compare(this)) {
@@ -65,9 +61,7 @@ public class Sum extends FunctionOperator {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}
 		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (SyntaxRule2.compare(this)) {
-			result = SyntaxRule2.execute(this);
-		} else if (VariableRule1.compare(this)) {
+		if (VariableRule1.compare(this)) {
 			result = VariableRule1.execute(this);
 		} else if (VariableRule2.compare(this)) {
 			result = VariableRule2.execute(this);

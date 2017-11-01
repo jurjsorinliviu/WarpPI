@@ -20,8 +20,7 @@ public class JoinNumberAndVariables implements MathParserStep {
 	}
 
 	@Override
-	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction,
-			ObjectArrayList<Function> functionsList) {
+	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction, ObjectArrayList<Function> functionsList) {
 		if (currentFunction instanceof Number | currentFunction instanceof Variable | currentFunction instanceof Division) {
 			if (lastFunction instanceof Variable | lastFunction instanceof Number | (lastFunction instanceof Multiplication && ((Multiplication) lastFunction).getParameter2() != null)) {
 				final Function a = currentFunction;

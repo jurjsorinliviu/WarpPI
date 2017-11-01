@@ -7,6 +7,8 @@ import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public abstract class BlockParenthesisAbstract extends Block {
 
 	private final BlockContainer containerNumber;
@@ -25,6 +27,12 @@ public abstract class BlockParenthesisAbstract extends Block {
 
 	public BlockParenthesisAbstract() {
 		containerNumber = new BlockContainer(false);
+		this.prefix = null;
+		recomputeDimensions();
+	}
+
+	public BlockParenthesisAbstract(ObjectArrayList<Block> blocks) {
+		containerNumber = new BlockContainer(false, blocks);
 		this.prefix = null;
 		recomputeDimensions();
 	}

@@ -4,8 +4,8 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Negative;
+import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
@@ -23,29 +23,27 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class ExpandRule1 {
 
 	public static boolean compare(Function f) {
-		if (f instanceof Negative) {
-			final Negative fnc = (Negative) f;
-			if (fnc.getParameter() instanceof Expression) {
-				final Expression expr = (Expression) fnc.getParameter();
-				if (expr.getParameter() instanceof Sum) {
+		if (f instanceof Multiplication) {
+			final Multiplication fnc = (Multiplication) f;
+			if (fnc.getParameter1().equals(new Number(fnc.getMathContext(), -1))) {
+				final Function expr = fnc.getParameter2();
+				if (expr instanceof Sum) {
 					return true;
-				} else if (expr.getParameter() instanceof Subtraction) {
+				} else if (expr instanceof Subtraction) {
 					return true;
-				} else if (expr.getParameter() instanceof SumSubtraction) {
+				} else if (expr instanceof SumSubtraction) {
 					return true;
 				}
 			}
 		} else if (f instanceof Subtraction || f instanceof SumSubtraction) {
 			final FunctionOperator fnc = (FunctionOperator) f;
-			if (fnc.getParameter2() instanceof Expression) {
-				final Expression expr = (Expression) fnc.getParameter2();
-				if (expr.getParameter() instanceof Sum) {
-					return true;
-				} else if (expr.getParameter() instanceof Subtraction) {
-					return true;
-				} else if (expr.getParameter() instanceof SumSubtraction) {
-					return true;
-				}
+			final Function expr = fnc.getParameter2();
+			if (expr instanceof Sum) {
+				return true;
+			} else if (expr instanceof Subtraction) {
+				return true;
+			} else if (expr instanceof SumSubtraction) {
+				return true;
 			}
 		}
 		return false;
@@ -55,13 +53,13 @@ public class ExpandRule1 {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final MathContext root = f.getMathContext();
 
-		Expression expr = null;
+		Function expr = null;
 		int fromSubtraction = 0;
 		FunctionOperator subtraction = null;
-		if (f instanceof Negative) {
-			expr = ((Expression) ((Negative) f).getParameter());
+		if (f instanceof Multiplication) {
+			expr = ((Multiplication) f).getParameter2();
 		} else if (f instanceof Subtraction || f instanceof SumSubtraction) {
-			expr = ((Expression) ((FunctionOperator) f).getParameter2());
+			expr = ((FunctionOperator) f).getParameter2();
 			if (f instanceof Subtraction) {
 				fromSubtraction = 1;
 			} else {
@@ -73,11 +71,11 @@ public class ExpandRule1 {
 
 		}
 
-		final Function fnc = expr.getParameter();
+		final Function fnc = expr;
 		if (fnc instanceof Sum) {
 			final Function a = ((Sum) fnc).getParameter1();
 			final Function b = ((Sum) fnc).getParameter2();
-			final Subtraction fnc2 = new Subtraction(root, new Negative(root, a), b);
+			final Subtraction fnc2 = new Subtraction(root, new Multiplication(root, new Number(root, -1), a), b);
 			if (fromSubtraction > 0) {
 				subtraction = new Subtraction(root, ((FunctionOperator) f).getParameter1(), fnc2);
 				result.add(subtraction);
@@ -87,7 +85,7 @@ public class ExpandRule1 {
 		} else if (fnc instanceof Subtraction) {
 			final Function a = ((Subtraction) fnc).getParameter1();
 			final Function b = ((Subtraction) fnc).getParameter2();
-			final Sum fnc2 = new Sum(root, new Negative(root, a), b);
+			final Sum fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
 			if (fromSubtraction > 0) {
 				subtraction = new Subtraction(root, ((FunctionOperator) f).getParameter1(), fnc2);
 				result.add(subtraction);
@@ -97,8 +95,8 @@ public class ExpandRule1 {
 		} else if (fnc instanceof SumSubtraction) {
 			final Function a = ((SumSubtraction) fnc).getParameter1();
 			final Function b = ((SumSubtraction) fnc).getParameter2();
-			final Sum fnc2 = new Sum(root, new Negative(root, a), b);
-			final Subtraction fnc3 = new Subtraction(root, new Negative(root, a), b);
+			final Sum fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
+			final Subtraction fnc3 = new Subtraction(root, new Multiplication(root, new Number(root, -1), a), b);
 			if (fromSubtraction > 0) {
 				subtraction = new SumSubtraction(root, ((FunctionOperator) f).getParameter1(), fnc2);
 				result.add(subtraction);

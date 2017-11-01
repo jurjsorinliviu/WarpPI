@@ -50,7 +50,7 @@ public class NumberRule3 {
 		final MathContext root = f.getMathContext();
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (f instanceof SumSubtraction) {
-			final Multiplication mul = new Multiplication(root, new Number(root, 2), f);
+			final Multiplication mul = new Multiplication(root, new Number(root, 2), ((SumSubtraction) f).getParameter1());
 			result.add(mul);
 		}
 		result.add(new Number(root, 0));

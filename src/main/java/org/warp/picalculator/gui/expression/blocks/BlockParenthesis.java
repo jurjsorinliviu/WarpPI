@@ -6,9 +6,15 @@ import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.parser.features.FeatureParenthesis;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 public class BlockParenthesis extends BlockParenthesisAbstract {
 	public BlockParenthesis() {
 		super();
+	}
+
+	public BlockParenthesis(ObjectArrayList<Block> blocks) {
+		super(blocks);
 	}
 
 	@Override

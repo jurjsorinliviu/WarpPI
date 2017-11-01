@@ -39,9 +39,9 @@ public class ExponentRule16 {
 		if (fnc.getParameter1() instanceof Power && fnc.getParameter2() instanceof Power) {
 			result.add(new Power(root, ((Power) fnc.getParameter1()).getParameter1(), new Sum(root, new Expression(root, ((Power) fnc.getParameter1()).getParameter2()), new Expression(root, ((Power) fnc.getParameter2()).getParameter2()))));
 		} else if (fnc.getParameter1() instanceof Power) {
-			result.add(new Power(root, ((Power) fnc.getParameter1()).getParameter1(), new Sum(root, new Expression(root, ((Power) fnc.getParameter1()).getParameter2()), new Number(root, 1))));
+			result.add(new Power(root, fnc.getParameter2(), new Sum(root, new Expression(root, ((Power) fnc.getParameter1()).getParameter2()), new Number(root, 1))));
 		} else if (fnc.getParameter2() instanceof Power) {
-			result.add(new Power(root, ((Power) fnc.getParameter1()).getParameter1(), new Sum(root, new Number(root, 1), new Expression(root, ((Power) fnc.getParameter2()).getParameter2()))));
+			result.add(new Power(root, fnc.getParameter1(), new Sum(root, new Number(root, 1), new Expression(root, ((Power) fnc.getParameter2()).getParameter2()))));
 		}
 		return result;
 	}

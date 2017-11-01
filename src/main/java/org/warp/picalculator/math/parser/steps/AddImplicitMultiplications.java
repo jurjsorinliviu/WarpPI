@@ -20,14 +20,14 @@ public class AddImplicitMultiplications implements MathParserStep {
 	@Override
 	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction,
 			ObjectArrayList<Function> functionsList) {
-		if (currentFunction instanceof FunctionSingle) {
+		if (currentFunction instanceof Function) {
 			if (lastFunction instanceof Function) {
 				functionsList.set(curIndex.i, new Multiplication(context, currentFunction, lastFunction));
 				functionsList.remove(curIndex.i + 1);
 				return true;
 			}
 		} else if (currentFunction instanceof Function) {
-			if (lastFunction instanceof FunctionSingle) {
+			if (lastFunction instanceof Function) {
 				functionsList.set(curIndex.i, new Multiplication(context, currentFunction, lastFunction));
 				functionsList.remove(curIndex.i + 1);
 				return true;
@@ -43,7 +43,7 @@ public class AddImplicitMultiplications implements MathParserStep {
 
 	@Override
 	public String getStepName() {
-		return "Add implicit multiplications before and after Single Functions";
+		return "Add implicit multiplications before and after Functions";
 	}
 
 }

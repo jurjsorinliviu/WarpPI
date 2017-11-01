@@ -28,6 +28,7 @@ import org.warp.picalculator.math.parser.steps.FixMultiplicationsAndDivisions;
 import org.warp.picalculator.math.parser.steps.FixSingleFunctionArgs;
 import org.warp.picalculator.math.parser.steps.FixSumsAndSubtractions;
 import org.warp.picalculator.math.parser.steps.JoinNumberAndVariables;
+import org.warp.picalculator.math.parser.steps.RemoveParentheses;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -77,7 +78,14 @@ public class MathParser {
 
 	private static ObjectArrayList<Function> fixStack(MathContext context, ObjectArrayList<Function> functionsList)
 			throws Error {
-		final MathParserStep[] steps = new MathParserStep[] { new JoinNumberAndVariables(context), new FixSingleFunctionArgs(), new FixMultiplicationsAndDivisions(), new FixSumsAndSubtractions(), new AddImplicitMultiplications(context), };
+		final MathParserStep[] steps = new MathParserStep[] {
+				new JoinNumberAndVariables(context),
+				new FixSingleFunctionArgs(),
+				new RemoveParentheses(context),
+				new FixMultiplicationsAndDivisions(),
+				new FixSumsAndSubtractions(),
+				new AddImplicitMultiplications(context),
+			};
 		boolean lastLoopDidSomething;
 		Function lastElement;
 
