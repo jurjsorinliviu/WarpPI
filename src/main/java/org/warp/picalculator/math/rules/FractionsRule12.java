@@ -17,7 +17,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  */
 public class FractionsRule12 {
 
-	public static boolean compare(Function f) {
+	public static boolean compare(Function f) throws InterruptedException {
 		final Division fnc = (Division) f;
 		Function a;
 		Function c;

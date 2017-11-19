@@ -27,7 +27,7 @@ public class Sum extends FunctionOperator {
 	}
 
 	@Override
-	protected boolean isSolvable() {
+	protected boolean isSolvable() throws InterruptedException {
 		if (parameter1 instanceof Number & parameter2 instanceof Number) {
 			return true;
 		}
@@ -56,7 +56,7 @@ public class Sum extends FunctionOperator {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		if (parameter1 == null || parameter2 == null) {
 			throw new Error(Errors.SYNTAX_ERROR);
 		}

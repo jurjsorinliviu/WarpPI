@@ -113,7 +113,8 @@ public abstract class FunctionOperator implements Function {
 	}
 
 	@Override
-	public boolean isSimplified() {
+	public boolean isSimplified() throws InterruptedException {
+		if (Thread.interrupted()) throw new InterruptedException();
 		return (parameter1.isSimplified() & parameter2.isSimplified()) ? !isSolvable() : false;
 	}
 
@@ -123,12 +124,15 @@ public abstract class FunctionOperator implements Function {
 	 * 
 	 * @return <strong>true</strong> if this function can be solved, otherwise
 	 *         <strong>false</strong>.
+	 * @throws InterruptedException 
 	 */
-	protected abstract boolean isSolvable();
+	protected abstract boolean isSolvable() throws InterruptedException;
 
 	@Override
-	public final ObjectArrayList<Function> simplify() throws Error {
+	public final ObjectArrayList<Function> simplify() throws Error, InterruptedException {
+		if (Thread.interrupted()) throw new InterruptedException();
 		final boolean solved = parameter1.isSimplified() & parameter2.isSimplified();
+		if (Thread.interrupted()) throw new InterruptedException();
 		ObjectArrayList<Function> result = solved ? solve() : null;;
 
 		if (result == null || result.isEmpty()) {
@@ -136,14 +140,18 @@ public abstract class FunctionOperator implements Function {
 
 			final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
 			final ObjectArrayList<Function> l2 = new ObjectArrayList<>();
+			if (Thread.interrupted()) throw new InterruptedException();
 			if (parameter1.isSimplified()) {
 				l1.add(parameter1);
 			} else {
+				if (Thread.interrupted()) throw new InterruptedException();
 				l1.addAll(parameter1.simplify());
 			}
+			if (Thread.interrupted()) throw new InterruptedException();
 			if (parameter2.isSimplified()) {
 				l2.add(parameter2);
 			} else {
+				if (Thread.interrupted()) throw new InterruptedException();
 				l2.addAll(parameter2.simplify());
 			}
 
@@ -164,8 +172,9 @@ public abstract class FunctionOperator implements Function {
 	 * @return The solved function.
 	 * @throws Error
 	 *             Errors during computation, like a/0 or similar.
+	 * @throws InterruptedException 
 	 */
-	protected abstract ObjectArrayList<Function> solve() throws Error;
+	protected abstract ObjectArrayList<Function> solve() throws Error, InterruptedException;
 
 	@Override
 	public abstract FunctionOperator clone();

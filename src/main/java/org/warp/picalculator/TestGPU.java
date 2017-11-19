@@ -142,11 +142,11 @@ public class TestGPU {
 			this.d = d;
 			r = d.getRenderer();
 
-			exampleFont = d.loadFont("ex");
+			exampleFont = d.loadFont("norm");
 
 			exampleSkin = d.loadSkin("skin.png");
 
-			BlockContainer.initializeFonts(d.loadFont("ex"), d.loadFont("big"));
+			BlockContainer.initializeFonts(d.loadFont("norm"), d.loadFont("smal"));
 
 			//New expression framework test
 			c = new NormalInputContainer(new InputContext(), false, 0, 200);

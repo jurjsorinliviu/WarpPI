@@ -549,7 +549,8 @@ public class Expression extends FunctionSingle {
 	}
 
 	@Override
-	protected boolean isSolvable() {
+	protected boolean isSolvable() throws InterruptedException {
+		if (Thread.interrupted()) throw new InterruptedException();
 		final Function f = getParameter();
 		if (f.isSimplified() == false) {
 			return true;
@@ -559,7 +560,8 @@ public class Expression extends FunctionSingle {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
+		if (Thread.interrupted()) throw new InterruptedException();
 		final ObjectArrayList<Function> ret = new ObjectArrayList<>();
 		if (getParameter().isSimplified() || !parenthesisNeeded()) {
 			ret.add(getParameter());

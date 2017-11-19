@@ -38,11 +38,19 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class MathInputScreen extends Screen {
 
+	private static final BinaryFont fontBig = Utils.getFont(false);
+	
 	public MathContext calc;
 	public InputContext ic;
 	public InputContainer userInput;
 	public OutputContainer result;
 	public int errorLevel = 0; // 0 = nessuno, 1 = risultato, 2 = tutto
+	private boolean computingResult = false;
+	private Thread computingThread;
+	private int computingAnimationIndex = 0;
+	private double computingAnimationElapsedTime = 0;
+	private double computingElapsedTime = 0;
+	private boolean computingBreakTipVisible = false;
 	boolean mustRefresh = true;
 
 	public MathInputScreen() {
@@ -56,7 +64,7 @@ public class MathInputScreen extends Screen {
 		calc = new MathContext();
 
 		try {
-			BlockContainer.initializeFonts(DisplayManager.INSTANCE.engine.loadFont("ex"), DisplayManager.INSTANCE.engine.loadFont("big"));
+			BlockContainer.initializeFonts(DisplayManager.INSTANCE.engine.loadFont("norm"), DisplayManager.INSTANCE.engine.loadFont("smal"));
 		} catch (final IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -75,7 +83,6 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void beforeRender(float dt) {
-
 		if (DisplayManager.INSTANCE.error == null) {
 			DisplayManager.INSTANCE.renderer.glClearColor(0xFFc5c2af);
 		} else {
@@ -84,9 +91,53 @@ public class MathInputScreen extends Screen {
 		if (userInput.beforeRender(dt)) {
 			mustRefresh = true;
 		}
+		if (computingResult) {
+			computingElapsedTime += dt;
+			computingAnimationElapsedTime+=dt;
+			if (computingAnimationElapsedTime > 0.1) {
+				computingAnimationElapsedTime -= 0.1;
+				computingAnimationIndex = (computingAnimationIndex + 1) % 16;
+				mustRefresh = true;
+			}
+			if (computingElapsedTime > 5) {
+				computingBreakTipVisible = true;
+			} 
+		} else {
+			computingElapsedTime = 0;
+			computingAnimationElapsedTime = 0;
+			computingAnimationIndex = 0;
+			computingBreakTipVisible = false;
+		}
 	}
+	@Override
+	public void render() {
+		final Renderer renderer = DisplayManager.INSTANCE.renderer;
+		fontBig.use(DisplayManager.INSTANCE.engine);
+		final int textColor = 0xFF000000;
+		final int padding = 4;
+		renderer.glColor(textColor);
 
-	private static final BinaryFont fontBig = Utils.getFont(false);
+		userInput.draw(DisplayManager.INSTANCE.engine, renderer, padding, padding + 20);
+
+		if (computingResult) {
+			renderer.glColor3f(1, 1, 1);
+			final int leftX = 208;
+			final int leftY = 16;
+			final int size = 32;
+			final int posY = computingAnimationIndex % 2;
+			final int posX = (computingAnimationIndex - posY) / 2;
+			renderer.glFillRect(DisplayManager.INSTANCE.engine.getWidth() - size - 4, DisplayManager.INSTANCE.engine.getHeight() - size - 4, size, size, leftX + size * posX, leftY + size * posY, size, size);
+			if (computingBreakTipVisible) {
+				Utils.getFont(false).use(DisplayManager.INSTANCE.engine);
+				renderer.glColor3f(0.75f, 0, 0);
+				renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth() - 4 - size - 4, DisplayManager.INSTANCE.engine.getHeight() - size/2 - renderer.getCurrentFont().getCharacterHeight()/2 - 4, "Press (=) to stop");
+			}
+		} else {
+			if (!result.isContentEmpty()) {
+				result.draw(DisplayManager.INSTANCE.engine, renderer, DisplayManager.INSTANCE.engine.getWidth() - result.getWidth() - 2, DisplayManager.INSTANCE.engine.getHeight() - result.getHeight() - 2);
+			}
+		}
+	}
 
 	@Override
 	public void renderStatusbar() {
@@ -103,19 +154,6 @@ public class MathInputScreen extends Screen {
 		renderer.glFillRect(2 + 18 * pos + 2 * spacersNumb, 2, 16, 16, 16 * skinN, 16 * 0, 16, 16);
 	}
 
-	@Override
-	public void render() {
-		fontBig.use(DisplayManager.INSTANCE.engine);
-		final int textColor = 0xFF000000;
-		final int padding = 4;
-		DisplayManager.INSTANCE.renderer.glColor(textColor);
-
-		userInput.draw(DisplayManager.INSTANCE.engine, DisplayManager.INSTANCE.renderer, padding, padding + 20);
-
-		if (!result.isContentEmpty()) {
-			result.draw(DisplayManager.INSTANCE.engine, DisplayManager.INSTANCE.renderer, DisplayManager.INSTANCE.engine.getWidth() - result.getWidth() - 2, DisplayManager.INSTANCE.engine.getHeight() - result.getHeight() - 2);
-		}
-	}
 
 	@Override
 	public boolean mustBeRefreshed() {
@@ -188,76 +226,97 @@ public class MathInputScreen extends Screen {
 								calc.resultsCount = 0;
 								return true;
 							} else {
-								try {
-									try {
-										if (!userInput.isAlreadyParsed() && !userInput.isEmpty()) {
-											Expression expr = MathParser.parseInput(calc, userInput);
-											if (calc.f == null | calc.f2 == null) {
-												calc.f = new ObjectArrayList<>();
-												calc.f2 = new ObjectArrayList<>();
-											} else {
-												calc.f.clear();
-												calc.f2.clear();
-											}
-											calc.f.add(expr);
-											int stop = 0;
-											boolean done = false;
-											ObjectArrayList<Function> resultExpressions = new ObjectArrayList<>();
-											resultExpressions.add(expr.getParameter());
-											while (!done && stop < 3000) {
-												ObjectArrayList<Function> newResultExpressions = new ObjectArrayList<>();
-												done = true;
-												for (Function f : resultExpressions) {
-													Function newResult = null;
-													if (f.isSimplified() == false) {
-														done = false;
-														if (f instanceof Expression) {
-															ObjectArrayList<Function> fncResult = ((Expression) f).solve();
-															for (Function resultItem : fncResult) {
-																newResultExpressions.add(resultItem);
+								if (!computingResult) {
+									computingResult = true;
+									computingThread = new Thread(()-> {
+										try {
+											try {
+												if (!userInput.isAlreadyParsed() && !userInput.isEmpty()) {
+													Expression expr = MathParser.parseInput(calc, userInput);
+													if (calc.f == null | calc.f2 == null) {
+														calc.f = new ObjectArrayList<>();
+														calc.f2 = new ObjectArrayList<>();
+													} else {
+														calc.f.clear();
+														calc.f2.clear();
+													}
+													calc.f.add(expr);
+													int stop = 0;
+													boolean done = false;
+													ObjectArrayList<Function> resultExpressions = new ObjectArrayList<>();
+													resultExpressions.add(expr.getParameter());
+													while (!done && stop < 3000) {
+														if (Thread.interrupted()) throw new InterruptedException();
+														ObjectArrayList<Function> newResultExpressions = new ObjectArrayList<>();
+														done = true;
+														for (Function f : resultExpressions) {
+															if (Thread.interrupted()) throw new InterruptedException();
+															Function newResult = null;
+															if (f.isSimplified() == false) {
+																done = false;
+																if (f instanceof Expression) {
+																	ObjectArrayList<Function> fncResult = ((Expression) f).solve();
+																	for (Function resultItem : fncResult) {
+																		newResultExpressions.add(resultItem);
+																	}
+																} else {
+																	List<Function> fncResult = f.simplify();
+																	for (Function resultItem : fncResult) {
+																		newResultExpressions.add(resultItem);
+																	}
+																}
+															} else {
+																newResult = f;
 															}
-														} else {
-															List<Function> fncResult = f.simplify();
-															for (Function resultItem : fncResult) {
-																newResultExpressions.add(resultItem);
+															if (newResult != null) {
+																newResultExpressions.add(newResult);
 															}
 														}
-													} else {
-														newResult = f;
+														resultExpressions = newResultExpressions;
+														stop++;
 													}
-													if (newResult != null) {
-														newResultExpressions.add(newResult);
+													Utils.out.println(2, "INPUT: " + expr);
+													for (Function rr : resultExpressions) {
+														Utils.out.println(1, "RESULT: " + rr.toString());
 													}
+													ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
+													result.setContentAsMultipleGroups(resultBlocks);
+													//									showVariablesDialog(() -> {
+													//										currentExpression = newExpression;
+													//										simplify();
+													//									});
 												}
-												resultExpressions = newResultExpressions;
-												stop++;
+											} catch (final InterruptedException ex) {
+												Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Computing thread stopped.");
+											} catch (final Exception ex) {
+												if (StaticVars.debugOn) {
+													ex.printStackTrace();
+												}
+												throw new Error(Errors.SYNTAX_ERROR);
 											}
-											Utils.out.println(2, "INPUT: " + expr);
-											for (Function rr : resultExpressions) {
-												Utils.out.println(1, "RESULT: " + rr.toString());
-											}
-											ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
-											result.setContentAsMultipleGroups(resultBlocks);
-											//									showVariablesDialog(() -> {
-											//										currentExpression = newExpression;
-											//										simplify();
-											//									});
+										} catch (final Error e) {
+											final StringWriter sw = new StringWriter();
+											final PrintWriter pw = new PrintWriter(sw);
+											e.printStackTrace(pw);
+											d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+											DisplayManager.INSTANCE.error = e.id.toString();
+											System.err.println(e.id);
 										}
-									} catch (final Exception ex) {
-										if (StaticVars.debugOn) {
-											ex.printStackTrace();
-										}
-										throw new Error(Errors.SYNTAX_ERROR);
+										computingResult = false;
+									});
+									computingThread.setName("Computing Thread");
+									computingThread.setDaemon(true);
+									computingThread.setPriority(Thread.NORM_PRIORITY + 3);
+									computingThread.start();
+									return true;
+								} else {
+									if (computingThread != null) {
+										computingThread.interrupt();
+										computingResult = false;
+										return true;
 									}
-								} catch (final Error e) {
-									final StringWriter sw = new StringWriter();
-									final PrintWriter pw = new PrintWriter(sw);
-									e.printStackTrace(pw);
-									d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-									DisplayManager.INSTANCE.error = e.id.toString();
-									System.err.println(e.id);
+									return false;
 								}
-								return true;
 							}
 						case NUM0:
 							typeChar('0');

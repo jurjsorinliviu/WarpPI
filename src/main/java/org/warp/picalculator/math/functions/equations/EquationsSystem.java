@@ -36,7 +36,7 @@ public class EquationsSystem extends FunctionDynamic {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		final ObjectArrayList<Function> ret = new ObjectArrayList<>();
 		if (functions.length == 1) {
 			if (functions[0].isSimplified()) {

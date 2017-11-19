@@ -56,15 +56,17 @@ public interface Function {
 
 	/**
 	 * Simplify the current function or it's children
+	 * @throws InterruptedException 
 	 */
-	public List<Function> simplify() throws Error;
+	public List<Function> simplify() throws Error, InterruptedException;
 
 	/**
 	 * The current simplification status of this function and it's childrens
 	 * 
 	 * @return boolean
+	 * @throws InterruptedException 
 	 */
-	public boolean isSimplified();
+	public boolean isSimplified() throws InterruptedException;
 
 	/**
 	 * 

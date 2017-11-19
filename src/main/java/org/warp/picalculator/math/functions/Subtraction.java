@@ -25,7 +25,7 @@ public class Subtraction extends FunctionOperator {
 	}
 
 	@Override
-	protected boolean isSolvable() {
+	protected boolean isSolvable() throws InterruptedException {
 		if (parameter1 instanceof Number & parameter2 instanceof Number) {
 			return true;
 		}
@@ -57,7 +57,7 @@ public class Subtraction extends FunctionOperator {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (VariableRule1.compare(this)) {
 			result = VariableRule1.execute(this);

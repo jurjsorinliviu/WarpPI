@@ -27,7 +27,7 @@ public class Division extends FunctionOperator {
 	}
 
 	@Override
-	protected boolean isSolvable() {
+	protected boolean isSolvable() throws InterruptedException {
 		final Function variable1 = getParameter1();
 		final Function variable2 = getParameter2();
 		if (FractionsRule1.compare(this)) {
@@ -75,7 +75,7 @@ public class Division extends FunctionOperator {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		final Function variable1 = getParameter1();
 		final Function variable2 = getParameter2();
 		ObjectArrayList<Function> result = new ObjectArrayList<>();

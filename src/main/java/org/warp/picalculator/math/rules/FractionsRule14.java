@@ -16,7 +16,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  */
 public class FractionsRule14 {
 
-	public static boolean compare(Function f) {
+	public static boolean compare(Function f) throws InterruptedException {
 		final Multiplication fnc = (Multiplication) f;
 		Function a;
 		Function b;

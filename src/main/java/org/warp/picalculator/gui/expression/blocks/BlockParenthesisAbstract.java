@@ -46,8 +46,13 @@ public abstract class BlockParenthesisAbstract extends Block {
 		}
 		r.glDrawCharLeft(x + prw, y, '╭');
 		r.glDrawCharLeft(x + prw, y + height - chh, '╰');
-		r.glFillColor(x + prw + 3, y + 6, 2, height - 6 * 2);
-		r.glFillColor(x + width - 5, y + 6, 2, height - 6 * 2);
+		if (small) {
+			r.glFillColor(x + prw + 1, y + 5, 1, height - 4 * 2);
+			r.glFillColor(x + width - 3, y + 5, 1, height - 4 * 2);
+		} else {
+			r.glFillColor(x + prw + 3, y + 6, 2, height - 6 * 2);
+			r.glFillColor(x + width - 5, y + 6, 2, height - 6 * 2);
+		}
 		r.glDrawCharLeft(x + width - chw, y, '╮');
 		r.glDrawCharLeft(x + width - chw, y + height - chh, '╯');
 		containerNumber.draw(ge, r, x + prw + chw, y, caret);

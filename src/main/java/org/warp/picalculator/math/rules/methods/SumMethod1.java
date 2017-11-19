@@ -22,12 +22,12 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  */
 public class SumMethod1 {
 
-	public static boolean compare(Function f) {
+	public static boolean compare(Function f) throws InterruptedException {
 		final MathContext root = f.getMathContext();
 		return (f instanceof Sum || f instanceof Subtraction) && ((FunctionOperator) f).getParameter1().isSimplified() && ((FunctionOperator) f).getParameter2().isSimplified() && !(((FunctionOperator) f).getParameter1() instanceof Number && ((FunctionOperator) f).getParameter2() instanceof Number) && getFirstWorkingSumCouple(root, getSumElements(f)) != null;
 	}
 
-	public static ObjectArrayList<Function> execute(Function f) throws Error {
+	public static ObjectArrayList<Function> execute(Function f) throws Error, InterruptedException {
 		Function result;
 		final MathContext root = f.getMathContext();
 		final ObjectArrayList<Function> elements = getSumElements(f);
@@ -39,6 +39,7 @@ public class SumMethod1 {
 		Function prec = new Sum(root, elem1, elem2);
 		for (int i = size - 1; i >= 0; i--) {
 			if (i != workingElementCouple[0] & i != workingElementCouple[1]) {
+				if (Thread.interrupted()) throw new InterruptedException();
 				final Function a = prec;
 				final Function b = elements.get(i);
 				if (b instanceof Negative) {
@@ -60,10 +61,11 @@ public class SumMethod1 {
 		return results;
 	}
 
-	private static ObjectArrayList<Function> getSumElements(Function sum) {
+	private static ObjectArrayList<Function> getSumElements(Function sum) throws InterruptedException {
 		final MathContext root = sum.getMathContext();
 		final ObjectArrayList<Function> elements = new ObjectArrayList<>();
 		while (sum instanceof Sum || sum instanceof Subtraction) {
+			if (Thread.interrupted()) throw new InterruptedException();
 			if (sum instanceof Sum) {
 				elements.add(((FunctionOperator) sum).getParameter2());
 			} else {
@@ -75,7 +77,7 @@ public class SumMethod1 {
 		return elements;
 	}
 
-	private static int[] getFirstWorkingSumCouple(MathContext root, ObjectArrayList<Function> elements) {
+	private static int[] getFirstWorkingSumCouple(MathContext root, ObjectArrayList<Function> elements) throws InterruptedException {
 		final int size = elements.size();
 		Function a;
 		Function b;
@@ -85,6 +87,7 @@ public class SumMethod1 {
 		for (int i = 0; i < size; i++) {
 			a = elements.get(i);
 			for (int j = 0; j < size; j++) {
+				if (Thread.interrupted()) throw new InterruptedException();
 				b = elements.get(j);
 				if (i != j) {
 					Function testFunc;

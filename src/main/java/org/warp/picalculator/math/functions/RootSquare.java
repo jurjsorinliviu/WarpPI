@@ -40,7 +40,7 @@ public class RootSquare extends FunctionSingle {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (mathContext.exactMode) {
 			Number exponent = new Number(mathContext, BigInteger.ONE);

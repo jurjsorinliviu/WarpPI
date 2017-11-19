@@ -29,7 +29,7 @@ public class Multiplication extends FunctionOperator {
 	}
 
 	@Override
-	protected boolean isSolvable() {
+	protected boolean isSolvable() throws InterruptedException {
 		final Function variable1 = getParameter1();
 		final Function variable2 = getParameter2();
 		if (variable1 instanceof Number & variable2 instanceof Number) {
@@ -60,7 +60,7 @@ public class Multiplication extends FunctionOperator {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (NumberRule1.compare(this)) {
 			result = NumberRule1.execute(this);

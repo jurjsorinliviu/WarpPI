@@ -535,7 +535,7 @@ public class Utils {
 		return realbytes;
 	}
 
-	public static boolean allSolved(List<Function> expressions) throws Error {
+	public static boolean allSolved(List<Function> expressions) throws Error, InterruptedException {
 		for (final Function itm : expressions) {
 			if (itm.isSimplified() == false) {
 				return false;

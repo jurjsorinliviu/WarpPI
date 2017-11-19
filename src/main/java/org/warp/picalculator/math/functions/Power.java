@@ -57,7 +57,7 @@ public class Power extends FunctionOperator {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (UndefinedRule1.compare(this)) {
 			result.addAll(UndefinedRule1.execute(this));

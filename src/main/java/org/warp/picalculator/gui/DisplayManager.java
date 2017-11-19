@@ -237,10 +237,10 @@ public final class DisplayManager implements RenderingLoop {
 
 	private void load_fonts() throws IOException {
 		fonts = new BinaryFont[7];
-		fonts[0] = engine.loadFont("big");
-		fonts[1] = engine.loadFont("small");
-		fonts[2] = engine.loadFont("ex");
-		fonts[3] = engine.loadFont("big");
+		fonts[0] = engine.loadFont("smal");
+		fonts[1] = engine.loadFont("smallest");
+		fonts[2] = engine.loadFont("norm");
+		fonts[3] = engine.loadFont("smal");
 		//4
 		//fonts[5] = engine.loadFont("square");
 	}

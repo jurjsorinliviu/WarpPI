@@ -43,7 +43,7 @@ public class Root extends FunctionOperator {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
+	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		if (mathContext.exactMode) {
 			if (parameter1 instanceof Number && ((Number) parameter1).equals(new Number(mathContext, 2))) {

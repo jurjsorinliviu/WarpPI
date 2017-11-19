@@ -72,11 +72,12 @@ public class Number implements Function {
 		return ret;
 	}
 
-	public Number pow(Number f) throws Error {
+	public Number pow(Number f) throws Error, InterruptedException {
 		Number ret = new Number(root, BigDecimal.ONE);
 		if (Utils.isIntegerValue(f.term)) {
 			final BigInteger bi = f.term.toBigInteger().abs();
 			for (BigInteger i = BigInteger.ZERO; i.compareTo(bi) < 0; i = i.add(BigInteger.ONE)) {
+				if (Thread.interrupted()) throw new InterruptedException();
 				ret = ret.multiply(new Number(root, getTerm()));
 			}
 			if (f.term.signum() == -1) {

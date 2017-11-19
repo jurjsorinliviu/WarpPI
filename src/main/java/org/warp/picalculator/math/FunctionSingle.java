@@ -96,7 +96,7 @@ public abstract class FunctionSingle implements Function {
 	}
 
 	@Override
-	public final ObjectArrayList<Function> simplify() throws Error {
+	public final ObjectArrayList<Function> simplify() throws Error, InterruptedException {
 		final boolean simplified = parameter.isSimplified();
 		ObjectArrayList<Function> result = simplified ? solve() : null;
 
@@ -125,11 +125,12 @@ public abstract class FunctionSingle implements Function {
 	 * @return The solved function.
 	 * @throws Error
 	 *             Errors during computation, like a/0 or similar.
+	 * @throws InterruptedException 
 	 */
-	protected abstract ObjectArrayList<Function> solve() throws Error;
+	protected abstract ObjectArrayList<Function> solve() throws Error, InterruptedException;
 
 	@Override
-	public boolean isSimplified() {
+	public boolean isSimplified() throws InterruptedException {
 		return parameter.isSimplified() ? !isSolvable() : false;
 	}
 
@@ -139,8 +140,9 @@ public abstract class FunctionSingle implements Function {
 	 * 
 	 * @return <strong>true</strong> if this function can be solved, otherwise
 	 *         <strong>false</strong>.
+	 * @throws InterruptedException 
 	 */
-	protected abstract boolean isSolvable();
+	protected abstract boolean isSolvable() throws InterruptedException;
 
 	@Override
 	public abstract FunctionSingle clone();
