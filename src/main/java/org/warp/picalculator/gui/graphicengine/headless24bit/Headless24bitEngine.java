@@ -296,6 +296,11 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 	}
 
 	@Override
+	public Headless24bitFont loadFont(String path, String file) throws IOException {
+		return new Headless24bitFont();
+	}
+
+	@Override
 	public Headless24bitSkin loadSkin(String file) throws IOException {
 		return new Headless24bitSkin(file);
 	}

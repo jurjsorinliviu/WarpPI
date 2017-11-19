@@ -160,8 +160,13 @@ public class CPUEngine implements GraphicEngine {
 	}
 
 	@Override
-	public BinaryFont loadFont(String file) throws IOException {
-		return new CPUFont(file);
+	public BinaryFont loadFont(String fontName) throws IOException {
+		return new CPUFont(fontName);
+	}
+
+	@Override
+	public BinaryFont loadFont(String path, String fontName) throws IOException {
+		return new CPUFont(path, fontName);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package org.warp.picalculator.gui.graphicengine.cpu;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -12,14 +13,16 @@ public class CPUSkin implements Skin {
 
 	public int[] skinData;
 	public int[] skinSize;
+	private final boolean isResource;
 
 	CPUSkin(String file) throws IOException {
+		isResource = !new File(file).exists();
 		load(file);
 	}
 
 	@Override
 	public void load(String file) throws IOException {
-		final BufferedImage img = ImageIO.read(this.getClass().getResource("/" + file));
+		final BufferedImage img = ImageIO.read(isResource ? this.getClass().getResource("/" + file) : new File(file).toURI().toURL());
 		skinData = getMatrixOfImage(img);
 		skinSize = new int[] { img.getWidth(), img.getHeight() };
 	}

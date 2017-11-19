@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +16,8 @@ import javax.imageio.ImageIO;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+
+import com.sun.xml.internal.bind.v2.model.util.ArrayInfoUtil;
 
 public class CPUFont implements BinaryFont {
 
@@ -25,22 +29,36 @@ public class CPUFont implements BinaryFont {
 	public int charH;
 	public int charS;
 	public int charIntCount;
+	public LinkedList<Integer[]> intervals;
+	public int intervalsTotalSize = 0;
 	public static final int intBits = 31;
+	private final boolean isResource;
 
-	CPUFont(String file) throws IOException {
-		load(file);
+	CPUFont(String fontName) throws IOException {
+		isResource = true;
+		load("/font_" + fontName + ".rft");
+	}
+	
+	CPUFont(String path, String fontName) throws IOException {
+		isResource = false;
+		load(path + "/font_" + fontName + ".rft");
 	}
 
 	public static CPUFont loadTemporaryFont(String name) throws IOException {
 		return new CPUFont(name);
 	}
 
+	public static CPUFont loadTemporaryFont(String path, String name) throws IOException {
+		return new CPUFont(path, name);
+	}
+
 	@Override
-	public void load(String name) throws IOException {
-		loadFont("/font_" + name + ".rft");
-		chars32 = new int[(maxBound - minBound) * charIntCount];
-		for (int charIndex = 0; charIndex < maxBound - minBound; charIndex++) {
-			final boolean[] currentChar = rawchars[charIndex];
+	public void load(String path) throws IOException {
+		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Loading font " + path);
+		loadFont(path);
+		chars32 = new int[(intervalsTotalSize) * charIntCount];
+		for (int charCompressedIndex = 0; charCompressedIndex < intervalsTotalSize; charCompressedIndex++) {
+			final boolean[] currentChar = rawchars[charCompressedIndex];
 			if (currentChar == null) {
 				int currentInt = 0;
 				int currentBit = 0;
@@ -49,7 +67,7 @@ public class CPUFont implements BinaryFont {
 						currentInt += 1;
 						currentBit = 0;
 					}
-					chars32[charIndex * charIntCount + currentInt] = (chars32[charIndex * charIntCount + currentInt] << 1) + 1;
+					chars32[charCompressedIndex * charIntCount + currentInt] = (chars32[charCompressedIndex * charIntCount + currentInt] << 1) + 1;
 					currentBit += 1;
 				}
 			} else {
@@ -60,7 +78,7 @@ public class CPUFont implements BinaryFont {
 						currentInt += 1;
 						currentBit = 0;
 					}
-					chars32[charIndex * charIntCount + currentInt] = (chars32[charIndex * charIntCount + currentInt]) | ((currentChar[i] ? 1 : 0) << currentBit);
+					chars32[charCompressedIndex * charIntCount + currentInt] = (chars32[charCompressedIndex * charIntCount + currentInt]) | ((currentChar[i] ? 1 : 0) << currentBit);
 					currentBit++;
 				}
 			}
@@ -75,7 +93,7 @@ public class CPUFont implements BinaryFont {
 	}
 
 	private void loadFont(String string) throws IOException {
-		final URL res = this.getClass().getResource(string);
+		final URL res = isResource ? this.getClass().getResource(string) : new File(string).toURI().toURL();
 		final int[] file = Utils.realBytes(Utils.convertStreamToByteArray(res.openStream(), res.getFile().length()));
 		final int filelength = file.length;
 		if (filelength >= 16) {
@@ -123,11 +141,70 @@ public class CPUFont implements BinaryFont {
 		} else {
 			throw new IOException();
 		}
+		findIntervals();
+		/*int[] screen = new int[rawchars.length * charW * charH];
+		for (int i = 0; i < rawchars.length; i++) {
+			if (rawchars[i] != null)
+				for (int charX = 0; charX < charW; charX++) {
+					for (int charY = 0; charY < charH; charY++) {
+						int x = i * charW + charX;
+						int y = charY;
+						screen[x + y * rawchars.length * charW] = rawchars[i][charX + charY * charW] ? 0xFF000000 : 0xFFFFFFFF;
+					}
+				}
+		}
+		System.out.println();
+		System.out.println((('1' & 0xFFFF) - minBound) + "=>"+ (getCharIndexes("1")[0]));
+		this.saveArray(screen, rawchars.length * charW, charH, "N:\\TimedTemp"+string+".png");
+		System.out.println();
+		System.out.println();
+		*/
+	}
+
+	private void findIntervals() {
+		intervals = new LinkedList<Integer[]>();
+		int beginIndex = -1;
+		int endIndex = 0;
+		int intervalSize = 0;
+		int holeSize = 0;
+		for (int i = 0; i < rawchars.length; i++) {
+			if (rawchars[i] != null) {
+				beginIndex = i;
+				int firstNull = 0;
+				while(i+firstNull < rawchars.length && rawchars[i+firstNull] != null) {
+					firstNull++;
+				}
+				endIndex = beginIndex + firstNull - 1;
+				i = endIndex;
+				if (endIndex >= 0) {
+					intervalSize = endIndex - beginIndex + 1;
+					intervals.add(new Integer[] {beginIndex, endIndex, intervalSize});
+					intervalsTotalSize += intervalSize;
+				}
+				beginIndex = -1;
+			}
+		}
+		int lastIndex = 0;
+		boolean[][] newrawchars = new boolean[intervalsTotalSize][];
+		for (Integer[] interval: intervals) {
+			if (rawchars.length - (interval[0]) - interval[2] < 0) {
+				System.err.println(interval[0] + "-" + interval[1] + "(" + interval[2] + ")");
+				System.err.println(rawchars.length - (interval[0]) - interval[2]);
+				throw new ArrayIndexOutOfBoundsException();
+			}
+			if (newrawchars.length - (lastIndex-1) - interval[2] < 0) {
+				System.err.println(newrawchars.length - (lastIndex-1) - interval[2]);
+				throw new ArrayIndexOutOfBoundsException();
+			}
+			System.arraycopy(rawchars, interval[0], newrawchars, lastIndex, interval[2]);
+			lastIndex += interval[2];
+		}
+		rawchars = newrawchars;
 	}
 
 	@SuppressWarnings("unused")
-	private void saveArray(int[] screen, String coutputpng) {
-		final BufferedImage bi = new BufferedImage(300, 200, BufferedImage.TYPE_INT_RGB);
+	private void saveArray(int[] screen, int w, int h, String coutputpng) {
+		final BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		final int[] a = ((DataBufferInt) bi.getRaster().getDataBuffer()).getData();
 		System.arraycopy(screen, 0, a, 0, screen.length);
 		try {
@@ -142,7 +219,19 @@ public class CPUFont implements BinaryFont {
 		final int[] indexes = new int[l];
 		final char[] chars = txt.toCharArray();
 		for (int i = 0; i < l; i++) {
-			indexes[i] = (chars[i] & 0xFFFF) - minBound;
+			int originalIndex = chars[i] & 0xFFFF;
+			int compressedIndex = 0;
+			for (Integer[] interval : intervals) {
+				if (interval[0] > originalIndex) {
+					break;
+				} else if (originalIndex <= interval[1]) {
+					compressedIndex+=(originalIndex-interval[0]);
+					break;
+				} else {
+					compressedIndex+=interval[2];
+				}
+			}
+			indexes[i] = compressedIndex;
 		}
 		return indexes;
 	}

@@ -253,6 +253,11 @@ public class Headless8Engine implements org.warp.picalculator.gui.graphicengine.
 	}
 
 	@Override
+	public Headless8Font loadFont(String path, String file) throws IOException {
+		return new Headless8Font();
+	}
+
+	@Override
 	public Headless8Skin loadSkin(String file) throws IOException {
 		return new Headless8Skin(file);
 	}

@@ -1,5 +1,6 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -121,14 +122,26 @@ public class GPUEngine implements GraphicEngine {
 	}
 
 	@Override
-	public BinaryFont loadFont(String file) throws IOException {
+	public BinaryFont loadFont(String name) throws IOException {
 		for (Entry<String, GPUFont> entry : fontCache.entrySet()) {
-			if (entry.getKey().equals(file)) {
+			if (entry.getKey().equals(name)) {
 				return entry.getValue();
 			}
 		}
-		GPUFont font = new GPUFont(this, file);
-		fontCache.put(file, font);
+		GPUFont font = new GPUFont(this, name);
+		fontCache.put(name, font);
+		return font;
+	}
+
+	@Override
+	public BinaryFont loadFont(String path, String name) throws IOException {
+		for (Entry<String, GPUFont> entry : fontCache.entrySet()) {
+			if (entry.getKey().equals(name)) {
+				return entry.getValue();
+			}
+		}
+		GPUFont font = new GPUFont(this, path, name);
+		fontCache.put(name, font);
 		return font;
 	}
 

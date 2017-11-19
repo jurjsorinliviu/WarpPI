@@ -2,11 +2,14 @@ package org.warp.picalculator.math.functions;
 
 import java.util.List;
 
+import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.MathematicalSymbols;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -59,13 +62,24 @@ public class Variable implements Function {
 
 	@Override
 	public boolean isSimplified() {
+		if (root.exactMode == false) {
+			if (var == MathematicalSymbols.PI) {
+				return false;
+			}
+		}
 		return true;
 	}
 
 	@Override
 	public List<Function> simplify() throws Error {
 		final List<Function> result = new ObjectArrayList<>();
-		result.add(this);
+		if (root.exactMode == false) {
+			if (var == MathematicalSymbols.PI) {
+				result.add(new Number(root, BigDecimalMath.pi(new java.math.MathContext(Utils.scale, Utils.scaleMode2))));
+			}
+		} else {
+			result.add(this);
+		}
 		return result;
 	}
 

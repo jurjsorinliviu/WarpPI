@@ -253,6 +253,11 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 	}
 
 	@Override
+	public Headless256Font loadFont(String path, String file) throws IOException {
+		return new Headless256Font();
+	}
+
+	@Override
 	public Headless256Skin loadSkin(String file) throws IOException {
 		return new Headless256Skin(file);
 	}

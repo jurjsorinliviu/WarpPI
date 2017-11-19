@@ -3,11 +3,14 @@ package org.warp.picalculator.gui.graphicengine.gpu;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -239,17 +242,37 @@ public class GPURenderer implements Renderer {
 		return tex;
 	}
 
-	static BufferedImage openTexture(String file) throws GLException, IOException {
-		return ImageIO.read(GPURenderer.class.getClassLoader().getResource(file));
+	static OpenedTextureData openTexture(String file) throws GLException, IOException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		BufferedImage img = ImageIO.read(!Files.exists(Paths.get(file)) ? GPURenderer.class.getResource("/" + file) : new File(file).toURI().toURL());
+		ImageIO.write(img, "png", os);
+		return new OpenedTextureData(img.getWidth(), img.getHeight(), os);
+	}
+	
+	public static class OpenedTextureData {
+		public final int w;
+		public final int h;
+		public final ByteArrayOutputStream os;
+		
+		/**
+		 * @param w
+		 * @param h
+		 * @param os
+		 */
+		public OpenedTextureData(int w, int h, ByteArrayOutputStream os) {
+			this.w = w;
+			this.h = h;
+			this.os = os;
+		}
+		
 	}
 
-	static Texture importTexture(BufferedImage img) throws GLException, IOException {
-		final ByteArrayOutputStream os = new ByteArrayOutputStream();
-		ImageIO.write(img, "png", os);
+	static Texture importTexture(ByteArrayOutputStream os) throws GLException, IOException {
 		final InputStream fis = new ByteArrayInputStream(os.toByteArray());
 		final Texture tex = TextureIO.newTexture(fis, false, TextureIO.PNG);
 		tex.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 		tex.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+		os = null;
 		return tex;
 	}
 

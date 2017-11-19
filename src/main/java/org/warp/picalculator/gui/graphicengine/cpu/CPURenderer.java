@@ -240,7 +240,7 @@ public class CPURenderer implements Renderer {
 						currentIntBitPosition = bit - (currentInt * CPUFont.intBits);
 						bitData = (currentFont.chars32[charIndex * currentFont.charIntCount + currentInt] >> currentIntBitPosition) & 1;
 						screenPos = ix + cpos + dx + (iy + dy) * screenSize[0];
-						if (bitData == 1 & screenLength > screenPos) {
+						if (bitData == 1 & screenLength > screenPos & screenPos >= 0) {
 							screen[screenPos] = color;
 						}
 					}

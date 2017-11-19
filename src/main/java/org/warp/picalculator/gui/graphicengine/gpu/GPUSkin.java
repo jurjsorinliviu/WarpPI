@@ -1,10 +1,14 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Skin;
+import org.warp.picalculator.gui.graphicengine.gpu.GPURenderer.OpenedTextureData;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES1;
@@ -26,7 +30,7 @@ public class GPUSkin implements Skin {
 
 	@Override
 	public void load(String file) throws IOException {
-		if ((this.getClass().getClassLoader().getResource(file)) == null) {
+		if (!Files.exists(Paths.get(file)) && (this.getClass().getClassLoader().getResource(file)) == null) {
 			throw new IOException("File '" + file + "' not found!");
 		}
 		texturePath = file;
@@ -35,11 +39,11 @@ public class GPUSkin implements Skin {
 	@Override
 	public void initialize(GraphicEngine d) {
 		try {
-			final BufferedImage i = GPURenderer.openTexture(texturePath);
+			final OpenedTextureData i = GPURenderer.openTexture(texturePath);
 			final GL2ES1 gl = GPURenderer.gl;
-			t = GPURenderer.importTexture(i);
-			w = i.getWidth();
-			h = i.getHeight();
+			t = GPURenderer.importTexture(i.os);
+			w = i.w;
+			h = i.h;
 			t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 			initialized = true;
 		} catch (GLException | IOException e) {

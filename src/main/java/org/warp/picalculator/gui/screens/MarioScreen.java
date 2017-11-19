@@ -14,9 +14,14 @@ public class MarioScreen extends Screen {
 	private static Skin skin;
 	private static Skin groundskin;
 	private static BinaryFont easterfont;
+	private static BinaryFont fu32font;
 	private static Skin easterskin;
 	private int easterNum = 0;
+	private float easterElapsed = 0;
 	private int easterMax = 21;
+	private String[] easterFu32 = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g"};
+	private int easterFu32Num = 0;
+	private float easterFu32Elapsed = 0;
 	private boolean errored;
 	public float[] marioPos = new float[] { 30, 0 };
 	public float[] marioForces = new float[] { 0, 0 };
@@ -43,11 +48,17 @@ public class MarioScreen extends Screen {
 				groundskin = DisplayManager.INSTANCE.engine.loadSkin("marioground.png");
 			if (easterfont == null)
 				try {
-					easterfont = DisplayManager.INSTANCE.engine.loadFont("easter");
+					easterfont = DisplayManager.INSTANCE.engine.loadFont("X:\\CESTINO\\ALTRO", "easter");
 				} catch (Exception ex) {}
+			if (fu32font == null)
+				try {
+					fu32font = DisplayManager.INSTANCE.engine.loadFont("X:\\CESTINO\\ALTRO", "fu32");
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			if (easterskin == null)
 				try {
-					easterskin = DisplayManager.INSTANCE.engine.loadSkin("font_easter.png");
+					easterskin = DisplayManager.INSTANCE.engine.loadSkin("X:\\CESTINO\\ALTRO\\font_easter.png");
 				} catch (Exception ex) {}
 		} catch (final IOException e) {
 			e.printStackTrace();
@@ -128,6 +139,17 @@ public class MarioScreen extends Screen {
 			}
 			marioForces[0] *= 0.75;
 
+			easterElapsed += dt;
+			while (easterElapsed >= 0.04) {
+				easterNum = (easterNum + 1) % easterMax;
+				easterElapsed -= 0.04;
+			}
+			easterFu32Elapsed += dt;
+			while (easterFu32Elapsed >= 1.5) {
+				easterFu32Num = (easterFu32Num + 1) % easterFu32.length;
+				easterFu32Elapsed -= 1.5;
+			}
+			
 			DisplayManager.INSTANCE.renderer.glClearColor(0xff9290ff);
 		}
 	}
@@ -159,6 +181,18 @@ public class MarioScreen extends Screen {
 			DisplayManager.INSTANCE.renderer.glFillRect(16 * 8, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
 
 //		EASTER EGG
+			if (fu32font != null) {
+				DisplayManager.INSTANCE.renderer.glColor3f(1,1,1);
+				DisplayManager.INSTANCE.renderer.glFillColor(DisplayManager.INSTANCE.engine.getWidth()-256, DisplayManager.INSTANCE.engine.getHeight() / 2 - 128, 256, 256);
+				fu32font.use(DisplayManager.INSTANCE.engine);
+				DisplayManager.INSTANCE.renderer.glColor3f(0, 0, 0);
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth(), DisplayManager.INSTANCE.engine.getHeight() / 2 - 128, easterFu32[easterFu32Num]);
+			}
+			if (easterskin != null) {
+				easterskin.use(DisplayManager.INSTANCE.engine);
+				DisplayManager.INSTANCE.renderer.glColor4f(1, 1, 1, 0.7f);
+				DisplayManager.INSTANCE.renderer.glFillRect(0, StaticVars.screenSize[1] - 128, 224, 128, easterNum * 224, 0, 224, 128);
+			}
 			if (easterfont != null) {
 				easterfont.use(DisplayManager.INSTANCE.engine);
 				DisplayManager.INSTANCE.renderer.glColor(0xFF000000);
@@ -175,11 +209,6 @@ public class MarioScreen extends Screen {
 				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "F");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFffede7);
 				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "G");
-			}
-			if (easterskin != null) {
-				easterskin.use(DisplayManager.INSTANCE.engine);
-				DisplayManager.INSTANCE.renderer.glFillRect(0, StaticVars.screenSize[1] - 128, 224, 128, easterNum * 224, 0, 224, 128);
-				easterNum = (easterNum < easterMax) ? easterNum + 1 : 0;
 			}
 
 			//DRAW MARIO

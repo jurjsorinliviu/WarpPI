@@ -1,9 +1,11 @@
 package org.warp.picalculator.math.functions;
 
 import java.math.BigInteger;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.blocks.BlockDivision;
@@ -57,8 +59,8 @@ public class Division extends FunctionOperator {
 					if (((Number) variable1).isInteger() && ((Number) variable2).isInteger()) {
 						LinkedList<BigInteger> factors1 = ((Number) variable1).getFactors();
 						LinkedList<BigInteger> factors2 = ((Number) variable2).getFactors();
-						factors1.retainAll(factors2);
-						return factors1.size() > 0 /* true if there is at least one common factor */;
+						LinkedList<BigInteger> mcm = Utils.mcm(factors1, factors2);
+						return mcm.size() > 0 /* true if there is at least one common factor */;
 					} else if (((Number) variable1).divide((Number) variable2).isInteger()) {
 						return true;
 					} else {
@@ -97,10 +99,10 @@ public class Division extends FunctionOperator {
 			if (getMathContext().exactMode && (((Number) variable1).isInteger() && ((Number) variable2).isInteger())) {
 				LinkedList<BigInteger> factors1 = ((Number) variable1).getFactors();
 				LinkedList<BigInteger> factors2 = ((Number) variable2).getFactors();
-				factors1.retainAll(factors2);
+				LinkedList<BigInteger> mcm = Utils.mcm(factors1, factors2);
 				BigInteger nmb1 = ((Number) this.getParameter1()).term.toBigIntegerExact();
 				BigInteger nmb2 = ((Number) this.getParameter2()).term.toBigIntegerExact();
-				for (BigInteger i : factors1) {
+				for (BigInteger i : mcm) {
 					nmb1 = nmb1.divide(i);
 					nmb2 = nmb2.divide(i);
 				}
