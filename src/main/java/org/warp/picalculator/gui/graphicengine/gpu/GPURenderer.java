@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.StaticVars;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
@@ -231,6 +232,7 @@ public class GPURenderer implements Renderer {
 		return currentFont;
 	}
 
+	@Deprecated
 	static Texture importTexture(GL gl, String string) throws IOException {
 		final FileInputStream f = new FileInputStream("test.png");
 		final TextureData tx_dat = TextureIO.newTextureData(gl.getGLProfile(), f, false, TextureIO.PNG);
@@ -242,37 +244,56 @@ public class GPURenderer implements Renderer {
 		return tex;
 	}
 
-	static OpenedTextureData openTexture(String file) throws GLException, IOException {
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		BufferedImage img = ImageIO.read(!Files.exists(Paths.get(file)) ? GPURenderer.class.getResource("/" + file) : new File(file).toURI().toURL());
-		ImageIO.write(img, "png", os);
-		return new OpenedTextureData(img.getWidth(), img.getHeight(), os);
+	static OpenedTextureData openTexture(String file, boolean isResource) throws GLException, IOException {
+		BufferedImage img = ImageIO.read(isResource ? GPURenderer.class.getResource("/" + file) : new File(file).toURI().toURL());
+		File f;
+		if (isResource) {
+			f = Files.createTempFile("texture-", ".png").toFile();
+			ImageIO.write(img, "png", f);
+		} else {
+			f = new File(file);
+		}
+		int imgW = img.getWidth();
+		int imgH = img.getHeight();
+		img = null;
+		Utils.gc();
+		return new OpenedTextureData(imgW, imgH, f, isResource);
 	}
 	
 	public static class OpenedTextureData {
 		public final int w;
 		public final int h;
-		public final ByteArrayOutputStream os;
+		public final File f;
+		public final boolean deleteOnExit;
 		
 		/**
 		 * @param w
 		 * @param h
-		 * @param os
+		 * @param f
+		 * @param deleteOnExit
 		 */
-		public OpenedTextureData(int w, int h, ByteArrayOutputStream os) {
+		public OpenedTextureData(int w, int h, File f, boolean deleteOnExit) {
 			this.w = w;
 			this.h = h;
-			this.os = os;
+			this.f = f;
+			this.deleteOnExit = deleteOnExit;
 		}
 		
 	}
 
-	static Texture importTexture(ByteArrayOutputStream os) throws GLException, IOException {
-		final InputStream fis = new ByteArrayInputStream(os.toByteArray());
-		final Texture tex = TextureIO.newTexture(fis, false, TextureIO.PNG);
+	static Texture importTexture(File f, boolean deleteOnExit) throws GLException, IOException {
+		final Texture tex = TextureIO.newTexture(f, false);
+		if (deleteOnExit && f.exists()) {
+			try {
+				if (StaticVars.debugOn) throw new IOException("Delete on exit!");
+				f.delete();
+			}catch (Exception ex) {
+				f.deleteOnExit();
+			}
+		}
 		tex.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
 		tex.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-		os = null;
+		f = null;
 		return tex;
 	}
 

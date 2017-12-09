@@ -450,11 +450,11 @@ public class Keyboard {
 				{ /* ROW 0 */
 					{Key.SHIFT, Key.SHIFT, Key.SHIFT}, /* 0,0 */
 					{Key.ALPHA, Key.ALPHA, Key.ALPHA}, /* 0,1 */
-					{Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.NONE}, /* 0,2 */
+					{Key.NONE, Key.NONE, Key.NONE}, /* 0,2 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,3 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,4 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 0,6 */
+					{Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.NONE}, /* 0,6 */
 					{Key.SIMPLIFY, Key.STEP, Key.NONE}  /* 0,7 */
 				},
 				{ /* ROW 1 */
@@ -590,7 +590,7 @@ public class Keyboard {
 						refresh = true;
 						break;
 					case BRIGHTNESS_CYCLE_REVERSE:
-						if (StaticVars.debugOn) DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
+						DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
 						DisplayManager.INSTANCE.cycleBrightness(true);
 						refresh = true;
 						break;

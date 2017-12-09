@@ -35,61 +35,70 @@ public class CPUFont implements BinaryFont {
 	private final boolean isResource;
 
 	CPUFont(String fontName) throws IOException {
+		this(fontName, false);
+	}
+
+	CPUFont(String fontName, boolean onlyRaw) throws IOException {
 		isResource = true;
-		load("/font_" + fontName + ".rft");
+		load("/font_" + fontName + ".rft", onlyRaw);
 	}
 	
 	CPUFont(String path, String fontName) throws IOException {
+		this(path, fontName, false);
+	}
+	
+	CPUFont(String path, String fontName, boolean onlyRaw) throws IOException {
 		isResource = false;
-		load(path + "/font_" + fontName + ".rft");
+		load(path + "/font_" + fontName + ".rft", onlyRaw);
 	}
 
 	public static CPUFont loadTemporaryFont(String name) throws IOException {
-		return new CPUFont(name);
+		return new CPUFont(name, true);
 	}
 
 	public static CPUFont loadTemporaryFont(String path, String name) throws IOException {
-		return new CPUFont(path, name);
+		return new CPUFont(path, name, true);
 	}
 
 	@Override
 	public void load(String path) throws IOException {
+		load(path, false);
+	}
+	
+	private void load(String path, boolean onlyRaw) throws IOException {
 		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Loading font " + path);
 		loadFont(path);
-		chars32 = new int[(intervalsTotalSize) * charIntCount];
-		for (int charCompressedIndex = 0; charCompressedIndex < intervalsTotalSize; charCompressedIndex++) {
-			final boolean[] currentChar = rawchars[charCompressedIndex];
-			if (currentChar == null) {
-				int currentInt = 0;
-				int currentBit = 0;
-				for (int i = 0; i < charS; i++) {
-					if (currentInt * intBits + currentBit >= (currentInt + 1) * intBits) {
-						currentInt += 1;
-						currentBit = 0;
+		if (!onlyRaw) {
+			chars32 = new int[(intervalsTotalSize) * charIntCount];
+			for (int charCompressedIndex = 0; charCompressedIndex < intervalsTotalSize; charCompressedIndex++) {
+				final boolean[] currentChar = rawchars[charCompressedIndex];
+				if (currentChar == null) {
+					int currentInt = 0;
+					int currentBit = 0;
+					for (int i = 0; i < charS; i++) {
+						if (currentInt * intBits + currentBit >= (currentInt + 1) * intBits) {
+							currentInt += 1;
+							currentBit = 0;
+						}
+						chars32[charCompressedIndex * charIntCount + currentInt] = (chars32[charCompressedIndex * charIntCount + currentInt] << 1) + 1;
+						currentBit += 1;
 					}
-					chars32[charCompressedIndex * charIntCount + currentInt] = (chars32[charCompressedIndex * charIntCount + currentInt] << 1) + 1;
-					currentBit += 1;
-				}
-			} else {
-				int currentInt = 0;
-				int currentBit = 0;
-				for (int i = 0; i < charS; i++) {
-					if (currentBit >= intBits) {
-						currentInt += 1;
-						currentBit = 0;
+				} else {
+					int currentInt = 0;
+					int currentBit = 0;
+					for (int i = 0; i < charS; i++) {
+						if (currentBit >= intBits) {
+							currentInt += 1;
+							currentBit = 0;
+						}
+						chars32[charCompressedIndex * charIntCount + currentInt] = (chars32[charCompressedIndex * charIntCount + currentInt]) | ((currentChar[i] ? 1 : 0) << currentBit);
+						currentBit++;
 					}
-					chars32[charCompressedIndex * charIntCount + currentInt] = (chars32[charCompressedIndex * charIntCount + currentInt]) | ((currentChar[i] ? 1 : 0) << currentBit);
-					currentBit++;
 				}
 			}
 		}
 
-		Object obj = new Object();
-		final WeakReference<Object> ref = new WeakReference<>(obj);
-		obj = null;
-		while (ref.get() != null) {
-			System.gc();
-		}
+		Utils.gc();
 	}
 
 	private void loadFont(String string) throws IOException {
@@ -219,21 +228,44 @@ public class CPUFont implements BinaryFont {
 		final int[] indexes = new int[l];
 		final char[] chars = txt.toCharArray();
 		for (int i = 0; i < l; i++) {
-			int originalIndex = chars[i] & 0xFFFF;
-			int compressedIndex = 0;
-			for (Integer[] interval : intervals) {
-				if (interval[0] > originalIndex) {
-					break;
-				} else if (originalIndex <= interval[1]) {
-					compressedIndex+=(originalIndex-interval[0]);
-					break;
-				} else {
-					compressedIndex+=interval[2];
-				}
-			}
-			indexes[i] = compressedIndex;
+			int originalIndex = (chars[i] & 0xFFFF) - minBound;
+			indexes[i] = compressIndex(originalIndex);
 		}
 		return indexes;
+	}
+	
+	public int getCharIndex(char c) {
+		int originalIndex = c & 0xFFFF;
+		return compressIndex(originalIndex);
+	}
+	
+	private int compressIndex(int originalIndex) {
+		int compressedIndex = 0;
+		for (Integer[] interval : intervals) {
+			if (interval[0] > originalIndex) {
+				break;
+			} else if (originalIndex <= interval[1]) {
+				compressedIndex+=(originalIndex-interval[0]);
+				break;
+			} else {
+				compressedIndex+=interval[2];
+			}
+		}
+		return compressedIndex;
+	}
+	
+	private int decompressIndex(int compressedIndex) {
+		int originalIndex = 0;
+		int i = 0;
+		for (Integer[] interval : intervals) {
+			i+=interval[2];
+			if (i == compressedIndex) {
+				return interval[1];
+			} else if (i > compressedIndex) {
+				return interval[1] - (i - compressedIndex);
+			}
+		}
+		return originalIndex;
 	}
 
 	@Override

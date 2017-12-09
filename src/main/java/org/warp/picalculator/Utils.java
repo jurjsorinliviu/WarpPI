@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -736,5 +737,14 @@ public class Utils {
 			}
 		}
 		return mcm;
+	}
+
+	public static void gc() {
+		Object obj = new Object();
+		final WeakReference<Object> ref = new WeakReference<>(obj);
+		obj = null;
+		while (ref.get() != null) {
+			System.gc();
+		}
 	}
 }

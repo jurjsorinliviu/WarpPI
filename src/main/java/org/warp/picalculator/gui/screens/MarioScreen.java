@@ -19,7 +19,7 @@ public class MarioScreen extends Screen {
 	private int easterNum = 0;
 	private float easterElapsed = 0;
 	private int easterMax = 21;
-	private String[] easterFu32 = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g"};
+	private String[] easterFu32 = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "ò"};
 	private int easterFu32Num = 0;
 	private float easterFu32Elapsed = 0;
 	private boolean errored;
@@ -48,17 +48,17 @@ public class MarioScreen extends Screen {
 				groundskin = DisplayManager.INSTANCE.engine.loadSkin("marioground.png");
 			if (easterfont == null)
 				try {
-					easterfont = DisplayManager.INSTANCE.engine.loadFont("X:\\CESTINO\\ALTRO", "easter");
+					easterfont = DisplayManager.INSTANCE.engine.loadFont("easter");
 				} catch (Exception ex) {}
 			if (fu32font == null)
 				try {
-					fu32font = DisplayManager.INSTANCE.engine.loadFont("X:\\CESTINO\\ALTRO", "fu32");
+					fu32font = DisplayManager.INSTANCE.engine.loadFont("fu32");
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
 			if (easterskin == null)
 				try {
-					easterskin = DisplayManager.INSTANCE.engine.loadSkin("X:\\CESTINO\\ALTRO\\font_easter.png");
+					easterskin = DisplayManager.INSTANCE.engine.loadSkin("font_easter.png");
 				} catch (Exception ex) {}
 		} catch (final IOException e) {
 			e.printStackTrace();

@@ -169,7 +169,7 @@ public class GPUEngine implements GraphicEngine {
 			available = GLProfile.isAvailable(GLProfile.GL2ES2);
 		} catch (Exception ex) {
 			errored = true;
-			System.err.println(ex.getMessage());
+			System.err.println("OpenGL Error: "+ex.getMessage());
 		}
 		if (!available && !errored) {
 			System.err.println(GLProfile.glAvailabilityToString());

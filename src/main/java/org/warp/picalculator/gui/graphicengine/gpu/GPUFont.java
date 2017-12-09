@@ -3,9 +3,14 @@ package org.warp.picalculator.gui.graphicengine.gpu;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.LinkedList;
 
+import javax.imageio.ImageIO;
+
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUFont;
@@ -32,12 +37,13 @@ public class GPUFont implements BinaryFont {
 	public int minCharIndex;
 	public int maxCharIndex;
 	public LinkedList<Integer[]> intervals;
+	public int intervalsTotalSize = 0;
 	public int memoryWidth;
 	public int memoryHeight;
 	public int memoryWidthOfEachColumn;
 
 	private boolean initialized = false;
-	private ByteArrayOutputStream tmpFont;
+	private File tmpFont;
 
 	GPUFont(GraphicEngine g, String name) throws IOException {
 		this((GPUEngine) g, null, name);
@@ -65,26 +71,59 @@ public class GPUFont implements BinaryFont {
 		minCharIndex = font.minBound;
 		maxCharIndex = font.maxBound;
 		intervals = font.intervals;
-		pregenTexture(font.rawchars);
+		intervalsTotalSize = font.intervalsTotalSize;
+		boolean[][] rawchars = font.rawchars;
 		font = null;
+		Utils.gc();
+		pregenTexture(rawchars);
+		rawchars = null;
+		Utils.gc();
 	}
 
 	public int[] getCharIndexes(String txt) {
-		final int l = txt.length();
-		final int[] indexes = new int[l];
-		final char[] chars = txt.toCharArray();
-		for (int i = 0; i < l; i++) {
-			indexes[i] = getCharIndex(chars[i]);
+		final int[] indexes = new int[txt.length()];
+		int i = 0;
+		for (char c : txt.toCharArray()) {
+			indexes[i] = compressIndex((c & 0xFFFF) - minCharIndex);
+			i++;
 		}
 		return indexes;
 	}
-
-	public int getCharIndex(char ch) {
-		return (ch & 0xFFFF) - minCharIndex;
+	
+	public int getCharIndex(char c) {
+		int originalIndex = c & 0xFFFF;
+		return compressIndex(originalIndex);
 	}
 	
-	private void pregenTexture(boolean[][] chars) {
-		final int totalChars = maxCharIndex - minCharIndex;
+	private int compressIndex(int originalIndex) {
+		int compressedIndex = 0;
+		for (Integer[] interval : intervals) {
+			if (interval[0] > originalIndex) {
+				break;
+			} else if (originalIndex <= interval[1]) {
+				compressedIndex+=(originalIndex-interval[0]);
+				break;
+			} else {
+				compressedIndex+=interval[2];
+			}
+		}
+		return compressedIndex;
+	}
+	
+	private int decompressIndex(int compressedIndex) {
+		int originalIndex = 0;
+		int i = 0;
+		for (Integer[] interval : intervals) {
+			i+=interval[2];
+			if (i >= compressedIndex) {
+				return interval[1] - (i - compressedIndex);
+			}
+		}
+		return originalIndex;
+	}
+
+	private void pregenTexture(boolean[][] chars) throws IOException {
+		final int totalChars = this.intervalsTotalSize;
 		int w = powerOf2((int) (Math.ceil(Math.sqrt(totalChars) * charW)));
 		int h = powerOf2((int) (Math.ceil(Math.sqrt(totalChars) * charH)));
 		int maxIndexW = (int) Math.floor(((double) w) / ((double) charW)) - 1;
@@ -102,21 +141,22 @@ public class GPUFont implements BinaryFont {
 
 		System.out.println(((int)Math.ceil(Math.sqrt(totalChars) * charW)) + " * " + ((int)Math.ceil(Math.sqrt(totalChars) * charH)) + " --> " + w + " * " + h);
 		
-		final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(w*h*8*4);
+		File f = Files.createTempFile("texture-font-", ".png").toFile();
+		final FileOutputStream outputStream = new FileOutputStream(f);
 		final ImageInfo imi = new ImageInfo(w, h, 8, true); // 8 bits per channel, alpha
 		// open image for writing to a output stream
 		final PngWriter png = new PngWriter(outputStream, imi);
 		for (int y = 0; y < png.imgInfo.rows; y++) {
 			ImageLineInt iline = new ImageLineInt(imi);
 			int[] xValues = new int[imi.cols];
-			for (int indexX = 0; indexX < maxIndexW; indexX++) {// this line will be written to all rows
+			for (int indexX = 0; indexX <= maxIndexW; indexX++) {// this line will be written to all rows
 				final int charY = (y % charH);
 				final int indexY = (y - charY)/charH;
-				final int i = indexY * maxIndexW + indexX;
+				final int i = indexY * (maxIndexW+1) + indexX - this.minCharIndex;
 				boolean[] currentChar;
 				if (i < totalChars && (currentChar=chars[i]) != null) {
 					for (int charX = 0; charX < charW; charX++) {
-						if (i > 0 & i < totalChars && currentChar != null && currentChar[charX + charY * charW]) {
+						if (i >= 0 & i < totalChars && currentChar != null && currentChar[charX + charY * charW]) {
 							xValues[indexX * charW + charX] = 0xFFFFFFFF;
 						}
 //						ImageLineHelper.setPixelRGBA8(iline, x, color, color, color, color);
@@ -124,21 +164,25 @@ public class GPUFont implements BinaryFont {
 				}
 			}
 			ImageLineHelper.setPixelsRGBA8(iline, xValues);
-			if (y % 200 == 0) {
+			if (y % 10 == 0) {
 				System.out.println(y + "/" + png.imgInfo.rows);
 			}
 			png.writeRow(iline);
 		}
+		chars = null;
 		png.end();
+		Utils.gc();
 		
 		try {
 			memoryWidth = w;
 			memoryHeight = h;
-			memoryWidthOfEachColumn = maxIndexW;
+			memoryWidthOfEachColumn = maxIndexW + 1;
 			textureW = w;
 			textureH = h;
 			outputStream.flush();
-			this.tmpFont = outputStream;
+			outputStream.close();
+			Utils.gc();
+			this.tmpFont = f;
 		} catch (GLException | IOException e) {
 			e.printStackTrace();
 		}
@@ -146,7 +190,7 @@ public class GPUFont implements BinaryFont {
 
 	private void genTexture() {
 		try {
-			texture = GPURenderer.importTexture(tmpFont);
+			texture = GPURenderer.importTexture(tmpFont, true);
 			tmpFont = null;
 		} catch (GLException | IOException e) {
 			e.printStackTrace();

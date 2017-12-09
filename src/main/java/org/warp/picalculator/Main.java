@@ -17,6 +17,7 @@ public class Main {
 	}
 
 	public Main(Screen screen, String[] args) {
+		System.out.println("WarpPI Calculator");
 		instance = this;
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Thread.currentThread().setName("Main thread");

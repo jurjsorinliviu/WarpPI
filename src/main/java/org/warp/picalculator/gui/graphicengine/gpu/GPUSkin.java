@@ -23,25 +23,28 @@ public class GPUSkin implements Skin {
 
 	private String texturePath;
 	private boolean initialized = false;
-
+	private boolean isResource;
+	
 	GPUSkin(GraphicEngine d, String file) throws IOException {
 		load(file);
 	}
 
 	@Override
 	public void load(String file) throws IOException {
-		if (!Files.exists(Paths.get(file)) && (this.getClass().getClassLoader().getResource(file)) == null) {
+		boolean isResource = !Files.exists(Paths.get(file));
+		if (isResource && (this.getClass().getClassLoader().getResource(file)) == null) {
 			throw new IOException("File '" + file + "' not found!");
 		}
 		texturePath = file;
+		this.isResource = isResource;
 	}
 
 	@Override
 	public void initialize(GraphicEngine d) {
 		try {
-			final OpenedTextureData i = GPURenderer.openTexture(texturePath);
+			final OpenedTextureData i = GPURenderer.openTexture(texturePath, isResource);
 			final GL2ES1 gl = GPURenderer.gl;
-			t = GPURenderer.importTexture(i.os);
+			t = GPURenderer.importTexture(i.f, i.deleteOnExit);
 			w = i.w;
 			h = i.h;
 			t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
