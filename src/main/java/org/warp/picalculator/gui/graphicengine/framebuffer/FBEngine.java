@@ -8,6 +8,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.Semaphore;
 
+import org.warp.picalculator.MmapByteBuffer;
+import org.warp.picalculator.TestJNI;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
@@ -27,12 +29,15 @@ public class FBEngine implements GraphicEngine {
 	private static final int WIDTH = 480;
 	private static final int HEIGHT = 320;
 	private static final int[] SIZE = new int[] {WIDTH, HEIGHT};
+	private TestJNI jni = new TestJNI();
 	public FBRenderer r;
-	private MappedByteBuffer fb, realFb;
+	private MappedByteBuffer fb;
+	MmapByteBuffer realFb;
 	private RandomAccessFile fbFileRW;
 	public volatile boolean initialized = false;
 	public Semaphore exitSemaphore = new Semaphore(0);
 	private boolean resizedTrigger = false;
+	
 	
 	@Override
 	public int[] getSize() {
@@ -59,22 +64,15 @@ public class FBEngine implements GraphicEngine {
 	@Override
 	public void create(Runnable onInitialized) {
 		resizedTrigger = true;
-		File fbFile = new File("/dev/fb1");
-		try {
-			fbFileRW = new RandomAccessFile(fbFile, "rw");
-			final long fbLen = FB_DISPLAY_HEIGHT*FB_DISPLAY_WIDTH*(FB_DISPLAY_BPP/8);
-			fb = (MappedByteBuffer) MappedByteBuffer.allocateDirect((int) fbLen);
-			realFb = fbFileRW.getChannel().map(FileChannel.MapMode.READ_WRITE, 0, fbLen);
-			
-			r = new FBRenderer(this, fb);
-			
-			initialized = true;
-			if (onInitialized != null)
-				onInitialized.run();
-		} catch (IOException ex) {
-			System.err.println("Cannot read framebuffer fb1");
-			ex.printStackTrace();
-		}
+		realFb = jni.retrieveBuffer();
+		final long fbLen = realFb.getLength();
+		fb = (MappedByteBuffer) MappedByteBuffer.allocateDirect((int) fbLen);
+		
+		r = new FBRenderer(this, fb);
+		
+		initialized = true;
+		if (onInitialized != null)
+			onInitialized.run();
 	}
 
 	@Override
@@ -144,15 +142,14 @@ public class FBEngine implements GraphicEngine {
 			_________________TMP = 0;
 		}
 		_________________TMP++;
-		realFb.clear();
-		realFb.put(fb);
+		realFb.getBuffer().clear();
+		realFb.getBuffer().put(fb);
 		for (int i = 0; i < fb.capacity()/2; i++) {
-			realFb.put(i, (byte) (0xFF));
+			realFb.getBuffer().put(i, (byte) (0xFF));
 		}
 		for (int i = fb.capacity()/2; i < fb.capacity(); i++) {
-			realFb.put(i, (byte) (0x18));
+			realFb.getBuffer().put(i, (byte) (0x18));
 		}
-		realFb.force();
 	}
 
 	@Override

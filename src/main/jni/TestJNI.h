@@ -9,10 +9,18 @@ extern "C" {
 #endif
 /*
  * Class:     org_warp_picalculator_TestJNI
- * Method:    sayHello
+ * Method:    getDisplayBuffer
+ * Signature: ()Lorg/warp/picalculator/MmapByteBuffer;
+ */
+JNIEXPORT jobject JNICALL Java_org_warp_picalculator_TestJNI_getDisplayBuffer
+  (JNIEnv *, jobject);
+
+/*
+ * Class:     org_warp_picalculator_TestJNI
+ * Method:    disposeDisplayBuffer
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_org_warp_picalculator_TestJNI_sayHello
+JNIEXPORT void JNICALL Java_org_warp_picalculator_TestJNI_disposeDisplayBuffer
   (JNIEnv *, jobject);
 
 #ifdef __cplusplus

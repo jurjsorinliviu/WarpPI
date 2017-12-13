@@ -1,21 +1,31 @@
 package org.warp.picalculator;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import org.warp.picalculator.MmapByteBuffer;
 
-import cz.adamh.utils.NativeUtils;
 
 public class TestJNI {
-   static {
-	    try {    
-	        NativeUtils.loadLibraryFromJar("/picalculatornative.dll");   
-	      } catch (IOException e) {    
-	        e.printStackTrace(); // This is probably not the best way to handle exception :-)  
-	      } 
-   }
-   private native void sayHello();
- 
-   public static void main(String[] args) {
-      // invoke the native method
-      new TestJNI().sayHello();  
-   }
+	public TestJNI() {
+		
+	}
+	
+	static {
+		System.load("/boot/libpicalc.so");
+	}
+
+	private native MmapByteBuffer getDisplayBuffer();
+
+	private native void disposeDisplayBuffer();
+
+	public MmapByteBuffer retrieveBuffer() {
+		return getDisplayBuffer();
+	}
+	
+	public void deleteBuffer() {
+		disposeDisplayBuffer();
+	}
 }

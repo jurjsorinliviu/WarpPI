@@ -6,15 +6,23 @@ PATH1B = org.warp.picalculator
 # Define a virtual path for .class in the bin directory
 vpath %.class $(CLASS_PATH)/$(PATH1A)
 
-all : picalculatornative.dll
+all : picalculatornative.so
 
 # $@ matches the target, $< matches the first dependancy
-picalculatornative.dll : TestJNI.o
+picalculatornative.so : TestJNI.o
+	gcc -m64 -mtune=generic -Wl,--add-stdcall-alias -shared -o ../resources/$@ $<
+	
+# $@ matches the target, $< matches the first dependancy
+picalculatornative.dll : windows_TestJNI.o
 	x86_64-w64-mingw32-gcc.exe -m64 -mtune=generic -Wl,--add-stdcall-alias -shared -o ../resources/$@ $<
 
 # $@ matches the target, $< matches the first dependancy
-TestJNI.o : TestJNI.c TestJNI.h
+windows_TestJNI.o : TestJNI.c TestJNI.h
 	x86_64-w64-mingw32-gcc.exe -m64 -mtune=generic -I"G:\Program Files\Java\jdk1.8.0_144\include" -I"G:\Program Files\Java\jdk1.8.0_144\include\win32" -c $< -o $@
+
+# $@ matches the target, $< matches the first dependancy
+TestJNI.o : TestJNI.c TestJNI.h
+	gcc -m64 -mtune=generic -I"G:\Program Files\Java\jdk1.8.0_144\include" -I"G:\Program Files\Java\jdk1.8.0_144\include\win32" -c $< -o $@
 
 # $* matches the target filename without the extension
 TestJNI.h : TestJNI.class
