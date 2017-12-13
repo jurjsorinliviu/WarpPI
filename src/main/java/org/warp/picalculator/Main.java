@@ -68,6 +68,9 @@ public class Main {
 			if (arg.contains("gpu")) {
 				Utils.forceEngine = "gpu";
 			}
+			if (arg.contains("fb")) {
+				Utils.forceEngine = "fb";
+			}
 			if (arg.contains("ms-dos")) {
 				Utils.headlessOverride = true;
 				Utils.msDosMode = true;

@@ -34,7 +34,7 @@ public class CPUFont implements BinaryFont {
 	public static final int intBits = 31;
 	private final boolean isResource;
 
-	CPUFont(String fontName) throws IOException {
+	public CPUFont(String fontName) throws IOException {
 		this(fontName, false);
 	}
 
@@ -43,7 +43,7 @@ public class CPUFont implements BinaryFont {
 		load("/font_" + fontName + ".rft", onlyRaw);
 	}
 	
-	CPUFont(String path, String fontName) throws IOException {
+	public CPUFont(String path, String fontName) throws IOException {
 		this(path, fontName, false);
 	}
 	
@@ -273,7 +273,9 @@ public class CPUFont implements BinaryFont {
 
 	@Override
 	public void use(GraphicEngine d) {
-		((CPURenderer) d.getRenderer()).currentFont = this;
+		if (d.getRenderer() instanceof CPURenderer) {
+			((CPURenderer) d.getRenderer()).currentFont = this;
+		}
 	}
 
 	@Override

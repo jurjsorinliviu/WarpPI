@@ -15,7 +15,7 @@ public class CPUSkin implements Skin {
 	public int[] skinSize;
 	private final boolean isResource;
 
-	CPUSkin(String file) throws IOException {
+	public CPUSkin(String file) throws IOException {
 		isResource = !new File(file).exists();
 		load(file);
 	}
@@ -48,7 +48,9 @@ public class CPUSkin implements Skin {
 
 	@Override
 	public void use(GraphicEngine d) {
-		((CPURenderer) d.getRenderer()).currentSkin = this;
+		if (d.getRenderer() instanceof CPURenderer) {
+			((CPURenderer) d.getRenderer()).currentSkin = this;
+		}
 	}
 
 	@Override

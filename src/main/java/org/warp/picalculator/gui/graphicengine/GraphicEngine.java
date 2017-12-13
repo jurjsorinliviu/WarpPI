@@ -15,7 +15,9 @@ public interface GraphicEngine {
 
 	public void setDisplayMode(final int ww, final int wh);
 
-	public void create();
+	public default void create() {
+		create(null);
+	};
 
 	public void create(Runnable object);
 

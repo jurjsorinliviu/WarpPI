@@ -13,6 +13,7 @@ import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
+import org.warp.picalculator.gui.graphicengine.framebuffer.FBEngine;
 import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
 import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitEngine;
 import org.warp.picalculator.gui.graphicengine.headless256.Headless256Engine;
@@ -84,6 +85,11 @@ public final class DisplayManager implements RenderingLoop {
 
 	private GraphicEngine chooseGraphicEngine() {
 		GraphicEngine d;
+		d = new FBEngine();
+		if (d.isSupported()) {
+			Utils.out.println(1, "Using FB Graphic Engine");
+			return d;
+		}
 		d = new GPUEngine();
 		if (d.isSupported()) {
 			Utils.out.println(1, "Using GPU Graphic Engine");
