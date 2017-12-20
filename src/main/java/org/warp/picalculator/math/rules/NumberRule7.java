@@ -19,7 +19,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class NumberRule7 {
 
 	public static boolean compare(Sum f) {
-		System.out.println(f);
 		return f.getParameter1().equals(f.getParameter2());
 	}
 

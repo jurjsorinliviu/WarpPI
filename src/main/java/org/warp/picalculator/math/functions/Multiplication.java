@@ -9,6 +9,7 @@ import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.ExpandRule1;
+import org.warp.picalculator.math.rules.ExpandRule2;
 import org.warp.picalculator.math.rules.ExponentRule15;
 import org.warp.picalculator.math.rules.ExponentRule16;
 import org.warp.picalculator.math.rules.FractionsRule14;
@@ -44,6 +45,9 @@ public class Multiplication extends FunctionOperator {
 		if (ExpandRule1.compare(this)) {
 			return true;
 		}
+		if (ExpandRule2.compare(this)) {
+			return true;
+		}
 		if (ExponentRule15.compare(this)) {
 			return true;
 		}
@@ -68,6 +72,8 @@ public class Multiplication extends FunctionOperator {
 			result = NumberRule2.execute(this);
 		} else if (ExpandRule1.compare(this)) {
 			result = ExpandRule1.execute(this);
+		} else if (ExpandRule2.compare(this)) {
+			result = ExpandRule2.execute(this);
 		} else if (ExponentRule15.compare(this)) {
 			result = ExponentRule15.execute(this);
 		} else if (ExponentRule16.compare(this)) {
@@ -128,7 +134,10 @@ public class Multiplication extends FunctionOperator {
 			} else {
 				result.addAll(sub1);
 			}
-			if ((nearLeft instanceof BlockChar && nearRight instanceof BlockChar) && !(par2 instanceof Negative)) {
+			if ((nearLeft instanceof BlockChar && nearRight instanceof BlockChar)
+					&& !(par2 instanceof Negative)
+					&& !(par1 instanceof Number && par2 instanceof Number)
+					) {
 
 			} else {
 				result.add(new BlockChar(MathematicalSymbols.MULTIPLICATION));

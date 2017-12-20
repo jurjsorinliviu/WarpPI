@@ -23,7 +23,6 @@ public class DivisionRule1 {
 	}
 
 	public static ObjectArrayList<Function> execute(Division f) throws Error, InterruptedException {
-		System.out.println(f);
 		final MathContext root = f.getMathContext();
 		Function result;
 		final ObjectArrayList<Function>[] elements = getDivisionElements(f);

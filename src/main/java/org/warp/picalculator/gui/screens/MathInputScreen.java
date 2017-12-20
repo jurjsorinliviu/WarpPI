@@ -52,6 +52,7 @@ public class MathInputScreen extends Screen {
 	private double computingElapsedTime = 0;
 	private boolean computingBreakTipVisible = false;
 	boolean mustRefresh = true;
+	private int currentStep = 0;
 
 	public MathInputScreen() {
 		super();
@@ -176,47 +177,22 @@ public class MathInputScreen extends Screen {
 			case HISTORY_BACK:
 				if (userInput.isExtraOpened()) {
 					userInput.closeExtra();
+					currentStep = 0;
 					mustRefresh = true;
 					return true;
 				}
 			default:
 				if (userInput.isExtraOpened() && userInput.getExtraKeyboardEventListener().keyPressed(k)) {
+					currentStep = 0;
 					return true;
 				} else {
+					final boolean step = k == Key.STEP;
 					switch (k) {
 
 						case STEP:
-							//					if (newExpression.length() > 0) {
-							//						if (firstStep) {
-							//							try {
-							//								try {
-							//									interpreta(true);
-							//									showVariablesDialog(() -> {
-							//										currentExpression = newExpression;
-							//										calc.f2 = calc.f;
-							//										firstStep = false;
-							//										step();
-							//									});
-							//								} catch (final Exception ex) {
-							//									if (Utils.debugOn) {
-							//										ex.printStackTrace();
-							//									}
-							//									throw new Error(Errors.SYNTAX_ERROR);
-							//								}
-							//							} catch (final Error e) {
-							//								final StringWriter sw = new StringWriter();
-							//								final PrintWriter pw = new PrintWriter(sw);
-							//								e.printStackTrace(pw);
-							//								d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-							//								DisplayManager.INSTANCE.error = e.id.toString();
-							//								System.err.println(e.id);
-							//							}
-							//						} else {
-							//							step();
-							//						}
-							//					}
-							//					return true;
+							currentStep++;
 						case SIMPLIFY:
+							if (!step) currentStep = 0;
 							if (DisplayManager.INSTANCE.error != null) {
 								//TODO: make the error management a global API rather than being relegated to this screen.
 								Utils.out.println(1, "Resetting after error...");
@@ -241,11 +217,12 @@ public class MathInputScreen extends Screen {
 														calc.f2.clear();
 													}
 													calc.f.add(expr);
+													Utils.out.println(2, "INPUT: " + expr);
 													int stop = 0;
 													boolean done = false;
 													ObjectArrayList<Function> resultExpressions = new ObjectArrayList<>();
 													resultExpressions.add(expr.getParameter());
-													while (!done && stop < 3000) {
+													while (!done && stop < (step?currentStep:3000)) {
 														if (Thread.interrupted()) throw new InterruptedException();
 														ObjectArrayList<Function> newResultExpressions = new ObjectArrayList<>();
 														done = true;
@@ -272,10 +249,14 @@ public class MathInputScreen extends Screen {
 																newResultExpressions.add(newResult);
 															}
 														}
+														if (StaticVars.debugOn) {
+															Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "STEP: "+newResultExpressions);														}
 														resultExpressions = newResultExpressions;
 														stop++;
 													}
-													Utils.out.println(2, "INPUT: " + expr);
+													if (stop >= 3000) {
+														Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Too much steps! Stopped.");
+													}
 													for (Function rr : resultExpressions) {
 														Utils.out.println(1, "RESULT: " + rr.toString());
 													}
@@ -416,6 +397,7 @@ public class MathInputScreen extends Screen {
 							return true;
 						case DELETE:
 							userInput.del();
+							currentStep = 0;
 							mustRefresh = true;
 							return true;
 						case LEFT:
@@ -429,6 +411,7 @@ public class MathInputScreen extends Screen {
 						case RESET:
 							userInput.clear();
 							result.clear();
+							currentStep = 0;
 							if (DisplayManager.INSTANCE.error != null) {
 								Utils.out.println(1, "Resetting after error...");
 								DisplayManager.INSTANCE.error = null;
@@ -437,6 +420,7 @@ public class MathInputScreen extends Screen {
 						case SURD_MODE:
 							calc.exactMode = !calc.exactMode;
 							result.clear();
+							currentStep = 0;
 							Keyboard.keyPressed(Key.SIMPLIFY);
 							return true;
 						case debug1:
@@ -465,18 +449,21 @@ public class MathInputScreen extends Screen {
 						case debug_DEG:
 							if (calc.angleMode.equals(AngleMode.DEG) == false) {
 								calc.angleMode = AngleMode.DEG;
+								currentStep = 0;
 								return true;
 							}
 							return false;
 						case debug_RAD:
 							if (calc.angleMode.equals(AngleMode.RAD) == false) {
 								calc.angleMode = AngleMode.RAD;
+								currentStep = 0;
 								return true;
 							}
 							return false;
 						case debug_GRA:
 							if (calc.angleMode.equals(AngleMode.GRA) == false) {
 								calc.angleMode = AngleMode.GRA;
+								currentStep = 0;
 								return true;
 							}
 							return false;
@@ -488,6 +475,7 @@ public class MathInputScreen extends Screen {
 							} else {
 								calc.angleMode = AngleMode.DEG;
 							}
+							currentStep = 0;
 							return true;
 						default:
 							return false;

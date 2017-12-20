@@ -41,7 +41,7 @@ public class SwingWindow extends JFrame {
 		final BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 
 		if (StaticVars.debugOn) {
-			if (StaticVars.debugWindow2x) mult = 3;
+			if (StaticVars.debugWindow2x) mult = 2;
 			if (Utils.debugThirdScreen) {
 				this.setLocation(2880, 900);
 				setResizable(false);

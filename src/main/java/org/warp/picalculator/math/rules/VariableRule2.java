@@ -44,8 +44,7 @@ public class VariableRule2 {
 		} else {
 			rets = new Subtraction(root, a, new Number(root, 1));
 		}
-		final Expression rete = new Expression(root, rets);
-		final Multiplication retm = new Multiplication(root, rete, x);
+		final Multiplication retm = new Multiplication(root, rets, x);
 		result.add(retm);
 		return result;
 	}

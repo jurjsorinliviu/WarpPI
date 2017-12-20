@@ -24,7 +24,7 @@ public class VariableRule1 {
 		if (fnc.getParameter1() instanceof Multiplication & fnc.getParameter2() instanceof Multiplication) {
 			final Multiplication m1 = (Multiplication) fnc.getParameter1();
 			final Multiplication m2 = (Multiplication) fnc.getParameter2();
-			if (m1.getParameter2().equals(m2.getParameter2())) {
+			if (m1.getParameter1().equals(m2.getParameter1()) || m1.getParameter2().equals(m2.getParameter2())) {
 				return true;
 			}
 		}
@@ -36,9 +36,18 @@ public class VariableRule1 {
 		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		final Multiplication m1 = (Multiplication) fnc.getParameter1();
 		final Multiplication m2 = (Multiplication) fnc.getParameter2();
-		final Function a = m1.getParameter1();
-		final Function b = m2.getParameter1();
-		final Function x = m1.getParameter2();
+		final Function a;
+		final Function b;
+		final Function x;
+		if (m1.getParameter2().equals(m2.getParameter2())) {
+			x = m1.getParameter2();
+			a = m1.getParameter1();
+			b = m2.getParameter1();
+		} else {
+			x = m1.getParameter1();
+			a = m1.getParameter2();
+			b = m2.getParameter2();
+		}
 
 		FunctionOperator rets;
 		if (fnc instanceof Sum) {
@@ -46,8 +55,7 @@ public class VariableRule1 {
 		} else {
 			rets = new Subtraction(root, a, b);
 		}
-		final Expression rete = new Expression(root, rets);
-		final Multiplication retm = new Multiplication(root, rete, x);
+		final Multiplication retm = new Multiplication(root, rets, x);
 		result.add(retm);
 		return result;
 	}

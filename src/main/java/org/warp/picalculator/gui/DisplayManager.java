@@ -85,10 +85,12 @@ public final class DisplayManager implements RenderingLoop {
 
 	private GraphicEngine chooseGraphicEngine() {
 		GraphicEngine d;
-		d = new FBEngine();
-		if (d.isSupported()) {
-			Utils.out.println(1, "Using FB Graphic Engine");
-			return d;
+		if (!StaticVars.debugOn) {
+			d = new FBEngine();
+			if (d.isSupported()) {
+				Utils.out.println(1, "Using FB Graphic Engine");
+				return d;
+			}
 		}
 		d = new GPUEngine();
 		if (d.isSupported()) {
