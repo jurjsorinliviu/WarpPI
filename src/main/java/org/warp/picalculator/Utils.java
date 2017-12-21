@@ -59,9 +59,9 @@ public class Utils {
 	private static String OS = System.getProperty("os.name").toLowerCase();
 	public static String forceEngine;
 	public static boolean msDosMode;
-
+	
 	public static final class AdvancedOutputStream extends StringWriter {
-
+		
 		public void println(String str) {
 			println(0, str);
 		}

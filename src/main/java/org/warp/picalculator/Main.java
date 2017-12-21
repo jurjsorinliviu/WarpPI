@@ -1,10 +1,10 @@
 package org.warp.picalculator;
 
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.screens.LoadingScreen;
 import org.warp.picalculator.gui.screens.Screen;
+import org.warp.picalculator.math.rules.RulesManager;
 
 import com.pi4j.system.SystemInfo.BoardType;
 import com.pi4j.wiringpi.Gpio;
@@ -81,6 +81,7 @@ public class Main {
 
 	public void afterStart() {
 		DisplayManager.INSTANCE.setBrightness(0.2f);
+		RulesManager.initialize();
 	}
 
 	public void beforeShutdown() {
