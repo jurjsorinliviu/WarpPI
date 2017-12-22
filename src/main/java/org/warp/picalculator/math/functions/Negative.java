@@ -21,47 +21,6 @@ public class Negative extends FunctionSingle {
 	}
 
 	@Override
-	protected boolean isSolvable() {
-		if (ExpandRule1.compare(this)) {
-			return true;
-		}
-		if (ExpandRule5.compare(this)) {
-			return true;
-		}
-		if (parameter instanceof Number) {
-			return true;
-		}
-		return true;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error {
-		if (parameter == null) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		}
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (ExpandRule1.compare(this)) {
-			result = ExpandRule1.execute(this);
-		} else if (ExpandRule5.compare(this)) {
-			result = ExpandRule5.execute(this);
-		} else if (parameter instanceof Number) {
-			try {
-				final Number var = (Number) getParameter();
-				result.add(var.multiply(new Number(mathContext, -1)));
-			} catch (final NullPointerException ex) {
-				throw new Error(Errors.ERROR);
-			} catch (final NumberFormatException ex) {
-				throw new Error(Errors.SYNTAX_ERROR);
-			} catch (final ArithmeticException ex) {
-				throw new Error(Errors.NUMBER_TOO_SMALL);
-			}
-		} else {
-			result.add(new Multiplication(parameter.getMathContext(), new Number(parameter.getMathContext(), -1), parameter));
-		}
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Negative) {
 			return ((Negative) o).getParameter().equals(parameter);

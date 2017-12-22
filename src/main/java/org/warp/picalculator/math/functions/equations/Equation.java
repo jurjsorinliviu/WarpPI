@@ -23,33 +23,6 @@ public class Equation extends FunctionOperator {
 		super(root, value1, value2);
 	}
 
-	@Override
-	protected boolean isSolvable() {
-		if (parameter1 instanceof Number & parameter2 instanceof Number) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		if (parameter1 == null || parameter2 == null) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		}
-		final ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (parameter1.isSimplified() & parameter2.isSimplified()) {
-			if (((Number) parameter2).getTerm().compareTo(new BigDecimal(0)) == 0) {
-				result.add(this);
-			} else {
-				final Equation e = new Equation(mathContext, null, null);
-				e.setParameter1(new Subtraction(mathContext, parameter1, parameter2));
-				e.setParameter2(new Number(mathContext, "0"));
-				result.add(e);
-			}
-		}
-		return result;
-	}
-
 	public List<Function> solve(char variableCharacter) {
 		@SuppressWarnings("unused")
 		final ObjectArrayList<Equation> e;

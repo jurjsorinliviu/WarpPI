@@ -15,6 +15,7 @@ import org.warp.picalculator.gui.expression.blocks.BlockExponentialNotation;
 import org.warp.picalculator.gui.expression.blocks.BlockPower;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -116,26 +117,8 @@ public class Number implements Function {
 	}
 
 	@Override
-	public boolean isSimplified() {
-		if (root.exactMode) {
-			return isInteger();
-		} else {
-			return true;
-		}
-	}
-
-	@Override
-	public List<Function> simplify() throws Error {
-		final List<Function> result = new ObjectArrayList<>();
-		if (root.exactMode) {
-			final Number divisor = new Number(root, BigInteger.TEN.pow(getNumberOfDecimalPlaces()));
-			final Number numb = new Number(root, term.multiply(divisor.term));
-			final Division div = new Division(root, numb, divisor);
-			result.add(div);
-		} else {
-			result.add(this);
-		}
-		return result;
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error {
+		return rule.execute(this);
 	}
 
 	public int getNumberOfDecimalPlaces() {

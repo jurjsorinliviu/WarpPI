@@ -19,31 +19,6 @@ public class Sine extends FunctionSingle {
 		super(root, value);
 	}
 
-	@SuppressWarnings("unused")
-	@Override
-	protected boolean isSolvable() {
-		if (parameter instanceof Number) {
-			if (mathContext.exactMode == false) {
-				return true;
-			}
-		}
-		if (mathContext.angleMode == AngleMode.DEG) {
-			final Function[] solvableValues = new Function[] { new Number(mathContext, 0), new Number(mathContext, 30), new Number(mathContext, 90), };
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error {
-		final ObjectArrayList<Function> results = new ObjectArrayList<>();
-		if (parameter instanceof Number) {
-			if (mathContext.exactMode == false) {
-				results.add(new Number(mathContext, BigDecimalMath.sin(((Number) parameter).getTerm())));
-			}
-		}
-		return results;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Sine) {

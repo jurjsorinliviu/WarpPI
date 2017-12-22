@@ -29,7 +29,7 @@ public class FractionsRule11 {
 		}
 		a = fnc.getParameter1();
 		c = div2.getParameter2();
-		return new Multiplication(fnc.getMathContext(), a, c).isSimplified() == false;
+		return new Multiplication(fnc.getMathContext(), a, c).simplify(this) != null;
 	}
 
 	public static ObjectArrayList<Function> execute(Function f) throws Error {

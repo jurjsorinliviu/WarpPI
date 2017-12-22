@@ -7,6 +7,7 @@ import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -19,13 +20,8 @@ public class Undefined implements Function {
 	}
 
 	@Override
-	public List<Function> simplify() throws Error {
-		return null;
-	}
-
-	@Override
-	public boolean isSimplified() {
-		return true;
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error {
+		return rule.execute(this);
 	}
 
 	@Override

@@ -25,7 +25,7 @@ public class FractionsRule12 {
 			final Division div2 = (Division) fnc.getParameter1();
 			a = fnc.getParameter1();
 			c = div2.getParameter2();
-			return new Multiplication(fnc.getMathContext(), a, c).isSimplified() == false;
+			return new Multiplication(fnc.getMathContext(), a, c).simplify(this) != null;
 		}
 		return false;
 	}

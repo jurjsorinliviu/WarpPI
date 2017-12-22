@@ -27,6 +27,7 @@ import org.warp.picalculator.math.FunctionDynamic;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathSolver;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Number;
@@ -218,45 +219,10 @@ public class MathInputScreen extends Screen {
 													}
 													calc.f.add(expr);
 													Utils.out.println(2, "INPUT: " + expr);
-													int stop = 0;
-													boolean done = false;
-													ObjectArrayList<Function> resultExpressions = new ObjectArrayList<>();
-													resultExpressions.add(expr.getParameter());
-													while (!done && stop < (step?currentStep:3000)) {
-														if (Thread.interrupted()) throw new InterruptedException();
-														ObjectArrayList<Function> newResultExpressions = new ObjectArrayList<>();
-														done = true;
-														for (Function f : resultExpressions) {
-															if (Thread.interrupted()) throw new InterruptedException();
-															Function newResult = null;
-															if (f.isSimplified() == false) {
-																done = false;
-																if (f instanceof Expression) {
-																	ObjectArrayList<Function> fncResult = ((Expression) f).solve();
-																	for (Function resultItem : fncResult) {
-																		newResultExpressions.add(resultItem);
-																	}
-																} else {
-																	List<Function> fncResult = f.simplify();
-																	for (Function resultItem : fncResult) {
-																		newResultExpressions.add(resultItem);
-																	}
-																}
-															} else {
-																newResult = f;
-															}
-															if (newResult != null) {
-																newResultExpressions.add(newResult);
-															}
-														}
-														if (StaticVars.debugOn) {
-															Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "STEP: "+newResultExpressions);														}
-														resultExpressions = newResultExpressions;
-														stop++;
-													}
-													if (stop >= 3000) {
-														Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Too much steps! Stopped.");
-													}
+													MathSolver ms = new MathSolver(expr);
+													ObjectArrayList<ObjectArrayList<Function>> resultSteps = ms.solveAllSteps();
+													resultSteps.add(0, Utils.newArrayList(expr));
+													ObjectArrayList<Function> resultExpressions = resultSteps.get(resultSteps.size() - 1);	
 													for (Function rr : resultExpressions) {
 														Utils.out.println(1, "RESULT: " + rr.toString());
 													}

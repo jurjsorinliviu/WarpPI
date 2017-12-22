@@ -4,6 +4,7 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -16,14 +17,8 @@ public class EmptyNumber implements Function {
 	private final MathContext root;
 
 	@Override
-	public ObjectArrayList<Function> simplify() throws Error {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isSimplified() {
-		return false;
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error {
+		return rule.execute(this);
 	}
 
 	@Override
