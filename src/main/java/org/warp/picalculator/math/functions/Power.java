@@ -25,63 +25,6 @@ public class Power extends FunctionOperator {
 	}
 
 	@Override
-	protected boolean isSolvable() {
-		if (parameter1 instanceof Number & parameter2 instanceof Number) {
-			return true;
-		}
-		if (UndefinedRule1.compare(this)) {
-			return true;
-		}
-		if (ExponentRule1.compare(this)) {
-			return true;
-		}
-		if (ExponentRule2.compare(this)) {
-			return true;
-		}
-		if (ExponentRule3.compare(this)) {
-			return true;
-		}
-		if (ExponentRule4.compare(this)) {
-			return true;
-		}
-		if (ExponentRule9.compare(this)) {
-			return true;
-		}
-		if (FractionsRule4.compare(this)) {
-			return true;
-		}
-		if (FractionsRule5.compare(this)) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		final ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (UndefinedRule1.compare(this)) {
-			result.addAll(UndefinedRule1.execute(this));
-		} else if (ExponentRule1.compare(this)) {
-			result.addAll(ExponentRule1.execute(this));
-		} else if (ExponentRule2.compare(this)) {
-			result.addAll(ExponentRule2.execute(this));
-		} else if (ExponentRule3.compare(this)) {
-			result.addAll(ExponentRule3.execute(this));
-		} else if (ExponentRule4.compare(this)) {
-			result.addAll(ExponentRule4.execute(this));
-		} else if (ExponentRule9.compare(this)) {
-			result.addAll(ExponentRule9.execute(this));
-		} else if (FractionsRule4.compare(this)) {
-			result.addAll(FractionsRule4.execute(this));
-		} else if (FractionsRule5.compare(this)) {
-			result.addAll(FractionsRule5.execute(this));
-		} else if (parameter1 instanceof Number & parameter2 instanceof Number) {
-			result.add(((Number) parameter1).pow((Number) parameter2));
-		}
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Power) {
 			final FunctionOperator f = (FunctionOperator) o;

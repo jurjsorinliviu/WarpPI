@@ -19,43 +19,6 @@ public class RootSquare extends FunctionSingle {
 	}
 
 	@Override
-	protected boolean isSolvable() {
-		if (parameter instanceof Number) {
-			if (mathContext.exactMode == false) {
-				return true;
-			}
-			try {
-				Number exponent = new Number(mathContext, BigInteger.ONE);
-				exponent = exponent.divide(new Number(mathContext, 2));
-				final Number resultVal = ((Number) parameter).pow(exponent);
-				final Number originalVariable = resultVal.pow(new Number(mathContext, 2));
-				if (originalVariable.equals(parameter)) {
-					return true;
-				}
-			} catch (Exception | Error ex) {
-
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		final ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (mathContext.exactMode) {
-			Number exponent = new Number(mathContext, BigInteger.ONE);
-			exponent = exponent.divide(new Number(mathContext, 2));
-			result.add(((Number) parameter).pow(exponent));
-		} else {
-			final Number exp = new Number(mathContext, 2);
-			final Number numb = (Number) parameter;
-
-			result.add(numb.pow(new Number(mathContext, 1).divide(exp)));
-		}
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof RootSquare) {
 			return ((RootSquare) o).getParameter().equals(parameter);

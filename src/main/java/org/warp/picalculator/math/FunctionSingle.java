@@ -1,6 +1,7 @@
 package org.warp.picalculator.math;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -96,53 +97,17 @@ public abstract class FunctionSingle implements Function {
 	}
 
 	@Override
-	public final ObjectArrayList<Function> simplify() throws Error, InterruptedException {
-		final boolean simplified = parameter.isSimplified();
-		ObjectArrayList<Function> result = simplified ? solve() : null;
-
-		if (result == null || result.isEmpty()) {
-			result = new ObjectArrayList<>();
-
-			final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
-			if (parameter.isSimplified()) {
-				l1.add(parameter);
-			} else {
-				l1.addAll(parameter.simplify());
-			}
-
-			for (final Function f : l1) {
-				result.add(this.setParameter(f));
-			}
+	public final ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
+		ObjectArrayList<Function> simplifiedParam = parameter.simplify(rule);
+		if (simplifiedParam == null) return rule.execute(this);
+		
+		ObjectArrayList<Function> result = new ObjectArrayList<>();
+		for (final Function f : simplifiedParam) {
+			result.add(this.setParameter(f));
 		}
 
 		return result;
 	}
-
-	/**
-	 * Solves only this function, assuming that its children are already
-	 * simplified and it can be solved.
-	 * 
-	 * @return The solved function.
-	 * @throws Error
-	 *             Errors during computation, like a/0 or similar.
-	 * @throws InterruptedException 
-	 */
-	protected abstract ObjectArrayList<Function> solve() throws Error, InterruptedException;
-
-	@Override
-	public boolean isSimplified() throws InterruptedException {
-		return parameter.isSimplified() ? !isSolvable() : false;
-	}
-
-	/**
-	 * The current simplification status of this function, assuming that its
-	 * children are already simplified.
-	 * 
-	 * @return <strong>true</strong> if this function can be solved, otherwise
-	 *         <strong>false</strong>.
-	 * @throws InterruptedException 
-	 */
-	protected abstract boolean isSolvable() throws InterruptedException;
 
 	@Override
 	public abstract FunctionSingle clone();

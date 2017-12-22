@@ -538,15 +538,6 @@ public class Utils {
 		return realbytes;
 	}
 
-	public static boolean allSolved(List<Function> expressions) throws Error, InterruptedException {
-		for (final Function itm : expressions) {
-			if (itm.isSimplified() == false) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public static Function[][] joinFunctionsResults(List<Function> l1, List<Function> l2) {
 		final int size1 = l1.size();
 		final int size2 = l2.size();
@@ -746,5 +737,11 @@ public class Utils {
 		while (ref.get() != null) {
 			System.gc();
 		}
+	}
+
+	public static <T> ObjectArrayList<T> newArrayList(T o) {
+		ObjectArrayList<T> t = new ObjectArrayList<T>();
+		t.add(o);
+		return t;
 	}
 }

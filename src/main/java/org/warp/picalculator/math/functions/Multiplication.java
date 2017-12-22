@@ -30,65 +30,6 @@ public class Multiplication extends FunctionOperator {
 	}
 
 	@Override
-	protected boolean isSolvable() throws InterruptedException {
-		final Function variable1 = getParameter1();
-		final Function variable2 = getParameter2();
-		if (variable1 instanceof Number & variable2 instanceof Number) {
-			return true;
-		}
-		if (NumberRule1.compare(this)) {
-			return true;
-		}
-		if (NumberRule2.compare(this)) {
-			return true;
-		}
-		if (ExpandRule1.compare(this)) {
-			return true;
-		}
-		if (ExpandRule2.compare(this)) {
-			return true;
-		}
-		if (ExponentRule15.compare(this)) {
-			return true;
-		}
-		if (ExponentRule16.compare(this)) {
-			return true;
-		}
-		if (FractionsRule14.compare(this)) {
-			return true;
-		}
-		if (MultiplicationMethod1.compare(this)) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (NumberRule1.compare(this)) {
-			result = NumberRule1.execute(this);
-		} else if (NumberRule2.compare(this)) {
-			result = NumberRule2.execute(this);
-		} else if (ExpandRule1.compare(this)) {
-			result = ExpandRule1.execute(this);
-		} else if (ExpandRule2.compare(this)) {
-			result = ExpandRule2.execute(this);
-		} else if (ExponentRule15.compare(this)) {
-			result = ExponentRule15.execute(this);
-		} else if (ExponentRule16.compare(this)) {
-			result = ExponentRule16.execute(this);
-		} else if (FractionsRule14.compare(this)) {
-			result = FractionsRule14.execute(this);
-		} else if (MultiplicationMethod1.compare(this)) {
-			result = MultiplicationMethod1.execute(this);
-		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
-			result.add(((Number) parameter1).multiply((Number) parameter2));
-		}
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Multiplication) {
 			final FunctionOperator f = (FunctionOperator) o;

@@ -10,6 +10,7 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -59,28 +60,10 @@ public class Variable implements Function {
 			this.n = n;
 		}
 	}
-
+	
 	@Override
-	public boolean isSimplified() {
-		if (root.exactMode == false) {
-			if (var == MathematicalSymbols.PI) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	@Override
-	public List<Function> simplify() throws Error {
-		final List<Function> result = new ObjectArrayList<>();
-		if (root.exactMode == false) {
-			if (var == MathematicalSymbols.PI) {
-				result.add(new Number(root, BigDecimalMath.pi(new java.math.MathContext(Utils.scale, Utils.scaleMode2))));
-			}
-		} else {
-			result.add(this);
-		}
-		return result;
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error {
+		return rule.execute(this);
 	}
 
 	@Override

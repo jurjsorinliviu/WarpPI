@@ -22,47 +22,6 @@ public class SumSubtraction extends FunctionOperator {
 	}
 
 	@Override
-	protected boolean isSolvable() {
-		if (parameter1 instanceof Number & parameter2 instanceof Number) {
-			return true;
-		}
-		if (NumberRule3.compare(this)) {
-			return true;
-		}
-		if (NumberRule5.compare(this)) {
-			return true;
-		}
-		if (ExpandRule1.compare(this)) {
-			return true;
-		}
-		if (NumberRule4.compare(this)) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		if (parameter1 == null || parameter2 == null) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		}
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (NumberRule3.compare(this)) {
-			result = NumberRule3.execute(this);
-		} else if (NumberRule5.compare(this)) {
-			result = NumberRule5.execute(this);
-		} else if (ExpandRule1.compare(this)) {
-			result = ExpandRule1.execute(this);
-		} else if (NumberRule4.compare(this)) {
-			result = NumberRule4.execute(this);
-		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
-			result.add(((Number) parameter1).add((Number) parameter2));
-			result.add(((Number) parameter1).add(((Number) parameter2).multiply(new Number(mathContext, "-1"))));
-		}
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (o instanceof SumSubtraction) {
 			final FunctionOperator f = (FunctionOperator) o;

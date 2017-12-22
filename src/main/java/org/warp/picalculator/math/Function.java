@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -53,20 +54,15 @@ public interface Function {
 	 * @return Calculator mathContext
 	 */
 	public MathContext getMathContext();
-
+	
 	/**
-	 * Simplify the current function or it's children
-	 * @throws InterruptedException 
+	 * Simplify the current function or it's children using the specified <b>rule</b>
+	 * @param rule
+	 * @return A list of the resulting Functions if the rule is applicable and something changed, <b>null</b> otherwise
+	 * @throws Error
+	 * @throws InterruptedException
 	 */
-	public List<Function> simplify() throws Error, InterruptedException;
-
-	/**
-	 * The current simplification status of this function and it's childrens
-	 * 
-	 * @return boolean
-	 * @throws InterruptedException 
-	 */
-	public boolean isSimplified() throws InterruptedException;
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException;
 
 	/**
 	 * 

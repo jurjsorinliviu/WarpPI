@@ -548,37 +548,6 @@ public class Expression extends FunctionSingle {
 		*/
 	}
 
-	@Override
-	protected boolean isSolvable() throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
-		final Function f = getParameter();
-		if (f.isSimplified() == false) {
-			return true;
-		} else {
-			return !parenthesisNeeded();
-		}
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
-		final ObjectArrayList<Function> ret = new ObjectArrayList<>();
-		if (getParameter().isSimplified() || !parenthesisNeeded()) {
-			ret.add(getParameter());
-			return ret;
-		} else {
-			final List<Function> l = getParameter().simplify();
-			for (final Function f : l) {
-				if (f instanceof Number || f instanceof Variable) {
-					ret.add(f);
-				} else {
-					ret.add(new Expression(mathContext, f));
-				}
-			}
-			return ret;
-		}
-	}
-
 	public boolean parenthesisNeeded() {
 		boolean parenthesisneeded = true;
 		if (initialParenthesis) {
@@ -624,7 +593,6 @@ public class Expression extends FunctionSingle {
 		} else {
 			s += parameter.toString();
 		}
-		s = s.substring(0, s.length() - 1);
 		s += ")";
 		return s;
 	}
@@ -635,7 +603,11 @@ public class Expression extends FunctionSingle {
 			return parameter == o;
 		} else {
 			final Function f = (Function) o;
-			return (getParameter(0).equals(f));
+			if (f instanceof Expression) {
+				return (getParameter(0).equals(((Expression)f).getParameter(0)));
+			} else {
+				return (getParameter(0).equals(f));
+			}
 		}
 	}
 

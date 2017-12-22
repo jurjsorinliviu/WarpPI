@@ -28,45 +28,6 @@ public class EquationsSystem extends FunctionDynamic {
 	}
 
 	@Override
-	protected boolean isSolvable() {
-		if (functions.length >= 1) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		final ObjectArrayList<Function> ret = new ObjectArrayList<>();
-		if (functions.length == 1) {
-			if (functions[0].isSimplified()) {
-				ret.add(functions[0]);
-				return ret;
-			} else {
-				final List<Function> l = functions[0].simplify();
-				for (final Function f : l) {
-					if (f instanceof Number) {
-						ret.add(f);
-					} else {
-						ret.add(new Expression(root, f));
-					}
-				}
-				return ret;
-			}
-		} else {
-			for (final Function f : functions) {
-				if (f.isSimplified() == false) {
-					final List<Function> partial = f.simplify();
-					for (final Function fnc : partial) {
-						ret.add(new Expression(root, fnc));
-					}
-				}
-			}
-			return ret;
-		}
-	}
-
-	@Override
 	public EquationsSystem clone() {
 		return new EquationsSystem(root, functions);
 	}

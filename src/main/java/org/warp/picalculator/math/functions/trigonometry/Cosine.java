@@ -16,18 +16,6 @@ public class Cosine extends FunctionSingle {
 	}
 
 	@Override
-	public ObjectArrayList<Function> solve() throws Error {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected boolean isSolvable() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		// TODO Auto-generated method stub
 		return false;

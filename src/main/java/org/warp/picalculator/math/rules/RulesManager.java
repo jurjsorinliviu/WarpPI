@@ -18,6 +18,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.warp.picalculator.StaticVars;
+import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
@@ -50,7 +51,7 @@ public class RulesManager {
 			for (String rulesLine : ruleLines) {
 				String[] ruleDetails = rulesLine.split(",", 1);
 				String ruleName = ruleDetails[0];
-				URL resourceURL = StaticVars.classLoader.getResource("rules" + File.separator + ruleName.replace("/", "_") + ".js");
+				URL resourceURL = StaticVars.classLoader.getResource("rules" + File.separator + ruleName.replace(".", "_").replace('/', File.separatorChar) + ".js");
 				if (resourceURL == null) {
 					throw new FileNotFoundException("rules/" + ruleName + ".js not found!");
 				}
@@ -63,12 +64,11 @@ public class RulesManager {
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		}
-		System.exit(0);
 	}
 	
 	public static void addRule(Rule rule) {
 		MathContext mc = new MathContext();
-		System.out.println(rule.execute(new SumSubtraction(mc, null, new Sum(mc, new Variable(mc, 'x', V_TYPE.VARIABLE), new Variable(mc, 'y', V_TYPE.VARIABLE)))));
-		System.out.println(rule.getRuleName());
+		rules[rule.getRuleType().ordinal()].add(rule);
+		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "Loaded rule " + rule.getRuleName());
 	}
 }

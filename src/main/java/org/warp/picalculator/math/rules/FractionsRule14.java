@@ -29,19 +29,19 @@ public class FractionsRule14 {
 			b = div1.getParameter2();
 			c = div2.getParameter1();
 			d = div2.getParameter2();
-			return new Multiplication(f.getMathContext(), a, c).isSimplified() == false || new Multiplication(f.getMathContext(), b, d).isSimplified() == false;
+			return new Multiplication(f.getMathContext(), a, c).simplify(this) != null || new Multiplication(f.getMathContext(), b, d).isSimplified() == false;
 		} else if (fnc.getParameter1() instanceof Division) {
 			final Division div1 = (Division) fnc.getParameter1();
 			a = div1.getParameter1();
 			b = div1.getParameter2();
 			c = fnc.getParameter2();
-			return new Multiplication(f.getMathContext(), a, c).isSimplified() == false;
+			return new Multiplication(f.getMathContext(), a, c).simplify(this) != null;
 		} else if (fnc.getParameter2() instanceof Division) {
 			final Division div2 = (Division) fnc.getParameter2();
 			a = fnc.getParameter1();
 			c = div2.getParameter1();
 			d = div2.getParameter2();
-			return new Multiplication(f.getMathContext(), a, c).isSimplified() == false;
+			return new Multiplication(f.getMathContext(), a, c).simplify(this) != null;
 		}
 		return false;
 	}
