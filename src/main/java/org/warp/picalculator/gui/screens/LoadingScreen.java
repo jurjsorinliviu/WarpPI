@@ -10,6 +10,7 @@ public class LoadingScreen extends Screen {
 	public float endLoading;
 	boolean mustRefresh = true;
 	public float loadingTextTranslation = 0.0f;
+	public boolean loaded = false;
 
 	public LoadingScreen() {
 		super();
@@ -29,7 +30,7 @@ public class LoadingScreen extends Screen {
 		loadingTextTranslation = GraphicUtils.sinDeg(endLoading * 90f) * 10f;
 
 		endLoading += dt;
-		if (StaticVars.debugOn || endLoading >= 5f) {
+		if (loaded && (StaticVars.debugOn || endLoading >= 3.5f)) {
 			DisplayManager.INSTANCE.setScreen(new MathInputScreen());
 		}
 		mustRefresh = true;

@@ -25,6 +25,9 @@ public class Main {
 		beforeStart();
 		new DisplayManager(screen);
 		afterStart();
+		if (screen instanceof LoadingScreen) {
+			((LoadingScreen) screen).loaded = true;
+		}
 		DisplayManager.INSTANCE.waitForExit();
 		Utils.out.println(1, "Shutdown...");
 		beforeShutdown();
@@ -82,6 +85,7 @@ public class Main {
 	public void afterStart() {
 		DisplayManager.INSTANCE.setBrightness(0.2f);
 		RulesManager.initialize();
+		RulesManager.warmUp();
 	}
 
 	public void beforeShutdown() {

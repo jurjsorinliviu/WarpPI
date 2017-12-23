@@ -24,9 +24,13 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.MathSolver;
+import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
@@ -72,6 +76,31 @@ public class RulesManager {
 		} catch (ScriptException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void warmUp() {
+		ObjectArrayList<Function> uselessResult = null;
+		boolean uselessVariable;
+		for (RuleType val : RuleType.values()) {
+			final ObjectArrayList<Rule> ruleList = rules[val.ordinal()];
+			for (final Rule rule : ruleList) {
+				ObjectArrayList<Function> uselessResult2 = rule.execute(generateUselessExpression());
+				uselessVariable = (uselessResult == null ? new ObjectArrayList<>() : uselessResult).equals(uselessResult2);
+				uselessResult = uselessResult2;
+			}
+		}
+		try {
+			new MathSolver(generateUselessExpression()).solveAllSteps();
+		} catch (InterruptedException | Error e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static Expression generateUselessExpression() {
+		MathContext mc = new MathContext();
+		Expression expr = new Expression(mc);
+		expr = (Expression) expr.setParameter(new Variable(mc, 'x', V_TYPE.VARIABLE));
+		return expr;
 	}
 	
 	public static void addRule(Rule rule) {
