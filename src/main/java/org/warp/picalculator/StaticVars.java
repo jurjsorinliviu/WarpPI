@@ -12,7 +12,7 @@ public class StaticVars {
 	public static boolean debugOn;
 	public static int outputLevel = 5;
 	public static final boolean debugWindow2x = true;
-	public static final ClassLoader classLoader = StaticVars.class.getClassLoader();
+	public static final Class<?> classLoader = Main.instance.getClass();
 	
 	private StaticVars() {
 		

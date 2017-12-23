@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -13,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -42,7 +49,7 @@ public class RulesManager {
 			rules[val.ordinal()] = new ObjectArrayList<Rule>();
 		}
 		try {
-			final Path rulesPath = Paths.get(StaticVars.classLoader.getResource("rules.csv").toURI());
+			final Path rulesPath = Utils.getResource("/rules.csv");
 			if (!Files.exists(rulesPath)) {
 				throw new FileNotFoundException("rules.csv not found!");
 			}
@@ -51,12 +58,13 @@ public class RulesManager {
 			for (String rulesLine : ruleLines) {
 				String[] ruleDetails = rulesLine.split(",", 1);
 				String ruleName = ruleDetails[0];
-				URL resourceURL = StaticVars.classLoader.getResource("rules" + File.separator + ruleName.replace(".", "_").replace('/', File.separatorChar) + ".js");
-				if (resourceURL == null) {
-					throw new FileNotFoundException("rules/" + ruleName + ".js not found!");
+				Utils.out.println("Evaluating /rules/" + ruleName + ".js");
+				InputStream resourcePath = Utils.getResourceStream("/rules/" + ruleName.replace(".", "_") + ".js");
+				if (resourcePath == null) {
+					System.err.println(new FileNotFoundException("/rules/" + ruleName + ".js not found!"));
+				} else {
+					engine.eval(new InputStreamReader(resourcePath));
 				}
-				Path rulePath = Paths.get(resourceURL.toURI());
-				engine.eval(new FileReader(rulePath.toString()));
 			}
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
@@ -67,7 +75,6 @@ public class RulesManager {
 	}
 	
 	public static void addRule(Rule rule) {
-		MathContext mc = new MathContext();
 		rules[rule.getRuleType().ordinal()].add(rule);
 		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "Loaded rule " + rule.getRuleName());
 	}
