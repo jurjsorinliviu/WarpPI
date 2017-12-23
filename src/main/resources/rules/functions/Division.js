@@ -58,11 +58,13 @@ var rule = {
 								nmb2 = nmb2.divide(integerNumber);
 							});
 							result.add(new Division(mathContext, new Number(mathContext, nmb1), new Number(mathContext, nmb2)));
+							return result;
 						}
 					}
 				} else {
 					//divide a by b (a/b = c)
 					result.add(variable1.divide(variable2));
+					return result;
 				}
 			}
 		}
