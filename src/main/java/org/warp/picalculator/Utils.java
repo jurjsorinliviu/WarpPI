@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,9 +18,22 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
@@ -38,6 +53,8 @@ import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystemPart;
+
+import com.jogamp.common.util.IOUtil;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -743,5 +760,55 @@ public class Utils {
 		ObjectArrayList<T> t = new ObjectArrayList<T>();
 		t.add(o);
 		return t;
+	}
+
+	public static Path getResource(String string) throws IOException, URISyntaxException {
+		URL res = Main.instance.getClass().getResource(string);
+		boolean isResource = res != null;
+		if (isResource) {
+			try {
+				final URI uri = res.toURI();
+				if (res.getProtocol().equalsIgnoreCase("jar")) {
+					try {
+						FileSystems.newFileSystem(uri, Collections.emptyMap());
+					} catch (FileSystemAlreadyExistsException e) {
+				        FileSystems.getFileSystem(uri);
+				    }
+					Path myFolderPath = Paths.get(uri);
+					return myFolderPath;
+				} else {
+					return Paths.get(uri);
+				}
+			} catch (java.lang.IllegalArgumentException e) {
+				throw e;
+			}
+		} else {
+			return Paths.get(string.substring(1));
+		}
+	}
+
+	public static InputStream getResourceStream(String string) throws IOException, URISyntaxException {
+		URL res = Main.instance.getClass().getResource(string);
+		boolean isResource = res != null;
+		if (isResource) {
+			try {
+				final URI uri = res.toURI();
+				if (res.getProtocol().equalsIgnoreCase("jar")) {
+					try {
+						FileSystems.newFileSystem(uri, Collections.emptyMap());
+					} catch (FileSystemAlreadyExistsException e) {
+				        FileSystems.getFileSystem(uri);
+				    }
+					Path myFolderPath = Paths.get(uri);
+					return Files.newInputStream(myFolderPath);
+				} else {
+					return Files.newInputStream(Paths.get(uri));
+				}
+			} catch (java.lang.IllegalArgumentException e) {
+				throw e;
+			}
+		} else {
+			return Files.newInputStream(Paths.get(string.substring(1)));
+		}
 	}
 }
