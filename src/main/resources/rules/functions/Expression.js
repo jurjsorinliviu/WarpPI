@@ -12,9 +12,8 @@ var Number = org.warp.picalculator.math.functions.Number;
 var Expression = org.warp.picalculator.math.functions.Expression;
 
 /**
- * Expand rule
- * -(+a+b) = -a-b
- * -(+a-b) = -a+b
+ * Expression
+ * (x) = x
  * 
  * @author Andrea Cavalli
  *
@@ -26,7 +25,7 @@ var rule = {
 	},
 	// Rule type
 	getRuleType: function() {
-		return RuleType.EXPANSION;
+		return RuleType.CALCULATION;
 	},
 	/* Rule function
 	   Returns:

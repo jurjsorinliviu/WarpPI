@@ -30,8 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -726,25 +724,6 @@ public class Utils {
 
 	public static boolean isWindows() {
 		return (OS.indexOf("win") >= 0);
-	}
-
-	public static LinkedList<BigInteger> mcm(LinkedList<BigInteger> factors1, LinkedList<BigInteger> factors2) {
-		LinkedList<BigInteger> mcm = new LinkedList<>();
-		Iterator<BigInteger> i1 = factors1.iterator();
-		while(i1.hasNext()) {
-			BigInteger int1 = i1.next();
-			Iterator<BigInteger> i2 = factors2.iterator();
-			while(i2.hasNext()) {
-				BigInteger int2 = i2.next();
-				if (int1.equals(int2)) {
-					i1.remove();
-					i2.remove();
-					mcm.add(int1);
-					break;
-				}
-			}
-		}
-		return mcm;
 	}
 
 	public static void gc() {
