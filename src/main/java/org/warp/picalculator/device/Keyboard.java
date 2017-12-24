@@ -272,6 +272,15 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case KeyEvent.VK_M:
+				if (!Keyboard.shift && !Keyboard.alpha) {
+					Keyboard.keyPressed(Key.SURD_MODE);
+				} else if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.NONE);
+				}
+				break;
 			case com.jogamp.newt.event.KeyEvent.VK_ADD:
 			case KeyEvent.VK_ADD:
 				if (!Keyboard.shift && !Keyboard.alpha) {
