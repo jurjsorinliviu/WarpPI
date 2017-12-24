@@ -1,5 +1,13 @@
-functions/Expression
+Rule file
 functions/Division
+functions/EmptyNumber
+functions/Expression
+functions/Joke
+functions/Multiplication
+functions/Negative
+functions/Number
+functions/Power
+functions/Root
 ExpandRule1
 ExpandRule2
 ExpandRule5
