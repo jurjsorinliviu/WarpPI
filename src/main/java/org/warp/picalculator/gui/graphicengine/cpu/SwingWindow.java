@@ -209,7 +209,9 @@ public class SwingWindow extends JFrame {
 
 	@Override
 	public void setSize(int width, int height) {
-		c.setSize(width*mult, height*mult);
+		c.setSize(new Dimension(width*mult, height*mult));
+		c.setPreferredSize(new Dimension(width*mult, height*mult));
+		super.getContentPane().setSize(new Dimension(width*mult, height*mult));
 		super.getContentPane().setPreferredSize(new Dimension(width*mult, height*mult));
 		super.pack();
 	}
