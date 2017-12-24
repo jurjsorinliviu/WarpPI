@@ -59,15 +59,18 @@ public class RulesManager {
 			}
 			ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 			List<String> ruleLines = Files.readAllLines(rulesPath);
+			ruleLines.remove(0); //Remove the headers
 			for (String rulesLine : ruleLines) {
-				String[] ruleDetails = rulesLine.split(",", 1);
-				String ruleName = ruleDetails[0];
-				Utils.out.println("Evaluating /rules/" + ruleName + ".js");
-				InputStream resourcePath = Utils.getResourceStream("/rules/" + ruleName.replace(".", "_") + ".js");
-				if (resourcePath == null) {
-					System.err.println(new FileNotFoundException("/rules/" + ruleName + ".js not found!"));
-				} else {
-					engine.eval(new InputStreamReader(resourcePath));
+				if (rulesLine.length() > 0) {
+					String[] ruleDetails = rulesLine.split(",", 1);
+					String ruleName = ruleDetails[0];
+					Utils.out.println("Evaluating /rules/" + ruleName + ".js");
+					InputStream resourcePath = Utils.getResourceStream("/rules/" + ruleName.replace(".", "_") + ".js");
+					if (resourcePath == null) {
+						System.err.println(new FileNotFoundException("/rules/" + ruleName + ".js not found!"));
+					} else {
+						engine.eval(new InputStreamReader(resourcePath));
+					}
 				}
 			}
 		} catch (URISyntaxException | IOException e) {
@@ -96,10 +99,10 @@ public class RulesManager {
 		}
 	}
 	
-	private static Expression generateUselessExpression() {
+	private static Function generateUselessExpression() {
 		MathContext mc = new MathContext();
-		Expression expr = new Expression(mc);
-		expr = (Expression) expr.setParameter(new Variable(mc, 'x', V_TYPE.VARIABLE));
+		Function expr = new Expression(mc);
+		expr = expr.setParameter(0, new Variable(mc, 'x', V_TYPE.VARIABLE));
 		return expr;
 	}
 	
