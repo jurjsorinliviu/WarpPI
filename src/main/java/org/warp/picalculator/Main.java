@@ -50,6 +50,9 @@ public class Main {
 		}
 		Utils.debugThirdScreen = StaticVars.debugOn & false;
 		for (String arg : args) {
+			if (arg.contains("2x")) {
+				StaticVars.debugWindow2x = true;
+			}
 			if (arg.contains("headless")) {
 				Utils.headlessOverride = true;
 			}
