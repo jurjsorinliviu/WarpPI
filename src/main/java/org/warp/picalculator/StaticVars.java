@@ -11,7 +11,7 @@ public class StaticVars {
 	public static final int[] screenSize = new int[] { 480, 320 };
 	public static boolean debugOn;
 	public static int outputLevel = 5;
-	public static final boolean debugWindow2x = true;
+	public static boolean debugWindow2x = false;
 	
 	private StaticVars() {
 		
