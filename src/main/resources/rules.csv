@@ -8,6 +8,10 @@ functions/Negative
 functions/Number
 functions/Power
 functions/Root
+functions/Subtraction
+functions/Sum
+functions/SumSubtraction
+functions/Variable
 ExpandRule1
 ExpandRule2
 ExpandRule5
