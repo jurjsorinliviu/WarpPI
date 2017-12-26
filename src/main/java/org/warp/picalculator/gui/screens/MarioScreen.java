@@ -53,9 +53,7 @@ public class MarioScreen extends Screen {
 			if (fu32font == null)
 				try {
 					fu32font = DisplayManager.INSTANCE.engine.loadFont("fu32");
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
+				} catch (Exception ex) {}
 			if (easterskin == null)
 				try {
 					easterskin = DisplayManager.INSTANCE.engine.loadSkin("font_easter.png");
