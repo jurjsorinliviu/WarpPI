@@ -24,7 +24,7 @@ var rule = {
 	},
 	// Rule type
 	getRuleType: function() {
-		return RuleType.REDUCTION;
+		return RuleType.EXPANSION;
 	},
 	/* Rule function
 	   Returns:

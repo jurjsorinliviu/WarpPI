@@ -217,7 +217,7 @@ public class Number implements Function {
 
 		if (n.compareTo(BigInteger.ONE) > 0) {
 			BigInteger f = BigInteger.valueOf(3);
-			while (f.multiply(f).compareTo(n) <= 0) {
+			while (f.compareTo(Utils.maxFactor) <= 0 && f.multiply(f).compareTo(n) <= 0) {
 				if (n.mod(f).equals(BigInteger.ZERO)) {
 					fs.add(f);
 					n = n.divide(f);

@@ -8,10 +8,6 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.rules.ExpandRule1;
-import org.warp.picalculator.math.rules.NumberRule3;
-import org.warp.picalculator.math.rules.NumberRule4;
-import org.warp.picalculator.math.rules.NumberRule5;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

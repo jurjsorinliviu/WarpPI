@@ -1,6 +1,7 @@
 package org.warp.picalculator.math;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.rules.Rule;
 
@@ -119,7 +120,13 @@ public abstract class FunctionOperator implements Function {
 
 		ObjectArrayList<Function> simplifiedParam1 = parameter1.simplify(rule);
 		ObjectArrayList<Function> simplifiedParam2 = parameter2.simplify(rule);
-		if (simplifiedParam1 == null & simplifiedParam2 == null) return rule.execute(this);
+		try {
+			if (simplifiedParam1 == null & simplifiedParam2 == null) return rule.execute(this);
+		} catch (Exception e) {
+			Error err = new Error(Errors.ERROR, "Error while executing rule '" + rule.getRuleName() + "'!\n" + e.getMessage());
+			err.initCause(e);
+			throw err;
+		}
 			
 		if (Thread.interrupted()) throw new InterruptedException();
 		ObjectArrayList<Function> result = new ObjectArrayList<>();

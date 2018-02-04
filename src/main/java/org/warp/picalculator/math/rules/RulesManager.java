@@ -83,13 +83,22 @@ public class RulesManager {
 
 	public static void warmUp() {
 		ObjectArrayList<Function> uselessResult = null;
-		boolean uselessVariable;
+		boolean uselessVariable = false;
 		for (RuleType val : RuleType.values()) {
 			final ObjectArrayList<Rule> ruleList = rules[val.ordinal()];
 			for (final Rule rule : ruleList) {
-				ObjectArrayList<Function> uselessResult2 = rule.execute(generateUselessExpression());
-				uselessVariable = (uselessResult == null ? new ObjectArrayList<>() : uselessResult).equals(uselessResult2);
-				uselessResult = uselessResult2;
+				String ruleName = "<null>";
+				try {
+					ruleName = rule.getRuleName();
+					ObjectArrayList<Function> uselessResult2 = rule.execute(generateUselessExpression());
+					uselessVariable = (uselessResult == null ? new ObjectArrayList<>() : uselessResult).equals(uselessResult2);
+					uselessResult = uselessResult2;
+				} catch (Exception e) {
+					if (uselessVariable || true) {
+						System.err.println("Exception thrown by rule '" + ruleName + "'!");
+						e.printStackTrace();
+					}
+				}
 			}
 		}
 		try {

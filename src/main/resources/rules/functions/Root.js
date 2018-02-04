@@ -24,7 +24,7 @@ var BigDecimal = java.math.BigDecimal;
 var rule = {
 	// Rule name
 	getRuleName: function() {
-		return "Power";
+		return "Root";
 	},
 	// Rule type
 	getRuleType: function() {
@@ -37,11 +37,11 @@ var rule = {
 	*/
 	execute: function(f) {
 		var isSquare = false;
-		if (ScriptUtils.instanceOf(f, Root.class) || (isSquare = ScriptUtils.instanceOf(f, RootSquare.class))) {
+		if ((isSquare = ScriptUtils.instanceOf(f, RootSquare.class)) || ScriptUtils.instanceOf(f, Root.class)) {
 			var result = new ObjectArrayList();
 			var mathContext = f.getMathContext();
-			var variable1 = isSquare?new Number(mathContext, 2):f.getParameter1();
-			var variable2 = isSquare?f.getParameter():f.getParameter2();
+			var variable1 = f.getParameter1();
+			var variable2 = f.getParameter2();
 			var isSolvable = false;
 			var canBePorted = false;
 			if (ScriptUtils.instanceOf(variable1, Number.class) && ScriptUtils.instanceOf(variable2, Number.class)) {
@@ -50,7 +50,7 @@ var rule = {
 					try {
 						var resultVar = variable2.pow(new Number(mathContext, BigDecimal.ONE).divide(variable1));
 						var originalVariable = resultVar.pow(new Number(mathContext, 2));
-						if (originalVariable.equals(parameter2)) {
+						if (originalVariable.equals(f.getParameter2())) {
 							isSolvable = true;
 						}
 					} catch (ex) {

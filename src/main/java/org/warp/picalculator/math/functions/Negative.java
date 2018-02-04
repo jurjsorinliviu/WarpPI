@@ -9,8 +9,6 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.rules.ExpandRule1;
-import org.warp.picalculator.math.rules.ExpandRule5;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

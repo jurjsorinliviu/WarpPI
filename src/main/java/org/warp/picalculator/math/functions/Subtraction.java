@@ -7,14 +7,6 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.rules.ExpandRule1;
-import org.warp.picalculator.math.rules.ExpandRule5;
-import org.warp.picalculator.math.rules.NumberRule3;
-import org.warp.picalculator.math.rules.NumberRule5;
-import org.warp.picalculator.math.rules.VariableRule1;
-import org.warp.picalculator.math.rules.VariableRule2;
-import org.warp.picalculator.math.rules.VariableRule3;
-import org.warp.picalculator.math.rules.methods.SumMethod1;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

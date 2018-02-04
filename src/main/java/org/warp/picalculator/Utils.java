@@ -60,6 +60,7 @@ public class Utils {
 
 	public static final int scale = 24;
 	public static final int displayScale = 8;
+	public static final BigInteger maxFactor = BigInteger.valueOf(1000000L);
 
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;

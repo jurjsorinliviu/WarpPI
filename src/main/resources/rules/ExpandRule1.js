@@ -25,7 +25,7 @@ var rule = {
 	},
 	// Rule type
 	getRuleType: function() {
-		return RuleType.REDUCTION;
+		return RuleType.EXPANSION;
 	},
 	/* Rule function
 	   Returns:
@@ -38,11 +38,11 @@ var rule = {
 			var fnc = f;
 			if (fnc.getParameter1().equals(new Number(fnc.getMathContext(), -1))) {
 				var expr = fnc.getParameter2();
-				if (expr instanceof Sum) {
+				if (ScriptUtils.instanceOf(expr, Sum.class)) {
 					isExecutable = true;
-				} else if (expr instanceof Subtraction) {
+				} else if (ScriptUtils.instanceOf(expr, Subtraction.class)) {
 					isExecutable = true;
-				} else if (expr instanceof SumSubtraction) {
+				} else if (ScriptUtils.instanceOf(expr, SumSubtraction.class)) {
 					isExecutable = true;
 				}
 			}
@@ -66,21 +66,21 @@ var rule = {
 			var subtraction = null;
 			if (ScriptUtils.instanceOf(f,Multiplication.class)) {
 				expr = f.getParameter2();
-			} else if (f instanceof Subtraction || f instanceof SumSubtraction) {
+			} else if (ScriptUtils.instanceOf(f, Subtraction.class) || f instanceof SumSubtraction) {
 				expr = f.getParameter2();
-				if (f instanceof Subtraction) {
+				if (ScriptUtils.instanceOf(f, Subtraction.class)) {
 					fromSubtraction = 1;
 				} else {
 					fromSubtraction = 2;
 				}
 			}
 
-			if (f instanceof SumSubtraction) {
+			if (ScriptUtils.instanceOf(f, SumSubtraction.class)) {
 				
 			}
 
 			var fnc = expr;
-			if (fnc instanceof Sum) {
+			if (ScriptUtils.instanceOf(fnc, Sum.class)) {
 				var a = fnc.getParameter1();
 				var b = fnc.getParameter2();
 				var fnc2 = new Subtraction(root, new Multiplication(root, new Number(root, -1), a), b);
@@ -90,7 +90,7 @@ var rule = {
 				} else {
 					result.add(fnc2);
 				}
-			} else if (fnc instanceof Subtraction) {
+			} else if (ScriptUtils.instanceOf(fnc, Subtraction.class)) {
 				var a = fnc.getParameter1();
 				var b = fnc.getParameter2();
 				var fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
@@ -100,7 +100,7 @@ var rule = {
 				} else {
 					result.add(fnc2);
 				}
-			} else if (fnc instanceof SumSubtraction) {
+			} else if (ScriptUtils.instanceOf(fnc, SumSubtraction.class)) {
 				var a = fnc.getParameter1();
 				var b = fnc.getParameter2();
 				var fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
