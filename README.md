@@ -6,6 +6,11 @@ It works but many fundamental features aren't complete.**<br>
 
 **If you really want to build and test it on your computer take account of that.**
 
+# Keypad PCB
+https://workspace.circuitmaker.com/Projects/Details/Andrea-Cavalli/Scientific-calculator-Keypad
+![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/stages.jpg "Pictures")
+
+# Photos and pictures
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/algebra_input.gif "Algebra input screen")
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/algebra%20variable%20type.gif "Algebra variable type menu")
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/decimal.png "Example expression")
