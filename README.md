@@ -8,7 +8,7 @@ It works but many fundamental features aren't complete.**<br>
 
 # Keypad PCB
 https://workspace.circuitmaker.com/Projects/Details/Andrea-Cavalli/Scientific-calculator-Keypad
-![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/stages.jpg "Pictures")
+![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/keypad-preview.jpg "Pictures")
 
 # Photos and pictures
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/algebra_input.gif "Algebra input screen")
