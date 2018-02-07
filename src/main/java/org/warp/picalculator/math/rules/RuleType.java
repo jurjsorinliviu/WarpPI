@@ -1,7 +1,20 @@
 package org.warp.picalculator.math.rules;
 
 public enum RuleType {
-	EXPANSION,
+	/**
+	 * A rule that tries to factorize and group a polynomial expression into a shorter expression
+	 */
 	REDUCTION,
-	CALCULATION
+	/**
+	 * A rule that tries to transform an expression to a simple polynomial expression
+	 */
+	EXPANSION,
+	/**
+	 * Calculation
+	 */
+	CALCULATION,
+	/**
+	 * Existence
+	 */
+	EXISTENCE
 }

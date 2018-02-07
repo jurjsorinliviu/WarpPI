@@ -117,6 +117,6 @@ public class RulesManager {
 	
 	public static void addRule(Rule rule) {
 		rules[rule.getRuleType().ordinal()].add(rule);
-		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "Loaded rule " + rule.getRuleName());
+		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "Loaded rule " + rule.getRuleName() + " as " + rule.getRuleType() + " rule.");
 	}
 }

@@ -25,6 +25,7 @@ public class MathematicalSymbols {
 	public static final char ARC_SINE = 'Ⓕ';
 	public static final char ARC_COSINE = 'Ⓖ';
 	public static final char ARC_TANGENT = 'Ⓗ';
+	public static final char UNDEFINED = '∅';
 	public static final char PI = 'π';
 
 	public static final char[] functionsNSN = new char[] { NTH_ROOT, POWER };
@@ -48,7 +49,7 @@ public class MathematicalSymbols {
 
 	public static final char[] parentheses = new char[] { PARENTHESIS_OPEN, PARENTHESIS_CLOSE };
 
-	public static final char[] variables = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'ⓧ', 'Ⓨ', 'Z', PI };
+	public static final char[] variables = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'ⓧ', 'Ⓨ', 'Z', PI, UNDEFINED };
 
 	public static final char[] genericSyntax = new char[] { SYSTEM, EQUATION };
 

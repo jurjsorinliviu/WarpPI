@@ -8,12 +8,9 @@ import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.parser.features.FeatureChar;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
-public class BlockChar extends Block {
+public class BlockUndefined extends Block {
 
-	private final char ch;
-
-	public BlockChar(char ch) {
-		this.ch = ch;
+	public BlockUndefined() {
 		recomputeDimensions();
 	}
 
@@ -21,7 +18,7 @@ public class BlockChar extends Block {
 	public void draw(GraphicEngine ge, Renderer r, int x, int y, Caret caret) {
 		BlockContainer.getDefaultFont(small).use(ge);
 		r.glColor(BlockContainer.getDefaultColor());
-		r.glDrawCharLeft(x, y, ch);
+		r.glDrawStringLeft(x, y, "UNDEFINED");
 	}
 
 	@Override
@@ -41,7 +38,7 @@ public class BlockChar extends Block {
 
 	@Override
 	public void recomputeDimensions() {
-		width = BlockContainer.getDefaultCharWidth(small) - 1;
+		width = BlockContainer.getDefaultFont(small).getStringWidth("UNDEFINED");
 		height = BlockContainer.getDefaultCharHeight(small);
 		line = height / 2;
 	}
@@ -52,10 +49,6 @@ public class BlockChar extends Block {
 		recomputeDimensions();
 	}
 
-	public char getChar() {
-		return ch;
-	}
-
 	@Override
 	public int computeCaretMaxBound() {
 		return 0;
@@ -63,7 +56,7 @@ public class BlockChar extends Block {
 
 	@Override
 	public Feature toFeature(MathContext context) {
-		return new FeatureChar(getChar());
+		return new FeatureChar(MathematicalSymbols.UNDEFINED);
 	}
 
 }

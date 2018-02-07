@@ -19,9 +19,9 @@ public class MathSolver {
 	private int consecutiveNullSteps = 0;
 	private enum StepState {
 		_1_CALCULATION,
-		_2_REDUCTION,
+		_2_EXPANSION,
 		_3_CALCULATION,
-		_4_EXPANSION
+		_4_REDUCTION
 	}
 	private final StepState[] stepStates = StepState.values();
 	@SuppressWarnings("unchecked")
@@ -73,45 +73,33 @@ public class MathSolver {
 	}
 	
 	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs) throws InterruptedException, Error {
+		ObjectArrayList<Function> processedFncs = applyRules(fncs, RuleType.EXISTENCE); // Apply existence rules before everything
+		if (processedFncs != null) {
+			fncs = processedFncs;
+		}
 		RuleType currentAcceptedRules;
 		switch(stepStates[stepState]) {
 			case _1_CALCULATION: {
 				currentAcceptedRules = RuleType.CALCULATION;
 				break;
 			}
-			case _2_REDUCTION: {
-				currentAcceptedRules = RuleType.REDUCTION;
+			case _2_EXPANSION: {
+				currentAcceptedRules = RuleType.EXPANSION;
 				break;
 			}
 			case _3_CALCULATION: {
 				currentAcceptedRules = RuleType.CALCULATION;
 				break;
 			}
-			case _4_EXPANSION: {
-				currentAcceptedRules = RuleType.EXPANSION;
+			case _4_REDUCTION: {
+				currentAcceptedRules = RuleType.REDUCTION;
 				break;
 			}
 			default:
 				System.err.println("Unknown Step State");
 				throw new NotImplementedException();
 		}
-		ObjectArrayList<Rule> rules = initialFunction.getMathContext().getAcceptableRules(currentAcceptedRules);
-		ObjectArrayList<Function> results = null;
-		Rule appliedRule = null;
-		for (Function fnc : fncs) {
-			for (Rule rule : rules) {
-				List<Function> ruleResults = fnc.simplify(rule);
-				if (ruleResults != null && !ruleResults.isEmpty()) {
-					if (results == null) results = new ObjectArrayList<Function>();
-					results.addAll(ruleResults);
-					appliedRule = rule;
-					break;
-				}
-			}
-		}
-		if (StaticVars.debugOn & results != null & appliedRule != null) {
-			Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, stepStates[stepState].toString().substring(3) + ": " + appliedRule.getRuleName());
-		}
+		ObjectArrayList<Function> results = applyRules(fncs, currentAcceptedRules);
 		switch(stepStates[stepState]) {
 			case _1_CALCULATION: {
 				if (results == null) {
@@ -125,7 +113,7 @@ public class MathSolver {
 				}
 				break;
 			}
-			case _2_REDUCTION: {
+			case _2_EXPANSION: {
 				if (results == null) {
 					if (currentStepStateN == 0) {
 						stepState += 2;
@@ -154,7 +142,7 @@ public class MathSolver {
 				}
 				break;
 			}
-			case _4_EXPANSION: {
+			case _4_REDUCTION: {
 				if (results == null) {
 					stepState = 1;
 					consecutiveNullSteps++;
@@ -172,5 +160,26 @@ public class MathSolver {
 				throw new NotImplementedException();
 		}
 		return null;
+	}
+	
+	private ObjectArrayList<Function> applyRules(ObjectArrayList<Function> fncs, RuleType currentAcceptedRules) throws InterruptedException, Error {
+		ObjectArrayList<Rule> rules = initialFunction.getMathContext().getAcceptableRules(currentAcceptedRules);
+		ObjectArrayList<Function> results = null;
+		Rule appliedRule = null;
+		for (Function fnc : fncs) {
+			for (Rule rule : rules) {
+				List<Function> ruleResults = fnc.simplify(rule);
+				if (ruleResults != null && !ruleResults.isEmpty()) {
+					if (results == null) results = new ObjectArrayList<Function>();
+					results.addAll(ruleResults);
+					appliedRule = rule;
+					break;
+				}
+			}
+		}
+		if (StaticVars.debugOn & results != null & appliedRule != null) {
+			Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, stepStates[stepState].toString().substring(3) + ": " + appliedRule.getRuleName());
+		}
+		return results;
 	}
 }
