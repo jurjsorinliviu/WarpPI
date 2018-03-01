@@ -19,7 +19,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class DivisionRule1 {
 
 	public static boolean compare(Division f) throws InterruptedException {
-		return f.getParameter1().isSimplified() && f.getParameter2().isSimplified() && (f.getParameter1() instanceof Multiplication || f.getParameter2() instanceof Multiplication) && getFirstWorkingDivisionCouple(getDivisionElements(f)) != null;
+		return false;//TODO:    return f.getParameter1().isSimplified() && f.getParameter2().isSimplified() && (f.getParameter1() instanceof Multiplication || f.getParameter2() instanceof Multiplication) && getFirstWorkingDivisionCouple(getDivisionElements(f)) != null;
 	}
 
 	public static ObjectArrayList<Function> execute(Division f) throws Error, InterruptedException {
@@ -95,25 +95,27 @@ public class DivisionRule1 {
 	}
 
 	private static int[] getFirstWorkingDivisionCouple(ObjectArrayList<Function>[] elements) throws InterruptedException {
-		final int[] size = new int[] { elements[0].size(), elements[1].size() };
-		Function a;
-		Function b;
-		if (elements[0].size() + elements[1].size() <= 2) {
-			return null;
-		}
-		for (int i = 0; i < size[0]; i++) {
-			a = elements[0].get(i);
-			for (int j = 0; j < size[1]; j++) {
-				if (Thread.interrupted()) throw new InterruptedException();
-				b = elements[1].get(j);
-				Function testFunc;
-				testFunc = new Division(a.getMathContext(), a, b);
-				if (!testFunc.isSimplified()) {
-					return new int[] { i, j };
-				}
-			}
-		}
 		return null;
+		//TODO:
+//		final int[] size = new int[] { elements[0].size(), elements[1].size() };
+//		Function a;
+//		Function b;
+//		if (elements[0].size() + elements[1].size() <= 2) {
+//			return null;
+//		}
+//		for (int i = 0; i < size[0]; i++) {
+//			a = elements[0].get(i);
+//			for (int j = 0; j < size[1]; j++) {
+//				if (Thread.interrupted()) throw new InterruptedException();
+//				b = elements[1].get(j);
+//				Function testFunc;
+//				testFunc = new Division(a.getMathContext(), a, b);
+//				if (!testFunc.isSimplified()) {
+//					return new int[] { i, j };
+//				}
+//			}
+//		}
+//		return null;
 	}
 
 }
