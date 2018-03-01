@@ -11,9 +11,9 @@ import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.SolveMethod;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Subtraction;
+import org.warp.picalculator.math.solver.SolveMethod;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

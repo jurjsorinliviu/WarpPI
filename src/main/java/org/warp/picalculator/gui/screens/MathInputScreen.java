@@ -27,13 +27,13 @@ import org.warp.picalculator.math.FunctionDynamic;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.MathSolver;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
 import org.warp.picalculator.math.parser.MathParser;
+import org.warp.picalculator.math.solver.MathSolver;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

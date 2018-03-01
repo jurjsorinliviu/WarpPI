@@ -29,13 +29,13 @@ import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.MathSolver;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
+import org.warp.picalculator.math.solver.MathSolver;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

@@ -1,4 +1,4 @@
-package org.warp.picalculator.math;
+package org.warp.picalculator.math.solver;
 
 import org.warp.picalculator.math.functions.equations.Equation;
 

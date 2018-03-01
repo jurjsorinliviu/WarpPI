@@ -1,10 +1,11 @@
-package org.warp.picalculator.math;
+package org.warp.picalculator.math.solver;
 
 import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 
