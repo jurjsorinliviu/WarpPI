@@ -57,7 +57,7 @@ public class SwingWindow extends JFrame {
 			setResizable(false);
 		}
 
-		setTitle("WarpPI Calculator by Andrea Cavalli (XDrake99)");
+		setTitle("WarpPI Calculator by Andrea Cavalli (@Cavallium)");
 
 		addComponentListener(new ComponentListener() {
 			@Override

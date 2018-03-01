@@ -53,7 +53,7 @@ import com.jogamp.opengl.util.Animator;
 /**
  *
  * @author Xerxes Rånby (xranby)
- * @author Andrea Cavalli (XDRake99)
+ * @author Andrea Cavalli (@Cavallium)
  */
 
 class NEWTWindow implements GLEventListener {
@@ -87,7 +87,7 @@ class NEWTWindow implements GLEventListener {
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
 
-		glWindow.setTitle("WarpPI Calculator by Andrea Cavalli (XDrake99)");
+		glWindow.setTitle("WarpPI Calculator by Andrea Cavalli (@Cavallium)");
 
 		glWindow.addWindowListener(new WindowListener() {
 
