@@ -90,11 +90,11 @@ public class MathParser {
 		Function lastElement;
 
 		if (StaticVars.debugOn) {
-			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
+			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
 			for (Function f : functionsList) {
-				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
 			}
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE);
 		}
 
 		for (MathParserStep step : steps) {
@@ -121,11 +121,11 @@ public class MathParser {
 			} while (lastLoopDidSomething);
 
 			if (StaticVars.debugOn) {
-				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
+				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
 				for (Function f : functionsList) {
-					Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+					Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
 				}
-				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
+				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE);
 			}
 		}
 

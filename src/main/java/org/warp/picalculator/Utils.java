@@ -69,7 +69,7 @@ public class Utils {
 
 	public static final int OUTPUTLEVEL_NODEBUG = 0;
 	public static final int OUTPUTLEVEL_DEBUG_MIN = 1;
-	public static final int OUTPUTLEVEL_DEBUG_MAX = 4;
+	public static final int OUTPUTLEVEL_DEBUG_VERBOSE = 4;
 	public static boolean debugThirdScreen;
 	public static boolean headlessOverride = false;
 	private static String OS = System.getProperty("os.name").toLowerCase();

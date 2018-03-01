@@ -43,6 +43,10 @@ public class MathSolver {
 			}
 			stepBefore = stepState;
 			ObjectArrayList<Function> stepResult = solveStep(lastFnc);
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Step state: "+stepStates[stepState]+", Consecutive null steps: " + consecutiveNullSteps + ", currentStepStateN: " + currentStepStateN + ", result: ");
+			for (Function result : stepResult) {
+				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, result.toString());
+			}
 			if (stepResult == null) {
 				currFnc = lastFnc;
 			} else {
