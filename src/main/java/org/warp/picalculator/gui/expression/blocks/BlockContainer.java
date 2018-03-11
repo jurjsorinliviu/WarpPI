@@ -69,6 +69,11 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public void addBlock(int position, Block b) {
+		addBlockUnsafe(position, b);
+		recomputeDimensions();
+	}
+	
+	public void addBlockUnsafe(int position, Block b) {
 		if (b.isSmall() != small) {
 			b.setSmall(small);
 		}
@@ -77,7 +82,6 @@ public class BlockContainer implements GraphicalElement {
 		} else {
 			content.add(position, b);
 		}
-		recomputeDimensions();
 	}
 
 	public void appendBlock(Block b) {
@@ -93,8 +97,12 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public void removeBlock(Block b) {
-		content.remove(b);
+		removeBlockUnsafe(b);
 		recomputeDimensions();
+	}
+
+	public void removeBlockUnsafe(Block b) {
+		content.remove(b);
 	}
 
 	public void removeAt(int i) {
@@ -102,8 +110,13 @@ public class BlockContainer implements GraphicalElement {
 		recomputeDimensions();
 	}
 
-	public Block getBlockAt(int i) {
-		return content.get(i);
+	public BlockReference<?> getBlockAt(int i) {
+		Block b = content.get(i);
+		return new BlockReference<>(b, i, this);
+	}
+
+	public int getSize() {
+		return content.size();
 	}
 
 	public void clear() {
@@ -202,8 +215,8 @@ public class BlockContainer implements GraphicalElement {
 		return removed;
 	}
 
-	public Block getBlock(Caret caret) {
-		Block block = null;
+	public BlockReference<?> getBlock(Caret caret) {
+		BlockReference<?> block = null;
 
 		int pos = 0;
 		for (final Block b : content) {

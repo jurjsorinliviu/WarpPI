@@ -79,7 +79,7 @@ public abstract class BlockParenthesisAbstract extends Block {
 	}
 
 	@Override
-	public Block getBlock(Caret caret) {
+	public BlockReference<?> getBlock(Caret caret) {
 		return containerNumber.getBlock(caret);
 	}
 

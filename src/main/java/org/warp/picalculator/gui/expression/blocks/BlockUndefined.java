@@ -32,7 +32,7 @@ public class BlockUndefined extends Block {
 	}
 
 	@Override
-	public Block getBlock(Caret caret) {
+	public BlockReference<?> getBlock(Caret caret) {
 		return null;
 	}
 

@@ -57,8 +57,8 @@ public class BlockDivision extends Block {
 	}
 
 	@Override
-	public Block getBlock(Caret caret) {
-		Block bl = null;
+	public BlockReference<?> getBlock(Caret caret) {
+		BlockReference<?> bl = null;
 		bl = containerUp.getBlock(caret);
 		if (bl != null) {
 			return bl;

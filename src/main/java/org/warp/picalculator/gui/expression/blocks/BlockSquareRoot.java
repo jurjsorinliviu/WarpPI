@@ -56,7 +56,7 @@ public class BlockSquareRoot extends Block {
 	}
 
 	@Override
-	public Block getBlock(Caret caret) {
+	public BlockReference<?> getBlock(Caret caret) {
 		return containerNumber.getBlock(caret);
 	}
 

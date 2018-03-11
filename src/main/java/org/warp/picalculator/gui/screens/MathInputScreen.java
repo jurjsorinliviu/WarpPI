@@ -170,283 +170,288 @@ public class MathInputScreen extends Screen {
 	@Override
 	public boolean keyPressed(Key k) {
 		Utils.out.println(1, k.toString());
-		switch (k) {
-			case OK:
-				userInput.toggleExtra();
-				mustRefresh = true;
-				return true;
-			case HISTORY_BACK:
-				if (userInput.isExtraOpened()) {
-					userInput.closeExtra();
-					currentStep = 0;
+		try {
+			switch (k) {
+				case OK:
+					userInput.toggleExtra();
 					mustRefresh = true;
 					return true;
-				}
-			default:
-				if (userInput.isExtraOpened() && userInput.getExtraKeyboardEventListener().keyPressed(k)) {
-					currentStep = 0;
-					return true;
-				} else {
-					final boolean step = k == Key.STEP;
-					switch (k) {
+				case HISTORY_BACK:
+					if (userInput.isExtraOpened()) {
+						userInput.closeExtra();
+						currentStep = 0;
+						mustRefresh = true;
+						return true;
+					}
+				default:
+					if (userInput.isExtraOpened() && userInput.getExtraKeyboardEventListener().keyPressed(k)) {
+						currentStep = 0;
+						return true;
+					} else {
+						final boolean step = k == Key.STEP;
+						switch (k) {
 
-						case STEP:
-							currentStep++;
-						case SIMPLIFY:
-							if (!step) currentStep = 0;
-							if (DisplayManager.INSTANCE.error != null) {
-								//TODO: make the error management a global API rather than being relegated to this screen.
-								Utils.out.println(1, "Resetting after error...");
-								DisplayManager.INSTANCE.error = null;
-								calc.f = null;
-								calc.f2 = null;
-								calc.resultsCount = 0;
-								return true;
-							} else {
-								if (!computingResult) {
-									computingResult = true;
-									computingThread = new Thread(()-> {
-										try {
-											try {
-												if (!userInput.isAlreadyParsed() && !userInput.isEmpty()) {
-													Expression expr = MathParser.parseInput(calc, userInput);
-													if (calc.f == null | calc.f2 == null) {
-														calc.f = new ObjectArrayList<>();
-														calc.f2 = new ObjectArrayList<>();
-													} else {
-														calc.f.clear();
-														calc.f2.clear();
-													}
-													calc.f.add(expr);
-													Utils.out.println(2, "INPUT: " + expr);
-													MathSolver ms = new MathSolver(expr);
-													ObjectArrayList<ObjectArrayList<Function>> resultSteps = ms.solveAllSteps();
-													resultSteps.add(0, Utils.newArrayList(expr));
-													ObjectArrayList<Function> resultExpressions = resultSteps.get(resultSteps.size() - 1);	
-													for (Function rr : resultExpressions) {
-														Utils.out.println(1, "RESULT: " + rr.toString());
-													}
-													ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
-													result.setContentAsMultipleGroups(resultBlocks);
-													//									showVariablesDialog(() -> {
-													//										currentExpression = newExpression;
-													//										simplify();
-													//									});
-												}
-											} catch (final InterruptedException ex) {
-												Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Computing thread stopped.");
-											} catch (final Exception ex) {
-												if (StaticVars.debugOn) {
-													ex.printStackTrace();
-												}
-												throw new Error(Errors.SYNTAX_ERROR);
-											}
-										} catch (final Error e) {
-											final StringWriter sw = new StringWriter();
-											final PrintWriter pw = new PrintWriter(sw);
-											e.printStackTrace(pw);
-											d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-											DisplayManager.INSTANCE.error = e.id.toString();
-											System.err.println(e.id);
-										}
-										computingResult = false;
-									});
-									computingThread.setName("Computing Thread");
-									computingThread.setDaemon(true);
-									computingThread.setPriority(Thread.NORM_PRIORITY + 3);
-									computingThread.start();
+							case STEP:
+								currentStep++;
+							case SIMPLIFY:
+								if (!step) currentStep = 0;
+								if (DisplayManager.INSTANCE.error != null) {
+									//TODO: make the error management a global API rather than being relegated to this screen.
+									Utils.out.println(1, "Resetting after error...");
+									DisplayManager.INSTANCE.error = null;
+									calc.f = null;
+									calc.f2 = null;
+									calc.resultsCount = 0;
 									return true;
 								} else {
-									if (computingThread != null) {
-										computingThread.interrupt();
-										computingResult = false;
+									if (!computingResult) {
+										computingResult = true;
+										computingThread = new Thread(()-> {
+											try {
+												try {
+													if (!userInput.isAlreadyParsed() && !userInput.isEmpty()) {
+														Expression expr = MathParser.parseInput(calc, userInput);
+														if (calc.f == null | calc.f2 == null) {
+															calc.f = new ObjectArrayList<>();
+															calc.f2 = new ObjectArrayList<>();
+														} else {
+															calc.f.clear();
+															calc.f2.clear();
+														}
+														calc.f.add(expr);
+														Utils.out.println(2, "INPUT: " + expr);
+														MathSolver ms = new MathSolver(expr);
+														ObjectArrayList<ObjectArrayList<Function>> resultSteps = ms.solveAllSteps();
+														resultSteps.add(0, Utils.newArrayList(expr));
+														ObjectArrayList<Function> resultExpressions = resultSteps.get(resultSteps.size() - 1);	
+														for (Function rr : resultExpressions) {
+															Utils.out.println(1, "RESULT: " + rr.toString());
+														}
+														ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
+														result.setContentAsMultipleGroups(resultBlocks);
+														//									showVariablesDialog(() -> {
+														//										currentExpression = newExpression;
+														//										simplify();
+														//									});
+													}
+												} catch (final InterruptedException ex) {
+													Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Computing thread stopped.");
+												} catch (final Exception ex) {
+													if (StaticVars.debugOn) {
+														ex.printStackTrace();
+													}
+													throw new Error(Errors.SYNTAX_ERROR);
+												}
+											} catch (final Error e) {
+												final StringWriter sw = new StringWriter();
+												final PrintWriter pw = new PrintWriter(sw);
+												e.printStackTrace(pw);
+												d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+												DisplayManager.INSTANCE.error = e.id.toString();
+												System.err.println(e.id);
+											}
+											computingResult = false;
+										});
+										computingThread.setName("Computing Thread");
+										computingThread.setDaemon(true);
+										computingThread.setPriority(Thread.NORM_PRIORITY + 3);
+										computingThread.start();
 										return true;
+									} else {
+										if (computingThread != null) {
+											computingThread.interrupt();
+											computingResult = false;
+											return true;
+										}
+										return false;
 									}
-									return false;
 								}
-							}
-						case NUM0:
-							typeChar('0');
-							return true;
-						case NUM1:
-							typeChar('1');
-							return true;
-						case NUM2:
-							typeChar('2');
-							return true;
-						case NUM3:
-							typeChar('3');
-							return true;
-						case NUM4:
-							typeChar('4');
-							return true;
-						case NUM5:
-							typeChar('5');
-							return true;
-						case NUM6:
-							typeChar('6');
-							return true;
-						case NUM7:
-							typeChar('7');
-							return true;
-						case NUM8:
-							typeChar('8');
-							return true;
-						case NUM9:
-							typeChar('9');
-							return true;
-						case PLUS:
-							typeChar('+');
-							return true;
-						case MINUS:
-							typeChar('-');
-							return true;
-						case PLUS_MINUS:
-							typeChar('±');
-							return true;
-						case MULTIPLY:
-							typeChar('*');
-							return true;
-						case DIVIDE:
-							typeChar('/');
-							return true;
-						case PARENTHESIS_OPEN:
-							typeChar('(');
-							return true;
-						case PARENTHESIS_CLOSE:
-							typeChar(')');
-							return true;
-						case DOT:
-							typeChar('.');
-							return true;
-						case EQUAL:
-							typeChar('=');
-							return true;
-						case SQRT:
-							typeChar('Ⓐ');
-							return true;
-						case ROOT:
-							typeChar('√');
-							return true;
-						case POWER_OF_2:
-							typeChar(MathematicalSymbols.POWER_OF_TWO);
-							return true;
-						case POWER_OF_x:
-							typeChar(MathematicalSymbols.POWER);
-							return true;
-						case PI:
-							typeChar(MathematicalSymbols.PI);
-							return true;
-						case LETTER_X:
-							typeChar(MathematicalSymbols.variables[23]);
-							return true;
-						case LETTER_Y:
-							typeChar(MathematicalSymbols.variables[24]);
-							return true;
-						case SINE:
-							typeChar(MathematicalSymbols.SINE);
-							return true;
-						case COSINE:
-							typeChar(MathematicalSymbols.COSINE);
-							return true;
-						case TANGENT:
-							typeChar(MathematicalSymbols.TANGENT);
-							return true;
-						case ARCSINE:
-							typeChar(MathematicalSymbols.ARC_SINE);
-							return true;
-						case ARCCOSINE:
-							typeChar(MathematicalSymbols.ARC_COSINE);
-							return true;
-						case ARCTANGENT:
-							typeChar(MathematicalSymbols.ARC_TANGENT);
-							return true;
-						case DELETE:
-							userInput.del();
-							currentStep = 0;
-							mustRefresh = true;
-							return true;
-						case LEFT:
-							userInput.moveLeft();
-							mustRefresh = true;
-							return true;
-						case RIGHT:
-							userInput.moveRight();
-							mustRefresh = true;
-							return true;
-						case RESET:
-							userInput.clear();
-							result.clear();
-							currentStep = 0;
-							if (DisplayManager.INSTANCE.error != null) {
-								Utils.out.println(1, "Resetting after error...");
-								DisplayManager.INSTANCE.error = null;
-							}
-							return true;
-						case SURD_MODE:
-							calc.exactMode = !calc.exactMode;
-							result.clear();
-							currentStep = 0;
-							Keyboard.keyPressed(Key.SIMPLIFY);
-							return true;
-						case debug1:
-							DisplayManager.INSTANCE.setScreen(new EmptyScreen());
-							return true;
-						case HISTORY_BACK:
-							//					if (DisplayManager.INSTANCE.canGoBack()) {
-							//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession + 1] instanceof MathInputScreen) {
-							//							newExpression = currentExpression;
-							//							try {
-							//								interpreta(true);
-							//							} catch (final Error e) {}
-							//						}
-							//					}
-							return false;
-						case HISTORY_FORWARD:
-							//					if (DisplayManager.INSTANCE.canGoForward()) {
-							//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession - 1] instanceof MathInputScreen) {
-							//							newExpression = currentExpression;
-							//							try {
-							//								interpreta(true);
-							//							} catch (final Error e) {}
-							//						}
-							//					}
-							return false;
-						case debug_DEG:
-							if (calc.angleMode.equals(AngleMode.DEG) == false) {
-								calc.angleMode = AngleMode.DEG;
+							case NUM0:
+								typeChar('0');
+								return true;
+							case NUM1:
+								typeChar('1');
+								return true;
+							case NUM2:
+								typeChar('2');
+								return true;
+							case NUM3:
+								typeChar('3');
+								return true;
+							case NUM4:
+								typeChar('4');
+								return true;
+							case NUM5:
+								typeChar('5');
+								return true;
+							case NUM6:
+								typeChar('6');
+								return true;
+							case NUM7:
+								typeChar('7');
+								return true;
+							case NUM8:
+								typeChar('8');
+								return true;
+							case NUM9:
+								typeChar('9');
+								return true;
+							case PLUS:
+								typeChar('+');
+								return true;
+							case MINUS:
+								typeChar('-');
+								return true;
+							case PLUS_MINUS:
+								typeChar('±');
+								return true;
+							case MULTIPLY:
+								typeChar('*');
+								return true;
+							case DIVIDE:
+								typeChar('/');
+								return true;
+							case PARENTHESIS_OPEN:
+								typeChar('(');
+								return true;
+							case PARENTHESIS_CLOSE:
+								typeChar(')');
+								return true;
+							case DOT:
+								typeChar('.');
+								return true;
+							case EQUAL:
+								typeChar('=');
+								return true;
+							case SQRT:
+								typeChar('Ⓐ');
+								return true;
+							case ROOT:
+								typeChar('√');
+								return true;
+							case POWER_OF_2:
+								typeChar(MathematicalSymbols.POWER_OF_TWO);
+								return true;
+							case POWER_OF_x:
+								typeChar(MathematicalSymbols.POWER);
+								return true;
+							case PI:
+								typeChar(MathematicalSymbols.PI);
+								return true;
+							case LETTER_X:
+								typeChar(MathematicalSymbols.variables[23]);
+								return true;
+							case LETTER_Y:
+								typeChar(MathematicalSymbols.variables[24]);
+								return true;
+							case SINE:
+								typeChar(MathematicalSymbols.SINE);
+								return true;
+							case COSINE:
+								typeChar(MathematicalSymbols.COSINE);
+								return true;
+							case TANGENT:
+								typeChar(MathematicalSymbols.TANGENT);
+								return true;
+							case ARCSINE:
+								typeChar(MathematicalSymbols.ARC_SINE);
+								return true;
+							case ARCCOSINE:
+								typeChar(MathematicalSymbols.ARC_COSINE);
+								return true;
+							case ARCTANGENT:
+								typeChar(MathematicalSymbols.ARC_TANGENT);
+								return true;
+							case DELETE:
+								userInput.del();
+								currentStep = 0;
+								mustRefresh = true;
+								return true;
+							case LEFT:
+								userInput.moveLeft();
+								mustRefresh = true;
+								return true;
+							case RIGHT:
+								userInput.moveRight();
+								mustRefresh = true;
+								return true;
+							case RESET:
+								userInput.clear();
+								result.clear();
+								currentStep = 0;
+								if (DisplayManager.INSTANCE.error != null) {
+									Utils.out.println(1, "Resetting after error...");
+									DisplayManager.INSTANCE.error = null;
+								}
+								return true;
+							case SURD_MODE:
+								calc.exactMode = !calc.exactMode;
+								result.clear();
+								currentStep = 0;
+								Keyboard.keyPressed(Key.SIMPLIFY);
+								return true;
+							case debug1:
+								DisplayManager.INSTANCE.setScreen(new EmptyScreen());
+								return true;
+							case HISTORY_BACK:
+								//					if (DisplayManager.INSTANCE.canGoBack()) {
+								//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession + 1] instanceof MathInputScreen) {
+								//							newExpression = currentExpression;
+								//							try {
+								//								interpreta(true);
+								//							} catch (final Error e) {}
+								//						}
+								//					}
+								return false;
+							case HISTORY_FORWARD:
+								//					if (DisplayManager.INSTANCE.canGoForward()) {
+								//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession - 1] instanceof MathInputScreen) {
+								//							newExpression = currentExpression;
+								//							try {
+								//								interpreta(true);
+								//							} catch (final Error e) {}
+								//						}
+								//					}
+								return false;
+							case debug_DEG:
+								if (calc.angleMode.equals(AngleMode.DEG) == false) {
+									calc.angleMode = AngleMode.DEG;
+									currentStep = 0;
+									return true;
+								}
+								return false;
+							case debug_RAD:
+								if (calc.angleMode.equals(AngleMode.RAD) == false) {
+									calc.angleMode = AngleMode.RAD;
+									currentStep = 0;
+									return true;
+								}
+								return false;
+							case debug_GRA:
+								if (calc.angleMode.equals(AngleMode.GRA) == false) {
+									calc.angleMode = AngleMode.GRA;
+									currentStep = 0;
+									return true;
+								}
+								return false;
+							case DRG_CYCLE:
+								if (calc.angleMode.equals(AngleMode.DEG) == true) {
+									calc.angleMode = AngleMode.RAD;
+								} else if (calc.angleMode.equals(AngleMode.RAD) == true) {
+									calc.angleMode = AngleMode.GRA;
+								} else {
+									calc.angleMode = AngleMode.DEG;
+								}
 								currentStep = 0;
 								return true;
-							}
-							return false;
-						case debug_RAD:
-							if (calc.angleMode.equals(AngleMode.RAD) == false) {
-								calc.angleMode = AngleMode.RAD;
-								currentStep = 0;
-								return true;
-							}
-							return false;
-						case debug_GRA:
-							if (calc.angleMode.equals(AngleMode.GRA) == false) {
-								calc.angleMode = AngleMode.GRA;
-								currentStep = 0;
-								return true;
-							}
-							return false;
-						case DRG_CYCLE:
-							if (calc.angleMode.equals(AngleMode.DEG) == true) {
-								calc.angleMode = AngleMode.RAD;
-							} else if (calc.angleMode.equals(AngleMode.RAD) == true) {
-								calc.angleMode = AngleMode.GRA;
-							} else {
-								calc.angleMode = AngleMode.DEG;
-							}
-							currentStep = 0;
-							return true;
-						default:
-							return false;
+							default:
+								return false;
+						}
 					}
-				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return true;
 		}
 	}
 

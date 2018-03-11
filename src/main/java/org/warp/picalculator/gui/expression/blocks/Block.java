@@ -32,7 +32,7 @@ public abstract class Block implements GraphicalElement {
 
 	public abstract boolean delBlock(Caret caret);
 
-	public abstract Block getBlock(Caret caret);
+	public abstract BlockReference<?> getBlock(Caret caret);
 
 	@Override
 	public abstract void recomputeDimensions();

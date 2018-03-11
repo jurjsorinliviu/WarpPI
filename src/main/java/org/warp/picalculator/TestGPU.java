@@ -32,86 +32,91 @@ public class TestGPU {
 		Keyboard.setAdditionalKeyboardListener(new KeyboardEventListener() {
 			@Override
 			public boolean keyPressed(Key k) {
-				switch (k) {
-					case LEFT:
-						c.moveLeft();
-						return true;
-					case RIGHT:
-						c.moveRight();
-						return true;
-					case NUM0:
-						c.typeChar('0');
-						return true;
-					case NUM1:
-						c.typeChar('1');
-						return true;
-					case NUM2:
-						c.typeChar('2');
-						return true;
-					case NUM3:
-						c.typeChar('3');
-						return true;
-					case NUM4:
-						c.typeChar('4');
-						return true;
-					case NUM5:
-						c.typeChar('5');
-						return true;
-					case NUM6:
-						c.typeChar('6');
-						return true;
-					case NUM7:
-						c.typeChar('7');
-						return true;
-					case NUM8:
-						c.typeChar('8');
-						return true;
-					case NUM9:
-						c.typeChar('9');
-						return true;
-					case PLUS:
-						c.typeChar(MathematicalSymbols.SUM);
-						return true;
-					case MINUS:
-						c.typeChar(MathematicalSymbols.SUBTRACTION);
-						return true;
-					case MULTIPLY:
-						c.typeChar(MathematicalSymbols.MULTIPLICATION);
-						return true;
-					case DIVIDE:
-						c.typeChar(MathematicalSymbols.DIVISION);
-						return true;
-					case SQRT:
-						c.typeChar(MathematicalSymbols.SQUARE_ROOT);
-						return true;
-					case PARENTHESIS_OPEN:
-					case SINE:
-						c.typeChar(MathematicalSymbols.PARENTHESIS_OPEN);
-						return true;
-					case PARENTHESIS_CLOSE:
-					case debug_DEG:
-						c.moveRight();
-						return true;
-					case DELETE:
-						c.del();
-						return true;
-					case RESET:
-						c.clear();
-						return true;
-					case POWER:
-						d.destroy();
-						System.exit(0);
-						return true;
-					case EQUAL:
-						Expression expr;
-						try {
-							expr = MathParser.parseInput(new MathContext(), c);
-							System.out.println("Parsed input:" + expr.toString());
-						} catch (final Error e) {
-							e.printStackTrace();
-						}
-					default:
-						break;
+				try {
+					switch (k) {
+						case LEFT:
+							c.moveLeft();
+							return true;
+						case RIGHT:
+							c.moveRight();
+							return true;
+						case NUM0:
+							c.typeChar('0');
+							return true;
+						case NUM1:
+							c.typeChar('1');
+							return true;
+						case NUM2:
+							c.typeChar('2');
+							return true;
+						case NUM3:
+							c.typeChar('3');
+							return true;
+						case NUM4:
+							c.typeChar('4');
+							return true;
+						case NUM5:
+							c.typeChar('5');
+							return true;
+						case NUM6:
+							c.typeChar('6');
+							return true;
+						case NUM7:
+							c.typeChar('7');
+							return true;
+						case NUM8:
+							c.typeChar('8');
+							return true;
+						case NUM9:
+							c.typeChar('9');
+							return true;
+						case PLUS:
+							c.typeChar(MathematicalSymbols.SUM);
+							return true;
+						case MINUS:
+							c.typeChar(MathematicalSymbols.SUBTRACTION);
+							return true;
+						case MULTIPLY:
+							c.typeChar(MathematicalSymbols.MULTIPLICATION);
+							return true;
+						case DIVIDE:
+							c.typeChar(MathematicalSymbols.DIVISION);
+							return true;
+						case SQRT:
+							c.typeChar(MathematicalSymbols.SQUARE_ROOT);
+							return true;
+						case PARENTHESIS_OPEN:
+						case SINE:
+							c.typeChar(MathematicalSymbols.PARENTHESIS_OPEN);
+							return true;
+						case PARENTHESIS_CLOSE:
+						case debug_DEG:
+							c.moveRight();
+							return true;
+						case DELETE:
+							c.del();
+							return true;
+						case RESET:
+							c.clear();
+							return true;
+						case POWER:
+							d.destroy();
+							System.exit(0);
+							return true;
+						case EQUAL:
+							Expression expr;
+							try {
+								expr = MathParser.parseInput(new MathContext(), c);
+								System.out.println("Parsed input:" + expr.toString());
+							} catch (final Error e) {
+								e.printStackTrace();
+							}
+						default:
+							break;
+					}
+					return false;
+				} catch (Exception ex) {
+					ex.printStackTrace();
 				}
 				return false;
 
