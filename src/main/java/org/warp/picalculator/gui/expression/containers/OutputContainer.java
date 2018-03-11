@@ -7,6 +7,7 @@ import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.layouts.OutputLayout;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
