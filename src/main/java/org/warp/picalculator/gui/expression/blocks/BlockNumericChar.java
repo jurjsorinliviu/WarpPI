@@ -8,9 +8,9 @@ import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.parser.features.FeatureChar;
 import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
-public class BlockNumber extends BlockChar {
+public class BlockNumericChar extends BlockChar {
 
-	public BlockNumber(char ch) {
+	public BlockNumericChar(char ch) {
 		super(ch);
 	}
 
