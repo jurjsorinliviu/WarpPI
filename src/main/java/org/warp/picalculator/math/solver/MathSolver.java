@@ -35,15 +35,21 @@ public class MathSolver {
 	public ObjectArrayList<ObjectArrayList<Function>> solveAllSteps() throws InterruptedException, Error {
 		ObjectArrayList<ObjectArrayList<Function>> steps = new ObjectArrayList<>();
 		ObjectArrayList<Function> lastFnc = null, currFnc = new ObjectArrayList<>();
+		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Solving all steps. Input: " + initialFunction.toString());
 		currFnc.add(initialFunction);
+		long debugStepNumber = 0;
 		int stepBefore = 0, stepAfter = 0;
 		do {
+			final String stepName = "Step " + debugStepNumber;
 			for (int i = stepBefore; i <= stepAfter; i++) {
 				lastFnc = lastFunctions[i] = currFnc;
 			}
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step. Input: " + currFnc);
 			stepBefore = stepState;
 			ObjectArrayList<Function> stepResult = solveStep(lastFnc);
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Step state: "+stepStates[stepState]+", Consecutive null steps: " + consecutiveNullSteps + ", currentStepStateN: " + currentStepStateN + ", result: ");
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step state: " + stepStates[stepState]);
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result: " + stepResult);
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + currentStepStateN + " simplifications.");
 			if (stepResult == null) {
 				currFnc = lastFnc;
 			} else {
@@ -54,6 +60,7 @@ public class MathSolver {
 				steps.add(currFnc);
 			}
 			stepAfter = stepState;
+			debugStepNumber++;
 		} while(consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[stepState]));
 		return steps;
 	}

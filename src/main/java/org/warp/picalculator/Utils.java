@@ -28,6 +28,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Time;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -84,6 +87,7 @@ public class Utils {
 
 		public void println(int level) {
 			if (StaticVars.outputLevel >= level) {
+				final String time = getTimeString();
 				if (StaticVars.outputLevel == 0) {
 					System.out.println();
 				} else {
@@ -94,10 +98,11 @@ public class Utils {
 
 		public void println(int level, String str) {
 			if (StaticVars.outputLevel >= level) {
+				final String time = getTimeString();
 				if (StaticVars.outputLevel == 0) {
-					System.out.println(str);
+					System.out.println("[" + time + "]"+str);
 				} else {
-					System.err.println(str);
+					System.err.println("[" + time + "]"+str);
 				}
 			}
 		}
@@ -110,6 +115,41 @@ public class Utils {
 					System.err.print(str);
 				}
 			}
+		}
+
+		public void println(int level, String prefix, String str) {
+			if (StaticVars.outputLevel >= level) {
+				final String time = getTimeString();
+				if (StaticVars.outputLevel == 0) {
+					System.out.println("[" + time + "][" + prefix + "]" + str);
+				} else {
+					System.err.println("[" + time + "][" + prefix + "]" + str);
+				}
+			}
+		}
+
+		public void println(int level, String... parts) {
+			if (StaticVars.outputLevel >= level) {
+				final String time = getTimeString();
+				String output = "";
+				for (int i = 0; i < parts.length; i++) {
+					if (i + 1 == parts.length) {
+						output += parts[i];
+					} else {
+						output += "[" + parts[i] + "]";
+					}
+				}
+				if (StaticVars.outputLevel == 0) {
+					System.out.println("[" + time + "]" + output);
+				} else {
+					
+					System.err.println("[" + time + "]" + output);
+				}
+			}
+		}
+		
+		private String getTimeString() {
+			return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"));
 		}
 
 		int before = 0;
