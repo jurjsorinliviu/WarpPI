@@ -8,7 +8,7 @@ import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.blocks.BlockDivision;
-import org.warp.picalculator.gui.expression.blocks.BlockNumber;
+import org.warp.picalculator.gui.expression.blocks.BlockNumericChar;
 import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
 import org.warp.picalculator.gui.expression.blocks.BlockPower;
 import org.warp.picalculator.gui.expression.blocks.BlockReference;
@@ -70,7 +70,8 @@ public class NormalInputContainer extends InputContainer {
 			case '7':
 			case '8':
 			case '9':
-				return new BlockNumber(c);
+			case '.':
+				return new BlockNumericChar(c);
 			case MathematicalSymbols.SINE:
 				return new BlockSine();
 			case MathematicalSymbols.PI:
@@ -102,7 +103,7 @@ public class NormalInputContainer extends InputContainer {
 					currentBlock = currentBlock.getPreviousBlock();
 					if (currentBlock == null) break;
 					Block b = currentBlock.get();
-					if (b instanceof BlockNumber || b instanceof BlockVariable) {
+					if (b instanceof BlockNumericChar || b instanceof BlockVariable) {
 						if (!groupedBefore) {
 							groupedBefore = true;
 						}
