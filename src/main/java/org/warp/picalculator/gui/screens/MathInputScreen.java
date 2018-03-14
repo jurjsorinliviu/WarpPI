@@ -225,7 +225,7 @@ public class MathInputScreen extends Screen {
 														resultSteps.add(0, Utils.newArrayList(expr));
 														ObjectArrayList<Function> resultExpressions = resultSteps.get(resultSteps.size() - 1);	
 														for (Function rr : resultExpressions) {
-															Utils.out.println(1, "RESULT: " + rr.toString());
+															Utils.out.println(0, "RESULT: " + rr.toString());
 														}
 														ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
 														result.setContentAsMultipleGroups(resultBlocks);

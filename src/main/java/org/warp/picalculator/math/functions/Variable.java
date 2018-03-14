@@ -48,6 +48,9 @@ public class Variable implements Function {
 
 	@Override
 	public String toString() {
+		if (getChar() > 0x2000) {
+			return "0x" + String.format("%04x", (int) getChar());
+		}
 		return "" + getChar();
 	}
 

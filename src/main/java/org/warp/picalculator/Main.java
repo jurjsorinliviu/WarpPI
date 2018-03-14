@@ -77,6 +77,9 @@ public class Main {
 			if (arg.contains("fb")) {
 				Utils.forceEngine = "fb";
 			}
+			if (arg.contains("verbose") || arg.contains("debug")) {
+				StaticVars.outputLevel = Utils.OUTPUTLEVEL_DEBUG_VERBOSE;
+			}
 			if (arg.contains("ms-dos")) {
 				Utils.headlessOverride = true;
 				Utils.msDosMode = true;

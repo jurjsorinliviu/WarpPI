@@ -190,7 +190,7 @@ public class MathSolver {
 			}
 		}
 		if (StaticVars.debugOn & results != null & appliedRule != null) {
-			Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, stepStates[stepState].toString().substring(3) + ": " + appliedRule.getRuleName());
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepStates[stepState].toString(), "Applied rule " + appliedRule.getRuleName());
 		}
 		return results;
 	}
