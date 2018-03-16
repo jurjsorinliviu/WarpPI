@@ -79,7 +79,7 @@ public class MathInputScreen extends Screen {
 	}
 
 	@Override
-	public void init() throws InterruptedException {
+	public void initialized() throws InterruptedException {
 		/* Fine caricamento */
 	}
 
@@ -142,7 +142,7 @@ public class MathInputScreen extends Screen {
 	}
 
 	@Override
-	public void renderStatusbar() {
+	public void renderTopmost() {
 		final Renderer renderer = DisplayManager.INSTANCE.renderer;
 		renderer.glColor3f(1, 1, 1);
 		final int pos = 2;

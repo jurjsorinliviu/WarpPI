@@ -20,7 +20,7 @@ public class SolveEquationScreen extends Screen {
 	public void created() throws InterruptedException {}
 
 	@Override
-	public void init() throws InterruptedException {}
+	public void initialized() throws InterruptedException {}
 
 	@Override
 	public void render() {

@@ -1,6 +1,8 @@
 package org.warp.picalculator;
 
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.device.PIHardwareDisplay;
+import org.warp.picalculator.gui.CalculatorHUD;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.screens.LoadingScreen;
 import org.warp.picalculator.gui.screens.Screen;
@@ -19,11 +21,12 @@ public class Main {
 	public Main(Screen screen, String[] args) {
 		System.out.println("WarpPI Calculator");
 		instance = this;
+		Main.args = args;
+		StaticVars.classLoader = this.getClass();
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Thread.currentThread().setName("Main thread");
-		Main.args = args;
 		beforeStart();
-		new DisplayManager(screen);
+		new DisplayManager(new PIHardwareDisplay(), new CalculatorHUD(), screen, "WarpPI Calculator by Andrea Cavalli (@Cavallium)");
 		afterStart();
 		if (screen instanceof LoadingScreen) {
 			((LoadingScreen) screen).loaded = true;

@@ -40,7 +40,7 @@ public class MarioScreen extends Screen {
 	}
 
 	@Override
-	public void init() {
+	public void initialized() {
 		try {
 			if (skin == null)
 				skin = DisplayManager.INSTANCE.engine.loadSkin("marioskin.png");

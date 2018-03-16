@@ -1,16 +1,13 @@
-package org.warp.picalculator.gui.screens;
+package org.warp.picalculator.gui;
 
-import org.warp.picalculator.device.KeyboardEventListener;
-import org.warp.picalculator.gui.DisplayManager;
-import org.warp.picalculator.gui.GraphicalInterface;
+import org.warp.picalculator.gui.screens.Screen;
 
-public abstract class Screen implements KeyboardEventListener, GraphicalInterface {
+public abstract class HUD implements GraphicalInterface {
 	public DisplayManager d;
 	public boolean created = false;
 	public boolean initialized = false;
-	public boolean canBeInHistory = false;
 
-	public Screen() {}
+	public HUD() {}
 
 	public void initialize() throws InterruptedException {
 		if (!initialized) {
@@ -25,18 +22,27 @@ public abstract class Screen implements KeyboardEventListener, GraphicalInterfac
 			created();
 		}
 	}
-
+	
 	public abstract void created() throws InterruptedException;
 
 	public abstract void initialized() throws InterruptedException;
 
+	public abstract void renderBackground();
+	
+	@Override
 	public abstract void render();
 
-	public void renderTopmost() {
+	public abstract void renderTopmostBackground();
+	
+	@Override
+	public abstract void renderTopmost();
 
-	}
-
+	@Override
 	public abstract void beforeRender(float dt);
 
-	public abstract boolean mustBeRefreshed();
+	@Override
+	public boolean mustBeRefreshed() {
+		return true;
+	}
+	
 }

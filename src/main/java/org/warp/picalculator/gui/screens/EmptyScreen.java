@@ -17,7 +17,7 @@ public class EmptyScreen extends Screen {
 	}
 
 	@Override
-	public void init() throws InterruptedException {}
+	public void initialized() throws InterruptedException {}
 
 	@Override
 	public void render() {
