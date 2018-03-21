@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -43,6 +44,7 @@ import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.FunctionSingle;
+import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Multiplication;
@@ -81,17 +83,50 @@ public class Utils {
 	
 	public static final class AdvancedOutputStream extends StringWriter {
 		
+		private void print(PrintStream stream, String str) {
+			stream.print(fixString(str));
+		}
+		
+		private void println(PrintStream stream, String str) {
+			stream.println(fixString(str));
+		}
+		
+		private void println(PrintStream stream) {
+			stream.println();
+		}
+		
+		private String fixString(String str) {
+			
+			return str
+					.replace(""+MathematicalSymbols.NTH_ROOT, "root")
+					.replace(""+MathematicalSymbols.SQUARE_ROOT, "sqrt")
+					.replace(""+MathematicalSymbols.POWER, "powerOf")
+					.replace(""+MathematicalSymbols.POWER_OF_TWO, "powerOfTwo")
+					.replace(""+MathematicalSymbols.SINE, "sine")
+					.replace(""+MathematicalSymbols.COSINE, "cosine")
+					.replace(""+MathematicalSymbols.TANGENT, "tangent")
+					.replace(""+MathematicalSymbols.ARC_SINE, "asin")
+					.replace(""+MathematicalSymbols.ARC_COSINE, "acos")
+					.replace(""+MathematicalSymbols.ARC_TANGENT, "atan")
+					.replace(""+MathematicalSymbols.UNDEFINED, "undefined")
+					.replace(""+MathematicalSymbols.PI, "PI")
+					.replace(""+MathematicalSymbols.X, "X")
+					.replace(""+MathematicalSymbols.Y, "Y")
+					;
+		}
+		
 		public void println(String str) {
 			println(0, str);
 		}
+		
 
 		public void println(int level) {
 			if (StaticVars.outputLevel >= level) {
 				final String time = getTimeString();
 				if (StaticVars.outputLevel == 0) {
-					System.out.println();
+					println(System.out);
 				} else {
-					System.err.println();
+					println(System.err);
 				}
 			}
 		}
@@ -100,9 +135,9 @@ public class Utils {
 			if (StaticVars.outputLevel >= level) {
 				final String time = getTimeString();
 				if (StaticVars.outputLevel == 0) {
-					System.out.println("[" + time + "]"+str);
+					println(System.out, "[" + time + "]"+str);
 				} else {
-					System.err.println("[" + time + "]"+str);
+					println(System.err, "[" + time + "]"+str);
 				}
 			}
 		}
@@ -110,9 +145,9 @@ public class Utils {
 		public void print(int level, String str) {
 			if (StaticVars.outputLevel >= level) {
 				if (StaticVars.outputLevel == 0) {
-					System.out.print(str);
+					print(System.out, str);
 				} else {
-					System.err.print(str);
+					print(System.err, str);
 				}
 			}
 		}
@@ -121,9 +156,9 @@ public class Utils {
 			if (StaticVars.outputLevel >= level) {
 				final String time = getTimeString();
 				if (StaticVars.outputLevel == 0) {
-					System.out.println("[" + time + "][" + prefix + "]" + str);
+					println(System.out, "[" + time + "][" + prefix + "]" + str);
 				} else {
-					System.err.println("[" + time + "][" + prefix + "]" + str);
+					println(System.err, "[" + time + "][" + prefix + "]" + str);
 				}
 			}
 		}
@@ -140,10 +175,9 @@ public class Utils {
 					}
 				}
 				if (StaticVars.outputLevel == 0) {
-					System.out.println("[" + time + "]" + output);
+					println(System.out, "[" + time + "]" + output);
 				} else {
-					
-					System.err.println("[" + time + "]" + output);
+					println(System.err, "[" + time + "]" + output);
 				}
 			}
 		}
