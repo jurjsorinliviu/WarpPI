@@ -80,6 +80,9 @@ public class Main {
 			if (arg.contains("fb")) {
 				Utils.forceEngine = "fb";
 			}
+			if (arg.contains("nogui")) {
+				Utils.forceEngine = "nogui";
+			}
 			if (arg.contains("verbose") || arg.contains("debug")) {
 				StaticVars.outputLevel = Utils.OUTPUTLEVEL_DEBUG_VERBOSE;
 			}

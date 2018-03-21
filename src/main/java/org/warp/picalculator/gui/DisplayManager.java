@@ -18,6 +18,7 @@ import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
 import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitEngine;
 import org.warp.picalculator.gui.graphicengine.headless256.Headless256Engine;
 import org.warp.picalculator.gui.graphicengine.headless8.Headless8Engine;
+import org.warp.picalculator.gui.graphicengine.nogui.NoGuiEngine;
 import org.warp.picalculator.gui.screens.Screen;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -108,6 +109,11 @@ public final class DisplayManager implements RenderingLoop {
 
 	private GraphicEngine chooseGraphicEngine() {
 		GraphicEngine d;
+		d = new NoGuiEngine();
+		if (d.isSupported()) {
+			Utils.out.println(1, "Using NoGui Graphic Engine");
+			return d;
+		}
 		if (!StaticVars.debugOn) {
 			d = new FBEngine();
 			if (d.isSupported()) {
