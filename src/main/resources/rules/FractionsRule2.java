@@ -1,5 +1,7 @@
-/*org.warp.picalculator.math.rules.FractionsRule2*/
-package org.warp.picalculator.math.rules;
+/*
+SETTINGS: (please don't move this part)
+ PATH=FractionsRule2
+*/
 
 //Imports
 import org.warp.picalculator.Error;
@@ -22,9 +24,11 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  */
 public class FractionsRule2 implements Rule {
 
+	public static final long serialVersionUID = 11239034890L;
+	
 	@Override
 	public String getRuleName() {
-		return "FractionsRule1";
+		return "FractionsRule2";
 	}
 
 	@Override
