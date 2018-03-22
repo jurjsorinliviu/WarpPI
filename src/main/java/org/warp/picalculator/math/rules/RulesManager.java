@@ -109,21 +109,21 @@ public class RulesManager {
 							}
 						}
 						if (!loadedFromCache) {
-							Rule r;
+							Rule r = null;
 							try {
 								r = compileJavaRule(scriptFile);
 								RulesManager.addRule(r);
+								
+								Path p = Paths.get(compiledFile.replace("/", "_")).toAbsolutePath();
+								System.out.println(p);
+								p.toFile().createNewFile();
+								OutputStream fout = Files.newOutputStream(p, StandardOpenOption.CREATE);
+								ObjectOutputStream oos = new ObjectOutputStream(fout);
+								oos.writeObject(r);
 							} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							
-							Path p = Paths.get(compiledFile.replace("/", "_")).toAbsolutePath();
-							System.out.println(p);
-							p.toFile().createNewFile();
-							OutputStream fout = Files.newOutputStream(p, StandardOpenOption.CREATE);
-							ObjectOutputStream oos = new ObjectOutputStream(fout);
-							oos.writeObject(script);
 							 
 						}
 					}

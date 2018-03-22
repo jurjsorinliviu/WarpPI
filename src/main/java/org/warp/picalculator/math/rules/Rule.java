@@ -1,5 +1,7 @@
 package org.warp.picalculator.math.rules;
 
+import java.io.Serializable;
+
 import org.warp.picalculator.math.Function;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -10,7 +12,7 @@ import jdk.nashorn.internal.objects.annotations.SpecializedFunction;
  * @author Andrea Cavalli
  *
  */
-public interface Rule {
+public interface Rule extends Serializable {
 	/**
 	 * Get rule name
 	 * @return
