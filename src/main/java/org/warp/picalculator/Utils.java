@@ -126,7 +126,7 @@ public class Utils {
 				if (StaticVars.outputLevel == 0) {
 					println(System.out);
 				} else {
-					println(System.err);
+					println(System.out);
 				}
 			}
 		}
@@ -137,7 +137,7 @@ public class Utils {
 				if (StaticVars.outputLevel == 0) {
 					println(System.out, "[" + time + "]"+str);
 				} else {
-					println(System.err, "[" + time + "]"+str);
+					println(System.out, "[" + time + "]"+str);
 				}
 			}
 		}
@@ -147,7 +147,7 @@ public class Utils {
 				if (StaticVars.outputLevel == 0) {
 					print(System.out, str);
 				} else {
-					print(System.err, str);
+					print(System.out, str);
 				}
 			}
 		}
@@ -158,7 +158,7 @@ public class Utils {
 				if (StaticVars.outputLevel == 0) {
 					println(System.out, "[" + time + "][" + prefix + "]" + str);
 				} else {
-					println(System.err, "[" + time + "][" + prefix + "]" + str);
+					println(System.out, "[" + time + "][" + prefix + "]" + str);
 				}
 			}
 		}
@@ -177,7 +177,7 @@ public class Utils {
 				if (StaticVars.outputLevel == 0) {
 					println(System.out, "[" + time + "]" + output);
 				} else {
-					println(System.err, "[" + time + "]" + output);
+					println(System.out, "[" + time + "]" + output);
 				}
 			}
 		}

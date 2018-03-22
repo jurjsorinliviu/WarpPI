@@ -1,6 +1,7 @@
 package org.warp.picalculator.math.solver;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.StaticVars;
@@ -15,7 +16,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class MathSolver {
 	
 	private final Function initialFunction;
-	private int stepState = 0;
+	private AtomicInteger stepState = new AtomicInteger(0);
 	private int currentStepStateN = 0;
 	private int consecutiveNullSteps = 0;
 	private enum StepState {
@@ -37,19 +38,17 @@ public class MathSolver {
 		ObjectArrayList<Function> lastFnc = null, currFnc = new ObjectArrayList<>();
 		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Solving all steps. Input: " + initialFunction.toString());
 		currFnc.add(initialFunction);
-		long debugStepNumber = 0;
+		long stepNumber = 0;
 		int stepBefore = 0, stepAfter = 0;
+		AtomicInteger stepState = new AtomicInteger(0);
 		do {
-			final String stepName = "Step " + debugStepNumber;
+			final String stepName = "Step " + stepNumber;
 			for (int i = stepBefore; i <= stepAfter; i++) {
 				lastFnc = lastFunctions[i] = currFnc;
 			}
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step. Input: " + currFnc);
-			stepBefore = stepState;
-			ObjectArrayList<Function> stepResult = solveStep(lastFnc);
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step state: " + stepStates[stepState]);
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result: " + stepResult);
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + currentStepStateN + " simplifications.");
+			stepBefore = stepState.get();
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step " + stepStates[stepBefore] + ". Input: " + currFnc);
+			ObjectArrayList<Function> stepResult = solveStep(lastFnc, stepState);
 			if (stepResult == null) {
 				currFnc = lastFnc;
 			} else {
@@ -59,9 +58,13 @@ public class MathSolver {
 				currFnc = stepResult;
 				steps.add(currFnc);
 			}
-			stepAfter = stepState;
-			debugStepNumber++;
-		} while(consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[stepState]));
+			stepAfter = stepState.get();
+			stepNumber++;
+
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result: " + stepResult);
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + currentStepStateN + " simplifications.");
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Next step state: " + stepStates[stepAfter]);
+		} while(consecutiveNullSteps < stepStates.length &&!checkEquals(currFnc, lastFunctions[stepAfter]));
 		return steps;
 	}
 
@@ -83,14 +86,18 @@ public class MathSolver {
 		}
 		return false;
 	}
-	
+
 	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs) throws InterruptedException, Error {
+		return solveStep(fncs, stepState);
+	}
+	
+	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs, AtomicInteger stepState) throws InterruptedException, Error {
 		ObjectArrayList<Function> processedFncs = applyRules(fncs, RuleType.EXISTENCE); // Apply existence rules before everything
 		if (processedFncs != null) {
 			fncs = processedFncs;
 		}
 		RuleType currentAcceptedRules;
-		switch(stepStates[stepState]) {
+		switch(stepStates[stepState.get()]) {
 			case _1_CALCULATION: {
 				currentAcceptedRules = RuleType.CALCULATION;
 				break;
@@ -112,10 +119,10 @@ public class MathSolver {
 				throw new NotImplementedException();
 		}
 		ObjectArrayList<Function> results = applyRules(fncs, currentAcceptedRules);
-		switch(stepStates[stepState]) {
+		switch(stepStates[stepState.get()]) {
 			case _1_CALCULATION: {
 				if (results == null) {
-					stepState++;
+					stepState.incrementAndGet();
 					consecutiveNullSteps++;
 					currentStepStateN = 0;
 				} else {
@@ -128,10 +135,10 @@ public class MathSolver {
 			case _2_EXPANSION: {
 				if (results == null) {
 					if (currentStepStateN == 0) {
-						stepState += 2;
+						stepState.addAndGet(2);
 						consecutiveNullSteps += 2;
 					} else {
-						stepState++;
+						stepState.incrementAndGet();
 						consecutiveNullSteps++;
 					}
 					currentStepStateN = 0;
@@ -144,7 +151,7 @@ public class MathSolver {
 			}
 			case _3_CALCULATION: {
 				if (results == null) {
-					stepState++;
+					stepState.incrementAndGet();
 					consecutiveNullSteps++;
 					currentStepStateN = 0;
 				} else {
@@ -156,11 +163,11 @@ public class MathSolver {
 			}
 			case _4_REDUCTION: {
 				if (results == null) {
-					stepState = 1;
+					stepState.set(1);
 					consecutiveNullSteps++;
 					currentStepStateN = 0;
 				} else {
-					stepState = 0;
+					stepState.set(0);
 					consecutiveNullSteps = 0;
 					currentStepStateN++;
 					return results;
@@ -190,7 +197,7 @@ public class MathSolver {
 			}
 		}
 		if (StaticVars.debugOn & results != null & appliedRule != null) {
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepStates[stepState].toString(), "Applied rule " + appliedRule.getRuleName());
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", currentAcceptedRules.toString(), "Applied rule " + appliedRule.getRuleName());
 		}
 		return results;
 	}
