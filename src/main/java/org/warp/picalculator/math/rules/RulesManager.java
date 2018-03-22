@@ -140,7 +140,6 @@ public class RulesManager {
 	
 	public static Rule compileJavaRule(String scriptFile, Path tDir) throws IOException, URISyntaxException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		InputStream resource = Utils.getResourceStream(scriptFile);
-		String scriptFileRelative = scriptFile.substring(1);
 		String text = Utils.read(resource);
 		String[] textArray = text.split("\\n", 5);
 		String javaClassName = textArray[2].substring(6);
