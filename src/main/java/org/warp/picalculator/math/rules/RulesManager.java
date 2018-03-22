@@ -2,10 +2,14 @@ package org.warp.picalculator.math.rules;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
@@ -14,11 +18,15 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -38,6 +46,7 @@ import org.warp.picalculator.math.functions.Variable.V_TYPE;
 import org.warp.picalculator.math.solver.MathSolver;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.openhft.compiler.CompilerUtils;
 
 public class RulesManager {
 	
@@ -53,9 +62,9 @@ public class RulesManager {
 			rules[val.ordinal()] = new ObjectArrayList<Rule>();
 		}
 		try {
-			final Path rulesPath = Utils.getResource("/rules.csv");
+			final Path rulesPath = Utils.getResource("/math-rules.csv");
 			if (!Files.exists(rulesPath)) {
-				throw new FileNotFoundException("rules.csv not found!");
+				throw new FileNotFoundException("math-rules.csv not found!");
 			}
 			ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 			List<String> ruleLines = Files.readAllLines(rulesPath);
@@ -64,23 +73,81 @@ public class RulesManager {
 				if (rulesLine.length() > 0) {
 					String[] ruleDetails = rulesLine.split(",", 1);
 					String ruleName = ruleDetails[0];
-					Utils.out.println("Evaluating /rules/" + ruleName + ".js");
-					InputStream resourcePath = Utils.getResourceStream("/rules/" + ruleName.replace(".", "_") + ".js");
+					String ruleNameEscaped = ruleName.replace(".", "_");
+					Utils.out.println("Evaluating /rules/" + ruleNameEscaped + ".java");
+					String pathWithoutExtension = "/rules/" + ruleNameEscaped;
+					String compiledFile = ruleNameEscaped + ".ser";
+					InputStream compiledResourcePath = Utils.getResourceStreamSafe(compiledFile);
+					String scriptFile = pathWithoutExtension + ".java";
+					InputStream resourcePath = Utils.getResourceStream(scriptFile);
 					if (resourcePath == null) {
-						System.err.println(new FileNotFoundException("/rules/" + ruleName + ".js not found!"));
+						System.err.println(new FileNotFoundException("/rules/" + ruleName + ".java not found!"));
 					} else {
-						engine.eval(new InputStreamReader(resourcePath));
+						boolean loadedFromCache = false;
+						if (compiledResourcePath != null) {
+							if (Files.readAttributes(Paths.get(compiledFile), BasicFileAttributes.class).creationTime().compareTo(Files.readAttributes(Paths.get(scriptFile), BasicFileAttributes.class).creationTime()) < 0) {
+								//The cached file is older than the source file. Deleting it.
+								try {
+									Files.deleteIfExists(Paths.get(compiledFile));
+								} catch (Exception ex2) {
+									ex2.printStackTrace();
+								}
+							} else {
+								try {
+									//Trying to read the compiled script
+									ObjectInputStream ois = new ObjectInputStream(compiledResourcePath);
+									RulesManager.addRule((Rule) ois.readObject());
+									loadedFromCache = true;
+								} catch (Exception ex) {
+									ex.printStackTrace();
+									try {
+										Files.deleteIfExists(Paths.get(compiledFile));
+									} catch (Exception ex2) {
+										ex2.printStackTrace();
+									}
+								}
+							}
+						}
+						if (!loadedFromCache) {
+							Rule r;
+							try {
+								r = compileJavaRule(scriptFile);
+								RulesManager.addRule(r);
+							} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							
+							Path p = Paths.get(compiledFile.replace("/", "_")).toAbsolutePath();
+							System.out.println(p);
+							p.toFile().createNewFile();
+							OutputStream fout = Files.newOutputStream(p, StandardOpenOption.CREATE);
+							ObjectOutputStream oos = new ObjectOutputStream(fout);
+							oos.writeObject(script);
+							 
+						}
 					}
 				}
 			}
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 			System.exit(1);
-		} catch (ScriptException e) {
-			e.printStackTrace();
 		}
 	}
-
+	
+	public static Rule compileJavaRule(String scriptFile) throws IOException, URISyntaxException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		// dynamically you can call
+		InputStream resource = Utils.getResourceStream(scriptFile);
+		
+		String text = Utils.read(resource);
+		String[] textArray = text.split("\\n", 2);
+		String javaClassName = textArray[0].substring(2, textArray[0].length() - 2);
+		String javaCode = textArray[1];
+		Class aClass = CompilerUtils.CACHED_COMPILER.loadFromJava(javaClassName, javaCode);
+		Rule rule = (Rule) aClass.newInstance();
+		return rule;
+	}
+	
 	public static void warmUp() {
 		ObjectArrayList<Function> uselessResult = null;
 		boolean uselessVariable = false;

@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
@@ -841,6 +842,14 @@ public class Utils {
 		}
 	}
 
+	public static InputStream getResourceStreamSafe(String string) throws IOException, URISyntaxException {
+		try {
+			return getResourceStream(string);
+		} catch (Exception ex) {
+			return null;
+		}
+	}
+	
 	public static InputStream getResourceStream(String string) throws IOException, URISyntaxException {
 		URL res = Main.instance.getClass().getResource(string);
 		boolean isResource = res != null;
@@ -865,4 +874,10 @@ public class Utils {
 			return Files.newInputStream(Paths.get(string.substring(1)));
 		}
 	}
+	
+    public static String read(InputStream input) throws IOException {
+        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+            return buffer.lines().collect(Collectors.joining("\n"));
+        }
+    }
 }
