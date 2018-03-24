@@ -120,12 +120,14 @@ public class RulesManager {
 							Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "This rule is not cached. Compiling");
 							try {
 								r = compileJavaRule(scriptFile, tDir);
-							} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+							} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
 								e.printStackTrace();
 							}
 							 
 						}
-						RulesManager.addRule(r);
+						if (r != null) {
+							RulesManager.addRule(r);
+						}
 					}
 				}
 			}
@@ -142,6 +144,7 @@ public class RulesManager {
 		InputStream resource = Utils.getResourceStream(scriptFile);
 		String text = Utils.read(resource);
 		String[] textArray = text.split("\\n", 5);
+		System.err.println(text);
 		String javaClassName = textArray[2].substring(6);
 		String javaClassNameAndPath = new StringBuilder("org.warp.picalculator.math.rules.").append(javaClassName).toString();
 		final int extIndex = javaClassNameAndPath.lastIndexOf('.');
