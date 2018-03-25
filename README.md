@@ -1,5 +1,5 @@
 # WarpPI Calculator
-Step-by-step algebraic calculator for Raspberry PI.
+Step-by-step algebra calculator for Raspberry PI.
 
 **This project is experimental and strictly related to my calculator, designed to run on an embedded hardware.
 It works but many fundamental features aren't complete.**<br>
