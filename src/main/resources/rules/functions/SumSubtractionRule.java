@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.SumSubtractionRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -14,26 +14,25 @@ import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 import org.warp.picalculator.math.rules.RulesManager;
+import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Sum;
+import org.warp.picalculator.math.functions.Subtraction;
+import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Negative;
-import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
-import java.lang.NullPointerException;
-import java.lang.NumberFormatException;
-import java.lang.ArithmeticException;
+import org.warp.picalculator.math.functions.Division;
 
 /**
- * Negative
- * -a = b
+ * SumSumbraction
+ * a±b = c, d
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class SumSubtractionRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "Negative";
+		return "SumSubtraction";
 	}
 
 	// Rule type
@@ -49,23 +48,15 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof Negative) {
+		if (f instanceof SumSubtraction) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var variable = f.getParameter();
-			var mathContext = f.getMathContext();
-			if (variable instanceof Number) {
-				//-a = a*-1 = b
-				try {
-					result.add(variable.multiply(new Number(mathContext, -1)));
-				} catch (ex) {
-					if (ex instanceof NullPointerException) {
-						throw new Error(Errors.ERROR);
-					} else if (ex instanceof NumberFormatException) {
-						throw new Error(Errors.SYNTAX_ERROR);
-					} else if (ex instanceof ArithmeticException) {
-						throw new Error(Errors.NUMBER_TOO_SMALL);
-					}
-				}
+			Function variable1 = ((FunctionOperator)f).getParameter1();
+			Function variable2 = ((FunctionOperator)f).getParameter2();
+			MathContext mathContext = f.getMathContext();
+			if (variable1 instanceof Number && variable2 instanceof Number) {
+				//a±b = c, d
+				result.add(((Number)variable1).add((Number)variable2));
+				result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(mathContext, -1))));
 				return result;
 			}
 		}

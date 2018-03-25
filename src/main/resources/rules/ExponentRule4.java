@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=ExponentRule4
 */
 
 import org.warp.picalculator.math.Function;
@@ -18,6 +18,8 @@ import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -28,7 +30,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class ExponentRule4 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -51,25 +53,25 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
 		if (f instanceof Power) {
-			Function fnc = f;
+			FunctionOperator fnc = (FunctionOperator) f;
 			if (fnc.getParameter1() instanceof Multiplication && fnc.getParameter2() instanceof Number) {
 				isExecutable = true;
 			}
 		}
 	
 		if (isExecutable) {
-		var root = f.getMathContext();
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		Function fnc = f;
-		var mult = fnc.getParameter1();
-		var a = mult.getParameter1();
-		var b = mult.getParameter2();
-		var n = fnc.getParameter2();
-		var p1 = new Power(root, a, n);
-		var p2 = new Power(root, b, n);
-		var retMult = new Multiplication(root, p1, p2);
-		result.add(retMult);
-		return result;
+			MathContext root = f.getMathContext();
+			ObjectArrayList<Function> result = new ObjectArrayList<>();
+			FunctionOperator fnc = (FunctionOperator) f;
+			FunctionOperator mult = (FunctionOperator) fnc.getParameter1();
+			Function a = mult.getParameter1();
+			Function b = mult.getParameter2();
+			Function n = fnc.getParameter2();
+			Function p1 = new Power(root, a, n);
+			Function p2 = new Power(root, b, n);
+			Function retMult = new Multiplication(root, p1, p2);
+			result.add(retMult);
+			return result;
 		} else {
 			return null;
 		}

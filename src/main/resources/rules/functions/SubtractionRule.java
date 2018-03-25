@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.SubtractionRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -22,17 +22,17 @@ import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Division;
 
 /**
- * Multiplication
- * a*b = c
+ * Subtraction
+ * a-b = c
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class SubtractionRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "Multiplication";
+		return "Subtraction";
 	}
 
 	// Rule type
@@ -48,14 +48,14 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof Multiplication) {
+		if (f instanceof Subtraction) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var variable1 = f.getParameter1();
-			var variable2 = f.getParameter2();
-			var mathContext = f.getMathContext();
+			Function variable1 = ((FunctionOperator)f).getParameter1();
+			Function variable2 = ((FunctionOperator)f).getParameter2();
+			MathContext mathContext = f.getMathContext();
 			if (variable1 instanceof Number && variable2 instanceof Number) {
-				//multiply a by b (a*b = c)
-				result.add(variable1.multiply(variable2));
+				//a-b = a+(b*-1) = c
+				result.add(((Number)variable1).add(((Number)variable2).multiply(new Number(mathContext, -1))));
 				return result;
 			}
 		}

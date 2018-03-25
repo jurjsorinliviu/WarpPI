@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.EmptyNumberRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -14,25 +14,19 @@ import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 import org.warp.picalculator.math.rules.RulesManager;
-import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Sum;
-import org.warp.picalculator.math.functions.Subtraction;
-import org.warp.picalculator.math.functions.SumSubtraction;
-import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Expression;
 
 /**
- * Expression
- * (x) = x
+ * EmptyNumber
+ *
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class EmptyNumberRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "Expression";
+		return "EmptyNumber";
 	}
 
 	// Rule type
@@ -48,11 +42,6 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof Expression) {
-			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			result.add(f.getParameter(0));
-			return result;
-		}
 		return null;
 	}
 }

@@ -85,7 +85,7 @@ public class RulesManager {
 						tDir.toFile().delete();
 					}
 					Utils.unzip(cacheFilePath.toString(), tDir.getParent().toString(), "");
-					useCache = !StaticVars.debugOn;
+					useCache = true;//!StaticVars.debugOn;
 					cacheFilePath.toFile().delete();
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -144,15 +144,16 @@ public class RulesManager {
 		InputStream resource = Utils.getResourceStream(scriptFile);
 		String text = Utils.read(resource);
 		String[] textArray = text.split("\\n", 5);
-		System.err.println(text);
-		String javaClassName = textArray[2].substring(6);
-		String javaClassNameAndPath = new StringBuilder("org.warp.picalculator.math.rules.").append(javaClassName).toString();
-		final int extIndex = javaClassNameAndPath.lastIndexOf('.');
+		String javaClassDeclaration = textArray[2].substring(6);
+		int extIndex = javaClassDeclaration.lastIndexOf('.');
+		String javaClassNameOnly = javaClassDeclaration.substring(extIndex + 1, javaClassDeclaration.length());
+		String javaClassNameAndPath = new StringBuilder("org.warp.picalculator.math.rules.").append(javaClassDeclaration).toString();
+		extIndex = javaClassNameAndPath.lastIndexOf('.');
 		String javaCode = new StringBuilder("package ").append(javaClassNameAndPath.substring(0, extIndex >= 0 ? extIndex : javaClassNameAndPath.length())).append(";\n")
 				.append(textArray[4]).toString();
 		Path tDirPath = tDir.resolve(javaClassNameAndPath.replace('.', File.separatorChar)).getParent();
-		Path tFileJava = tDirPath.resolve(javaClassName + ".java");
-		Path tFileClass = tDirPath.resolve(javaClassName + ".class");
+		Path tFileJava = tDirPath.resolve(javaClassNameOnly + ".java");
+		Path tFileClass = tDirPath.resolve(javaClassNameOnly + ".class");
 		if (!tDirPath.toFile().exists()) {
 			Files.createDirectories(tDirPath);
 		}
@@ -192,7 +193,7 @@ public class RulesManager {
 		return (Rule) aClass.newInstance();
 	}
 	
-	public static void warmUp() {
+	public static void warmUp() throws Error, InterruptedException {
 		ObjectArrayList<Function> uselessResult = null;
 		boolean uselessVariable = false;
 		for (RuleType val : RuleType.values()) {

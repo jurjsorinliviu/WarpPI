@@ -17,7 +17,7 @@ public class EmptyNumber implements Function {
 	private final MathContext root;
 
 	@Override
-	public ObjectArrayList<Function> simplify(Rule rule) throws Error {
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
 		return rule.execute(this);
 	}
 

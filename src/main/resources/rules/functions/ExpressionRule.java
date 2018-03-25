@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.ExpressionRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -19,20 +19,20 @@ import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Expression;
 
 /**
- * Sum
- * a+b = c
+ * Expression
+ * (x) = x
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class ExpressionRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "Sum";
+		return "Expression";
 	}
 
 	// Rule type
@@ -48,16 +48,10 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof Sum) {
+		if (f instanceof Expression) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var variable1 = f.getParameter1();
-			var variable2 = f.getParameter2();
-			var mathContext = f.getMathContext();
-			if (variable1 instanceof Number && variable2 instanceof Number) {
-				//a+b = c
-				result.add(variable1.add(variable2));
-				return result;
-			}
+			result.add(f.getParameter(0));
+			return result;
 		}
 		return null;
 	}

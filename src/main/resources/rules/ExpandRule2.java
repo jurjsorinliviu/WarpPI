@@ -1,19 +1,15 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=ExpandRule2
 */
 
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
-import org.warp.picalculator.math.FunctionDynamic;
-import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
-import org.warp.picalculator.math.rules.RulesManager;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.Subtraction;
@@ -27,7 +23,7 @@ import org.warp.picalculator.math.functions.Number;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class ExpandRule2 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -49,9 +45,9 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
 		if (f instanceof Multiplication) {
-			Function fnc = f;
+			FunctionOperator fnc = (FunctionOperator) f;
 			if (fnc.getParameter1().equals(new Number(fnc.getMathContext(), -1))) {
-				var expr = fnc.getParameter2();
+				Function expr = fnc.getParameter2();
 				if (expr instanceof Sum) {
 					isExecutable = true;
 				} else if (expr instanceof Subtraction) {
@@ -61,8 +57,8 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 				}
 			}
 		} else if (f instanceof Subtraction || f instanceof SumSubtraction) {
-			Function fnc = f;
-			var expr = fnc.getParameter2();
+			FunctionOperator fnc = (FunctionOperator) f;
+			Function expr = fnc.getParameter2();
 			if (expr instanceof Sum) {
 				isExecutable = true;
 			} else if (expr instanceof Subtraction) {
@@ -73,15 +69,15 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 		}
 		if (isExecutable) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var root = f.getMathContext();
+			MathContext root = f.getMathContext();
 
-			var expr = null;
-			var fromSubtraction = 0;
-			var subtraction = null;
+			Function expr = null;
+			int fromSubtraction = 0;
+			Function subtraction = null;
 			if (f instanceof Multiplication) {
-				expr = f.getParameter2();
+				expr = ((FunctionOperator) f).getParameter2();
 			} else if (f instanceof Subtraction || f instanceof SumSubtraction) {
-				expr = f.getParameter2();
+				expr = ((FunctionOperator) f).getParameter2();
 				if (f instanceof Subtraction) {
 					fromSubtraction = 1;
 				} else {
@@ -93,36 +89,36 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 				
 			}
 
-			Function fnc = expr;
+			FunctionOperator fnc = (FunctionOperator) expr;
 			if (fnc instanceof Sum) {
-				var a = fnc.getParameter1();
-				var b = fnc.getParameter2();
-				var fnc2 = new Subtraction(root, new Multiplication(root, new Number(root, -1), a), b);
+				Function a = fnc.getParameter1();
+				Function b = fnc.getParameter2();
+				Function fnc2 = new Subtraction(root, new Multiplication(root, new Number(root, -1), a), b);
 				if (fromSubtraction > 0) {
-					subtraction = new Subtraction(root, f.getParameter1(), fnc2);
+					subtraction = new Subtraction(root, ((FunctionOperator)f).getParameter1(), fnc2);
 					result.add(subtraction);
 				} else {
 					result.add(fnc2);
 				}
 			} else if (fnc instanceof Subtraction) {
-				var a = fnc.getParameter1();
-				var b = fnc.getParameter2();
-				var fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
+				Function a = fnc.getParameter1();
+				Function b = fnc.getParameter2();
+				Function fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
 				if (fromSubtraction > 0) {
-					subtraction = new Subtraction(root, f.getParameter1(), fnc2);
+					subtraction = new Subtraction(root, ((FunctionOperator)f).getParameter1(), fnc2);
 					result.add(subtraction);
 				} else {
 					result.add(fnc2);
 				}
 			} else if (fnc instanceof SumSubtraction) {
-				var a = fnc.getParameter1();
-				var b = fnc.getParameter2();
-				var fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
-				var fnc3 = new Subtraction(root, new Multiplication(root, new Number(root, -1), a), b);
+				Function a = fnc.getParameter1();
+				Function b = fnc.getParameter2();
+				Function fnc2 = new Sum(root, new Multiplication(root, new Number(root, -1), a), b);
+				Function fnc3 = new Subtraction(root, new Multiplication(root, new Number(root, -1), a), b);
 				if (fromSubtraction > 0) {
-					subtraction = new SumSubtraction(root, f.getParameter1(), fnc2);
+					subtraction = new SumSubtraction(root, ((FunctionOperator)f).getParameter1(), fnc2);
 					result.add(subtraction);
-					subtraction = new SumSubtraction(root, f.getParameter1(), fnc3);
+					subtraction = new SumSubtraction(root, ((FunctionOperator)f).getParameter1(), fnc3);
 					result.add(subtraction);
 					result.add(subtraction);
 				} else {

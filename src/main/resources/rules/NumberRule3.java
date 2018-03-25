@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=NumberRule3
 */
 
 import org.warp.picalculator.math.Function;
@@ -20,6 +20,8 @@ import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -32,7 +34,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class NumberRule3 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -55,32 +57,32 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
 		if (f instanceof Subtraction) {
-			var sub = f;
+			FunctionOperator sub = (FunctionOperator) f;
 			if (sub.getParameter1().equals(sub.getParameter2())) {
 				isExecutable = true;
 			}
 		} else if (f instanceof Sum) {
-			var sub = f;
+			FunctionOperator sub = (FunctionOperator) f;
 			if (sub.getParameter1() instanceof Multiplication) {
-				if (sub.getParameter1().getParameter1() instanceof Number && sub.getParameter1().getParameter1().equals(new Number(f.getMathContext(), -1))) {
-					var neg = sub.getParameter1().getParameter2();
+				if (((FunctionOperator) sub.getParameter1()).getParameter1() instanceof Number && ((FunctionOperator) sub.getParameter1()).getParameter1().equals(new Number(f.getMathContext(), -1))) {
+					Function neg = ((FunctionOperator) sub.getParameter1()).getParameter2();
 					if (neg.equals(sub.getParameter2())) {
 						isExecutable = true;
 					}
 				}
 			}
 		} else if (f instanceof SumSubtraction) {
-			var sub = f;
+			FunctionOperator sub = (FunctionOperator) f;
 			if (sub.getParameter1().equals(sub.getParameter2())) {
 				isExecutable = true;
 			}
 		}
 	
 		if (isExecutable) {
-			var root = f.getMathContext();
+			MathContext root = f.getMathContext();
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
 			if (f instanceof SumSubtraction) {
-				var mul = new Multiplication(root, new Number(root, 2), f.getParameter1());
+				Function mul = new Multiplication(root, new Number(root, 2), ((FunctionOperator) f).getParameter1());
 				result.add(mul);
 			}
 			result.add(new Number(root, 0));

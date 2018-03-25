@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.SumRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -22,17 +22,17 @@ import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Division;
 
 /**
- * Division
- * a/b = c
+ * Sum
+ * a+b = c
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class SumRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "Division";
+		return "Sum";
 	}
 
 	// Rule type
@@ -48,39 +48,15 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof Division) {
+		if (f instanceof Sum) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var variable1 = f.getParameter1();
-			var variable2 = f.getParameter2();
-			var mathContext = f.getMathContext();
+			Function variable1 = ((FunctionOperator)f).getParameter1();
+			Function variable2 = ((FunctionOperator)f).getParameter2();
+			MathContext mathContext = f.getMathContext();
 			if (variable1 instanceof Number && variable2 instanceof Number) {
-				if (mathContext.exactMode) {
-					if (variable1.isInteger() && variable2.isInteger()) {
-						var factors1, factors2, mcm;
-						try {
-							factors1 = variable1.getFactors();
-							factors2 = variable2.getFactors();
-							mcm = ScriptUtils.mcm(factors1, factors2);
-						} catch (error) {
-							return null;
-						}
-						if (mcm.size() > 0) { //true if there is at least one common factor
-							//divide by the common factor (ab/cb = a/c)
-							var nmb1 = variable1.term.toBigIntegerExact();
-							var nmb2 = variable2.term.toBigIntegerExact();
-							mcm.forEach(function(integerNumber) {
-								nmb1 = nmb1.divide(integerNumber);
-								nmb2 = nmb2.divide(integerNumber);
-							});
-							result.add(new Division(mathContext, new Number(mathContext, nmb1), new Number(mathContext, nmb2)));
-							return result;
-						}
-					}
-				} else {
-					//divide a by b (a/b = c)
-					result.add(variable1.divide(variable2));
-					return result;
-				}
+				//a+b = c
+				result.add(((Number)variable1).add(((Number)variable2)));
+				return result;
 			}
 		}
 		return null;

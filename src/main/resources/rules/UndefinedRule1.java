@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=UndefinedRule1
 */
 
 import org.warp.picalculator.math.Function;
@@ -17,6 +17,8 @@ import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
 import org.warp.picalculator.math.functions.Undefined;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -27,7 +29,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class UndefinedRule1 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -50,15 +52,15 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
 		if (f instanceof Power) {
-			var root = f.getMathContext();
-			Function fnc = f;
+			MathContext root = f.getMathContext();
+			FunctionOperator fnc = (FunctionOperator) f;
 			if (fnc.getParameter1().equals(new Number(root, 0)) && fnc.getParameter2().equals(new Number(root, 0))) {
 				isExecutable = true;
 			}
 		}
 	
 		if (isExecutable) {
-			var root = f.getMathContext();
+			MathContext root = f.getMathContext();
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
 			result.add(new Undefined(root));
 			return result;

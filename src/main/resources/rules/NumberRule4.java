@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=NumberRule4
 */
 
 import org.warp.picalculator.math.Function;
@@ -17,6 +17,8 @@ import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.SumSubtraction;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -27,7 +29,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class NumberRule4 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -54,9 +56,9 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 		}
 	
 		if (isExecutable) {
-			var root = f.getMathContext();
+			MathContext root = f.getMathContext();
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var ss = f;
+			FunctionOperator ss = (FunctionOperator) f;
 			result.add(new Sum(root, ss.getParameter1(), ss.getParameter2()));
 			result.add(new Subtraction(root, ss.getParameter1(), ss.getParameter2()));
 			return result;

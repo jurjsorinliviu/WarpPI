@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.JokeRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -22,7 +22,7 @@ import org.warp.picalculator.math.rules.RulesManager;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class JokeRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {

@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=NumberRule2
 */
 
 import org.warp.picalculator.math.Function;
@@ -16,6 +16,8 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -26,7 +28,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class NumberRule2 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -49,16 +51,16 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
 		if (f instanceof Multiplication) {
-			var root = f.getMathContext();
-			var mult = f;
+			MathContext root = f.getMathContext();
+			Multiplication mult = (Multiplication) f;
 			if (mult.getParameter1() instanceof Number) {
-				var numb = mult.getParameter1();
+				Function numb = mult.getParameter1();
 				if (numb.equals(new Number(root, 1))) {
 					isExecutable = true;
 				}
 			}
 			if (mult.getParameter2() instanceof Number) {
-				var numb = mult.getParameter2();
+				Function numb = mult.getParameter2();
 				if (numb.equals(new Number(root, 1))) {
 					isExecutable = true;
 				}
@@ -66,20 +68,20 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 		}
 	
 		if (isExecutable) {
-			var root = f.getMathContext();
+			MathContext root = f.getMathContext();
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var a = null;
-			var aFound = false;
-			var mult = f;
+			Function a = null;
+			boolean aFound = false;
+			Multiplication mult = (Multiplication) f;
 			if (aFound == false & mult.getParameter1() instanceof Number) {
-				var numb = mult.getParameter1();
+				Function numb = mult.getParameter1();
 				if (numb.equals(new Number(root, 1))) {
 					a = mult.getParameter2();
 					aFound = true;
 				}
 			}
 			if (aFound == false && mult.getParameter2() instanceof Number) {
-				var numb = mult.getParameter2();
+				Function numb = mult.getParameter2();
 				if (numb.equals(new Number(root, 1))) {
 					a = mult.getParameter1();
 					aFound = true;

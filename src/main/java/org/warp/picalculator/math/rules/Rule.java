@@ -2,6 +2,7 @@ package org.warp.picalculator.math.rules;
 
 import java.io.Serializable;
 
+import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -12,7 +13,7 @@ import jdk.nashorn.internal.objects.annotations.SpecializedFunction;
  * @author Andrea Cavalli
  *
  */
-public interface Rule extends Serializable {
+public interface Rule {
 	/**
 	 * Get rule name
 	 * @return
@@ -32,6 +33,7 @@ public interface Rule extends Serializable {
 	 * 
 	 * @param func
 	 * @return <ul><li><code>null</code> if it's not executable on the function <b>func</b></li><li>An <code>ObjectArrayList&lt;Function&gt;</code> if it did something</li></ul>
+	 * @throws Error 
 	 */
-	public ObjectArrayList<Function> execute(Function func);
+	public ObjectArrayList<Function> execute(Function func) throws Error, InterruptedException;
 }

@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.VariableRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -10,6 +10,10 @@ import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.nevec.rjm.BigDecimalMath;
+import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.MathematicalSymbols;
+import org.warp.picalculator.Error;
 import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
@@ -17,22 +21,21 @@ import org.warp.picalculator.math.rules.RulesManager;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.Subtraction;
-import org.warp.picalculator.math.functions.SumSubtraction;
+import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Number;
-import org.warp.picalculator.math.functions.Division;
 
 /**
- * Subtraction
- * a-b = c
+ * Variable
+ * a = n
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class VariableRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "Subtraction";
+		return "Variable";
 	}
 
 	// Rule type
@@ -47,16 +50,17 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	     - An ObjectArrayList<Function> if it did something
 	*/
 	@Override
-	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof Subtraction) {
+	public ObjectArrayList<Function> execute(Function f) throws Error {
+		if (f instanceof Variable) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var variable1 = f.getParameter1();
-			var variable2 = f.getParameter2();
-			var mathContext = f.getMathContext();
-			if (variable1 instanceof Number && variable2 instanceof Number) {
-				//a-b = a+(b*-1) = c
-				result.add(variable1.add(variable2.multiply(new Number(mathContext, -1))));
-				return result;
+			Character variable = ((Variable)f).getChar();
+			MathContext mathContext = f.getMathContext();
+			if (mathContext.exactMode == false) {
+				if (variable.equals(MathematicalSymbols.PI)) {
+					//a = n
+					result.add(new Number(mathContext, BigDecimalMath.pi(new java.math.MathContext(Utils.scale, Utils.scaleMode2))));
+					return result;
+				}
 			}
 		}
 		return null;

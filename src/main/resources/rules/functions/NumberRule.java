@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.NumberRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -14,25 +14,22 @@ import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 import org.warp.picalculator.math.rules.RulesManager;
-import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Sum;
-import org.warp.picalculator.math.functions.Subtraction;
-import org.warp.picalculator.math.functions.SumSubtraction;
-import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Number;
+import java.math.BigInteger;
 
 /**
- * SumSumbraction
- * a±b = c, d
+ * Number
+ *
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class NumberRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "SumSubtraction";
+		return "Number";
 	}
 
 	// Rule type
@@ -48,16 +45,17 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof SumSubtraction) {
+		if (f instanceof Number) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var variable1 = f.getParameter1();
-			var variable2 = f.getParameter2();
-			var mathContext = f.getMathContext();
-			if (variable1 instanceof Number && variable2 instanceof Number) {
-				//a±b = c, d
-				result.add(variable1.add(variable2));
-				result.add(variable1.add(variable2.multiply(new Number(mathContext, -1))));
-				return result;
+			MathContext mathContext = f.getMathContext();
+			if (mathContext.exactMode) {
+				if (((Number)f).isInteger() == false) {
+					Number divisor = new Number(mathContext, BigInteger.TEN.pow(((Number)f).getNumberOfDecimalPlaces()));
+					Function number = new Number(mathContext, ((Number)f).getTerm().multiply(divisor.getTerm()));
+					Function div = new Division(mathContext, number, divisor);
+					result.add(div);
+					return result;
+				}
 			}
 		}
 		return null;

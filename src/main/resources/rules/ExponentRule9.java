@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=ExponentRule9
 */
 
 import org.warp.picalculator.math.Function;
@@ -16,6 +16,8 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Power;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -26,7 +28,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class ExponentRule9 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -49,20 +51,20 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
 		if (f instanceof Power) {
-			Function fnc = f;
+			FunctionOperator fnc = (FunctionOperator) f;
 			if (fnc.getParameter1() instanceof Power) {
 				isExecutable = true;
 			}
 		}
 	
 		if (isExecutable) {
-		var root = f.getMathContext();
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		var powC = f;
-		var powB = powC.getParameter1();
-		var p = new Power(root, powB.getParameter1(), new Multiplication(root, powB.getParameter2(), powC.getParameter2()));
-		result.add(p);
-		return result;
+			MathContext root = f.getMathContext();
+			ObjectArrayList<Function> result = new ObjectArrayList<>();
+			FunctionOperator powC = (FunctionOperator) f;
+			FunctionOperator powB = (FunctionOperator) powC.getParameter1();
+			Function p = new Power(root, powB.getParameter1(), new Multiplication(root, powB.getParameter2(), powC.getParameter2()));
+			result.add(p);
+			return result;
 		} else {
 			return null;
 		}

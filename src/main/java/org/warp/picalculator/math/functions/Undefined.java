@@ -23,7 +23,7 @@ public class Undefined implements Function {
 	}
 
 	@Override
-	public ObjectArrayList<Function> simplify(Rule rule) throws Error {
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
 		return rule.execute(this);
 	}
 

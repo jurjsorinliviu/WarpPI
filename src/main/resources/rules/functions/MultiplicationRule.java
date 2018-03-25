@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.MultiplicationRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -14,19 +14,25 @@ import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 import org.warp.picalculator.math.rules.RulesManager;
+import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Sum;
+import org.warp.picalculator.math.functions.Subtraction;
+import org.warp.picalculator.math.functions.SumSubtraction;
+import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Division;
 
 /**
- * EmptyNumber
- *
+ * Multiplication
+ * a*b = c
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class MultiplicationRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "EmptyNumber";
+		return "Multiplication";
 	}
 
 	// Rule type
@@ -42,6 +48,17 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
+		if (f instanceof Multiplication) {
+			ObjectArrayList<Function> result = new ObjectArrayList<>();
+			Function variable1 = ((Multiplication) f).getParameter1();
+			Function variable2 = ((Multiplication) f).getParameter2();
+			MathContext mathContext = f.getMathContext();
+			if (variable1 instanceof Number && variable2 instanceof Number) {
+				//multiply a by b (a*b = c)
+				result.add(((Number)variable1).multiply((Number)variable2));
+				return result;
+			}
+		}
 		return null;
 	}
 }

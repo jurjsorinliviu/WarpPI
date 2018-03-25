@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=NumberRule1
+ PATH=FractionsRule11
 */
 
 import org.warp.picalculator.math.Function;
@@ -12,33 +12,31 @@ import org.warp.picalculator.math.MathContext;
 
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.math.Function;
-import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Multiplication;
-import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
- * Number rule
- * a * 0 = 0
+ * Fractions rule
+ * a / (b / c) = (a * c) / b
  * 
  * @author Andrea Cavalli
  *
  */
-public class NumberRule1 implements Rule {
+public class FractionsRule11 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "NumberRule1";
+		return "FractionsRule11";
 	}
 
 	// Rule type
 	@Override
 	public RuleType getRuleType() {
-		return RuleType.CALCULATION;
+		return RuleType.EXPANSION;
 	}
 
 	/* Rule function
@@ -50,26 +48,34 @@ public class NumberRule1 implements Rule {
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
-		if (f instanceof Multiplication) {
-			MathContext root = f.getMathContext();
-			FunctionOperator mult = (FunctionOperator) f;
-			if (mult.getParameter1() instanceof Number) {
-				Function numb = mult.getParameter1();
-				if (numb.equals(new Number(root, 0))) {
-					isExecutable = true;
-				}
-			}
-			if (mult.getParameter2() instanceof Number) {
-				Function numb = mult.getParameter2();
-				if (numb.equals(new Number(root, 0))) {
-					isExecutable = true;
-				}
+		if (f instanceof Division) {
+			FunctionOperator fnc = (FunctionOperator) f;
+			Function a;
+			Function c;
+			FunctionOperator div2;
+			if (fnc.getParameter2() instanceof Division) {
+				div2 = (FunctionOperator) fnc.getParameter2();
+				a = fnc.getParameter1();
+				c = div2.getParameter2();
+				isExecutable = true;
+			} else {
+				isExecutable = false;
 			}
 		}
-	
 		if (isExecutable) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			result.add(new Number(f.getMathContext(), 0));
+			FunctionOperator fnc = (FunctionOperator) f;
+			Function a;
+			Function b;
+			Function c;
+	
+			FunctionOperator div2 = (FunctionOperator) fnc.getParameter2();
+	
+			a = fnc.getParameter1();
+			b = div2.getParameter1();
+			c = div2.getParameter2();
+			result.add(new Division(fnc.getMathContext(), new Multiplication(fnc.getMathContext(), a, c), b));
+	
 			return result;
 		} else {
 			return null;

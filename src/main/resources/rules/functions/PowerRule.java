@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.PowerRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -10,9 +10,6 @@ import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.nevec.rjm.BigDecimalMath;
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
@@ -20,21 +17,23 @@ import org.warp.picalculator.math.rules.RulesManager;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.Subtraction;
-import org.warp.picalculator.math.functions.Variable;
+import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Power;
 
 /**
- * Variable
- * a = n
+ * Power
+ * a^b = c
  * 
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class PowerRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "Variable";
+		return "Power";
 	}
 
 	// Rule type
@@ -49,17 +48,16 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	     - An ObjectArrayList<Function> if it did something
 	*/
 	@Override
-	public ObjectArrayList<Function> execute(Function f) {
-		if (f instanceof Variable) {
+	public ObjectArrayList<Function> execute(Function f) throws org.warp.picalculator.Error, InterruptedException {
+		if (f instanceof Power) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var variable = f.getChar();
-			var mathContext = f.getMathContext();
-			if (mathContext.exactMode == false) {
-				if (variable.equals(MathematicalSymbols.PI)) {
-					//a = n
-					result.add(new Number(mathContext, BigDecimalMath.pi(new java.math.MathContext(Utils.scale, Utils.scaleMode2))));
-					return result;
-				}
+			Function variable1 = ((FunctionOperator)f).getParameter1();
+			Function variable2 = ((FunctionOperator)f).getParameter2();
+			MathContext mathContext = f.getMathContext();
+			if (variable1 instanceof Number && variable2 instanceof Number) {
+				//a^b = c
+				result.add(((Number)variable1).pow((Number)variable2));
+				return result;
 			}
 		}
 		return null;

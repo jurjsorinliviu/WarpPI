@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=FractionsRule5
 */
 
 import org.warp.picalculator.math.Function;
@@ -17,8 +17,11 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Division;
+import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -29,7 +32,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class FractionsRule5 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -49,15 +52,15 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	*/
 
 	@Override
-	public ObjectArrayList<Function> execute(Function f) {
+	public ObjectArrayList<Function> execute(Function f) throws Error {
 		boolean isExecutable = false;
 		if (f instanceof Power) {
-			Function fnc = f;
+			FunctionOperator fnc = (FunctionOperator) f;
 			if (fnc.getParameter1() instanceof Division) {
-				if (fnc.getParameter2() instanceof Multiplication && fnc.getParameter2().getParameter1().equals(new Number(f.getMathContext(), -1))) {
+				if (fnc.getParameter2() instanceof Multiplication && ((FunctionOperator) fnc.getParameter2()).getParameter1().equals(new Number(f.getMathContext(), -1))) {
 					isExecutable = true;
 				} else if (fnc.getParameter2() instanceof Number) {
-					var n2 = fnc.getParameter2();
+					Number n2 = (Number) fnc.getParameter2();
 					if (n2.getTerm().compareTo(BigDecimal.ZERO) < 0) {
 						isExecutable = true;
 					}
@@ -66,19 +69,19 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 		}
 	
 		if (isExecutable) {
-			var root = f.getMathContext();
+			MathContext root = f.getMathContext();
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			Function fnc = f;
-			var a = (fnc.getParameter1()).getParameter1();
-			var b = (fnc.getParameter1()).getParameter2();
-			var c;
+			FunctionOperator fnc = (FunctionOperator) f;
+			Function a = ((FunctionOperator) fnc.getParameter1()).getParameter1();
+			Function b = ((FunctionOperator) fnc.getParameter1()).getParameter2();
+			Function c;
 			if (fnc.getParameter2() instanceof Multiplication) {
-				c = fnc.getParameter2().getParameter2();
+				c = ((FunctionOperator) fnc.getParameter2()).getParameter2();
 			} else {
-				c = fnc.getParameter2().multiply(new Number(root, "-1"));
+				c = ((Number) fnc.getParameter2()).multiply(new Number(root, "-1"));
 			}
-			var dv = new Division(root, b, a);
-			var pow = new Power(root, dv, c);
+			Function dv = new Division(root, b, a);
+			Function pow = new Power(root, dv, c);
 			result.add(pow);
 			return result;
 		} else {

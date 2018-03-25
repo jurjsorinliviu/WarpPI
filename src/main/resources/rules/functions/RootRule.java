@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=functions.RootRule
 */
 
 import org.warp.picalculator.math.Function;
@@ -10,6 +10,9 @@ import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
 import org.warp.picalculator.ScriptUtils;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
@@ -23,6 +26,7 @@ import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Root;
 import org.warp.picalculator.math.functions.RootSquare;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Root
@@ -31,7 +35,7 @@ import java.math.BigDecimal;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class RootRule implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -50,26 +54,29 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	     - An ObjectArrayList<Function> if it did something
 	*/
 	@Override
-	public ObjectArrayList<Function> execute(Function f) {
-		var isSquare = false;
+	public ObjectArrayList<Function> execute(Function f) throws Error, InterruptedException {
+		boolean isSquare = false;
 		if ((isSquare = f instanceof RootSquare) || f instanceof Root) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			var mathContext = f.getMathContext();
-			var variable1 = f.getParameter1();
-			var variable2 = f.getParameter2();
-			var isSolvable = false;
-			var canBePorted = false;
+			MathContext mathContext = f.getMathContext();
+			Function variable1 = ((FunctionOperator)f).getParameter1();
+			Function variable2 = ((FunctionOperator)f).getParameter2();
+			boolean isSolvable = false, canBePorted = false;
 			if (variable1 instanceof Number && variable2 instanceof Number) {
+				if (mathContext.exactMode) {
+					result.add(((Number)variable1).pow(new Number(mathContext, BigDecimal.ONE).divide(((Number)variable1))));
+					return result;
+				}
 				isSolvable = isSolvable|!mathContext.exactMode;
 				if (!isSolvable) {
 					try {
-						var resultVar = variable2.pow(new Number(mathContext, BigDecimal.ONE).divide(variable1));
-						var originalVariable = resultVar.pow(new Number(mathContext, 2));
-						if (originalVariable.equals(f.getParameter2())) {
+						Function resultVar = ((Number)variable2).pow(new Number(mathContext, BigDecimal.ONE).divide(((Number)variable1)));
+						Function originalVariable = ((Number)resultVar).pow(new Number(mathContext, 2));
+						if ((originalVariable).equals(((FunctionOperator)f).getParameter2())) {
 							isSolvable = true;
 						}
-					} catch (ex) {
-						ex.printStackTrace();
+					} catch (Exception ex) {
+						throw (Error) new Error(Errors.ERROR, ex.getMessage()).initCause(ex);
 					}
 				}
 			}
@@ -78,7 +85,7 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 			}
 			
 			if (isSolvable) {
-				result.add(variable2.pow(new Number(mathContext, BigInteger.ONE).divide(variable1)));
+				result.add(((Number)variable2).pow(new Number(mathContext, BigInteger.ONE).divide((Number)variable1)));
 				return result;
 			}
 			if (canBePorted) {

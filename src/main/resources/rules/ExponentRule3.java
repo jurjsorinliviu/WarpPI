@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=__INSERT_PACKAGE_WITH_CLASS_NAME__
+ PATH=ExponentRule3
 */
 
 import org.warp.picalculator.math.Function;
@@ -15,6 +15,8 @@ import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Number;
 import org.warp.picalculator.math.functions.Power;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -25,7 +27,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
  * @author Andrea Cavalli
  *
  */
-public class __INSERT_CLASS_NAME__ implements Rule {
+public class ExponentRule3 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
@@ -48,16 +50,16 @@ public class __INSERT_CLASS_NAME__ implements Rule {
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
 		if (f instanceof Power) {
-			Function fnc = f;
+			FunctionOperator fnc = (FunctionOperator) f;
 			if (fnc.getParameter2().equals(new Number(f.getMathContext(), 0))) {
 				isExecutable = true;
 			}
 		}
 	
 		if (isExecutable) {
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		result.add(new Number(f.getMathContext(), 1));
-		return result;
+			ObjectArrayList<Function> result = new ObjectArrayList<>();
+			result.add(new Number(f.getMathContext(), 1));
+			return result;
 		} else {
 			return null;
 		}

@@ -14,11 +14,11 @@ import com.pi4j.wiringpi.Gpio;
 public class Main {
 	public static Main instance;
 	public static String[] args;
-	public Main(String[] args) throws InterruptedException {
+	public Main(String[] args) throws InterruptedException, Error {
 		this(new LoadingScreen(), args);
 	}
 
-	public Main(Screen screen, String[] args) {
+	public Main(Screen screen, String[] args) throws InterruptedException, Error {
 		System.out.println("WarpPI Calculator");
 		instance = this;
 		Main.args = args;
@@ -94,7 +94,7 @@ public class Main {
 		Keyboard.startKeyboard();
 	}
 
-	public void afterStart() {
+	public void afterStart() throws InterruptedException, Error {
 		DisplayManager.INSTANCE.setBrightness(0.2f);
 		RulesManager.initialize();
 		RulesManager.warmUp();
@@ -104,7 +104,7 @@ public class Main {
 		Keyboard.stopKeyboard();
 	}
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, Error {
 		/*
 		 * TEST: Comparing BigIntegerMath.divisors() vs programmingpraxis' Number.getFactors() function
 		 * 
