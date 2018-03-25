@@ -85,7 +85,7 @@ public class RulesManager {
 						tDir.toFile().delete();
 					}
 					Utils.unzip(cacheFilePath.toString(), tDir.getParent().toString(), "");
-					useCache = true;//!StaticVars.debugOn;
+					useCache = !StaticVars.debugOn;
 					cacheFilePath.toFile().delete();
 				} catch (Exception ex) {
 					ex.printStackTrace();
