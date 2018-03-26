@@ -2,7 +2,6 @@ package org.warp.picalculator.math.functions.equations;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
-import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 

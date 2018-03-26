@@ -1,8 +1,5 @@
 package org.warp.picalculator.math.functions;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;

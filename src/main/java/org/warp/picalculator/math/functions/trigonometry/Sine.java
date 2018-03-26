@@ -1,16 +1,12 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
-import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.blocks.BlockSine;
-import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.functions.Number;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Sine extends FunctionSingle {

@@ -1,9 +1,9 @@
 package org.warp.picalculator.gui.graphicengine.framebuffer;
 
-import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.Semaphore;
@@ -18,8 +18,6 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUFont;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUSkin;
-
-import sun.nio.ch.DirectBuffer;
 
 public class FBEngine implements GraphicEngine {
 
@@ -66,7 +64,7 @@ public class FBEngine implements GraphicEngine {
 		resizedTrigger = true;
 		realFb = jni.retrieveBuffer();
 		final long fbLen = realFb.getLength();
-		fb = (MappedByteBuffer) MappedByteBuffer.allocateDirect((int) fbLen);
+		fb = (MappedByteBuffer) ByteBuffer.allocateDirect((int) fbLen);
 		
 		r = new FBRenderer(this, fb);
 		

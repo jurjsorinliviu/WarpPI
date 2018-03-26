@@ -29,7 +29,7 @@ public class Headless8Skin implements Skin {
 	public static int[] getMatrixOfImage(BufferedImage bufferedImage) {
 		BufferedImage after = new BufferedImage(bufferedImage.getWidth(null), bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 		AffineTransform at = new AffineTransform();
-		at.scale(1f / ((float) Headless8Engine.C_MUL_X), 1f / ((float) Headless8Engine.C_MUL_Y));
+		at.scale(1f / (Headless8Engine.C_MUL_X), 1f / (Headless8Engine.C_MUL_Y));
 		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
 		after = scaleOp.filter(bufferedImage, after);
 

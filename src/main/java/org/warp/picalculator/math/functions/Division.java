@@ -1,19 +1,12 @@
 package org.warp.picalculator.math.functions;
 
-import java.math.BigInteger;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.blocks.BlockDivision;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.rules.methods.DivisionRule1;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Division extends FunctionOperator {

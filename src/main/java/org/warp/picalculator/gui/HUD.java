@@ -1,7 +1,5 @@
 package org.warp.picalculator.gui;
 
-import org.warp.picalculator.gui.screens.Screen;
-
 public abstract class HUD implements GraphicalInterface {
 	public DisplayManager d;
 	public boolean created = false;
@@ -9,6 +7,7 @@ public abstract class HUD implements GraphicalInterface {
 
 	public HUD() {}
 
+	@Override
 	public void initialize() throws InterruptedException {
 		if (!initialized) {
 			initialized = true;
@@ -16,6 +15,7 @@ public abstract class HUD implements GraphicalInterface {
 		}
 	}
 
+	@Override
 	public void create() throws InterruptedException {
 		if (!created) {
 			created = true;

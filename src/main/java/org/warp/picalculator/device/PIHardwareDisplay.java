@@ -3,8 +3,6 @@ package org.warp.picalculator.device;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.HardwareDisplay;
-import org.warp.picalculator.gui.screens.Screen;
-
 import com.pi4j.wiringpi.Gpio;
 
 public class PIHardwareDisplay implements HardwareDisplay {

@@ -3,8 +3,6 @@ package org.warp.picalculator.math.functions;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.LinkedList;
-import java.util.List;
-
 import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;

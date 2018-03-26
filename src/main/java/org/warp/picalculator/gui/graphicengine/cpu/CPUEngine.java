@@ -38,7 +38,7 @@ public class CPUEngine implements GraphicEngine {
 	public void setDisplayMode(final int ww, final int wh) {
 		INSTANCE.setSize(ww, wh);
 		r.size = new int[] { ww, wh };
-		r.canvas2d = new int[ww * wh];
+		CPURenderer.canvas2d = new int[ww * wh];
 		g = new BufferedImage(ww, wh, BufferedImage.TYPE_INT_ARGB);
 		INSTANCE.wasResized = false;
 	}
@@ -63,7 +63,7 @@ public class CPUEngine implements GraphicEngine {
 	public boolean wasResized() {
 		if (INSTANCE.wasResized) {
 			r.size = new int[] { INSTANCE.getWidth(), INSTANCE.getHeight() };
-			r.canvas2d = new int[r.size[0] * r.size[1]];
+			CPURenderer.canvas2d = new int[r.size[0] * r.size[1]];
 			g = new BufferedImage(r.size[0], r.size[1], BufferedImage.TYPE_INT_ARGB);
 			INSTANCE.wasResized = false;
 			return true;

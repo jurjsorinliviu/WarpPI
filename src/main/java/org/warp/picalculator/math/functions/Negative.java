@@ -1,7 +1,6 @@
 package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;

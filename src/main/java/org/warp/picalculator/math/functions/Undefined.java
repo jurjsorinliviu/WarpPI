@@ -1,15 +1,10 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.List;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
-import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.gui.expression.blocks.BlockUndefined;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

@@ -1,8 +1,5 @@
 package org.warp.picalculator.gui.expression.containers;
 
-import org.warp.picalculator.Utils;
-import org.warp.picalculator.gui.expression.Caret;
-import org.warp.picalculator.gui.expression.CaretState;
 import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;

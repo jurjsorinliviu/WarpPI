@@ -1,15 +1,10 @@
 package org.warp.picalculator.math.functions.equations;
 
-import java.util.List;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionDynamic;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Number;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class EquationsSystem extends FunctionDynamic {

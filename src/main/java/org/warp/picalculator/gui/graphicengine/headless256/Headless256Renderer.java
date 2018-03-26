@@ -187,8 +187,8 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharLeft(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless256Engine.C_MUL_X;
-		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
+		final int cx = (x) / Headless256Engine.C_MUL_X;
+		final int cy = (y) / Headless256Engine.C_MUL_Y;
 		if (cx >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 			return;
 		}
@@ -203,8 +203,8 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharRight(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless256Engine.C_MUL_X - 1;
-		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
+		final int cx = (x) / Headless256Engine.C_MUL_X - 1;
+		final int cy = (y) / Headless256Engine.C_MUL_Y;
 		if (cx >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 			return;
 		}

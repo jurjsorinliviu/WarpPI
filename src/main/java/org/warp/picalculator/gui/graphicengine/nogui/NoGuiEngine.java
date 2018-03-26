@@ -1,6 +1,5 @@
 package org.warp.picalculator.gui.graphicengine.nogui;
 
-import java.awt.GraphicsEnvironment;
 import java.io.IOException;
 import java.util.concurrent.Semaphore;
 

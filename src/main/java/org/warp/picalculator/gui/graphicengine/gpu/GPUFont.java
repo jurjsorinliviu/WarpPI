@@ -1,14 +1,10 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.LinkedList;
-
-import javax.imageio.ImageIO;
 
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -18,14 +14,10 @@ import org.warp.picalculator.gui.graphicengine.cpu.CPUFont;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.util.texture.Texture;
 
-import ar.com.hjg.pngj.IImageLine;
 import ar.com.hjg.pngj.ImageInfo;
 import ar.com.hjg.pngj.ImageLineHelper;
 import ar.com.hjg.pngj.ImageLineInt;
-import ar.com.hjg.pngj.PngReader;
 import ar.com.hjg.pngj.PngWriter;
-import ar.com.hjg.pngj.chunks.ChunkCopyBehaviour;
-import ar.com.hjg.pngj.chunks.PngChunkTextVar;
 
 public class GPUFont implements BinaryFont {
 
@@ -46,7 +38,7 @@ public class GPUFont implements BinaryFont {
 	private File tmpFont;
 
 	GPUFont(GraphicEngine g, String name) throws IOException {
-		this((GPUEngine) g, null, name);
+		this(g, null, name);
 	}
 
 	public GPUFont(GraphicEngine g, String path, String name) throws IOException {

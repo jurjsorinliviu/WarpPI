@@ -12,6 +12,7 @@ public abstract class Screen implements KeyboardEventListener, GraphicalInterfac
 
 	public Screen() {}
 
+	@Override
 	public void initialize() throws InterruptedException {
 		if (!initialized) {
 			initialized = true;
@@ -19,6 +20,7 @@ public abstract class Screen implements KeyboardEventListener, GraphicalInterfac
 		}
 	}
 
+	@Override
 	public void create() throws InterruptedException {
 		if (!created) {
 			created = true;
@@ -30,13 +32,17 @@ public abstract class Screen implements KeyboardEventListener, GraphicalInterfac
 
 	public abstract void initialized() throws InterruptedException;
 
+	@Override
 	public abstract void render();
 
+	@Override
 	public void renderTopmost() {
 
 	}
 
+	@Override
 	public abstract void beforeRender(float dt);
 
+	@Override
 	public abstract boolean mustBeRefreshed();
 }

@@ -1,7 +1,5 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;

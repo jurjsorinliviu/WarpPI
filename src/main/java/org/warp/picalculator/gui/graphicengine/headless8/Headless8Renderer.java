@@ -309,8 +309,8 @@ public class Headless8Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharLeft(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless8Engine.C_MUL_X;
-		final int cy = ((int) y) / Headless8Engine.C_MUL_Y;
+		final int cx = (x) / Headless8Engine.C_MUL_X;
+		final int cy = (y) / Headless8Engine.C_MUL_Y;
 		if (cx >= Headless8Engine.C_WIDTH || cy >= Headless8Engine.C_HEIGHT) {
 			return;
 		}
@@ -326,8 +326,8 @@ public class Headless8Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharRight(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless8Engine.C_MUL_X - 1;
-		final int cy = ((int) y) / Headless8Engine.C_MUL_Y;
+		final int cx = (x) / Headless8Engine.C_MUL_X - 1;
+		final int cy = (y) / Headless8Engine.C_MUL_Y;
 		if (cx >= Headless8Engine.C_WIDTH || cy >= Headless8Engine.C_HEIGHT) {
 			return;
 		}

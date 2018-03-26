@@ -113,6 +113,7 @@ public abstract class BlockParenthesisAbstract extends Block {
 		return containerNumber.computeCaretMaxBound();
 	}
 
+	@Override
 	public abstract Feature toFeature(MathContext context) throws Error;
 
 }

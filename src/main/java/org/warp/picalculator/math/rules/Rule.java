@@ -1,7 +1,5 @@
 package org.warp.picalculator.math.rules;
 
-import java.io.Serializable;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
 

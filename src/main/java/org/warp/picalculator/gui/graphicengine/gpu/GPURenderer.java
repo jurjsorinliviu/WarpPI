@@ -1,17 +1,12 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.StaticVars;

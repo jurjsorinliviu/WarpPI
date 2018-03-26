@@ -1,7 +1,5 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.List;
-
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;

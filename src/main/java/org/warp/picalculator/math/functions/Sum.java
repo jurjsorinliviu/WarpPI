@@ -1,17 +1,12 @@
 package org.warp.picalculator.math.functions;
 
-import java.math.BigDecimal;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.rules.methods.SumMethod1;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Sum extends FunctionOperator {
