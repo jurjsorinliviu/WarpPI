@@ -84,6 +84,7 @@ public class Utils {
 	private static String OS = System.getProperty("os.name").toLowerCase();
 	public static String forceEngine;
 	public static boolean msDosMode;
+	public static boolean debugCache;
 	
 	public static final class AdvancedOutputStream extends StringWriter {
 		

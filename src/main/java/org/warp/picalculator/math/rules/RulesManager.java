@@ -25,32 +25,15 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipFile;
-
-import javax.script.Bindings;
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
-import org.eclipse.jdt.core.JDTCompilerAdapter;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Expression;
-import org.warp.picalculator.math.functions.Subtraction;
-import org.warp.picalculator.math.functions.Sum;
-import org.warp.picalculator.math.functions.SumSubtraction;
 import org.warp.picalculator.math.functions.Variable;
 import org.warp.picalculator.math.functions.Variable.V_TYPE;
 import org.warp.picalculator.math.solver.MathSolver;
-
-import com.jogamp.common.util.IOUtil;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -69,6 +52,7 @@ public class RulesManager {
 			rules[val.ordinal()] = new ObjectArrayList<Rule>();
 		}
 		try {
+			boolean compiledSomething = false;
 			final Path rulesPath = Utils.getResource("/rules.csv");
 			if (!Files.exists(rulesPath)) {
 				throw new FileNotFoundException("rules.csv not found!");
@@ -78,15 +62,17 @@ public class RulesManager {
 
 			boolean useCache = false;
 			Path tDir = Paths.get(System.getProperty("java.io.tmpdir"), "WarpPi-Calculator").resolve("rules-rt");
-			Path cacheFilePath = Paths.get(Utils.getJarDirectory().toString()).resolve("math-rules-cache.zip").toAbsolutePath();
+//			try {
+//				final Path defaultResource = Utils.getResource("/math-rules-cache.zip");
+//			}
+			Path cacheFilePath =  Utils.getResource("/math-rules-cache.zip");//Paths.get(Utils.getJarDirectory().toString()).resolve("math-rules-cache.zip").toAbsolutePath();
 			if (cacheFilePath.toFile().exists()) {
 				try {
 					if (tDir.toFile().exists()) {
 						tDir.toFile().delete();
 					}
 					Utils.unzip(cacheFilePath.toString(), tDir.getParent().toString(), "");
-					useCache = !StaticVars.debugOn;
-					cacheFilePath.toFile().delete();
+					useCache = !Utils.debugCache;
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -120,6 +106,7 @@ public class RulesManager {
 							Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "This rule is not cached. Compiling");
 							try {
 								r = compileJavaRule(scriptFile, tDir);
+								compiledSomething = true;
 							} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
 								e.printStackTrace();
 							}
@@ -132,8 +119,10 @@ public class RulesManager {
 				}
 			}
 			Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Loaded all the rules successfully");
-			Utils.zip(tDir.toString(), cacheFilePath.toString(), "");
-			Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Cached the compiled rules");
+			if (compiledSomething) {
+				Utils.zip(tDir.toString(), cacheFilePath.toString(), "");
+				Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Cached the compiled rules");
+			}
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -157,9 +146,12 @@ public class RulesManager {
 		if (!tDirPath.toFile().exists()) {
 			Files.createDirectories(tDirPath);
 		}
+		if (tFileJava.toFile().exists()) {
+			tFileJava.toFile().delete();
+		}
 		Files.write(tFileJava, javaCode.getBytes("UTF-8"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
 		boolean compiled = org.eclipse.jdt.internal.compiler.batch.Main.compile(new String[] {"-nowarn", "-1.8", tFileJava.toString()}, new PrintWriter(System.out), new PrintWriter(System.err), null);
-		if (StaticVars.debugOn) {
+		if (Utils.debugCache) {
 			tFileJava.toFile().deleteOnExit();
 		} else {
 			tFileJava.toFile().delete();

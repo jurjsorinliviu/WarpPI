@@ -85,6 +85,9 @@ public class Main {
 			}
 			if (arg.contains("verbose") || arg.contains("debug")) {
 				StaticVars.outputLevel = Utils.OUTPUTLEVEL_DEBUG_VERBOSE;
+				if (arg.contains("uncached")) {
+					Utils.debugCache = true;
+				}
 			}
 			if (arg.contains("ms-dos")) {
 				Utils.headlessOverride = true;
