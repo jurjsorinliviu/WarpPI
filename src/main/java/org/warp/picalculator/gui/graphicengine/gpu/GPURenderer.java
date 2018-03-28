@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.nio.file.Files;
 import javax.imageio.ImageIO;
 
@@ -26,9 +27,12 @@ public class GPURenderer implements Renderer {
 
 	public static GL2ES1 gl;
 
-	private static final int ELEMENT_VERTICES_COUNT = 6, vertSize = 3, texSize = 2, colSize = 4;
+	private static final int ELEMENT_VERTICES_COUNT = 6,
+			vertSize = 3, texSize = 2, colSize = 4,
+			vertBuffer = 0, texBuffer = 1, colBuffer = 2;
 	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
 
+	private IntBuffer handlers;
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();
 	FloatBuffer fbVertices;
 	FloatBuffer fbTextures;
@@ -294,14 +298,16 @@ public class GPURenderer implements Renderer {
 
 	public void initDrawCycle() {
 		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
-		startDrawSegment(false);
-		if (textureChange) {
-			changeTexture();
-		}
 		if (fbVertices == null) {
 			fbVertices = Buffers.newDirectFloatBuffer(vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
 			fbTextures = Buffers.newDirectFloatBuffer(texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
 			fbColors = Buffers.newDirectFloatBuffer(colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
+			handlers = Buffers.newDirectIntBuffer(3);
+			gl.glGenBuffers(3, handlers);
+		}
+		startDrawSegment(false);
+		if (textureChange) {
+			changeTexture();
 		}
 	}
 
@@ -328,6 +334,7 @@ public class GPURenderer implements Renderer {
 		} else {
 			gl.glDisable(GL.GL_TEXTURE_2D);
 		}
+		firstBufferTexDataCall = true;
 	}
 	
 	public void startDrawSegment(boolean continuation) {
@@ -358,23 +365,62 @@ public class GPURenderer implements Renderer {
 		}
 	}
 
+	boolean firstBufferDataCall = true;
+	boolean firstBufferTexDataCall = true;
+	
 	public void endDrawSegment() {
-		fbVertices.limit(fbVertices.position());
-		fbTextures.limit(fbTextures.position());
-		fbColors.limit(fbColors.position());
-		fbVertices.rewind();
-		fbTextures.rewind();
-		fbColors.rewind();
+		fbVertices.flip();
+		fbTextures.flip();
+		fbColors.flip();
 		
-		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, fbVertices);
-		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, fbTextures);
-		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, fbColors);
+//		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, fbVertices);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers.get(vertBuffer));
+		if (firstBufferTexDataCall) {
+	        gl.glBufferData(
+	        		GL.GL_ARRAY_BUFFER, fbVertices.limit() * Buffers.SIZEOF_FLOAT,
+	        		fbVertices,
+	                GL2ES1.GL_STATIC_DRAW);
+		} else {
+	        gl.glBufferSubData(
+	        		GL.GL_ARRAY_BUFFER, 0, fbVertices.limit() * Buffers.SIZEOF_FLOAT,
+	        		fbVertices);
+		}
+		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, 0l);
+//		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, fbTextures);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers.get(texBuffer));
+		if (firstBufferTexDataCall) {
+	        gl.glBufferData(
+	        		GL.GL_ARRAY_BUFFER, fbTextures.limit() * Buffers.SIZEOF_FLOAT,
+	        		fbTextures,
+	                GL2ES1.GL_STATIC_DRAW);
+		} else {
+	        gl.glBufferSubData(
+	        		GL.GL_ARRAY_BUFFER, 0, fbTextures.limit() * Buffers.SIZEOF_FLOAT,
+	        		fbTextures);
+		}
+		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, 0l);
+//		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, fbColors);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers.get(colBuffer));
+		if (firstBufferTexDataCall) {
+	        gl.glBufferData(
+	        		GL.GL_ARRAY_BUFFER, fbColors.limit() * Buffers.SIZEOF_FLOAT,
+	        		fbColors,
+	                GL2ES1.GL_STATIC_DRAW);
+		} else {
+	        gl.glBufferSubData(
+	        		GL.GL_ARRAY_BUFFER, 0, fbColors.limit() * Buffers.SIZEOF_FLOAT,
+	        		fbColors);
+		}
+		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, 0l);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
+		
 		fbVertices.limit(fbVertices.capacity());
 		fbTextures.limit(fbTextures.capacity());
 		fbColors.limit(fbColors.capacity());
-
 		gl.glDrawArrays(GL.GL_TRIANGLES, 0, fbElements * ELEMENT_VERTICES_COUNT);
 		//gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, fbElements * ELEMENT_VERTICES_COUNT);
+		firstBufferDataCall = false;
+		firstBufferTexDataCall = false;
 		cycleEnded = true;
 
 //		deleteBuffer(fbVertices);
