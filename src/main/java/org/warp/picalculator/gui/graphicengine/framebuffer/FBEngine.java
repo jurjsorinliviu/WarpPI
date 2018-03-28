@@ -143,7 +143,7 @@ public class FBEngine implements GraphicEngine {
 		realFb.getBuffer().clear();
 		realFb.getBuffer().put(fb);
 		for (int i = 0; i < fb.capacity()/2; i++) {
-			realFb.getBuffer().put(i, (byte) (0xFF));
+			realFb.getBuffer().put(i, (byte) (_________________TMP < 50 ? 0xFF : 0xF0));
 		}
 		for (int i = fb.capacity()/2; i < fb.capacity(); i++) {
 			realFb.getBuffer().put(i, (byte) (0x18));
@@ -184,6 +184,7 @@ public class FBEngine implements GraphicEngine {
 		if (Utils.headlessOverride) {
 			return false;
 		}
+		/*
 		File fbFile = new File("/dev/fb1");
 		try {
 			fbFileRW = new RandomAccessFile(fbFile, "rw");
@@ -194,6 +195,7 @@ public class FBEngine implements GraphicEngine {
 			System.err.println("Cannot read framebuffer fb1.");
 			ex.printStackTrace();
 		}
+		*/
 		return false;
 	}
 

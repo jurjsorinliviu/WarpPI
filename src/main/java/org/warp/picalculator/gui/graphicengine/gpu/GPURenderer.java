@@ -292,13 +292,46 @@ public class GPURenderer implements Renderer {
 		return tex;
 	}
 
-	public void startDrawCycle(boolean first) {
+	public void initDrawCycle() {
+		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
+		startDrawSegment(false);
+		if (textureChange) {
+			changeTexture();
+		}
 		if (fbVertices == null) {
 			fbVertices = Buffers.newDirectFloatBuffer(3 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
 			txVertices = Buffers.newDirectFloatBuffer(2 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
 			colVertices = Buffers.newDirectFloatBuffer(4 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
 		}
-		if (first || fbVertices == null || cycleEnded) {
+	}
+
+	public void endDrawCycle() {
+		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
+		if (textureChange) {
+			if (fbElements > 0) {
+				endDrawSegment();
+			}
+			changeTexture();
+		} else {
+			if (fbElements > 0) {
+				endDrawSegment();
+			}
+		}
+	}
+	
+	private void changeTexture() {
+		precTexEnabled = currentTexEnabled;
+		precTex = currentTex;
+		if (currentTexEnabled) {
+			gl.glEnable(GL.GL_TEXTURE_2D);
+			currentTex.bind(gl);
+		} else {
+			gl.glDisable(GL.GL_TEXTURE_2D);
+		}
+	}
+	
+	public void startDrawSegment(boolean continuation) {
+		if (!continuation || cycleEnded) {
 			fbElements = 0;
 		}
 		cycleEnded = false;
@@ -308,42 +341,24 @@ public class GPURenderer implements Renderer {
 	private Texture precTex;
 	private boolean cycleEnded = true;
 
-	public void updateDrawCycle() {
-		updateDrawCycle(false, false);
-	}
-
-	public void updateDrawCycle(boolean first, boolean last) {
+	public void doDrawSegment() {
 		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
-		final boolean changeRequired = last || fbElements >= ELEMENTS_MAX_COUNT_PER_BUFFER;
-		if (first) {
-			startDrawCycle(true);
-		}
+		final boolean changeRequired = fbElements >= ELEMENTS_MAX_COUNT_PER_BUFFER;
 		if (textureChange) {
-			if (!first && fbElements > 0) {
-				endDrawCycle();
-				if (!last) {
-					startDrawCycle(true);
-				}
+			if (fbElements > 0) {
+				endDrawSegment();
+				startDrawSegment(false);
 			}
-			precTexEnabled = currentTexEnabled;
-			precTex = currentTex;
-			if (currentTexEnabled) {
-				gl.glEnable(GL.GL_TEXTURE_2D);
-				currentTex.bind(gl);
-			} else {
-				gl.glDisable(GL.GL_TEXTURE_2D);
-			}
-		} else if (!first) {
+			changeTexture();
+		} else {
 			if (fbElements > 0 && changeRequired) {
-				endDrawCycle();
-				if (!last) {
-					startDrawCycle(false);
-				}
+				endDrawSegment();
+				startDrawSegment(true);
 			}
 		}
 	}
 
-	public void endDrawCycle() {
+	public void endDrawSegment() {
 		fbVertices.limit(fbVertices.position());
 		txVertices.limit(txVertices.position());
 		colVertices.limit(colVertices.position());
@@ -380,18 +395,18 @@ public class GPURenderer implements Renderer {
 	public void glClearSkin() {
 		if (currentTex != null) {
 			currentTex = null;
-			updateDrawCycle();
+			doDrawSegment();
 		}
 	}
 
 	void disableTexture() {
 		currentTexEnabled = false;
-		updateDrawCycle();
+		doDrawSegment();
 	}
 
 	void enableTexture() {
 		currentTexEnabled = true;
-		updateDrawCycle();
+		doDrawSegment();
 	}
 
 	void useTexture(Texture t, float w, float h) {

@@ -303,7 +303,9 @@ public final class DisplayManager implements RenderingLoop {
 
 		if (error != null) {
 			BinaryFont fnt = Utils.getFont(false, false);
-			fnt.use(engine);
+			if (fnt != null && fnt != engine.getRenderer().getCurrentFont()) {
+				fnt.use(engine);
+			}
 			renderer.glColor3i(129, 28, 22);
 			renderer.glDrawStringRight(StaticVars.screenSize[0] - 2, StaticVars.screenSize[1] - (fnt.getCharacterHeight() + 2), StaticVars.calculatorNameUPPER + " CALCULATOR");
 			renderer.glColor3i(149, 32, 26);
@@ -314,11 +316,15 @@ public final class DisplayManager implements RenderingLoop {
 				renderer.glDrawStringLeft(2, 22 + i, stackPart);
 				i += 11;
 			}
-			fonts[0].use(engine);
+			if (fonts[0] != null && fonts[0] != engine.getRenderer().getCurrentFont()) {
+				fonts[0].use(engine);
+			}
 			renderer.glColor3i(129, 28, 22);
 			renderer.glDrawStringCenter((StaticVars.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
 		} else {
-			fonts[0].use(engine);
+			if (fonts[0] != null && fonts[0] != engine.getRenderer().getCurrentFont()) {
+				fonts[0].use(engine);
+			}
 			hud.renderBackground();
 			screen.render();
 			hud.render();

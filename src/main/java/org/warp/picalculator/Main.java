@@ -1,5 +1,12 @@
 package org.warp.picalculator;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.PIHardwareDisplay;
 import org.warp.picalculator.gui.CalculatorHUD;
@@ -47,6 +54,11 @@ public class Main {
 		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args) && isRaspi) {
 			Gpio.wiringPiSetupPhys();
 			Gpio.pinMode(12, Gpio.PWM_OUTPUT);
+			try {
+			Files.createFile(Paths.get("/boot/warppi_loaded"));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		} else {
 			StaticVars.screenPos = new int[] { 0, 0 };
 			StaticVars.debugOn = true;

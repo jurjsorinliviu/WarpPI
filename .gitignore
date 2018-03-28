@@ -12,6 +12,7 @@
 font_easter.png
 font_easter.rft
 font_fu32.rft
+VBO_Example.java
 
 /target/
 !/target/*.jar

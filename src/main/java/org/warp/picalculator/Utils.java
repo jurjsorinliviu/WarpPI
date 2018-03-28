@@ -76,6 +76,7 @@ public class Utils {
 	public static String forceEngine;
 	public static boolean msDosMode;
 	public static boolean debugCache;
+	public static boolean newtMode = true;
 	
 	public static final class AdvancedOutputStream extends StringWriter {
 		
