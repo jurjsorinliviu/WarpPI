@@ -26,13 +26,13 @@ public class GPURenderer implements Renderer {
 
 	public static GL2ES1 gl;
 
-	private static final int ELEMENT_VERTICES_COUNT = 6;
+	private static final int ELEMENT_VERTICES_COUNT = 6, vertSize = 3, texSize = 2, colSize = 4;
 	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
 
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();
 	FloatBuffer fbVertices;
-	FloatBuffer txVertices;
-	FloatBuffer colVertices;
+	FloatBuffer fbTextures;
+	FloatBuffer fbColors;
 	int fbElements;
 
 	float[] currentColor = new float[24];
@@ -151,8 +151,8 @@ public class GPURenderer implements Renderer {
 		final float[] tex_vertices = { uvX, uvY, uvX + uvWidth, uvY, uvX, uvY + uvHeight, uvX, uvY + uvHeight, uvX + uvWidth, uvY, uvX + uvWidth, uvY + uvHeight };
 		fbElements++;
 		fbVertices.put(vertices);
-		txVertices.put(tex_vertices);
-		colVertices.put(currentColor);
+		fbTextures.put(tex_vertices);
+		fbColors.put(currentColor);
 	}
 
 	@Override
@@ -177,8 +177,8 @@ public class GPURenderer implements Renderer {
 		final float[] tex_vertices = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, };
 		fbElements++;
 		fbVertices.put(vertices);
-		txVertices.put(tex_vertices);
-		colVertices.put(currentColor);
+		fbTextures.put(tex_vertices);
+		fbColors.put(currentColor);
 	}
 
 	@Override
@@ -299,9 +299,9 @@ public class GPURenderer implements Renderer {
 			changeTexture();
 		}
 		if (fbVertices == null) {
-			fbVertices = Buffers.newDirectFloatBuffer(3 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
-			txVertices = Buffers.newDirectFloatBuffer(2 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
-			colVertices = Buffers.newDirectFloatBuffer(4 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
+			fbVertices = Buffers.newDirectFloatBuffer(vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
+			fbTextures = Buffers.newDirectFloatBuffer(texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
+			fbColors = Buffers.newDirectFloatBuffer(colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
 		}
 	}
 
@@ -360,18 +360,18 @@ public class GPURenderer implements Renderer {
 
 	public void endDrawSegment() {
 		fbVertices.limit(fbVertices.position());
-		txVertices.limit(txVertices.position());
-		colVertices.limit(colVertices.position());
+		fbTextures.limit(fbTextures.position());
+		fbColors.limit(fbColors.position());
 		fbVertices.rewind();
-		txVertices.rewind();
-		colVertices.rewind();
-
-		gl.glVertexPointer(3, GL.GL_FLOAT, 0, fbVertices);
-		gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, txVertices);
-		gl.glColorPointer(4, GL.GL_FLOAT, 0, colVertices);
+		fbTextures.rewind();
+		fbColors.rewind();
+		
+		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, fbVertices);
+		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, fbTextures);
+		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, fbColors);
 		fbVertices.limit(fbVertices.capacity());
-		txVertices.limit(txVertices.capacity());
-		colVertices.limit(colVertices.capacity());
+		fbTextures.limit(fbTextures.capacity());
+		fbColors.limit(fbColors.capacity());
 
 		gl.glDrawArrays(GL.GL_TRIANGLES, 0, fbElements * ELEMENT_VERTICES_COUNT);
 		//gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, fbElements * ELEMENT_VERTICES_COUNT);
