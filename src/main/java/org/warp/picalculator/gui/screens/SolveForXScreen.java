@@ -1,15 +1,15 @@
 package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.Key;
 import org.warp.picalculator.gui.DisplayManager;
 
-public class SolveEquationScreen extends Screen {
+public class SolveForXScreen extends Screen {
 
 	@SuppressWarnings("unused")
 	private final MathInputScreen es;
 
-	public SolveEquationScreen(MathInputScreen es) {
+	public SolveForXScreen(MathInputScreen es) {
 		super();
 		canBeInHistory = false;
 

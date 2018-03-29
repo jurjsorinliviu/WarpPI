@@ -2,8 +2,8 @@ package org.warp.picalculator;
 
 import java.io.IOException;
 
+import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.device.KeyboardEventListener;
 import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
@@ -99,7 +99,7 @@ public class TestGPU {
 						case RESET:
 							c.clear();
 							return true;
-						case POWER:
+						case POWEROFF:
 							d.destroy();
 							System.exit(0);
 							return true;

@@ -27,12 +27,15 @@ public class GPURenderer implements Renderer {
 
 	public static GL2ES1 gl;
 
+	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
 	private static final int ELEMENT_VERTICES_COUNT = 6,
 			vertSize = 3, texSize = 2, colSize = 4,
-			vertBuffer = 0, texBuffer = 1, colBuffer = 2;
-	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
+			vertBuffer = 0, texBuffer = 1, colBuffer = 2,
+			vertMax = vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
+			texMax = texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
+			colMax = colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER;
 
-	private IntBuffer handlers;
+	private int[] handlers;
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();
 	FloatBuffer fbVertices;
 	FloatBuffer fbTextures;
@@ -299,11 +302,11 @@ public class GPURenderer implements Renderer {
 	public void initDrawCycle() {
 		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
 		if (fbVertices == null) {
-			fbVertices = Buffers.newDirectFloatBuffer(vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
-			fbTextures = Buffers.newDirectFloatBuffer(texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
-			fbColors = Buffers.newDirectFloatBuffer(colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
-			handlers = Buffers.newDirectIntBuffer(3);
-			gl.glGenBuffers(3, handlers);
+			fbVertices = Buffers.newDirectFloatBuffer(vertMax);
+			fbTextures = Buffers.newDirectFloatBuffer(texMax);
+			fbColors = Buffers.newDirectFloatBuffer(colMax);
+			handlers = new int[3];
+			gl.glGenBuffers(3, handlers, 0);
 		}
 		startDrawSegment(false);
 		if (textureChange) {
@@ -374,7 +377,7 @@ public class GPURenderer implements Renderer {
 		fbColors.flip();
 		
 //		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, fbVertices);
-		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers.get(vertBuffer));
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[vertBuffer]);
 		if (firstBufferTexDataCall) {
 	        gl.glBufferData(
 	        		GL.GL_ARRAY_BUFFER, fbVertices.limit() * Buffers.SIZEOF_FLOAT,
@@ -387,7 +390,7 @@ public class GPURenderer implements Renderer {
 		}
 		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, 0l);
 //		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, fbTextures);
-		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers.get(texBuffer));
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[texBuffer]);
 		if (firstBufferTexDataCall) {
 	        gl.glBufferData(
 	        		GL.GL_ARRAY_BUFFER, fbTextures.limit() * Buffers.SIZEOF_FLOAT,
@@ -400,7 +403,7 @@ public class GPURenderer implements Renderer {
 		}
 		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, 0l);
 //		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, fbColors);
-		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers.get(colBuffer));
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[colBuffer]);
 		if (firstBufferTexDataCall) {
 	        gl.glBufferData(
 	        		GL.GL_ARRAY_BUFFER, fbColors.limit() * Buffers.SIZEOF_FLOAT,
@@ -412,11 +415,10 @@ public class GPURenderer implements Renderer {
 	        		fbColors);
 		}
 		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, 0l);
-		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
 		
-		fbVertices.limit(fbVertices.capacity());
-		fbTextures.limit(fbTextures.capacity());
-		fbColors.limit(fbColors.capacity());
+		fbVertices.limit(vertMax);
+		fbTextures.limit(texMax);
+		fbColors.limit(colMax);
 		gl.glDrawArrays(GL.GL_TRIANGLES, 0, fbElements * ELEMENT_VERTICES_COUNT);
 		//gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, fbElements * ELEMENT_VERTICES_COUNT);
 		firstBufferDataCall = false;

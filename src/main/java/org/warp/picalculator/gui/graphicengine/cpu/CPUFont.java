@@ -25,7 +25,7 @@ public class CPUFont implements BinaryFont {
 	public int charH;
 	public int charS;
 	public int charIntCount;
-	public LinkedList<Integer[]> intervals;
+	public int[] intervals;
 	public int intervalsTotalSize = 0;
 	public static final int intBits = 31;
 	private final boolean isResource;
@@ -167,7 +167,7 @@ public class CPUFont implements BinaryFont {
 	}
 
 	private void findIntervals() {
-		intervals = new LinkedList<Integer[]>();
+		final LinkedList<int[]> intervals = new LinkedList<int[]>();
 		int beginIndex = -1;
 		int endIndex = 0;
 		int intervalSize = 0;
@@ -183,7 +183,7 @@ public class CPUFont implements BinaryFont {
 				i = endIndex;
 				if (endIndex >= 0) {
 					intervalSize = endIndex - beginIndex + 1;
-					intervals.add(new Integer[] {beginIndex, endIndex, intervalSize});
+					intervals.add(new int[] {beginIndex, endIndex, intervalSize});
 					intervalsTotalSize += intervalSize;
 				}
 				beginIndex = -1;
@@ -191,7 +191,7 @@ public class CPUFont implements BinaryFont {
 		}
 		int lastIndex = 0;
 		boolean[][] newrawchars = new boolean[intervalsTotalSize][];
-		for (Integer[] interval: intervals) {
+		for (int[] interval: intervals) {
 			if (rawchars.length - (interval[0]) - interval[2] < 0) {
 				System.err.println(interval[0] + "-" + interval[1] + "(" + interval[2] + ")");
 				System.err.println(rawchars.length - (interval[0]) - interval[2]);
@@ -205,6 +205,14 @@ public class CPUFont implements BinaryFont {
 			lastIndex += interval[2];
 		}
 		rawchars = newrawchars;
+		final int intervalsSize = intervals.size();
+		this.intervals = new int[intervalsSize * 3];
+		for (int i = 0; i < intervalsSize; i++) {
+			int[] interval = intervals.get(i);
+			this.intervals[i * 3 + 0] = interval[0];
+			this.intervals[i * 3 + 1] = interval[1];
+			this.intervals[i * 3 + 2] = interval[2];
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -237,14 +245,14 @@ public class CPUFont implements BinaryFont {
 	
 	private int compressIndex(int originalIndex) {
 		int compressedIndex = 0;
-		for (Integer[] interval : intervals) {
-			if (interval[0] > originalIndex) {
+		for (int i = 0; i < intervals.length; i+=3) {
+			if (intervals[i] > originalIndex) {
 				break;
-			} else if (originalIndex <= interval[1]) {
-				compressedIndex+=(originalIndex-interval[0]);
+			} else if (originalIndex <= intervals[i+1]) {
+				compressedIndex+=(originalIndex-intervals[i]);
 				break;
 			} else {
-				compressedIndex+=interval[2];
+				compressedIndex+=intervals[i+2];
 			}
 		}
 		return compressedIndex;
@@ -253,12 +261,12 @@ public class CPUFont implements BinaryFont {
 	private int decompressIndex(int compressedIndex) {
 		int originalIndex = 0;
 		int i = 0;
-		for (Integer[] interval : intervals) {
-			i+=interval[2];
+		for (int intvl = 0; intvl < intervals.length; intvl+=3) {
+			i+=intervals[intvl+2];
 			if (i == compressedIndex) {
-				return interval[1];
+				return intervals[intvl+1];
 			} else if (i > compressedIndex) {
-				return interval[1] - (i - compressedIndex);
+				return intervals[intvl+1] - (i - compressedIndex);
 			}
 		}
 		return originalIndex;

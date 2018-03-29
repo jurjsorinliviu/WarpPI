@@ -29,8 +29,8 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import org.warp.picalculator.StaticVars;
+import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
 
 import com.jogamp.newt.event.KeyEvent;
@@ -142,7 +142,7 @@ class NEWTWindow implements GLEventListener {
 			public void keyReleased(KeyEvent arg0) {
 				switch (arg0.getKeyCode()) {
 					case KeyEvent.VK_ESCAPE:
-						Keyboard.keyReleased(Key.POWER);
+						Keyboard.keyReleased(Key.POWEROFF);
 						break;
 					case KeyEvent.VK_D:
 						Keyboard.keyReleased(Key.debug_DEG);

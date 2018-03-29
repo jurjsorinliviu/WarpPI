@@ -28,7 +28,7 @@ public class GPUFont implements BinaryFont {
 	public int charH;
 	public int minCharIndex;
 	public int maxCharIndex;
-	public LinkedList<Integer[]> intervals;
+	public int[] intervals;
 	public int intervalsTotalSize = 0;
 	public int memoryWidth;
 	public int memoryHeight;
@@ -89,14 +89,14 @@ public class GPUFont implements BinaryFont {
 	
 	private int compressIndex(int originalIndex) {
 		int compressedIndex = 0;
-		for (Integer[] interval : intervals) {
-			if (interval[0] > originalIndex) {
+		for (int i = 0; i < intervals.length; i+=3) {
+			if (intervals[i] > originalIndex) {
 				break;
-			} else if (originalIndex <= interval[1]) {
-				compressedIndex+=(originalIndex-interval[0]);
+			} else if (originalIndex <= intervals[i+1]) {
+				compressedIndex+=(originalIndex-intervals[i]);
 				break;
 			} else {
-				compressedIndex+=interval[2];
+				compressedIndex+=intervals[i+2];
 			}
 		}
 		return compressedIndex;
@@ -105,10 +105,10 @@ public class GPUFont implements BinaryFont {
 	private int decompressIndex(int compressedIndex) {
 		int originalIndex = 0;
 		int i = 0;
-		for (Integer[] interval : intervals) {
-			i+=interval[2];
+		for (int intvl = 0; i < intervals.length; i+=3) {
+			i+=intervals[intvl+2];
 			if (i >= compressedIndex) {
-				return interval[1] - (i - compressedIndex);
+				return intervals[intvl+1] - (i - compressedIndex);
 			}
 		}
 		return originalIndex;

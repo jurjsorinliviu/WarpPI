@@ -1,6 +1,6 @@
 package org.warp.picalculator.gui.screens;
 
-import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.Key;
 
 public class EmptyScreen extends Screen {
 

@@ -1,7 +1,7 @@
 package org.warp.picalculator.gui.expression.blocks;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.Key;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.ExtraMenu;

@@ -101,7 +101,7 @@ public class Keyboard {
 	private synchronized static void debugKeyPressed(int keyCode) {
 		switch (keyCode) {
 			case KeyEvent.VK_ESCAPE:
-				Keyboard.keyPressed(Key.POWER);
+				Keyboard.keyPressed(Key.POWEROFF);
 				break;
 			case KeyEvent.VK_S:
 				if (Keyboard.shift) {
@@ -462,76 +462,76 @@ public class Keyboard {
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,2 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,3 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 0,5 */
+					{Key.SETTINGS, Key.NONE, Key.NONE}, /* 0,5 */
 					{Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.NONE}, /* 0,6 */
 					{Key.SIMPLIFY, Key.STEP, Key.NONE}  /* 0,7 */
 				},
 				{ /* ROW 1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,0 */
+					{Key.F4, Key.F4, Key.F4}, /* 1,0 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 1,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,6 */
+					{Key.LEFT, Key.NONE, Key.NONE}, /* 1,2 */
+					{Key.OK, Key.NONE, Key.NONE}, /* 1,3 */
+					{Key.RIGHT, Key.NONE, Key.NONE}, /* 1,4 */
+					{Key.HISTORY_BACK, Key.NONE, Key.NONE}, /* 1,5 */
+					{Key.HISTORY_FORWARD, Key.NONE, Key.NONE}, /* 1,6 */
 					{Key.NONE, Key.PI, Key.DRG_CYCLE}  /* 1,7 */
 				},
 				{ /* ROW 2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,0 */
-					{Key.SQRT, Key.NONE, Key.LETTER_Y}, /* 2,1 */
+					{Key.F3, Key.F4, Key.F4}, /* 2,0 */
+					{Key.SQRT, Key.ROOT, Key.NONE}, /* 2,1 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 2,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,4 */
+					{Key.DOWN, Key.NONE, Key.NONE}, /* 2,3 */
+					{Key.BACK, Key.NONE, Key.NONE}, /* 2,4 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 2,5 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 2,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 2,7 */
+					{Key.NONE, Key.NONE, Key.LETTER_Z}  /* 2,7 */
 				},
 				{ /* ROW 3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,0 */
+					{Key.F2, Key.F2, Key.F2}, /* 3,0 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 3,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,3 */
+					{Key.POWER_OF_x, Key.NONE, Key.NONE}, /* 3,2 */
+					{Key.POWER_OF_2, Key.NONE, Key.NONE}, /* 3,3 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 3,4 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 3,5 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 3,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 3,7 */
+					{Key.DOT, Key.NONE, Key.LETTER_Y}  /* 3,7 */
 				},
 				{ /* ROW 4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,0 */
+					{Key.F1, Key.F1, Key.F1}, /* 4,0 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 4,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,3 */
+					{Key.PARENTHESIS_OPEN, Key.NONE, Key.NONE}, /* 4,2 */
+					{Key.PARENTHESIS_CLOSE, Key.NONE, Key.NONE}, /* 4,3 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 4,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,5 */
+					{Key.SURD_MODE, Key.NONE, Key.NONE}, /* 4,5 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 4,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 4,7 */
+					{Key.NUM0, Key.NONE, Key.LETTER_X}  /* 4,7 */
 				},
 				{ /* ROW 5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,4 */
+					{Key.NUM7, Key.NONE, Key.NONE}, /* 5,0 */
+					{Key.NUM8, Key.NONE, Key.NONE}, /* 5,1 */
+					{Key.NUM9, Key.NONE, Key.NONE}, /* 5,2 */
+					{Key.DELETE, Key.NONE, Key.NONE}, /* 5,3 */
+					{Key.RESET, Key.NONE, Key.NONE}, /* 5,4 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 5,5 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 5,6 */
 					{Key.NONE, Key.NONE, Key.NONE}  /* 5,7 */
 				},
 				{ /* ROW 6 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,4 */
+					{Key.NUM4, Key.NONE, Key.NONE}, /* 6,0 */
+					{Key.NUM5, Key.NONE, Key.NONE}, /* 6,1 */
+					{Key.NUM6, Key.NONE, Key.NONE}, /* 6,2 */
+					{Key.MULTIPLY, Key.NONE, Key.NONE}, /* 6,3 */
+					{Key.DIVIDE, Key.NONE, Key.NONE}, /* 6,4 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 6,5 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 6,6 */
 					{Key.NONE, Key.NONE, Key.NONE}  /* 6,7 */
 				},
 				{ /* ROW 7 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,4 */
+					{Key.NUM1, Key.NONE, Key.NONE}, /* 7,0 */
+					{Key.NUM2, Key.NONE, Key.NONE}, /* 7,1 */
+					{Key.NUM3, Key.NONE, Key.NONE}, /* 7,2 */
+					{Key.PLUS, Key.PLUS_MINUS, Key.NONE}, /* 7,3 */
+					{Key.MINUS, Key.NONE, Key.NONE}, /* 7,4 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 7,5 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 7,6 */
 					{Key.NONE, Key.NONE, Key.NONE}  /* 7,7 */
@@ -586,7 +586,7 @@ public class Keyboard {
 				refresh = true;
 			} else {
 				switch (k) {
-					case POWER:
+					case POWEROFF:
 						DisplayManager.INSTANCE.engine.destroy();
 						break;
 					case NONE:
@@ -678,10 +678,6 @@ public class Keyboard {
 		additionalListener = l;
 	}
 
-	public static enum Key {
-		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, SURD_MODE, DRG_CYCLE, LETTER_X, LETTER_Y, STEP, SIMPLIFY, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x, SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT, PI
-	}
-
 	public static boolean popRefreshRequest() {
 		if (refreshRequest) {
 			refreshRequest = false;
@@ -695,49 +691,79 @@ public class Keyboard {
 /*
 
 
--coord-
- NORMAL
- SHIFT
- ALPHA
--------
 
-|0,0---|0,1---|------|0,3---|------|------|0,6---|
-|SHIFT |ALPHA |------|  ^   |------|------|+BRIGH|
-|SHIFT |ALPHA |------|      |------|------|-BRIGH|
-|SHIFT |ALPHA |------|      |------|------|      |
-|1,0---|1,1---|1,2---|1,3---|1,4---|1,5---|1,6---|
-| =    |      |  <   |  OK  |   >  | Back | Fwd  |
-|      |      |      |      |      |      |      |
-|      |      |      |      |      |      |      |
-|2,0---|2,1---|------|2,3---|------|2,5---|2,6---|
-|      | SQRT |------|  v   |------|      |      |
-|      | ROOT |------|      |------|      |      |
-|      |      |------|      |------|      |      |
-|3,0---|3,1---|3,2---|3,3---|3,4---|3,5---|3,6---|
-|      |      | POW 2| POW x|      |      |      |
-|      |      |      |      |      |      |      |
-|      |      |      |      |      |      |      |
-|4,0---|4,1---|4,2---|4,3---|4,4---|4,5---|4,6---|
-|      |      |      |      |      |S<=>D |      |
-|      |      |      |      |      |      |      |
-|      |      |      |      |      |      |      |
-|5,0---|5,1---|5,2---|5,3---|5,4---|5,5---|5,6---|
-| 7    | 8    | 9    | DEL  | RESET              |
-|      |      |      |      |                    |
-|      |      |      |      |                    |
-|6,0---|6,1---|6,2---|6,3---|6,4-----------------|
-| 4    | 5    | 6    | *    | /                  |
-|      |      |      |      |                    |
-|      |      |      |      |                    |
-|7,0---|7,1---|7,2---|7,3---|7,4-----------------|
-| 1    | 2    | 3    |  +   | -                  |
-|      |      |      |      |                    |
-|      |      |      |      |                    |
-|4,7---|3,7---|2,7---|1,7---|0,7-----------------|
-| 0    | .    |      |      | SIMPLIFY           |
-|      |      |      |PI    | STEP               |
-| X    | Y    | Z    |DRGCYCL|SOLVE FOR [x]      |
-|------|------|------|------|--------------------|
+Keyboard:
+	Example button:
+	|ROW,COLUMN----|
+	| NORMAL STATE |
+	| SHIFT STATE  |
+	| ALPHA STATE  |
+	|--------------|
+	
+	Physical keyboard:
+	|0,0-----|0,1-----|########|0,3-----|########|0,5-----|0,6-----|
+	| SHIFT  | ALPHA  |########|  ^     |########|SETTINGS|+BRIGHT |
+	| NORMAL | ALPHA  |########|        |########|        |-BRIGHT |
+	| SHIFT  | NORMAL |########|        |########|        |        |
+	|1,0-----|1,1-----|1,2-----|1,3-----|1,4-----|1,5-----|1,6-----|
+	| F_4    |        |   <    |   OK   |   >    | Back   | Fwd    |
+	| F_4    |        |        |        |        |        |        |
+	| F_4    |        |        |        |        |        |        |
+	|2,0-----|2,1-----|--------|2,3-----|--------|2,5-----|2,6-----|
+	| F_3    | SQRT   |########|  v     | BACK   |        |        |
+	| F_3    | ROOT   |########|        |        |        |        |
+	| F_3    |        |########|        |        |        |        |
+	|3,0-----|3,1-----|3,2-----|3,3-----|3,4-----|3,5-----|3,6-----|
+	| F_2    |        | POW x  | POW 2  |        |        |        |
+	| F_2    |        |        |        |        |        |        |
+	| F_2    |        |        |        |        |        |        |
+	|4,0-----|4,1-----|4,2-----|4,3-----|4,4-----|4,5-----|4,6-----|
+	| F_1    |        | (      | )      |        | S<=>D  |        |
+	| F_1    |        |        |        |        |        |        |
+	| F_1    |        |        |        |        |        |        |
+	|5,0-----|5,1-----|5,2-----|5,3-----|5,4-----|5,5-----|5,6-----|
+	| 7      | 8      | 9      | DEL    | RESET                    |
+	|        |        |        |        |                          |
+	|        |        |        |        |                          |
+	|6,0-----|6,1-----|6,2-----|6,3-----|6,4-----------------------|
+	| 4      | 5      | 6      | *      | /                        |
+	|        |        |        |        |                          |
+	|        |        |        |        |                          |
+	|7,0-----|7,1-----|7,2-----|7,3-----|7,4-----------------------|
+	| 1      | 2      | 3      |  +     | -                        |
+	|        |        |        |        |                          |
+	|        |        |        |        |                          |
+	|4,7-----|3,7-----|2,7-----|1,7-----|0,7-----------------------|
+	| 0      | .      |        |        | SIMPLIFY                 |
+	|        |        |        |PI      | STEP                     |
+	| X      | Y      | Z      |DRG CYCL|                          |
+	|--------|--------|--------|--------|--------------------------|
 
-
+SCREEN F_n:
+	MathInputScreen:
+		Default:
+			[F_1] Normal: Solve for X			Shift: Solve for _			Alpha: 
+			[F_2] Normal: 						Shift: 						Alpha: 
+			[F_3] Normal: Variables	& constants	Shift: 						Alpha: 
+			[F_4] Normal: Functions f(x)		Shift: 						Alpha: 
+		Variable popup:
+			[F_1] Normal(if constant):Set value	Shift: 						Alpha: 
+			[F_2] Normal: 						Shift: 						Alpha: 
+			[F_3] Normal: 						Shift: 						Alpha: 
+			[F_4] Normal: 						Shift: 						Alpha: 
+	MarioScreen
+		[F_1] Normal: 						Shift: 						Alpha: 
+		[F_2] Normal: 						Shift: 						Alpha: 
+		[F_3] Normal: 						Shift: 						Alpha: 
+		[F_4] Normal: 						Shift: 						Alpha: 
+	ChooseVariableValueScreen
+		[F_1] Normal: 						Shift: 						Alpha: 
+		[F_2] Normal: 						Shift: 						Alpha: 
+		[F_3] Normal: 						Shift: 						Alpha: 
+		[F_4] Normal: 						Shift: 						Alpha: 
+	SolveForXScreen
+		[F_1] Normal: 						Shift: 						Alpha: 
+		[F_2] Normal: 						Shift: 						Alpha: 
+		[F_3] Normal: 						Shift: 						Alpha: 
+		[F_4] Normal: 						Shift: 						Alpha: 
 */
