@@ -2,6 +2,7 @@ package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -14,7 +15,9 @@ import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class GPUEngine implements GraphicEngine {
 
@@ -27,6 +30,8 @@ public class GPUEngine implements GraphicEngine {
 	int[] size = new int[] { StaticVars.screenSize[0], StaticVars.screenSize[1] };
 	private final CopyOnWriteArrayList<BinaryFont> registeredFonts = new CopyOnWriteArrayList<BinaryFont>();
 	private Semaphore exitSemaphore = new Semaphore(0);
+	protected LinkedList<Texture> registeredTextures;
+	protected LinkedList<Texture> unregisteredTextures;
 
 	@Override
 	public int[] getSize() {
@@ -68,6 +73,8 @@ public class GPUEngine implements GraphicEngine {
 	@Override
 	public void create(Runnable onInitialized) {
 		created = true;
+		registeredTextures = new LinkedList<>();
+		unregisteredTextures = new LinkedList<>();
 		r = new GPURenderer();
 		wnd = new NEWTWindow(this);
 		wnd.create();
@@ -191,6 +198,10 @@ public class GPUEngine implements GraphicEngine {
 	@Override
 	public CopyOnWriteArrayList<BinaryFont> getRegisteredFonts() {
 		return registeredFonts;
+	}
+
+	public void registerTexture(Texture t) {
+		unregisteredTextures.addLast(t);
 	}
 
 }

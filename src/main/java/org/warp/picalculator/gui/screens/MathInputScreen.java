@@ -151,6 +151,7 @@ public class MathInputScreen extends Screen {
 		} else {
 			skinN = 21;
 		}
+		DisplayManager.INSTANCE.guiSkin.use(DisplayManager.INSTANCE.engine);
 		renderer.glFillRect(2 + 18 * pos + 2 * spacersNumb, 2, 16, 16, 16 * skinN, 16 * 0, 16, 16);
 	}
 

@@ -45,7 +45,7 @@ public class GPUSkin implements Skin {
 			t = GPURenderer.importTexture(i.f, i.deleteOnExit);
 			w = i.w;
 			h = i.h;
-			t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			((GPUEngine)d).registerTexture(t);
 			initialized = true;
 		} catch (GLException | IOException e) {
 			e.printStackTrace();

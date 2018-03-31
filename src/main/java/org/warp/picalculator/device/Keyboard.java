@@ -604,7 +604,8 @@ public class Keyboard {
 						refresh = true;
 						break;
 					case ZOOM_MODE:
-						StaticVars.windowZoom = ((StaticVars.windowZoom - 0.5f) % 2f) + 1f;
+						StaticVars.windowZoom = ((StaticVars.windowZoom - 1) % 2) + 2;
+//						StaticVars.windowZoom = ((StaticVars.windowZoom - 0.5f) % 2f) + 1f;
 						refresh = true;
 					case HISTORY_BACK:
 						DisplayManager.INSTANCE.goBack();

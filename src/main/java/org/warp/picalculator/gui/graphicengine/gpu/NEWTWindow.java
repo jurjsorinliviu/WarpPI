@@ -53,6 +53,7 @@ import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.fixedfunc.GLPointerFunc;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.texture.Texture;
 
 /**
  *
@@ -89,8 +90,10 @@ class NEWTWindow implements GLEventListener {
 		final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES1));
 		System.out.println("Loaded OpenGL");
 		// We may at this point tweak the caps and request a translucent drawable
+		caps.setHardwareAccelerated(true);
 		caps.setBackgroundOpaque(true); //transparency window
-		caps.setSampleBuffers(false);
+//		caps.setSampleBuffers(true);
+//		caps.setNumSamples(4);
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
 
@@ -292,7 +295,7 @@ class NEWTWindow implements GLEventListener {
 
 		//Vsync
 		gl.setSwapInterval(1);
-
+		
 		//Textures
 		gl.glEnable(GL.GL_TEXTURE_2D);
 
@@ -300,6 +303,9 @@ class NEWTWindow implements GLEventListener {
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glShadeModel(GLLightingFunc.GL_FLAT);
+
+		//Multisampling
+		//gl.glEnable(GL.GL_MULTISAMPLE);
 
 		if (onInitialized != null) {
 			onInitialized.run();
@@ -332,7 +338,15 @@ class NEWTWindow implements GLEventListener {
 	private void onZoomChanged(GL2ES1 gl, boolean sizeChanged) {
 		float precWindowZoom = windowZoom;
 		windowZoom = StaticVars.getCurrentZoomValue();
-		System.out.println("sizechange" + windowZoom);
+
+		if (((precWindowZoom % ((int)precWindowZoom)) != 0f) != ((windowZoom % ((int)windowZoom)) != 0f)) {
+			boolean linear = (windowZoom % ((int)windowZoom)) != 0f;
+
+			for(Texture t : disp.registeredTextures) {
+				t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, linear ? GL.GL_LINEAR : GL.GL_NEAREST);
+				t.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+			}
+		}
 		
 		final int width = realWindowSize[0];
 		final int height = realWindowSize[1];
@@ -359,6 +373,17 @@ class NEWTWindow implements GLEventListener {
 		
 		if (windowZoom != StaticVars.getCurrentZoomValue()) {
 			onZoomChanged(gl, false);
+		}
+
+		Boolean linear = null;
+		while(!disp.unregisteredTextures.isEmpty()) {
+			if (linear == null) {
+				linear = (windowZoom % ((int)windowZoom)) != 0f;
+			}
+			Texture t = disp.unregisteredTextures.pop();
+			t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			t.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+			disp.registeredTextures.addLast(t);
 		}
 		
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);
