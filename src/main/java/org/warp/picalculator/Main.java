@@ -54,11 +54,6 @@ public class Main {
 		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args) && isRaspi) {
 			Gpio.wiringPiSetupPhys();
 			Gpio.pinMode(12, Gpio.PWM_OUTPUT);
-			try {
-			Files.createFile(Paths.get("/boot/warppi_loaded"));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 		} else {
 			StaticVars.screenPos = new int[] { 0, 0 };
 			StaticVars.debugOn = true;

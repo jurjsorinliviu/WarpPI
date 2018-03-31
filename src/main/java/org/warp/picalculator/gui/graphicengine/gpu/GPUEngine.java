@@ -57,7 +57,7 @@ public class GPUEngine implements GraphicEngine {
 	public void setDisplayMode(int ww, int wh) {
 		size[0] = ww;
 		size[1] = wh;
-		wnd.window.setSize((StaticVars.debugOn & StaticVars.debugWindow2x) ? ww * 2 : ww, (StaticVars.debugOn & StaticVars.debugWindow2x) ? wh * 2 : wh);
+		wnd.window.setSize(ww, wh);
 	}
 
 	@Override

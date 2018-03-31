@@ -37,6 +37,7 @@ public class NoGuiEngine implements GraphicEngine {
 	public void setDisplayMode(int ww, int wh) {
 	}
 
+
 	@Override
 	public void create(Runnable onInitialized) {
 		initialized = true;

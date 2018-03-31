@@ -28,6 +28,10 @@
 
 package org.warp.picalculator.gui.graphicengine.gpu;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
@@ -60,11 +64,14 @@ class NEWTWindow implements GLEventListener {
 
 	private final GPUEngine disp;
 	private final GPURenderer renderer;
+	public float windowZoom;
+	public int[] realWindowSize;
 	public Runnable onInitialized;
 
 	public NEWTWindow(GPUEngine disp) {
 		this.disp = disp;
 		renderer = disp.getRenderer();
+		realWindowSize = new int[] {1,1};
 	}
 
 	public GLWindow window;
@@ -173,7 +180,7 @@ class NEWTWindow implements GLEventListener {
 						} else if (!Keyboard.shift && !Keyboard.alpha) {
 							Keyboard.keyReleased(Key.BRIGHTNESS_CYCLE);
 						} else {
-							Keyboard.keyReleased(Key.NONE);
+							Keyboard.keyReleased(Key.ZOOM_MODE);
 						}
 						break;
 					case KeyEvent.VK_ENTER:
@@ -284,7 +291,7 @@ class NEWTWindow implements GLEventListener {
 		final GL2ES1 gl = drawable.getGL().getGL2ES1();
 
 		//Vsync
-		gl.setSwapInterval(2);
+		gl.setSwapInterval(1);
 
 		//Textures
 		gl.glEnable(GL.GL_TEXTURE_2D);
@@ -313,32 +320,46 @@ class NEWTWindow implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
-		disp.size[0] = (StaticVars.debugOn & StaticVars.debugWindow2x) ? width / 2 : width;
-		disp.size[1] = (StaticVars.debugOn & StaticVars.debugWindow2x) ? height / 2 : height;
+		realWindowSize[0] = width;
+		realWindowSize[1] = height;
+		disp.size[0] = width;
+		disp.size[1] = height;
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
-		if (width == 0) {
-			width = 1;
-		}
-		if (height == 0) {
-			height = 1;
-		}
 
+		onZoomChanged(gl, true);
+	}
+
+	private void onZoomChanged(GL2ES1 gl, boolean sizeChanged) {
+		float precWindowZoom = windowZoom;
+		windowZoom = StaticVars.getCurrentZoomValue();
+		System.out.println("sizechange" + windowZoom);
+		
+		final int width = realWindowSize[0];
+		final int height = realWindowSize[1];
+
+		disp.size[0] = (int) (realWindowSize[0] / windowZoom);
+		disp.size[1] = (int) (realWindowSize[1] / windowZoom);
+		
 		gl.glViewport(0, 0, width, height);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		gl.glOrtho(0.0, (StaticVars.debugOn & StaticVars.debugWindow2x) ? width / 2 : width, (StaticVars.debugOn & StaticVars.debugWindow2x) ? height / 2 : height, 0.0, -1, 1);
+		gl.glOrtho(0.0, disp.size[0], disp.size[1], 0.0, -1, 1);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
 	}
-
+	
 	@Override
 	public void display(GLAutoDrawable glad) {
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 
 		GPURenderer.gl = gl;
+		
+		if (windowZoom != StaticVars.getCurrentZoomValue()) {
+			onZoomChanged(gl, false);
+		}
 		
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_VERTEX_ARRAY);

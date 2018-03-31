@@ -13,8 +13,17 @@ public class StaticVars {
 	public static int outputLevel = 0;
 	public static boolean debugWindow2x = false;
 	public static Class<?> classLoader;
+	public static float windowZoom = 2;
 	
 	private StaticVars() {
 		
+	}
+
+	public static float getCurrentZoomValue() {
+		if (StaticVars.debugOn & StaticVars.debugWindow2x) {
+			return 2;
+		} else {
+			return StaticVars.windowZoom;
+		}
 	}
 }

@@ -178,7 +178,7 @@ public class Keyboard {
 				} else if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.BRIGHTNESS_CYCLE);
 				} else {
-					Keyboard.keyPressed(Key.NONE);
+					Keyboard.keyPressed(Key.ZOOM_MODE);
 				}
 				break;
 			case com.jogamp.newt.event.KeyEvent.VK_ENTER:
@@ -463,7 +463,7 @@ public class Keyboard {
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,3 */
 					{Key.NONE, Key.NONE, Key.NONE}, /* 0,4 */
 					{Key.SETTINGS, Key.NONE, Key.NONE}, /* 0,5 */
-					{Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.NONE}, /* 0,6 */
+					{Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.ZOOM_MODE}, /* 0,6 */
 					{Key.SIMPLIFY, Key.STEP, Key.NONE}  /* 0,7 */
 				},
 				{ /* ROW 1 */
@@ -603,6 +603,9 @@ public class Keyboard {
 						DisplayManager.INSTANCE.cycleBrightness(true);
 						refresh = true;
 						break;
+					case ZOOM_MODE:
+						StaticVars.windowZoom = ((StaticVars.windowZoom - 0.5f) % 2f) + 1f;
+						refresh = true;
 					case HISTORY_BACK:
 						DisplayManager.INSTANCE.goBack();
 						refresh = true;
@@ -704,7 +707,7 @@ Keyboard:
 	|0,0-----|0,1-----|########|0,3-----|########|0,5-----|0,6-----|
 	| SHIFT  | ALPHA  |########|  ^     |########|SETTINGS|+BRIGHT |
 	| NORMAL | ALPHA  |########|        |########|        |-BRIGHT |
-	| SHIFT  | NORMAL |########|        |########|        |        |
+	| SHIFT  | NORMAL |########|        |########|        |ZOOMMODE|
 	|1,0-----|1,1-----|1,2-----|1,3-----|1,4-----|1,5-----|1,6-----|
 	| F_4    |        |   <    |   OK   |   >    | Back   | Fwd    |
 	| F_4    |        |        |        |        |        |        |

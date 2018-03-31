@@ -11,6 +11,7 @@ public class LoadingScreen extends Screen {
 	boolean mustRefresh = true;
 	public float loadingTextTranslation = 0.0f;
 	public boolean loaded = false;
+	private float previousZoomValue = 1;
 
 	public LoadingScreen() {
 		super();
@@ -23,7 +24,10 @@ public class LoadingScreen extends Screen {
 	}
 
 	@Override
-	public void initialized() throws InterruptedException {}
+	public void initialized() throws InterruptedException {
+		previousZoomValue = StaticVars.getCurrentZoomValue();
+		StaticVars.windowZoom = 1;
+	}
 
 	@Override
 	public void beforeRender(float dt) {
@@ -31,6 +35,7 @@ public class LoadingScreen extends Screen {
 
 		endLoading += dt;
 		if (loaded && (StaticVars.debugOn || endLoading >= 3.5f)) {
+			StaticVars.windowZoom = previousZoomValue;
 			DisplayManager.INSTANCE.setScreen(new MathInputScreen());
 		}
 		mustRefresh = true;
