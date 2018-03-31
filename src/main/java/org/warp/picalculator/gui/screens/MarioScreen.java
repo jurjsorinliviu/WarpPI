@@ -5,12 +5,17 @@ import java.io.IOException;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.extra.mario.MarioBlock;
+import org.warp.picalculator.extra.mario.MarioGame;
+import org.warp.picalculator.extra.mario.MarioWorld;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
 public class MarioScreen extends Screen {
 
+	private MarioGame g;
+	
 	private static Skin skin;
 	private static Skin groundskin;
 	private static BinaryFont easterfont;
@@ -23,16 +28,14 @@ public class MarioScreen extends Screen {
 	private int easterFu32Num = 0;
 	private float easterFu32Elapsed = 0;
 	private boolean errored;
-	public float[] marioPos = new float[] { 30, 0 };
-	public float[] marioForces = new float[] { 0, 0 };
-	public float walkAnimation = 0;
-	public float jumptime = 0;
-	public boolean walking = false;
-	public boolean running = false;
-	public boolean jumping = false;
-	public boolean flipped = false;
-	public boolean onGround = true;
-	public int[] marioSkinPos = new int[] { 0, 0 };
+//	public float[] marioPos = new float[] { 30, 0 };
+//	public float[] marioForces = new float[] { 0, 0 };
+//	public float jumptime = 0;
+//	public boolean walking = false;
+//	public boolean running = false;
+//	public boolean jumping = false;
+//	public boolean flipped = false;
+//	public boolean onGround = true;
 
 	public MarioScreen() {
 		super();
@@ -66,76 +69,18 @@ public class MarioScreen extends Screen {
 	@Override
 	public void created() throws InterruptedException {
 		if (!errored) {
-
+			g = new MarioGame();
 		}
 	}
 
 	@Override
 	public void beforeRender(float dt) {
 		if (!errored) {
-			walkAnimation += dt;
 			final boolean rightPressed = Keyboard.isKeyDown(2, 5);
 			final boolean leftPressed = Keyboard.isKeyDown(2, 3);
 			final boolean jumpPressed = Keyboard.isKeyDown(2, 1);
-			if ((leftPressed || rightPressed) == (leftPressed & rightPressed)) {
-				walking = false;
-				walkAnimation = 0;
-			} else {
-				if (rightPressed) { //RIGHT
-					if (marioForces[0] < 500f) {
-						marioForces[0] += dt * 500f;
-					}
-					walking = true;
-					flipped = false;
-				}
-				if (leftPressed) { //LEFT
-					if (marioForces[0] > -500f) {
-						marioForces[0] -= dt * 500f;
-					}
-					walking = true;
-					flipped = true;
-				}
-			}
-			if (jumpPressed) { //JUMP
-				jumptime += dt;
-				if (!jumping && onGround) {
-					marioForces[1] = dt * (4 * 1569.6f);
-					jumping = true;
-					onGround = false;
-				} else if (jumptime <= 0.5f) {
-					marioForces[1] = dt * (4 * 1569.6f);
-				}
-			} else {
-				jumping = false;
-				jumptime = 0;
-			}
-			if (!walking & !running & !jumping) {
-				marioSkinPos[0] = 0;
-				marioSkinPos[1] = 0;
-			} else if (onGround & walking & !running & !jumping && walkAnimation >= 0.08) {
-				while (walkAnimation > 0.08) {
-					walkAnimation -= 0.08;
-					if (marioSkinPos[0] == 1 & marioSkinPos[1] == 0) {
-						marioSkinPos[0] += 2;
-					} else if (marioSkinPos[0] == 3 & marioSkinPos[1] == 0) {
-						marioSkinPos[0] -= 1;
-					} else if (marioSkinPos[0] == 2 & marioSkinPos[1] == 0) {
-						marioSkinPos[0] -= 1;
-					} else {
-						marioSkinPos[0] = 1;
-						marioSkinPos[1] = 0;
-					}
-				}
-			} else if (jumping) {
-				marioSkinPos[0] = 5;
-				marioSkinPos[1] = 1;
-			}
-			marioForces[1] -= dt * 1569.6;
-			marioPos[0] += dt * marioForces[0];
-			if (!onGround) {
-				marioPos[1] -= dt * marioForces[1];
-			}
-			marioForces[0] *= 0.75;
+			final boolean upPressed = false, downPressed = false, runPressed = false;
+			g.gameTick(dt, upPressed, downPressed, leftPressed, rightPressed, jumpPressed, runPressed);
 
 			easterElapsed += dt;
 			while (easterElapsed >= 0.04) {
@@ -157,26 +102,31 @@ public class MarioScreen extends Screen {
 		if (errored) {
 			DisplayManager.INSTANCE.renderer.glDrawStringLeft(0, 20, "ERROR");
 		} else {
-			groundskin.use(DisplayManager.INSTANCE.engine);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 0, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 1, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 2, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 3, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 4, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 5, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 6, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 7, 25 + 25, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 8, 25 + 25, 16, 16, 0, 0, 16, 16);
+			if (groundskin != null) {
+				groundskin.use(DisplayManager.INSTANCE.engine);
+				MarioWorld w = g.getCurrentWorld();
+				int width = w.getWidth();
+				int height = w.getHeight();
+				for (int ix = 0; ix < width; ix++) {
+					for (int iy = 0; iy < height; iy++) {
+						MarioBlock b = w.getBlockAt(ix, iy);
+						if (b.getID() != 0) {
+							DisplayManager.INSTANCE.renderer.glFillRect(16 * ix, 16 * (height - iy), 16, 16, 0, 0, 16, 16);
+						}
+					}
+				}
 
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 0, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 1, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 2, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 3, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 4, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 5, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 6, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 7, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
-			DisplayManager.INSTANCE.renderer.glFillRect(16 * 8, 25 + 25 + 16 * 1, 16, 16, 0, 0, 16, 16);
+				//DRAW MARIO
+				DisplayManager.INSTANCE.renderer.glFillRect(16 * (float)g.getPlayer().getX(), 16 * (height - (float)g.getPlayer().getY()),
+						16, 16,
+						0, 0, 16, 16);
+				skin.use(DisplayManager.INSTANCE.engine);
+				DisplayManager.INSTANCE.renderer.glFillRect(-8 + 16 * (float)g.getPlayer().getX() + (g.getPlayer().flipped ? -4 : 0), -8 + 16 * (height - (float)g.getPlayer().getY()),
+						35, 27,
+						35 * (g.getPlayer().marioSkinPos[0] + (g.getPlayer().flipped ? 2 : 1)), 27 * g.getPlayer().marioSkinPos[1],
+						35 * (g.getPlayer().flipped ? -1 : 1), 27);
+//				PIDisplay.renderer.glDrawSkin(getPosX() - 18, 25 + getPosY(), 35 * (marioSkinPos[0] + (flipped ? 2 : 1)), 27 * marioSkinPos[1], 35 * (marioSkinPos[0] + (flipped ? 1 : 2)), 27 * (marioSkinPos[1] + 1), true);
+			}
 
 //		EASTER EGG
 			if (fu32font != null) {
@@ -208,11 +158,6 @@ public class MarioScreen extends Screen {
 				DisplayManager.INSTANCE.renderer.glColor(0xFFffede7);
 				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "G");
 			}
-
-			//DRAW MARIO
-			skin.use(DisplayManager.INSTANCE.engine);
-			DisplayManager.INSTANCE.renderer.glFillRect(getPosX() - 18, 25 + getPosY(), 35, 27, 35 * (marioSkinPos[0] + 1), 27 * marioSkinPos[1], 35, 27);
-//			PIDisplay.renderer.glDrawSkin(getPosX() - 18, 25 + getPosY(), 35 * (marioSkinPos[0] + (flipped ? 2 : 1)), 27 * marioSkinPos[1], 35 * (marioSkinPos[0] + (flipped ? 1 : 2)), 27 * (marioSkinPos[1] + 1), true);
 		}
 	}
 
@@ -229,14 +174,6 @@ public class MarioScreen extends Screen {
 	@Override
 	public boolean keyPressed(Key k) {
 		return false;
-	}
-
-	private int getPosX() {
-		return (int) marioPos[0];
-	}
-
-	private int getPosY() {
-		return (int) marioPos[1];
 	}
 
 }

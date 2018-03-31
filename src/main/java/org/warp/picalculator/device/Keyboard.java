@@ -31,6 +31,7 @@ public class Keyboard {
 	private static volatile boolean[][] precedentStates = new boolean[8][8];
 	public static volatile boolean[][] debugKeysDown = new boolean[8][8];
 	public static volatile int debugKeyCode = -1;
+	public static volatile int debugKeyCodeRelease = -1;
 
 	private static volatile boolean refreshRequest = false;
 
@@ -44,6 +45,10 @@ public class Keyboard {
 						if (debugKeyCode != -1) {
 							debugKeyPressed(debugKeyCode);
 							debugKeyCode = -1;
+						}
+						if (debugKeyCodeRelease != -1) {
+							debugKeyReleased(debugKeyCodeRelease);
+							debugKeyCodeRelease = -1;
 						}
 						Thread.sleep(50);
 					}
@@ -438,6 +443,51 @@ public class Keyboard {
 		}
 	}
 
+	private synchronized static void debugKeyReleased(int keyCode) {
+		switch (keyCode) {
+			case KeyEvent.VK_ENTER:
+				int row = 2;
+				int col = 1;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case com.jogamp.newt.event.KeyEvent.VK_LEFT:
+			case KeyEvent.VK_LEFT:
+				//LEFT
+				row = 2;
+				col = 3;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case com.jogamp.newt.event.KeyEvent.VK_RIGHT:
+			case KeyEvent.VK_RIGHT:
+				//RIGHT
+				row = 2;
+				col = 5;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				System.out.println("RELEASE");
+				break;
+			case com.jogamp.newt.event.KeyEvent.VK_UP:
+			case KeyEvent.VK_UP:
+				//UP
+				row = 1;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case com.jogamp.newt.event.KeyEvent.VK_DOWN:
+			case KeyEvent.VK_DOWN:
+				//DOWN
+				row = 3;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case (short) 12:
+				//DOWN
+				row = 2;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+		}
+	}
+
 	public static boolean isKeyDown(int row, int col) {
 		if (StaticVars.debugOn == false) {
 			return precedentStates[row - 1][col - 1];
@@ -482,8 +532,8 @@ public class Keyboard {
 					{Key.NONE, Key.NONE, Key.NONE}, /* 2,2 */
 					{Key.DOWN, Key.NONE, Key.NONE}, /* 2,3 */
 					{Key.BACK, Key.NONE, Key.NONE}, /* 2,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,6 */
+					{Key.HISTORY_BACK, Key.NONE, Key.NONE}, /* 2,5 */
+					{Key.HISTORY_FORWARD, Key.NONE, Key.NONE}, /* 2,6 */
 					{Key.NONE, Key.NONE, Key.LETTER_Z}  /* 2,7 */
 				},
 				{ /* ROW 3 */
@@ -604,7 +654,7 @@ public class Keyboard {
 						refresh = true;
 						break;
 					case ZOOM_MODE:
-						StaticVars.windowZoom = ((StaticVars.windowZoom - 1) % 2) + 2;
+						StaticVars.windowZoom = (StaticVars.windowZoom % 3) + 1;
 //						StaticVars.windowZoom = ((StaticVars.windowZoom - 0.5f) % 2f) + 1f;
 						refresh = true;
 					case HISTORY_BACK:

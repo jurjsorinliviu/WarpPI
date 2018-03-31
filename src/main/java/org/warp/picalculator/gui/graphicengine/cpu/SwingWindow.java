@@ -87,7 +87,7 @@ public class SwingWindow extends JFrame {
 
 			@Override
 			public void keyReleased(KeyEvent arg0) {
-				
+				Keyboard.debugKeyCodeRelease = arg0.getKeyCode();
 			}
 
 			@Override

@@ -48,7 +48,8 @@ public class CPURenderer implements Renderer {
 	public void glClear(int screenWidth, int screenHeight) {
 		for (int x = 0; x < screenWidth; x++) {
 			for (int y = 0; y < screenHeight; y++) {
-				canvas2d[x + y * size[0]] = clearcolor;
+				int index = x + y * size[0];
+				if (index >= 0 && index < canvas2d.length) canvas2d[index] = clearcolor;
 			}
 		}
 	}
@@ -108,17 +109,20 @@ public class CPURenderer implements Renderer {
 				pixelX = (x0 + texx * onex + width);
 				pixelY = (y0 + texy * oney + height);
 				if (pixelX - (pixelX % size[0]) == 0) {
-					newColor = currentSkin.skinData[(s0 + texx) + (t0 + texy) * currentSkin.skinSize[0]];
-					if (transparent) {
-						oldColor = canvas2d[pixelX + pixelY * size[0]];
-						final float a2 = (newColor >> 24 & 0xFF) / 255f;
-						final float a1 = 1f - a2;
-						final int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
-						final int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
-						final int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
-						newColor = 0xFF000000 | r << 16 | g << 8 | b;
+					final int index = pixelX + pixelY * size[0];
+					if (canvas2d.length > index) {
+						newColor = currentSkin.skinData[(s0 + texx) + (t0 + texy) * currentSkin.skinSize[0]];
+						if (transparent) {
+							oldColor = canvas2d[index];
+							final float a2 = (newColor >> 24 & 0xFF) / 255f;
+							final float a1 = 1f - a2;
+							final int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
+							final int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
+							final int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
+							newColor = 0xFF000000 | r << 16 | g << 8 | b;
+						}
+						canvas2d[index] = newColor;
 					}
-					canvas2d[pixelX + pixelY * size[0]] = newColor;
 				}
 			}
 		}
