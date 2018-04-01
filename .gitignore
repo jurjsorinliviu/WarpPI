@@ -13,7 +13,7 @@ font_gputest1.rft
 font_gputest12.rft
 font_gputest2.rft
 font_gputest3.png
-*extra/manager2/*
+manager2/
 VBO_Example.java
 
 /target/
