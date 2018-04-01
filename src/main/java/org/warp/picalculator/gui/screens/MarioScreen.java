@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.extra.mario.MarioBlock;
 import org.warp.picalculator.extra.mario.MarioGame;
 import org.warp.picalculator.extra.mario.MarioWorld;
 import org.warp.picalculator.gui.DisplayManager;
@@ -18,15 +17,15 @@ public class MarioScreen extends Screen {
 	
 	private static Skin skin;
 	private static Skin groundskin;
-	private static BinaryFont easterfont;
-	private static BinaryFont fu32font;
-	private static Skin easterskin;
-	private int easterNum = 0;
-	private float easterElapsed = 0;
-	private int easterMax = 21;
-	private String[] easterFu32 = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "ò"};
-	private int easterFu32Num = 0;
-	private float easterFu32Elapsed = 0;
+	private static BinaryFont gpuTest2;
+	private static BinaryFont gpuTest1;
+	private static Skin gpuTest3;
+	private int gpuTestNum = 0;
+	private float gpuTestElapsed = 0;
+	private int gpuTestMax = 21;
+	private String[] gpuCharTest1 = new String[] {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "ò"};
+	private int gpuCharTest1Num = 0;
+	private float gpuCharTestt1Elapsed = 0;
 	private boolean errored;
 //	public float[] marioPos = new float[] { 30, 0 };
 //	public float[] marioForces = new float[] { 0, 0 };
@@ -49,17 +48,17 @@ public class MarioScreen extends Screen {
 				skin = DisplayManager.INSTANCE.engine.loadSkin("marioskin.png");
 			if (groundskin == null)
 				groundskin = DisplayManager.INSTANCE.engine.loadSkin("marioground.png");
-			if (easterfont == null)
+			if (gpuTest2 == null)
 				try {
-					easterfont = DisplayManager.INSTANCE.engine.loadFont("easter");
+					gpuTest2 = DisplayManager.INSTANCE.engine.loadFont("gputest2");
 				} catch (Exception ex) {}
-			if (fu32font == null)
+			if (gpuTest1 == null)
 				try {
-					fu32font = DisplayManager.INSTANCE.engine.loadFont("fu32");
+					gpuTest1 = DisplayManager.INSTANCE.engine.loadFont("gputest1");
 				} catch (Exception ex) {}
-			if (easterskin == null)
+			if (gpuTest3 == null)
 				try {
-					easterskin = DisplayManager.INSTANCE.engine.loadSkin("font_easter.png");
+					gpuTest3 = DisplayManager.INSTANCE.engine.loadSkin("font_gputest3.png");
 				} catch (Exception ex) {}
 		} catch (final IOException e) {
 			e.printStackTrace();
@@ -82,15 +81,15 @@ public class MarioScreen extends Screen {
 			final boolean upPressed = false, downPressed = false, runPressed = false;
 			g.gameTick(dt, upPressed, downPressed, leftPressed, rightPressed, jumpPressed, runPressed);
 
-			easterElapsed += dt;
-			while (easterElapsed >= 0.04) {
-				easterNum = (easterNum + 1) % easterMax;
-				easterElapsed -= 0.04;
+			gpuTestElapsed += dt;
+			while (gpuTestElapsed >= 0.04) {
+				gpuTestNum = (gpuTestNum + 1) % gpuTestMax;
+				gpuTestElapsed -= 0.04;
 			}
-			easterFu32Elapsed += dt;
-			while (easterFu32Elapsed >= 1.5) {
-				easterFu32Num = (easterFu32Num + 1) % easterFu32.length;
-				easterFu32Elapsed -= 1.5;
+			gpuCharTestt1Elapsed += dt;
+			while (gpuCharTestt1Elapsed >= 1.5) {
+				gpuCharTest1Num = (gpuCharTest1Num + 1) % gpuCharTest1.length;
+				gpuCharTestt1Elapsed -= 1.5;
 			}
 			
 			DisplayManager.INSTANCE.renderer.glClearColor(0xff000000);
@@ -150,35 +149,35 @@ public class MarioScreen extends Screen {
 //				PIDisplay.renderer.glDrawSkin(getPosX() - 18, 25 + getPosY(), 35 * (marioSkinPos[0] + (flipped ? 2 : 1)), 27 * marioSkinPos[1], 35 * (marioSkinPos[0] + (flipped ? 1 : 2)), 27 * (marioSkinPos[1] + 1), true);
 			}
 
-//		EASTER EGG
-			if (fu32font != null) {
+//		GPU PERFORMANCE TEST
+			if (gpuTest1 != null) {
 				DisplayManager.INSTANCE.renderer.glColor3f(1,1,1);
 				DisplayManager.INSTANCE.renderer.glFillColor(DisplayManager.INSTANCE.engine.getWidth()-256, DisplayManager.INSTANCE.engine.getHeight() / 2 - 128, 256, 256);
-				fu32font.use(DisplayManager.INSTANCE.engine);
+				gpuTest1.use(DisplayManager.INSTANCE.engine);
 				DisplayManager.INSTANCE.renderer.glColor3f(0, 0, 0);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth(), DisplayManager.INSTANCE.engine.getHeight() / 2 - 128, easterFu32[easterFu32Num]);
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth(), DisplayManager.INSTANCE.engine.getHeight() / 2 - 128, gpuCharTest1[gpuCharTest1Num]);
 			}
-			if (easterskin != null) {
-				easterskin.use(DisplayManager.INSTANCE.engine);
+			if (gpuTest3 != null) {
+				gpuTest3.use(DisplayManager.INSTANCE.engine);
 				DisplayManager.INSTANCE.renderer.glColor4f(1, 1, 1, 0.7f);
-				DisplayManager.INSTANCE.renderer.glFillRect(0, StaticVars.screenSize[1] - 128, 224, 128, easterNum * 224, 0, 224, 128);
+				DisplayManager.INSTANCE.renderer.glFillRect(0, StaticVars.screenSize[1] - 128, 224, 128, gpuTestNum * 224, 0, 224, 128);
 			}
-			if (easterfont != null) {
-				easterfont.use(DisplayManager.INSTANCE.engine);
+			if (gpuTest2 != null) {
+				gpuTest2.use(DisplayManager.INSTANCE.engine);
 				DisplayManager.INSTANCE.renderer.glColor(0xFF000000);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "A");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - gpuTest2.getCharacterHeight(), "A");
 				DisplayManager.INSTANCE.renderer.glColor(0xFF800000);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "B");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - gpuTest2.getCharacterHeight(), "B");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFeea28e);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "C");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - gpuTest2.getCharacterHeight(), "C");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFee7255);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "D");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - gpuTest2.getCharacterHeight(), "D");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFeac0b0);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "E");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - gpuTest2.getCharacterHeight(), "E");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFf3d8ce);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "F");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - gpuTest2.getCharacterHeight(), "F");
 				DisplayManager.INSTANCE.renderer.glColor(0xFFffede7);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - easterfont.getCharacterHeight(), "G");
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(StaticVars.screenSize[0], DisplayManager.INSTANCE.engine.getHeight() - gpuTest2.getCharacterHeight(), "G");
 			}
 		}
 	}
