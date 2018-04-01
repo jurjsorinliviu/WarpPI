@@ -293,8 +293,13 @@ class NEWTWindow implements GLEventListener {
 	public void init(GLAutoDrawable drawable) {
 		final GL2ES1 gl = drawable.getGL().getGL2ES1();
 
-		//Vsync
-		gl.setSwapInterval(1);
+		if (StaticVars.debugOn) {
+			//Vsync
+			gl.setSwapInterval(1);
+		} else {
+			//Vsync
+			gl.setSwapInterval(2);
+		}
 		
 		//Textures
 		gl.glEnable(GL.GL_TEXTURE_2D);

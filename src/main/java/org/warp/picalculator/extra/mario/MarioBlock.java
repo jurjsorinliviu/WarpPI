@@ -11,7 +11,7 @@ public class MarioBlock {
 	}
 	
 	public boolean isSolid() {
-		return id != 0b0;
+		return MarioBlock.isSolid(id);
 	}
 
 	public byte getID() {
@@ -24,5 +24,9 @@ public class MarioBlock {
 	
 	public int getY() {
 		return y;
+	}
+
+	public static boolean isSolid(byte id) {
+		return id != 0b0;
 	}
 }

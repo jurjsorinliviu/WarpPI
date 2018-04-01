@@ -5,7 +5,7 @@ public class MarioWorld {
 	private int[] spawnPoint;
 	private int width;
 	private int height;
-	private byte[] data;
+	private byte[][] data;
 	private MarioEvent[] events;
 	private MarioEntity[] entities;
 	
@@ -16,7 +16,7 @@ public class MarioWorld {
 	 * @param events
 	 * @param marioEnemies
 	 */
-	public MarioWorld(int[] spawnPoint, int width, int height, byte[] data, MarioEvent[] events, MarioEntity[] entities) {
+	public MarioWorld(int[] spawnPoint, int width, int height, byte[][] data, MarioEvent[] events, MarioEntity[] entities) {
 		this.spawnPoint = spawnPoint;
 		this.width = width;
 		this.height = height;
@@ -26,9 +26,11 @@ public class MarioWorld {
 	}
 
 	public byte getBlockIdAt(int x, int y) {
-		int idx = (height - 1 - y) * width + x;
-		if (idx < 0 || idx >= data.length) return 0b0;
-		return data[idx];
+		int idy = (height - 1 - y);
+		if (idy < 0 || idy >= data.length) return 0b0;
+		int idx = x;
+		if (idx < 0 || idx >= data[0].length) return 0b0;
+		return data[idy][idx];
 	}
 
 	public MarioBlock getBlockAt(int x, int y) {

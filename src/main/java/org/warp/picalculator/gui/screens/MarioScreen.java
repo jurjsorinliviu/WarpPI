@@ -93,7 +93,7 @@ public class MarioScreen extends Screen {
 				easterFu32Elapsed -= 1.5;
 			}
 			
-			DisplayManager.INSTANCE.renderer.glClearColor(0xff9290ff);
+			DisplayManager.INSTANCE.renderer.glClearColor(0xff000000);
 		}
 	}
 
@@ -103,25 +103,47 @@ public class MarioScreen extends Screen {
 			DisplayManager.INSTANCE.renderer.glDrawStringLeft(0, 20, "ERROR");
 		} else {
 			if (groundskin != null) {
+				double playerX = g.getPlayer().getX();
+				double playerY = g.getPlayer().getY();
 				groundskin.use(DisplayManager.INSTANCE.engine);
 				MarioWorld w = g.getCurrentWorld();
 				int width = w.getWidth();
 				int height = w.getHeight();
+				float screenX = DisplayManager.INSTANCE.engine.getWidth()/2f - 8f;
+				float screenY = DisplayManager.INSTANCE.engine.getHeight()/2f - 8f;
+				float shiftX = -8 + 16 * (float)playerX;
+				float shiftY = -8 + 16 * (height - (float)playerY);
+				int blue = -1;
 				for (int ix = 0; ix < width; ix++) {
 					for (int iy = 0; iy < height; iy++) {
-						MarioBlock b = w.getBlockAt(ix, iy);
-						if (b.getID() != 0) {
-							DisplayManager.INSTANCE.renderer.glFillRect(16 * ix, 16 * (height - iy), 16, 16, 0, 0, 16, 16);
+						double distX = Math.abs(playerX - ix);
+						double distY = Math.abs(playerY - iy - 1.5d);
+						if ((distX*distX + distY*distY/2d) < 25d) {
+							byte b = w.getBlockIdAt(ix, iy);
+							if (b == 0) {
+								if (blue != 1) {
+									blue = 1;
+									DisplayManager.INSTANCE.renderer.glColor(0xff9290ff);
+								}
+								DisplayManager.INSTANCE.renderer.glFillColor(screenX - shiftX + 16 * ix, screenY - shiftY + 16 * (height - iy), 16, 16);
+							} else {
+								if (blue != 0) {
+									blue = 0;
+									DisplayManager.INSTANCE.renderer.glColor(0xffffffff);
+								}
+								DisplayManager.INSTANCE.renderer.glFillRect(screenX - shiftX+ 16 * ix, screenY - shiftY + 16 * (height - iy), 16, 16, 0, 0, 16, 16);
+							}
 						}
 					}
 				}
+				if (blue != 0) {
+					blue = 0;
+					DisplayManager.INSTANCE.renderer.glColor(0xffffffff);
+				}
 
 				//DRAW MARIO
-				DisplayManager.INSTANCE.renderer.glFillRect(16 * (float)g.getPlayer().getX(), 16 * (height - (float)g.getPlayer().getY()),
-						16, 16,
-						0, 0, 16, 16);
 				skin.use(DisplayManager.INSTANCE.engine);
-				DisplayManager.INSTANCE.renderer.glFillRect(-8 + 16 * (float)g.getPlayer().getX() + (g.getPlayer().flipped ? -4 : 0), -8 + 16 * (height - (float)g.getPlayer().getY()),
+				DisplayManager.INSTANCE.renderer.glFillRect(screenX - (g.getPlayer().flipped ? 3 : 0), screenY,
 						35, 27,
 						35 * (g.getPlayer().marioSkinPos[0] + (g.getPlayer().flipped ? 2 : 1)), 27 * g.getPlayer().marioSkinPos[1],
 						35 * (g.getPlayer().flipped ? -1 : 1), 27);
