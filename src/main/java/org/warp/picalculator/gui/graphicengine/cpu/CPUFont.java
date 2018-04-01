@@ -307,4 +307,14 @@ public class CPUFont implements BinaryFont {
 		return true;
 	}
 
+	@Override
+	public int getSkinWidth() {
+		return -1;
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return -1;
+	}
+
 }

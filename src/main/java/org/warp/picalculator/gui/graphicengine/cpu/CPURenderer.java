@@ -54,9 +54,11 @@ public class CPURenderer implements Renderer {
 		}
 	}
 
-	private void glDrawSkin(int x0, int y0, int s0, int t0, int s1, int t1, boolean transparent) {
+	private void glDrawSkin(int x0, int y0, int x1, int y1, int s0, int t0, int s1, int t1, boolean transparent) {
 		x0 += StaticVars.screenPos[0];
 		y0 += StaticVars.screenPos[1];
+		double incrementX = Math.abs((double)(x1-x0)/(double)(s1-s0));
+		double incrementY = Math.abs((double)(y1-y0)/(double)(t1-t0));
 		int oldColor;
 		int newColor;
 		final int onex = s0 <= s1 ? 1 : -1;
@@ -102,25 +104,30 @@ public class CPURenderer implements Renderer {
 			}
 			y0 = 0;
 		}
-		int pixelX;
-		int pixelY;
-		for (int texx = 0; texx < s1 - s0; texx++) {
-			for (int texy = 0; texy < t1 - t0; texy++) {
-				pixelX = (x0 + texx * onex + width);
-				pixelY = (y0 + texy * oney + height);
-				if (pixelX - (pixelX % size[0]) == 0) {
-					final int index = pixelX + pixelY * size[0];
-					if (canvas2d.length > index) {
-						newColor = currentSkin.skinData[(s0 + texx) + (t0 + texy) * currentSkin.skinSize[0]];
+		for (double pixelX = 0; pixelX < x1-x0; pixelX++) {
+			for (double pixelY = 0; pixelY < y1-y0; pixelY++) {
+				final int index = (int) (x0+pixelX + (y0+pixelY) * size[0]);
+				if (canvas2d.length > index) {
+					int texx = (int) (pixelX / incrementX);
+					int texy = (int) (pixelY / incrementY);
+					int skinIndex = (int) (s0 + texx + (t0 + texy) * currentSkin.skinSize[0]);
+					if (skinIndex >= 0 && skinIndex < currentSkin.skinData.length) {
+						newColor = currentSkin.skinData[skinIndex];
+						final int a = (int) ((double)(newColor >> 24 & 0xFF) * ((double)(color >> 24 & 0xFF)/(double)0xFF));
+						int r = (int) ((double)(newColor >> 16 & 0xFF) * ((double)(color >> 16 & 0xFF)/(double)0xFF));
+						int g = (int) ((double)(newColor >> 8 & 0xFF) * ((double)(color >> 8 & 0xFF)/(double)0xFF));
+						int b = (int) ((double)(newColor & 0xFF) * ((double)(color & 0xFF)/(double)0xFF));
+						newColor = a << 24 | r << 16 | g << 8 | b;
 						if (transparent) {
 							oldColor = canvas2d[index];
 							final float a2 = (newColor >> 24 & 0xFF) / 255f;
 							final float a1 = 1f - a2;
-							final int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
-							final int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
-							final int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
+							r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
+							g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
+							b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
 							newColor = 0xFF000000 | r << 16 | g << 8 | b;
 						}
+						
 						canvas2d[index] = newColor;
 					}
 				}
@@ -169,7 +176,7 @@ public class CPURenderer implements Renderer {
 	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth,
 			float uvHeight) {
 		if (currentSkin != null) {
-			glDrawSkin((int) x, (int) y, (int) uvX, (int) uvY, (int) (uvWidth + uvX), (int) (uvHeight + uvY), true);
+			glDrawSkin((int) x, (int) y, (int) (x + width), (int) (y + height), (int) uvX, (int) uvY, (int) (uvWidth + uvX), (int) (uvHeight + uvY), true);
 		} else {
 			glFillColor(x, y, width, height);
 		}

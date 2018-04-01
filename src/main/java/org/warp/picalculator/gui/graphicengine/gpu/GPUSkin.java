@@ -67,4 +67,14 @@ public class GPUSkin implements Skin {
 		return initialized;
 	}
 
+	@Override
+	public int getSkinWidth() {
+		return w;
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return h;
+	}
+
 }

@@ -11,6 +11,8 @@ import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.PIHardwareDisplay;
 import org.warp.picalculator.gui.CalculatorHUD;
 import org.warp.picalculator.gui.DisplayManager;
+import org.warp.picalculator.gui.HUD;
+import org.warp.picalculator.gui.HardwareDisplay;
 import org.warp.picalculator.gui.screens.LoadingScreen;
 import org.warp.picalculator.gui.screens.Screen;
 import org.warp.picalculator.math.rules.RulesManager;
@@ -22,10 +24,10 @@ public class Main {
 	public static Main instance;
 	public static String[] args;
 	public Main(String[] args) throws InterruptedException, Error {
-		this(new LoadingScreen(), args);
+		this(new LoadingScreen(), new PIHardwareDisplay(), new CalculatorHUD(), args);
 	}
 
-	public Main(Screen screen, String[] args) throws InterruptedException, Error {
+	public Main(Screen screen, HardwareDisplay disp, HUD hud, String[] args) throws InterruptedException, Error {
 		System.out.println("WarpPI Calculator");
 		instance = this;
 		Main.args = args;
@@ -33,7 +35,7 @@ public class Main {
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		Thread.currentThread().setName("Main thread");
 		beforeStart();
-		new DisplayManager(new PIHardwareDisplay(), new CalculatorHUD(), screen, "WarpPI Calculator by Andrea Cavalli (@Cavallium)");
+		new DisplayManager(disp, hud, screen, "WarpPI Calculator by Andrea Cavalli (@Cavallium)");
 		afterStart();
 		if (screen instanceof LoadingScreen) {
 			((LoadingScreen) screen).loaded = true;

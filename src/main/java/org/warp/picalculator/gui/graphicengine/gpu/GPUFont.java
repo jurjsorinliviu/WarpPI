@@ -234,4 +234,14 @@ public class GPUFont implements BinaryFont {
 	public boolean isInitialized() {
 		return initialized;
 	}
+
+	@Override
+	public int getSkinWidth() {
+		return this.memoryWidth;
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return this.memoryHeight;
+	}
 }

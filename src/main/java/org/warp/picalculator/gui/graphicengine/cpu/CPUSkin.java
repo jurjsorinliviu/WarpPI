@@ -58,4 +58,14 @@ public class CPUSkin implements Skin {
 		return true;
 	}
 
+	@Override
+	public int getSkinWidth() {
+		return skinSize[0];
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return skinSize[1];
+	}
+
 }
