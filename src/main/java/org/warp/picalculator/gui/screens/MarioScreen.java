@@ -57,6 +57,7 @@ public class MarioScreen extends Screen {
 				try {
 					gpuTest1 = DisplayManager.INSTANCE.engine.loadFont("gputest12");
 					gpuTest12 = true;
+					StaticVars.windowZoom = 1;
 				} catch (Exception ex) {
 					gpuTest12 = false;
 					try {
@@ -162,7 +163,7 @@ public class MarioScreen extends Screen {
 				DisplayManager.INSTANCE.renderer.glFillColor(DisplayManager.INSTANCE.engine.getWidth()-(gpuTest12 ? 512 : 256), DisplayManager.INSTANCE.engine.getHeight() / 2 - (gpuTest12 ? 256 : 128), gpuTest12 ? 512 : 256, gpuTest12 ? 512 : 256);
 				gpuTest1.use(DisplayManager.INSTANCE.engine);
 				DisplayManager.INSTANCE.renderer.glColor3f(0, 0, 0);
-				DisplayManager.INSTANCE.renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth(), DisplayManager.INSTANCE.engine.getHeight() / 2 - 128, gpuCharTest1[gpuCharTest1Num]);
+				DisplayManager.INSTANCE.renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth(), DisplayManager.INSTANCE.engine.getHeight() / 2 - (gpuTest12 ? 256 : 128), gpuCharTest1[gpuCharTest1Num]);
 			}
 			if (gpuTest3 != null) {
 				gpuTest3.use(DisplayManager.INSTANCE.engine);
