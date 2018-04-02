@@ -44,4 +44,14 @@ public class Headless8Font implements BinaryFont {
 		return true;
 	}
 
+	@Override
+	public int getSkinWidth() {
+		return 0;
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return 0;
+	}
+
 }

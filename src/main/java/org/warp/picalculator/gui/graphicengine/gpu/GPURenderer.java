@@ -251,6 +251,7 @@ public class GPURenderer implements Renderer {
 		File f;
 		if (isResource) {
 			f = Files.createTempFile("texture-", ".png").toFile();
+			f.deleteOnExit();
 			ImageIO.write(img, "png", f);
 		} else {
 			f = new File(file);

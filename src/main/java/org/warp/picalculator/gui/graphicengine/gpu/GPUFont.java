@@ -134,6 +134,7 @@ public class GPUFont implements BinaryFont {
 		System.out.println(((int)Math.ceil(Math.sqrt(totalChars) * charW)) + " * " + ((int)Math.ceil(Math.sqrt(totalChars) * charH)) + " --> " + w + " * " + h);
 		
 		File f = Files.createTempFile("texture-font-", ".png").toFile();
+		f.deleteOnExit();
 		final FileOutputStream outputStream = new FileOutputStream(f);
 		final ImageInfo imi = new ImageInfo(w, h, 8, true); // 8 bits per channel, alpha
 		// open image for writing to a output stream

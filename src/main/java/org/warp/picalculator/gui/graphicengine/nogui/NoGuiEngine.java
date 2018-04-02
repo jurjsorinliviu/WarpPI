@@ -199,6 +199,18 @@ public class NoGuiEngine implements GraphicEngine {
 			public int getCharacterHeight() {
 				return 1;
 			}
+
+			@Override
+			public int getSkinWidth() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getSkinHeight() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
 		};
 	}
 
@@ -236,6 +248,18 @@ public class NoGuiEngine implements GraphicEngine {
 			public int getCharacterHeight() {
 				return 1;
 			}
+
+			@Override
+			public int getSkinWidth() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getSkinHeight() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
 		};
 	}
 
@@ -257,6 +281,18 @@ public class NoGuiEngine implements GraphicEngine {
 			
 			@Override
 			public void initialize(GraphicEngine d) {
+			}
+
+			@Override
+			public int getSkinWidth() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getSkinHeight() {
+				// TODO Auto-generated method stub
+				return 0;
 			}
 		};
 	}

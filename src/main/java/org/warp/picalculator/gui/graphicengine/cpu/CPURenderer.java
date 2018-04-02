@@ -107,32 +107,67 @@ public class CPURenderer implements Renderer {
 		for (double pixelX = 0; pixelX < x1-x0; pixelX++) {
 			for (double pixelY = 0; pixelY < y1-y0; pixelY++) {
 				final int index = (int) (x0+pixelX + (y0+pixelY) * size[0]);
-				if (canvas2d.length > index) {
+				if (index >= 0 && index < canvas2d.length && pixelX < size[0]) {
 					int texx = (int) (pixelX / incrementX);
 					int texy = (int) (pixelY / incrementY);
-					int skinIndex = (int) (s0 + texx + (t0 + texy) * currentSkin.skinSize[0]);
-					if (skinIndex >= 0 && skinIndex < currentSkin.skinData.length) {
-						newColor = currentSkin.skinData[skinIndex];
-						final int a = (int) ((double)(newColor >> 24 & 0xFF) * ((double)(color >> 24 & 0xFF)/(double)0xFF));
-						int r = (int) ((double)(newColor >> 16 & 0xFF) * ((double)(color >> 16 & 0xFF)/(double)0xFF));
-						int g = (int) ((double)(newColor >> 8 & 0xFF) * ((double)(color >> 8 & 0xFF)/(double)0xFF));
-						int b = (int) ((double)(newColor & 0xFF) * ((double)(color & 0xFF)/(double)0xFF));
-						newColor = a << 24 | r << 16 | g << 8 | b;
-						if (transparent) {
-							oldColor = canvas2d[index];
-							final float a2 = (newColor >> 24 & 0xFF) / 255f;
-							final float a1 = 1f - a2;
-							r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
-							g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
-							b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
-							newColor = 0xFF000000 | r << 16 | g << 8 | b;
-						}
-						
-						canvas2d[index] = newColor;
+					int expX = 0;
+					int expY = 0;
+					if (incrementX < 1) {
+						expX = (int) Math.round(1d/incrementX/2d);
 					}
+					if (incrementY < 1) {
+						expY = (int) Math.round(1d/incrementY/2d);
+					}
+					int[] newColors = new int[(1+expX*2)*(1+expY*2)];
+					for (int expXi = -expX; expXi <= expX; expXi++) {
+						for (int expYi = -expY; expYi <= expY; expYi++) {
+							int skinIndex = (int) (s0 + (texx+expXi) + (t0 + (texy+expYi)) * currentSkin.skinSize[0]);
+							newColors[(expXi+expX)+(expYi+expY)*(1+expY*2)] = getSkinColorAt(currentSkin.skinData, skinIndex);
+						}
+					}
+					newColor = joinColors(newColors);
+					if (transparent) {
+						oldColor = canvas2d[index];
+						final float a2 = (newColor >> 24 & 0xFF) / 255f;
+						final float a1 = 1f - a2;
+						int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
+						int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
+						int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
+						newColor = 0xFF000000 | r << 16 | g << 8 | b;
+					}
+					
+					canvas2d[index] = newColor;
 				}
 			}
 		}
+	}
+
+	private int joinColors(int[] newColors) {
+		int a = 0;
+		int r = 0;
+		int g = 0;
+		int b = 0;
+		for (int i = 0; i < newColors.length; i++) {
+			int newColor = newColors[i];
+			a += newColor >> 24 & 0xFF;
+			r += newColor >> 16 & 0xFF;
+			g += newColor >> 8 & 0xFF;
+			b += newColor & 0xFF;
+		}
+		return (a/newColors.length) << 24 | (r/newColors.length) << 16 | (g/newColors.length) << 8 | (b/newColors.length);
+	}
+
+	private int getSkinColorAt(int[] skinData, int skinIndex) {
+		int newColor = 0;
+		if (skinIndex >= 0 && skinIndex < skinData.length) {
+			newColor = skinData[skinIndex];
+			final int a = (int) ((double)(newColor >> 24 & 0xFF) * ((double)(color >> 24 & 0xFF)/(double)0xFF));
+			int r = (int) ((double)(newColor >> 16 & 0xFF) * ((double)(color >> 16 & 0xFF)/(double)0xFF));
+			int g = (int) ((double)(newColor >> 8 & 0xFF) * ((double)(color >> 8 & 0xFF)/(double)0xFF));
+			int b = (int) ((double)(newColor & 0xFF) * ((double)(color & 0xFF)/(double)0xFF));
+			newColor = a << 24 | r << 16 | g << 8 | b;
+		}
+		return newColor;
 	}
 
 	@Override

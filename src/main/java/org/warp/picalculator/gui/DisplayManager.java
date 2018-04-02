@@ -1,6 +1,7 @@
 package org.warp.picalculator.gui;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -152,6 +153,10 @@ public final class DisplayManager implements RenderingLoop {
 	public void setScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
+				if (DisplayManager.INSTANCE.currentSession > 0) {
+					int sl = DisplayManager.INSTANCE.sessions.length + 5; //TODO: I don't know why if i don't add +5 or more some items disappear
+					DisplayManager.INSTANCE.sessions = Arrays.copyOfRange(DisplayManager.INSTANCE.sessions, DisplayManager.INSTANCE.currentSession, sl);
+				}
 				DisplayManager.INSTANCE.currentSession = 0;
 				for (int i = DisplayManager.INSTANCE.sessions.length - 1; i >= 1; i--) {
 					DisplayManager.INSTANCE.sessions[i] = DisplayManager.INSTANCE.sessions[i - 1];

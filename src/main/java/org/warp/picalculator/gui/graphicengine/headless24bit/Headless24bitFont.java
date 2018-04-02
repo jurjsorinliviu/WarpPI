@@ -44,4 +44,14 @@ public class Headless24bitFont implements BinaryFont {
 		return true;
 	}
 
+	@Override
+	public int getSkinWidth() {
+		return 0;
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return 0;
+	}
+
 }

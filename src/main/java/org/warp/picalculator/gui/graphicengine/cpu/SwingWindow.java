@@ -39,7 +39,7 @@ public class SwingWindow extends JFrame {
 		// Transparent 16 x 16 pixel cursor image.
 		final BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
 
-		if ((StaticVars.windowZoom != 1) | (StaticVars.debugOn & StaticVars.debugWindow2x)) mult = 2;
+		if (StaticVars.debugOn & StaticVars.debugWindow2x) mult = 2;
 		if (StaticVars.debugOn) {
 			if (Utils.debugThirdScreen) {
 				this.setLocation(2880, 900);
