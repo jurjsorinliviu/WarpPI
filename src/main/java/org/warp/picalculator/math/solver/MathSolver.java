@@ -17,7 +17,7 @@ public class MathSolver {
 	
 	private final Function initialFunction;
 	private AtomicInteger stepState = new AtomicInteger(0);
-	private int currentStepStateN = 0;
+	private int stepStateRepetitions = 0;
 	private int consecutiveNullSteps = 0;
 	private enum StepState {
 		_1_CALCULATION,
@@ -39,32 +39,36 @@ public class MathSolver {
 		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Solving all steps. Input: " + initialFunction.toString());
 		currFnc.add(initialFunction);
 		long stepNumber = 0;
-		int stepBefore = 0, stepAfter = 0;
+		int initStepState = 0, endStepState = 0;
 		AtomicInteger stepState = new AtomicInteger(0);
 		do {
 			final String stepName = "Step " + stepNumber;
-			for (int i = stepBefore; i <= stepAfter; i++) {
-				lastFnc = lastFunctions[i] = currFnc;
+			for (int i = initStepState; i < endStepState; i++) {
+				lastFunctions[i] = currFnc;
 			}
-			stepBefore = stepState.get();
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step " + stepStates[stepBefore] + ". Input: " + currFnc);
+			lastFnc = currFnc;
+			initStepState = stepState.get();
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step " + stepStates[initStepState] + ". Input: " + currFnc);
 			ObjectArrayList<Function> stepResult = solveStep(lastFnc, stepState);
-			if (stepResult == null) {
-				currFnc = lastFnc;
-			} else {
+			if (stepResult != null) {
 				for (Function result : stepResult) {
 					Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, result.toString());
 				}
 				currFnc = stepResult;
 				steps.add(currFnc);
 			}
-			stepAfter = stepState.get();
+			endStepState = stepState.get();
 			stepNumber++;
 
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result: " + stepResult);
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + currentStepStateN + " simplifications.");
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Next step state: " + stepStates[stepAfter]);
-		} while(consecutiveNullSteps < stepStates.length &&!checkEquals(currFnc, lastFunctions[stepAfter]));
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + stepStateRepetitions + " simplifications.");
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Next step state: " + stepStates[endStepState]);
+		} while(consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[endStepState]));
+		if (consecutiveNullSteps >= stepStates.length) {
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + consecutiveNullSteps + " >= " + stepStates.length);
+		} else {
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to " + lastFunctions[endStepState]);
+		}
 		return steps;
 	}
 
@@ -124,27 +128,27 @@ public class MathSolver {
 				if (results == null) {
 					stepState.incrementAndGet();
 					consecutiveNullSteps++;
-					currentStepStateN = 0;
+					stepStateRepetitions = 0;
 				} else {
 					consecutiveNullSteps = 0;
-					currentStepStateN++;
+					stepStateRepetitions++;
 					return results;
 				}
 				break;
 			}
 			case _2_EXPANSION: {
 				if (results == null) {
-					if (currentStepStateN == 0) {
+					if (stepStateRepetitions == 0) {
 						stepState.addAndGet(2);
 						consecutiveNullSteps += 2;
 					} else {
 						stepState.incrementAndGet();
 						consecutiveNullSteps++;
 					}
-					currentStepStateN = 0;
+					stepStateRepetitions = 0;
 				} else {
 					consecutiveNullSteps = 0;
-					currentStepStateN++;
+					stepStateRepetitions++;
 					return results;
 				}
 				break;
@@ -153,10 +157,10 @@ public class MathSolver {
 				if (results == null) {
 					stepState.incrementAndGet();
 					consecutiveNullSteps++;
-					currentStepStateN = 0;
+					stepStateRepetitions = 0;
 				} else {
 					consecutiveNullSteps = 0;
-					currentStepStateN++;
+					stepStateRepetitions++;
 					return results;
 				}
 				break;
@@ -165,11 +169,11 @@ public class MathSolver {
 				if (results == null) {
 					stepState.set(1);
 					consecutiveNullSteps++;
-					currentStepStateN = 0;
+					stepStateRepetitions = 0;
 				} else {
 					stepState.set(0);
 					consecutiveNullSteps = 0;
-					currentStepStateN++;
+					stepStateRepetitions++;
 					return results;
 				}
 				break;
@@ -185,14 +189,16 @@ public class MathSolver {
 		ObjectArrayList<Rule> rules = initialFunction.getMathContext().getAcceptableRules(currentAcceptedRules);
 		ObjectArrayList<Function> results = null;
 		Rule appliedRule = null;
-		for (Function fnc : fncs) {
-			for (Rule rule : rules) {
-				List<Function> ruleResults = fnc.simplify(rule);
-				if (ruleResults != null && !ruleResults.isEmpty()) {
-					if (results == null) results = new ObjectArrayList<Function>();
-					results.addAll(ruleResults);
-					appliedRule = rule;
-					break;
+		out: {
+			for (Function fnc : fncs) {
+				for (Rule rule : rules) {
+					List<Function> ruleResults = fnc.simplify(rule);
+					if (ruleResults != null && !ruleResults.isEmpty()) {
+						if (results == null) results = new ObjectArrayList<Function>();
+						results.addAll(ruleResults);
+						appliedRule = rule;
+						break out; //TODO: prima era un break normale, controllare se bisogna uscire da tutti e due i for oppure soltanto dall'ultimo.
+					}
 				}
 			}
 		}

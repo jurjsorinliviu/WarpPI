@@ -59,6 +59,8 @@ public class CPURenderer implements Renderer {
 		y0 += StaticVars.screenPos[1];
 		double incrementX = Math.abs((double)(x1-x0)/(double)(s1-s0));
 		double incrementY = Math.abs((double)(y1-y0)/(double)(t1-t0));
+		boolean flippedX = (x1-x0)/(s1-s0) < 0;
+		boolean flippedY = (y1-y0)/(t1-t0) < 0;
 		int oldColor;
 		int newColor;
 		final int onex = s0 <= s1 ? 1 : -1;
@@ -121,8 +123,11 @@ public class CPURenderer implements Renderer {
 					int[] newColors = new int[(1+expX*2)*(1+expY*2)];
 					for (int expXi = -expX; expXi <= expX; expXi++) {
 						for (int expYi = -expY; expYi <= expY; expYi++) {
-							int skinIndex = (int) (s0 + (texx+expXi) + (t0 + (texy+expYi)) * currentSkin.skinSize[0]);
-							newColors[(expXi+expX)+(expYi+expY)*(1+expY*2)] = getSkinColorAt(currentSkin.skinData, skinIndex);
+							int skinIndex = (int) (s0 + (texx*(flippedX ? -1d : 1d)+(flippedX ? -(s0 - s1)-1 : 0)+expXi) + (t0 + (texy*(flippedY ? -1d : 1d)+(flippedY ? -(t0 - t1)-1 : 0)+expYi)) * currentSkin.skinSize[0]);
+							int idx = (expXi+expX)+(expYi+expY)*(1+expY*2);
+							if (idx >= 0 && idx < newColors.length) {
+								newColors[idx] = getSkinColorAt(currentSkin.skinData, skinIndex);
+							}
 						}
 					}
 					newColor = joinColors(newColors);
@@ -249,7 +254,9 @@ public class CPURenderer implements Renderer {
 		final int sizeW = size[0];
 		for (int px = x0; px < x1; px++) {
 			for (int py = y0; py < y1; py++) {
-				canvas2d[(px) + (py) * sizeW] = color;
+				int idx = (px) + (py) * sizeW;
+				if (px < sizeW && idx >= 0 && idx < canvas2d.length)
+					canvas2d[idx] = color;
 			}
 		}
 	}
@@ -284,10 +291,13 @@ public class CPURenderer implements Renderer {
 						final int bit = dx + dy * currentFont.charW;
 						currentInt = (int) (Math.floor(bit) / (CPUFont.intBits));
 						currentIntBitPosition = bit - (currentInt * CPUFont.intBits);
-						bitData = (currentFont.chars32[charIndex * currentFont.charIntCount + currentInt] >> currentIntBitPosition) & 1;
-						screenPos = ix + cpos + dx + (iy + dy) * screenSize[0];
-						if (bitData == 1 & screenLength > screenPos & screenPos >= 0) {
-							screen[screenPos] = color;
+						int charIdx = charIndex * currentFont.charIntCount + currentInt;
+						if (charIdx >= 0 && charIdx < currentFont.chars32.length) {
+							bitData = (currentFont.chars32[charIdx] >> currentIntBitPosition) & 1;
+							screenPos = ix + cpos + dx + (iy + dy) * screenSize[0];
+							if (bitData == 1 & screenLength > screenPos & screenPos >= 0) {
+								screen[screenPos] = color;
+							}
 						}
 					}
 				}

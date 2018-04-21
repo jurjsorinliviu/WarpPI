@@ -63,6 +63,8 @@ public class CPUEngine implements GraphicEngine {
 	public boolean wasResized() {
 		if (INSTANCE.wasResized) {
 			r.size = new int[] { INSTANCE.getWidth(), INSTANCE.getHeight() };
+			if (r.size[0] <= 0) r.size[0] = 1;
+			if (r.size[1] <= 0) r.size[1] = 1;
 			CPURenderer.canvas2d = new int[r.size[0] * r.size[1]];
 			g = new BufferedImage(r.size[0], r.size[1], BufferedImage.TYPE_INT_ARGB);
 			INSTANCE.wasResized = false;
