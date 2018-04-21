@@ -48,7 +48,6 @@ public class SumRule implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		System.out.println("SUM ON " + f.toString());
 		if (f instanceof Sum) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
 			Function variable1 = ((FunctionOperator)f).getParameter1();
