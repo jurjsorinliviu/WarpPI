@@ -141,7 +141,7 @@ public class CPURenderer implements Renderer {
 						newColor = 0xFF000000 | r << 16 | g << 8 | b;
 					}
 					
-					canvas2d[index] = newColor;
+					canvas2d[index] = stackColors(canvas2d[index], newColor);
 				}
 			}
 		}
@@ -160,6 +160,22 @@ public class CPURenderer implements Renderer {
 			b += newColor & 0xFF;
 		}
 		return (a/newColors.length) << 24 | (r/newColors.length) << 16 | (g/newColors.length) << 8 | (b/newColors.length);
+	}
+
+	private int stackColors(int... color) {
+		double a = 0;
+		double r = 0;
+		double g = 0;
+		double b = 0;
+		for (int i = 0; i < color.length; i++) {
+			int newColor = color[i];
+			double alpha = (newColor >> 24 & 0xFF) / 255d;
+			a = a * (1d-alpha) + (newColor >> 24 & 0xFF) * alpha;
+			r = r * (1d-alpha) + (newColor >> 16 & 0xFF) * alpha;
+			g = g * (1d-alpha) + (newColor >> 8 & 0xFF) * alpha;
+			b = b * (1d-alpha) + (newColor & 0xFF) * alpha;
+		}
+		return ((int)a) << 24 | ((int)r) << 16 | ((int)g) << 8 | ((int)b);
 	}
 
 	private int getSkinColorAt(int[] skinData, int skinIndex) {
@@ -191,13 +207,13 @@ public class CPURenderer implements Renderer {
 		if (iy0 == iy1) {
 			for (int x = 0; x <= ix1 - ix0; x++) {
 				if ((ix0 + x < size[0]) & (iy0 < size[1])) {
-					canvas2d[ix0 + x + iy0 * size[0]] = color;
+					canvas2d[ix0 + x + iy0 * size[0]] = stackColors(canvas2d[ix0 + x + iy0 * size[0]], color);
 				}
 			}
 		} else if (ix0 == ix1) {
 			for (int y = 0; y <= iy1 - iy0; y++) {
 				if ((ix0 < size[0]) & (iy0 + y < size[1])) {
-					canvas2d[ix0 + (iy0 + y) * size[0]] = color;
+					canvas2d[ix0 + (iy0 + y) * size[0]] = stackColors(canvas2d[ix0 + (iy0 + y) * size[0]], color);
 				}
 			}
 		} else {
@@ -205,7 +221,7 @@ public class CPURenderer implements Renderer {
 			for (int texx = 0; texx <= ix1 - ix0; texx++) {
 				if (ix0 + texx < size[0] && iy0 + (m * texx) < size[1]) {
 					if ((ix0 + texx < size[0]) & ((iy0 + (m * texx)) < size[1])) {
-						canvas2d[(ix0 + texx) + (iy0 + (m * texx)) * size[0]] = color;
+						canvas2d[(ix0 + texx) + (iy0 + (m * texx)) * size[0]] = stackColors(canvas2d[(ix0 + texx) + (iy0 + (m * texx)) * size[0]], color);
 					}
 				}
 			}
@@ -256,7 +272,7 @@ public class CPURenderer implements Renderer {
 			for (int py = y0; py < y1; py++) {
 				int idx = (px) + (py) * sizeW;
 				if (px < sizeW && idx >= 0 && idx < canvas2d.length)
-					canvas2d[idx] = color;
+					canvas2d[idx] = stackColors(canvas2d[idx], color);
 			}
 		}
 	}
@@ -296,7 +312,7 @@ public class CPURenderer implements Renderer {
 							bitData = (currentFont.chars32[charIdx] >> currentIntBitPosition) & 1;
 							screenPos = ix + cpos + dx + (iy + dy) * screenSize[0];
 							if (bitData == 1 & screenLength > screenPos & screenPos >= 0) {
-								screen[screenPos] = color;
+								screen[screenPos] = stackColors(screen[screenPos], color);
 							}
 						}
 					}
