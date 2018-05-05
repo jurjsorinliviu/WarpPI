@@ -186,6 +186,15 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.ZOOM_MODE);
 				}
 				break;
+			case KeyEvent.VK_L:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.LOGARITHM);
+				} else if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.LOGARITHM);
+				}
+				break;
 			case com.jogamp.newt.event.KeyEvent.VK_ENTER:
 			case KeyEvent.VK_ENTER:
 				if (Keyboard.shift) {

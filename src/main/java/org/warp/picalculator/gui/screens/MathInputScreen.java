@@ -361,6 +361,9 @@ public class MathInputScreen extends Screen {
 							case ARCTANGENT:
 								typeChar(MathematicalSymbols.ARC_TANGENT);
 								return true;
+							case LOGARITHM:
+								typeChar(MathematicalSymbols.LOGARITHM);
+								return true;
 							case DELETE:
 								userInput.del();
 								currentStep = 0;

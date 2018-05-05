@@ -10,6 +10,7 @@ import org.warp.picalculator.gui.expression.blocks.BlockParenthesis;
 import org.warp.picalculator.gui.expression.blocks.BlockPower;
 import org.warp.picalculator.gui.expression.blocks.BlockReference;
 import org.warp.picalculator.gui.expression.blocks.BlockSine;
+import org.warp.picalculator.gui.expression.blocks.BlockLogarithm;
 import org.warp.picalculator.gui.expression.blocks.BlockSquareRoot;
 import org.warp.picalculator.gui.expression.blocks.BlockVariable;
 import org.warp.picalculator.math.MathematicalSymbols;
@@ -71,6 +72,8 @@ public class NormalInputContainer extends InputContainer {
 				return new BlockNumericChar(c);
 			case MathematicalSymbols.SINE:
 				return new BlockSine();
+			case MathematicalSymbols.LOGARITHM:
+				return new BlockLogarithm();
 			case MathematicalSymbols.PI:
 				return new BlockVariable(inputContext, c, true);
 			default:
