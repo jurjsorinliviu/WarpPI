@@ -16,12 +16,16 @@ public class BlockLogarithm extends Block {
 	private final BlockContainer containerBase;
 	private final BlockContainer containerNumber;
 
-	private final String prefix = "LOG_TEST";
+	private final String prefix = "log";
 	private int prw;
 	private int bw;
 	private int bh;
+	private int bl;
 	private int chw;
 	private int chh;
+	private int schh;
+	private int nmbh;
+	private int toph;
 
 	public BlockLogarithm() {
 		containerBase = new BlockContainer(true);
@@ -42,21 +46,21 @@ public class BlockLogarithm extends Block {
 		if (prefix != null) {
 			r.glDrawStringLeft(x + 1, y + line - chh / 2, prefix);
 		}
-		r.glDrawCharLeft(x + bw + prw, y, '╭');
-		r.glDrawCharLeft(x + bw + prw, y + height - chh, '╰');
+		r.glDrawCharLeft(x + bw + prw, y + toph, '╭');
+		r.glDrawCharLeft(x + bw + prw, y + toph + nmbh - chh, '╰');
 		if (small) {
-			r.glFillColor(x + bw + prw + 1, y + 5, 1, height - 4 * 2);
-			r.glFillColor(x + width - 3, y + 5, 1, height - 4 * 2);
+			r.glFillColor(x + bw + prw + 1, y + toph + 5, 1, nmbh - 4 * 2);
+			r.glFillColor(x + width - 3, y + toph + 5, 1, nmbh - 4 * 2);
 		} else {
-			r.glFillColor(x + bw + prw + 3, y + 6, 2, height - 6 * 2);
-			r.glFillColor(x + width - 5, y + 6, 2, height - 6 * 2);
+			r.glFillColor(x + bw + prw + 3, y + toph + 6, 2, nmbh - 6 * 2);
+			r.glFillColor(x + width - 5, y + toph + 6, 2, nmbh - 6 * 2);
 		}
-		r.glDrawCharLeft(x + width - chw, y, '╮');
-		r.glDrawCharLeft(x + width - chw, y + height - chh, '╯');
+		r.glDrawCharLeft(x + width - chw, y + toph, '╮');
+		r.glDrawCharLeft(x + width - chw, y + toph + nmbh - chh, '╯');
 		r.glColor(BlockContainer.getDefaultColor());
-		containerBase.draw(ge, r, x + prw, y + height - bh, caret);
+		containerBase.draw(ge, r, x + prw, y + line + chh/2 - bl, caret);
 		r.glColor(BlockContainer.getDefaultColor());
-		containerNumber.draw(ge, r, x + bw + prw + chw, y, caret);
+		containerNumber.draw(ge, r, x + bw + prw + chw, y + toph, caret);
 	}
 
 	@Override
@@ -97,15 +101,35 @@ public class BlockLogarithm extends Block {
 		if (prefix == null) {
 			prw = 0;
 		} else {
-			prw = 1 + BlockContainer.getDefaultCharWidth(small) * prefix.length() + 2;
+			prw = 1 + BlockContainer.getDefaultCharWidth(small) * prefix.length();
 		}
 		bw = containerBase.getWidth();
 		bh = containerBase.getHeight();
+		bl = containerBase.getLine();
 		chw = BlockContainer.getDefaultCharWidth(small);
 		chh = BlockContainer.getDefaultCharHeight(small);
+		schh = BlockContainer.getDefaultCharHeight(true);
 		width = prw + bw + chw + containerNumber.getWidth() + chw + 3;
-		height = containerNumber.getHeight();
-		line = containerNumber.getLine();
+		nmbh = containerNumber.getHeight();
+		int nl = containerNumber.getLine();
+		if (bl > nmbh) {
+			toph = bl - nmbh;
+			line = toph + nl;
+			if (bl + (bh - bl) > toph + nmbh) {
+				height = bl + (bh - bl);
+			} else {
+				height = toph + nmbh;
+			}
+		} else {
+			System.out.println("b");
+			toph = 0;
+			line = toph + nl;
+			if (nmbh + bh - bl > toph + nmbh) {
+				height = nmbh + (bh - bl);
+			} else {
+				height = toph + nmbh;
+			}
+		}
 	}
 
 	@Override
