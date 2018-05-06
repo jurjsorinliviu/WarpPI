@@ -13,6 +13,7 @@ public class InputContext {
 	public InputContext() {
 		this.variableTypes = new HashMap<>();
 		this.variableTypes.put(MathematicalSymbols.PI, V_TYPE.CONSTANT);
+		this.variableTypes.put(MathematicalSymbols.EULER_NUMBER, V_TYPE.CONSTANT);
 	}
 
 	public InputContext(HashMap<Character, V_TYPE> variableTypes) {

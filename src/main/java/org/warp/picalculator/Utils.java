@@ -107,6 +107,7 @@ public class Utils {
 					.replace(""+MathematicalSymbols.ARC_TANGENT, "atan")
 					.replace(""+MathematicalSymbols.UNDEFINED, "undefined")
 					.replace(""+MathematicalSymbols.PI, "PI")
+					.replace(""+MathematicalSymbols.EULER_NUMBER, "EULER_NUMBER")
 					.replace(""+MathematicalSymbols.X, "X")
 					.replace(""+MathematicalSymbols.Y, "Y")
 					;

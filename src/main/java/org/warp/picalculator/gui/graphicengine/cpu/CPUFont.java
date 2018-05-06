@@ -110,7 +110,7 @@ public class CPUFont implements BinaryFont {
 				minBound = file[0x9] << 24 | file[0xA] << 16 | file[0xB] << 8 | file[0xC];
 				maxBound = file[0xE] << 24 | file[0xF] << 16 | file[0x10] << 8 | file[0x11];
 				if (maxBound <= minBound) {
-					maxBound = 9900; //TODO remove it: temp fix
+					maxBound = 66000; //TODO remove it: temp fix
 				}
 				rawchars = new boolean[maxBound - minBound][];
 				int index = 0x12;

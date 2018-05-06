@@ -337,6 +337,9 @@ public class MathInputScreen extends Screen {
 							case PI:
 								typeChar(MathematicalSymbols.PI);
 								return true;
+							case EULER_NUMBER:
+								typeChar(MathematicalSymbols.EULER_NUMBER);
+								return true;
 							case LETTER_X:
 								typeChar(MathematicalSymbols.variables[23]);
 								return true;

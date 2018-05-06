@@ -76,6 +76,8 @@ public class NormalInputContainer extends InputContainer {
 				return new BlockLogarithm();
 			case MathematicalSymbols.PI:
 				return new BlockVariable(inputContext, c, true);
+			case MathematicalSymbols.EULER_NUMBER:
+				return new BlockVariable(inputContext, c, true);
 			default:
 				for (char v : MathematicalSymbols.variables) {
 					if (c == v) {

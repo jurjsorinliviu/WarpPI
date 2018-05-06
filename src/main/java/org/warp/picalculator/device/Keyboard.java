@@ -170,6 +170,15 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case KeyEvent.VK_E:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.NONE);
+				} else if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.EULER_NUMBER);
+				}
+				break;
 			case KeyEvent.VK_Y:
 				if (Keyboard.alpha) {
 					Keyboard.keyPressed(Key.LETTER_Y);
