@@ -208,7 +208,7 @@ public class MathSolver {
 						if (results == null) results = new ObjectArrayList<Function>();
 						results.addAll(ruleResults);
 						appliedRule = rule;
-						break out; //TODO: prima era un break normale, controllare se bisogna uscire da tutti e due i for oppure soltanto dall'ultimo.
+						break;
 					}
 				}
 			}
