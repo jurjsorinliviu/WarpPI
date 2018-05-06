@@ -27,12 +27,13 @@ public class MathSolver {
 	}
 	private final StepState[] stepStates = StepState.values();
 	@SuppressWarnings("unchecked")
-	private final ObjectArrayList<Function>[] lastFunctions = new ObjectArrayList[stepStates.length];
+	private final ObjectArrayList<Function>[][] lastFunctions = new ObjectArrayList[2][stepStates.length];
 	
 	public MathSolver(Function initialFunction) {
 		this.initialFunction = initialFunction;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public ObjectArrayList<ObjectArrayList<Function>> solveAllSteps() throws InterruptedException, Error {
 		ObjectArrayList<ObjectArrayList<Function>> steps = new ObjectArrayList<>();
 		ObjectArrayList<Function> lastFnc = null, currFnc = new ObjectArrayList<>();
@@ -42,9 +43,11 @@ public class MathSolver {
 		int initStepState = 0, endStepState = 0;
 		AtomicInteger stepState = new AtomicInteger(0);
 		do {
+			lastFunctions[1] = lastFunctions[0];
+			lastFunctions[0] = new ObjectArrayList[stepStates.length];
 			final String stepName = "Step " + stepNumber;
-			for (int i = initStepState; i < endStepState; i++) {
-				lastFunctions[i] = currFnc;
+			for (int i = initStepState; i <= endStepState; i++) {
+				lastFunctions[0][i] = currFnc;
 			}
 			lastFnc = currFnc;
 			initStepState = stepState.get();
@@ -63,11 +66,19 @@ public class MathSolver {
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result: " + stepResult);
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + stepStateRepetitions + " simplifications.");
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Next step state: " + stepStates[endStepState]);
-		} while(consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[endStepState]));
+			if (StaticVars.debugOn) {
+				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, currFnc + " is " + (checkEquals(currFnc, lastFunctions[0][endStepState]) ? "" : "not ") + "equals to [0]:" + lastFunctions[0][endStepState]);
+			}
+			if (StaticVars.debugOn) {
+				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, currFnc + " is " + (checkEquals(currFnc, lastFunctions[1][endStepState]) ? "" : "not ") + "equals to [1]:" + lastFunctions[1][endStepState]);
+			}
+		} while(consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[0][endStepState]) && !checkEquals(currFnc, lastFunctions[1][endStepState]));
 		if (consecutiveNullSteps >= stepStates.length) {
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + consecutiveNullSteps + " >= " + stepStates.length);
+		} else if (checkEquals(currFnc, lastFunctions[0][endStepState])) {
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to [0]:" + lastFunctions[0][endStepState]);
 		} else {
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to " + lastFunctions[endStepState]);
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to [1]:" + lastFunctions[1][endStepState]);
 		}
 		return steps;
 	}

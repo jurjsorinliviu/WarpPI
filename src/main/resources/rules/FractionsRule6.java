@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=FractionsRule12
+ PATH=FractionsRule6
 */
 
 import org.warp.picalculator.math.Function;
@@ -13,25 +13,28 @@ import org.warp.picalculator.math.MathContext;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Power;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
- * Fractions rule
- * (b / c) / a = b / (a * c)
+ * Number rule
+ * a ^ -1 = 1/a
  * 
  * @author Andrea Cavalli
  *
  */
-public class FractionsRule12 implements Rule {
+public class FractionsRule6 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "FractionsRule12";
+		return "FractionsRule6";
 	}
 
 	// Rule type
@@ -49,31 +52,22 @@ public class FractionsRule12 implements Rule {
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
 		boolean isExecutable = false;
-		if (f instanceof Division) {
-			FunctionOperator fnc = (FunctionOperator) f;
-			Function a;
-			Function c;
-			if (fnc.getParameter1() instanceof Division) {
-				FunctionOperator div2 = (FunctionOperator) fnc.getParameter1();
-				a = fnc.getParameter1();
-				c = div2.getParameter2();
-				isExecutable = true;
+		if (f instanceof Power) {
+			MathContext root = f.getMathContext();
+			Power pow = (Power) f;
+			if (pow.getParameter2() instanceof Number) {
+				Function numb = pow.getParameter2();
+				if (numb.equals(new Number(root, -1))) {
+					isExecutable = true;
+				}
 			}
 		}
 	
 		if (isExecutable) {
+			MathContext root = f.getMathContext();
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			FunctionOperator fnc = (FunctionOperator) f;
-			Function a;
-			Function b;
-			Function c;
-	
-			FunctionOperator div2 = (FunctionOperator) fnc.getParameter1();
-			a = fnc.getParameter2();
-			b = div2.getParameter1();
-			c = div2.getParameter2();
-			result.add(new Division(fnc.getMathContext(), b, new Multiplication(fnc.getMathContext(), c, a)));
-	
+			Function a = new Division(root, new Number(root, 1), ((Power) f).getParameter1());
+			result.add(a);
 			return result;
 		} else {
 			return null;

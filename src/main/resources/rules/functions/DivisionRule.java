@@ -53,7 +53,7 @@ public class DivisionRule implements Rule {
 	*/
 	@Override
 	public ObjectArrayList<Function> execute(Function f) throws Error {
-		if (f instanceof DivisionRule) {
+		if (f instanceof Division) {
 			ObjectArrayList<Function> result = new ObjectArrayList<>();
 			Function variable1 = ((FunctionOperator) f).getParameter1();
 			Function variable2 = ((FunctionOperator) f).getParameter2();

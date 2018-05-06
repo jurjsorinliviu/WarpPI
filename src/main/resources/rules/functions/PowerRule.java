@@ -56,7 +56,11 @@ public class PowerRule implements Rule {
 			MathContext mathContext = f.getMathContext();
 			if (variable1 instanceof Number && variable2 instanceof Number) {
 				//a^b = c
-				result.add(((Number)variable1).pow((Number)variable2));
+				Number out = ((Number)variable1).pow((Number)variable2);
+				if (mathContext.exactMode && !out.isInteger()) {
+					return null;
+				}
+				result.add(out);
 				return result;
 			}
 		}

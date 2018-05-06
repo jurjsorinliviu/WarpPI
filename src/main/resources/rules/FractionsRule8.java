@@ -1,6 +1,6 @@
 /*
 SETTINGS: (please don't move this part)
- PATH=FractionsRule12
+ PATH=FractionsRule8
 */
 
 import org.warp.picalculator.math.Function;
@@ -10,34 +10,38 @@ import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 //Imports
 
+import java.math.BigDecimal;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.Function;
+import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Multiplication;
+import org.warp.picalculator.math.functions.Number;
+import org.warp.picalculator.math.functions.Power;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 /**
- * Fractions rule
- * (b / c) / a = b / (a * c)
+ * Number rule
+ * -a/-b = a/b
  * 
  * @author Andrea Cavalli
  *
  */
-public class FractionsRule12 implements Rule {
+public class FractionsRule8 implements Rule {
 	// Rule name
 	@Override
 	public String getRuleName() {
-		return "FractionsRule12";
+		return "FractionsRule8";
 	}
 
 	// Rule type
 	@Override
 	public RuleType getRuleType() {
-		return RuleType.EXPANSION;
+		return RuleType.CALCULATION;
 	}
 
 	/* Rule function
@@ -48,35 +52,18 @@ public class FractionsRule12 implements Rule {
 
 	@Override
 	public ObjectArrayList<Function> execute(Function f) {
-		boolean isExecutable = false;
 		if (f instanceof Division) {
-			FunctionOperator fnc = (FunctionOperator) f;
-			Function a;
-			Function c;
-			if (fnc.getParameter1() instanceof Division) {
-				FunctionOperator div2 = (FunctionOperator) fnc.getParameter1();
-				a = fnc.getParameter1();
-				c = div2.getParameter2();
-				isExecutable = true;
+			MathContext root = f.getMathContext();
+			Division div = (Division) f;
+			if (div.getParameter1() instanceof Multiplication && ((Multiplication)div.getParameter1()).isNegative()) {
+				if (div.getParameter2() instanceof Multiplication && ((Multiplication)div.getParameter2()).isNegative()) {
+					ObjectArrayList<Function> result = new ObjectArrayList<>();
+					result.add(new Division(root, ((Multiplication)div.getParameter1()).toPositive(), ((Multiplication)div.getParameter2()).toPositive()));
+					return result;
+				}
 			}
 		}
-	
-		if (isExecutable) {
-			ObjectArrayList<Function> result = new ObjectArrayList<>();
-			FunctionOperator fnc = (FunctionOperator) f;
-			Function a;
-			Function b;
-			Function c;
-	
-			FunctionOperator div2 = (FunctionOperator) fnc.getParameter1();
-			a = fnc.getParameter2();
-			b = div2.getParameter1();
-			c = div2.getParameter2();
-			result.add(new Division(fnc.getMathContext(), b, new Multiplication(fnc.getMathContext(), c, a)));
-	
-			return result;
-		} else {
-			return null;
-		}
+		
+		return null;
 	}
 }

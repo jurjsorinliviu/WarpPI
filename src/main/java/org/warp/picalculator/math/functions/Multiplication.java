@@ -84,4 +84,22 @@ public class Multiplication extends FunctionOperator {
 			return result;
 		}
 	}
+	
+	public boolean isNegative() {
+		return parameter1.equals(new Number(getMathContext(), -1)) || parameter2.equals(new Number(getMathContext(), -1));
+	}
+	
+	public Function toPositive() {
+		if (parameter1.equals(new Number(getMathContext(), -1))) {
+			return parameter2;
+		} else if (parameter2.equals(new Number(getMathContext(), -1))) {
+			return parameter2;
+		} else {
+			return null;
+		}
+	}
+	
+	public static Multiplication newNegative(MathContext context, Function value2) {
+		return new Multiplication(context, new Number(context, -1), value2);
+	}
 }
