@@ -50,7 +50,6 @@ public class RulesManager {
 			List<String> ruleLines = new ArrayList<String>();
 			Path rulesPath = Paths.get("rules/");
 			if (rulesPath.toFile().exists()) {
-				System.err.println("RULES EXISTS!!!!!!");
 				try (Stream<Path> paths = Files.walk(rulesPath)) {
 				    paths
 				        .filter(Files::isRegularFile)
@@ -59,6 +58,7 @@ public class RulesManager {
 				        		String path = rulesPath.relativize(p).toString();
 				        		path = path.substring(0, path.length() - ".java".length());
 					        	ruleLines.add(path);
+					        	Utils.out.print(Utils.OUTPUTLEVEL_NODEBUG, "Found external rule: " + p.toAbsolutePath().toString());
 					        	System.err.println(path);
 				        	}
 				        });
