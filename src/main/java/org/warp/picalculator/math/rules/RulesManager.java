@@ -107,6 +107,9 @@ public class RulesManager {
 			}
 			Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Loaded all the rules successfully");
 			if (compiledSomething) {
+				if (cacheFilePath.toFile().exists()) {
+					cacheFilePath.toFile().delete();
+				}
 				Utils.zip(tDir.toString(), cacheFilePath.toString(), "");
 				Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Cached the compiled rules");
 			}
