@@ -58,7 +58,7 @@ public class RulesManager {
 				        		String path = rulesPath.relativize(p).toString();
 				        		path = path.substring(0, path.length() - ".java".length());
 					        	ruleLines.add(path);
-					        	Utils.out.print(Utils.OUTPUTLEVEL_NODEBUG, "Found external rule: " + p.toAbsolutePath().toString());
+					        	Utils.out.print(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Found external rule: " + p.toAbsolutePath().toString());
 					        	System.err.println(path);
 				        	}
 				        });
