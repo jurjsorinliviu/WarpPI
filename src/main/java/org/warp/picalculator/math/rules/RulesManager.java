@@ -12,7 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.math.Function;
@@ -40,13 +43,29 @@ public class RulesManager {
 		}
 		try {
 			boolean compiledSomething = false;
-			final Path rulesPath = Utils.getResource("/rules.csv");
-			if (!Files.exists(rulesPath)) {
-				throw new FileNotFoundException("rules.csv not found!");
+			final Path defaultRulesPath = Utils.getResource("/default-rules.lst");
+			if (!Files.exists(defaultRulesPath)) {
+				throw new FileNotFoundException("default-rules.lst not found!");
 			}
-			List<String> ruleLines = Files.readAllLines(rulesPath);
-			ruleLines.remove(0); //Remove the headers
-
+			List<String> ruleLines = new ArrayList<String>();
+			Path rulesPath = Paths.get("rules/");
+			if (rulesPath.toFile().exists()) {
+				System.err.println("RULES EXISTS!!!!!!");
+				try (Stream<Path> paths = Files.walk(rulesPath)) {
+				    paths
+				        .filter(Files::isRegularFile)
+				        .forEach((Path p) -> {
+				        	if (p.toString().endsWith(".java")) {
+				        		String path = rulesPath.relativize(p).toString();
+				        		path = path.substring(0, path.length() - ".java".length());
+					        	ruleLines.add(path);
+					        	System.err.println(path);
+				        	}
+				        });
+				} 
+			}
+			ruleLines.addAll(Files.readAllLines(defaultRulesPath));
+			
 			boolean useCache = false;
 			Path tDir = Paths.get(System.getProperty("java.io.tmpdir"), "WarpPi-Calculator").resolve("rules-rt");
 //			try {
