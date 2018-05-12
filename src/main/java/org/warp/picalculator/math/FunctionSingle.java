@@ -98,10 +98,12 @@ public abstract class FunctionSingle implements Function {
 
 	@Override
 	public final ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
-		ObjectArrayList<Function> simplifiedParam = parameter.simplify(rule);
-		if (simplifiedParam == null) return rule.execute(this);
-		
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
+		final ObjectArrayList<Function> simplifiedParam = parameter.simplify(rule);
+		if (simplifiedParam == null) {
+			return rule.execute(this);
+		}
+
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 		for (final Function f : simplifiedParam) {
 			result.add(this.setParameter(f));
 		}

@@ -14,7 +14,7 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 
 public class Headless24bitEngine implements org.warp.picalculator.gui.graphicengine.GraphicEngine {
 
-	private Headless24bitRenderer r = new Headless24bitRenderer();
+	private final Headless24bitRenderer r = new Headless24bitRenderer();
 	private boolean stopped = true;
 	private RenderingLoop renderLoop;
 	public static final int C_MUL_X = 4;//8;
@@ -67,7 +67,7 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 		if (Utils.isWindows() && !Utils.msDosMode) {
 			win = true;
 			WindowsSupport.setConsoleMode(0x0200);
-			Thread t = new Thread(() -> {
+			final Thread t = new Thread(() -> {
 				int ch = -1;
 				while (true) {
 					if (precKey != null) {
@@ -132,8 +132,9 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 			t.start();
 		}
 		stopped = false;
-		if (onInitialized != null)
+		if (onInitialized != null) {
 			onInitialized.run();
+		}
 	}
 
 	@Override
@@ -158,7 +159,7 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 
 	@Override
 	public void start(RenderingLoop d) {
-		this.renderLoop = d;
+		renderLoop = d;
 		final Thread th = new Thread(() -> {
 			try {
 				double extratime = 0;
@@ -215,10 +216,10 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 					}
 				}
 				int[] newpix = new int[3];
-				for (int i = 0; i < pixs.length; i++) {
-					newpix[0] += pixs[i][0];
-					newpix[1] += pixs[i][1];
-					newpix[2] += pixs[i][2];
+				for (final int[] pix : pixs) {
+					newpix[0] += pix[0];
+					newpix[1] += pix[1];
+					newpix[2] += pix[2];
 				}
 				newpix[0] /= pixs.length;
 				newpix[1] /= pixs.length;
@@ -233,10 +234,10 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 					}
 				}
 				newpix = new int[3];
-				for (int i = 0; i < pixs.length; i++) {
-					newpix[0] += pixs[i][0];
-					newpix[1] += pixs[i][1];
-					newpix[2] += pixs[i][2];
+				for (final int[] pix : pixs) {
+					newpix[0] += pix[0];
+					newpix[1] += pix[1];
+					newpix[2] += pix[2];
 				}
 				newpix[0] /= pixs.length;
 				newpix[1] /= pixs.length;
@@ -318,8 +319,9 @@ public class Headless24bitEngine implements org.warp.picalculator.gui.graphiceng
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.msDosMode || (Utils.forceEngine != null && Utils.forceEngine != "console-24bit"))
+		if (Utils.msDosMode || (Utils.forceEngine != null && Utils.forceEngine != "console-24bit")) {
 			return false;
+		}
 		return true;
 	}
 

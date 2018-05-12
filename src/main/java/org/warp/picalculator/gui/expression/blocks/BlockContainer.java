@@ -72,7 +72,7 @@ public class BlockContainer implements GraphicalElement {
 		addBlockUnsafe(position, b);
 		recomputeDimensions();
 	}
-	
+
 	public void addBlockUnsafe(int position, Block b) {
 		if (b.isSmall() != small) {
 			b.setSmall(small);
@@ -111,7 +111,7 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public BlockReference<?> getBlockAt(int i) {
-		Block b = content.get(i);
+		final Block b = content.get(i);
 		return new BlockReference<>(b, i, this);
 	}
 
@@ -336,11 +336,11 @@ public class BlockContainer implements GraphicalElement {
 
 	public void setSmall(boolean small) {
 		this.small = small;
-		if (this.autoMinimums) {
-			this.minWidth = BlockContainer.getDefaultCharWidth(small);
-			this.minHeight = BlockContainer.getDefaultCharHeight(small);
+		if (autoMinimums) {
+			minWidth = BlockContainer.getDefaultCharWidth(small);
+			minHeight = BlockContainer.getDefaultCharHeight(small);
 		}
-		for (Block b : this.content) {
+		for (final Block b : content) {
 			b.setSmall(small);
 		}
 		recomputeDimensions();
@@ -365,13 +365,14 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public Function toFunction(MathContext context) throws Error {
-		ObjectArrayList<Block> blocks = getContent();
+		final ObjectArrayList<Block> blocks = getContent();
 		final ObjectArrayList<Feature> blockFeatures = new ObjectArrayList<>();
 
 		for (final Block block : blocks) {
 			final Feature blockFeature = block.toFeature(context);
-			if (blockFeature == null)
+			if (blockFeature == null) {
 				throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known Block");
+			}
 			blockFeatures.add(blockFeature);
 		}
 

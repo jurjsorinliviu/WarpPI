@@ -49,11 +49,11 @@ public class Undefined implements Function {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
 		result.add(new BlockUndefined());
 		return result;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "UNDEFINED";

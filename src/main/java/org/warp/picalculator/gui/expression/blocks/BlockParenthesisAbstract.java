@@ -27,13 +27,13 @@ public abstract class BlockParenthesisAbstract extends Block {
 
 	public BlockParenthesisAbstract() {
 		containerNumber = new BlockContainer(false);
-		this.prefix = null;
+		prefix = null;
 		recomputeDimensions();
 	}
 
 	public BlockParenthesisAbstract(ObjectArrayList<Block> blocks) {
 		containerNumber = new BlockContainer(false, blocks);
-		this.prefix = null;
+		prefix = null;
 		recomputeDimensions();
 	}
 

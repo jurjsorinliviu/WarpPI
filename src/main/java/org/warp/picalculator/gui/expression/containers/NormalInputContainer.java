@@ -79,7 +79,7 @@ public class NormalInputContainer extends InputContainer {
 			case MathematicalSymbols.EULER_NUMBER:
 				return new BlockVariable(inputContext, c, true);
 			default:
-				for (char v : MathematicalSymbols.variables) {
+				for (final char v : MathematicalSymbols.variables) {
 					if (c == v) {
 						return new BlockVariable(inputContext, c);
 					}
@@ -93,18 +93,20 @@ public class NormalInputContainer extends InputContainer {
 		super.typeChar(c);
 		switch (c) {
 			case MathematicalSymbols.PARENTHESIS_CLOSE:
-				this.moveRight();
+				moveRight();
 			case MathematicalSymbols.DIVISION:
-				@SuppressWarnings("unchecked")
-				BlockReference<BlockDivision> ref = (BlockReference<BlockDivision>) this.getSelectedBlock();
-				BlockContainer parentContainer = ref.getContainer();
+				@SuppressWarnings("unchecked") final
+				BlockReference<BlockDivision> ref = (BlockReference<BlockDivision>) getSelectedBlock();
+				final BlockContainer parentContainer = ref.getContainer();
 				BlockReference<?> currentBlock = ref;
 				boolean groupedBefore = false;
 				int before = 0;
 				while (true) {
 					currentBlock = currentBlock.getPreviousBlock();
-					if (currentBlock == null) break;
-					Block b = currentBlock.get();
+					if (currentBlock == null) {
+						break;
+					}
+					final Block b = currentBlock.get();
 					if (b instanceof BlockNumericChar || b instanceof BlockVariable) {
 						if (!groupedBefore) {
 							groupedBefore = true;
@@ -115,21 +117,21 @@ public class NormalInputContainer extends InputContainer {
 					}
 				}
 				if (groupedBefore) {
-					this.moveLeft();
+					moveLeft();
 					for (int i = 0; i < before; i++) {
-						BlockReference<?> b = this.getSelectedBlock();
-						this.del();
-						this.moveRight();
-						this.typeBlock(b.get());
-						this.moveLeft();
-						this.moveLeft();
+						final BlockReference<?> b = getSelectedBlock();
+						del();
+						moveRight();
+						typeBlock(b.get());
+						moveLeft();
+						moveLeft();
 					}
 					for (int i = 0; i < before + 1; i++) {
-						this.moveRight();
+						moveRight();
 					}
-					this.moveRight();// Move to the divisor
+					moveRight();// Move to the divisor
 				}
-				
+
 		}
 	}
 }

@@ -1,8 +1,8 @@
 package org.warp.picalculator.extra.mario;
 
 public class PlayerEntity extends MarioEntity {
-	
-	private int life;
+
+	private final int life;
 	public float walkAnimation = 0;
 	public float jumptime = 0;
 	public boolean walking = false;
@@ -12,19 +12,19 @@ public class PlayerEntity extends MarioEntity {
 	public int[] marioSkinPos = new int[] { 0, 0 };
 	private double controllerDX;
 	private double controllerDY;
-	
+
 	public PlayerEntity(double x, double y, int life) {
 		super(x, y, 0, 0, true, true);
 		this.life = life;
 	}
-	
+
 	@Override
 	public void gameTick(double dt) {
 		walkAnimation += dt;
-		this.x += computeFutureDX(dt);
-		this.y += computeFutureDY(dt);
-		this.forceX += computeFutureForceDX(dt);
-		this.forceY += computeFutureForceDY(dt);
+		x += computeFutureDX(dt);
+		y += computeFutureDY(dt);
+		forceX += computeFutureForceDX(dt);
+		forceY += computeFutureForceDY(dt);
 		if (controllerDX == 0) {
 			walking = false;
 			walkAnimation = 0;
@@ -47,8 +47,7 @@ public class PlayerEntity extends MarioEntity {
 			if (jumptime <= 0.5f && !jumping && collisionDown) {
 				jumping = true;
 				collisionDown = false;
-			} else if (jumptime <= 0.5f) {
-			} else {
+			} else if (jumptime <= 0.5f) {} else {
 				jumping = false;
 			}
 		} else {
@@ -81,34 +80,36 @@ public class PlayerEntity extends MarioEntity {
 			marioSkinPos[1] = 1;
 		}
 	}
-	
+
+	@Override
 	public double computeFutureDX(double dt) {
 		return super.computeFutureDX(dt);
 	}
-	
+
 	public double computeFuturedDY(double dt) {
 		return super.computeFutureDY(dt);
 	}
-	
+
+	@Override
 	public double computeFutureForceDX(double dt) {
 		double forceX = this.forceX;
-		if (controllerDX == 0) {
-		} else {
+		if (controllerDX == 0) {} else {
 			if (controllerDX > 0) { //RIGHT
-				if (forceX < 500f/16f) {
-					forceX += dt * 500f/16f;
+				if (forceX < 500f / 16f) {
+					forceX += dt * 500f / 16f;
 				}
 			}
 			if (controllerDX < 0) { //LEFT
-				if (forceX > -500f/16f) {
-					forceX -= dt * 500f/16f;
+				if (forceX > -500f / 16f) {
+					forceX -= dt * 500f / 16f;
 				}
 			}
 		}
-		
+
 		return (forceX + super.computeFutureForceDX(dt)) - this.forceX;
 	}
-	
+
+	@Override
 	public double computeFutureForceDY(double dt) {
 		float jumptime = this.jumptime;
 		double forceY = this.forceY;
@@ -118,9 +119,9 @@ public class PlayerEntity extends MarioEntity {
 			}
 			jumptime += dt;
 			if (jumptime <= 0.5f && !jumping && collisionDown) {
-				forceY = dt * (4 * 1569.6f)/16f;
+				forceY = dt * (4 * 1569.6f) / 16f;
 			} else if (jumptime <= 0.5f) {
-				forceY = dt * (4 * 1569.6f)/16f;
+				forceY = dt * (4 * 1569.6f) / 16f;
 			}
 		}
 		return (forceY + super.computeFutureForceDY(dt)) - this.forceY;
@@ -128,9 +129,9 @@ public class PlayerEntity extends MarioEntity {
 
 	public void move(float dt, double dX, double dY) {
 		walkAnimation += dt;
-		
-		this.controllerDX = dX;
-		this.controllerDY = dY;
+
+		controllerDX = dX;
+		controllerDY = dY;
 	}
- 
+
 }

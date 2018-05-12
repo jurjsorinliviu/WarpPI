@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.nio.file.Files;
 import javax.imageio.ImageIO;
 
@@ -28,10 +27,8 @@ public class GPURenderer implements Renderer {
 	public static GL2ES1 gl;
 
 	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
-	private static final int ELEMENT_VERTICES_COUNT = 6,
-			vertSize = 3, texSize = 2, colSize = 4,
-			vertBuffer = 0, texBuffer = 1, colBuffer = 2,
-			vertMax = vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
+	private static final int ELEMENT_VERTICES_COUNT = 6, vertSize = 3, texSize = 2, colSize = 4, vertBuffer = 0,
+			texBuffer = 1, colBuffer = 2, vertMax = vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
 			texMax = texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
 			colMax = colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER;
 
@@ -256,19 +253,19 @@ public class GPURenderer implements Renderer {
 		} else {
 			f = new File(file);
 		}
-		int imgW = img.getWidth();
-		int imgH = img.getHeight();
+		final int imgW = img.getWidth();
+		final int imgH = img.getHeight();
 		img = null;
 		Utils.gc();
 		return new OpenedTextureData(imgW, imgH, f, isResource);
 	}
-	
+
 	public static class OpenedTextureData {
 		public final int w;
 		public final int h;
 		public final File f;
 		public final boolean deleteOnExit;
-		
+
 		/**
 		 * @param w
 		 * @param h
@@ -281,16 +278,18 @@ public class GPURenderer implements Renderer {
 			this.f = f;
 			this.deleteOnExit = deleteOnExit;
 		}
-		
+
 	}
 
 	static Texture importTexture(File f, boolean deleteOnExit) throws GLException, IOException {
 		final Texture tex = TextureIO.newTexture(f, false);
 		if (deleteOnExit && f.exists()) {
 			try {
-				if (StaticVars.debugOn) throw new IOException("Delete on exit!");
+				if (StaticVars.debugOn) {
+					throw new IOException("Delete on exit!");
+				}
 				f.delete();
-			}catch (Exception ex) {
+			} catch (final Exception ex) {
 				f.deleteOnExit();
 			}
 		}
@@ -328,7 +327,7 @@ public class GPURenderer implements Renderer {
 			}
 		}
 	}
-	
+
 	private void changeTexture() {
 		precTexEnabled = currentTexEnabled;
 		precTex = currentTex;
@@ -340,7 +339,7 @@ public class GPURenderer implements Renderer {
 		}
 		firstBufferTexDataCall = true;
 	}
-	
+
 	public void startDrawSegment(boolean continuation) {
 		if (!continuation || cycleEnded) {
 			fbElements = 0;
@@ -371,52 +370,37 @@ public class GPURenderer implements Renderer {
 
 	boolean firstBufferDataCall = true;
 	boolean firstBufferTexDataCall = true;
-	
+
 	public void endDrawSegment() {
 		fbVertices.flip();
 		fbTextures.flip();
 		fbColors.flip();
-		
+
 //		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, fbVertices);
 		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[vertBuffer]);
 		if (firstBufferTexDataCall) {
-	        gl.glBufferData(
-	        		GL.GL_ARRAY_BUFFER, fbVertices.limit() * Buffers.SIZEOF_FLOAT,
-	        		fbVertices,
-	                GL2ES1.GL_STATIC_DRAW);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, fbVertices.limit() * Buffers.SIZEOF_FLOAT, fbVertices, GL.GL_STATIC_DRAW);
 		} else {
-	        gl.glBufferSubData(
-	        		GL.GL_ARRAY_BUFFER, 0, fbVertices.limit() * Buffers.SIZEOF_FLOAT,
-	        		fbVertices);
+			gl.glBufferSubData(GL.GL_ARRAY_BUFFER, 0, fbVertices.limit() * Buffers.SIZEOF_FLOAT, fbVertices);
 		}
 		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, 0l);
 //		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, fbTextures);
 		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[texBuffer]);
 		if (firstBufferTexDataCall) {
-	        gl.glBufferData(
-	        		GL.GL_ARRAY_BUFFER, fbTextures.limit() * Buffers.SIZEOF_FLOAT,
-	        		fbTextures,
-	                GL2ES1.GL_STATIC_DRAW);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, fbTextures.limit() * Buffers.SIZEOF_FLOAT, fbTextures, GL.GL_STATIC_DRAW);
 		} else {
-	        gl.glBufferSubData(
-	        		GL.GL_ARRAY_BUFFER, 0, fbTextures.limit() * Buffers.SIZEOF_FLOAT,
-	        		fbTextures);
+			gl.glBufferSubData(GL.GL_ARRAY_BUFFER, 0, fbTextures.limit() * Buffers.SIZEOF_FLOAT, fbTextures);
 		}
 		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, 0l);
 //		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, fbColors);
 		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[colBuffer]);
 		if (firstBufferTexDataCall) {
-	        gl.glBufferData(
-	        		GL.GL_ARRAY_BUFFER, fbColors.limit() * Buffers.SIZEOF_FLOAT,
-	        		fbColors,
-	                GL2ES1.GL_STATIC_DRAW);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, fbColors.limit() * Buffers.SIZEOF_FLOAT, fbColors, GL.GL_STATIC_DRAW);
 		} else {
-	        gl.glBufferSubData(
-	        		GL.GL_ARRAY_BUFFER, 0, fbColors.limit() * Buffers.SIZEOF_FLOAT,
-	        		fbColors);
+			gl.glBufferSubData(GL.GL_ARRAY_BUFFER, 0, fbColors.limit() * Buffers.SIZEOF_FLOAT, fbColors);
 		}
 		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, 0l);
-		
+
 		fbVertices.limit(vertMax);
 		fbTextures.limit(texMax);
 		fbColors.limit(colMax);

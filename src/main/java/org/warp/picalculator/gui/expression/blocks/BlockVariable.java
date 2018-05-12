@@ -16,7 +16,7 @@ import org.warp.picalculator.math.parser.features.interfaces.Feature;
 
 public class BlockVariable extends Block {
 
-	private InputContext ic;
+	private final InputContext ic;
 	private final char ch;
 	private final VariableMenu menu;
 	private V_TYPE type;
@@ -32,11 +32,11 @@ public class BlockVariable extends Block {
 	public BlockVariable(InputContext ic, char ch, boolean typeLocked) {
 		this.ic = ic;
 		this.ch = ch;
-		this.type = V_TYPE.VARIABLE;
-		this.color = 0xFF304ffe;
-		this.typeDirtyID = this;
+		type = V_TYPE.VARIABLE;
+		color = 0xFF304ffe;
+		typeDirtyID = this;
 		this.typeLocked = typeLocked;
-		this.menu = typeLocked ? null : new VariableMenu(this);
+		menu = typeLocked ? null : new VariableMenu(this);
 		retrieveValue();
 		recomputeDimensions();
 	}
@@ -205,7 +205,7 @@ public class BlockVariable extends Block {
 			if (mustRefreshMenu) {
 				mustRefreshMenu = false;
 				text = block.type.toString();
-				BinaryFont f = BlockContainer.getDefaultFont(true);
+				final BinaryFont f = BlockContainer.getDefaultFont(true);
 				width = 7 + f.getStringWidth(text) + 7;
 				height = 2 + f.getCharacterHeight() + 2;
 
@@ -227,7 +227,7 @@ public class BlockVariable extends Block {
 			if (popupY < 0) {
 				popupY = 0;
 			}
-			int[] screenSize = ge.getSize();
+			final int[] screenSize = ge.getSize();
 			if (popupX + width >= screenSize[0]) {
 				popupX = screenSize[0] - width - 1;
 			}

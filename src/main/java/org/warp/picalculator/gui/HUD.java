@@ -22,18 +22,18 @@ public abstract class HUD implements GraphicalInterface {
 			created();
 		}
 	}
-	
+
 	public abstract void created() throws InterruptedException;
 
 	public abstract void initialized() throws InterruptedException;
 
 	public abstract void renderBackground();
-	
+
 	@Override
 	public abstract void render();
 
 	public abstract void renderTopmostBackground();
-	
+
 	@Override
 	public abstract void renderTopmost();
 
@@ -44,5 +44,5 @@ public abstract class HUD implements GraphicalInterface {
 	public boolean mustBeRefreshed() {
 		return true;
 	}
-	
+
 }

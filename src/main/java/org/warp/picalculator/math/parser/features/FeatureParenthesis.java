@@ -13,7 +13,7 @@ public class FeatureParenthesis extends FeatureSingleImpl {
 
 	@Override
 	public Function toFunction(MathContext context) throws Error {
-		return new Expression(context, this.getFunction1());
+		return new Expression(context, getFunction1());
 	}
 
 }

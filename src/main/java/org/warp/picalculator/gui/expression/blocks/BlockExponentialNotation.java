@@ -21,6 +21,6 @@ public class BlockExponentialNotation extends BlockPower {
 		super.recomputeDimensions();
 		bw = (int) (BlockContainer.getDefaultCharWidth(small) * 1.5);
 		bh = BlockContainer.getDefaultCharHeight(small);
-		this.width += bw;
+		width += bw;
 	}
 }

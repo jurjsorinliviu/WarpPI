@@ -8,7 +8,6 @@ import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Skin;
 import org.warp.picalculator.gui.graphicengine.gpu.GPURenderer.OpenedTextureData;
 
-import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES1;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.util.texture.Texture;
@@ -22,14 +21,14 @@ public class GPUSkin implements Skin {
 	private String texturePath;
 	private boolean initialized = false;
 	private boolean isResource;
-	
+
 	GPUSkin(GraphicEngine d, String file) throws IOException {
 		load(file);
 	}
 
 	@Override
 	public void load(String file) throws IOException {
-		boolean isResource = !Files.exists(Paths.get(file));
+		final boolean isResource = !Files.exists(Paths.get(file));
 		if (isResource && (this.getClass().getClassLoader().getResource(file)) == null) {
 			throw new IOException("File '" + file + "' not found!");
 		}
@@ -45,7 +44,7 @@ public class GPUSkin implements Skin {
 			t = GPURenderer.importTexture(i.f, i.deleteOnExit);
 			w = i.w;
 			h = i.h;
-			((GPUEngine)d).registerTexture(t);
+			((GPUEngine) d).registerTexture(t);
 			initialized = true;
 		} catch (GLException | IOException e) {
 			e.printStackTrace();

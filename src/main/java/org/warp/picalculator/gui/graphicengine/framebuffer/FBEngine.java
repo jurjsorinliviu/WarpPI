@@ -1,11 +1,9 @@
 package org.warp.picalculator.gui.graphicengine.framebuffer;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.MmapByteBuffer;
@@ -26,8 +24,8 @@ public class FBEngine implements GraphicEngine {
 	private static final int FB_DISPLAY_BPP = 32;
 	private static final int WIDTH = 480;
 	private static final int HEIGHT = 320;
-	private static final int[] SIZE = new int[] {WIDTH, HEIGHT};
-	private TestJNI jni = new TestJNI();
+	private static final int[] SIZE = new int[] { WIDTH, HEIGHT };
+	private final TestJNI jni = new TestJNI();
 	public FBRenderer r;
 	private MappedByteBuffer fb;
 	MmapByteBuffer realFb;
@@ -35,8 +33,7 @@ public class FBEngine implements GraphicEngine {
 	public volatile boolean initialized = false;
 	public Semaphore exitSemaphore = new Semaphore(0);
 	private boolean resizedTrigger = false;
-	
-	
+
 	@Override
 	public int[] getSize() {
 		return SIZE;
@@ -48,16 +45,13 @@ public class FBEngine implements GraphicEngine {
 	}
 
 	@Override
-	public void setTitle(String title) {
-	}
+	public void setTitle(String title) {}
 
 	@Override
-	public void setResizable(boolean r) {
-	}
+	public void setResizable(boolean r) {}
 
 	@Override
-	public void setDisplayMode(int ww, int wh) {
-	}
+	public void setDisplayMode(int ww, int wh) {}
 
 	@Override
 	public void create(Runnable onInitialized) {
@@ -65,12 +59,13 @@ public class FBEngine implements GraphicEngine {
 		realFb = jni.retrieveBuffer();
 		final long fbLen = realFb.getLength();
 		fb = (MappedByteBuffer) ByteBuffer.allocateDirect((int) fbLen);
-		
+
 		r = new FBRenderer(this, fb);
-		
+
 		initialized = true;
-		if (onInitialized != null)
+		if (onInitialized != null) {
 			onInitialized.run();
+		}
 	}
 
 	@Override
@@ -97,7 +92,7 @@ public class FBEngine implements GraphicEngine {
 	public void destroy() {
 		try {
 			fbFileRW.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -132,7 +127,7 @@ public class FBEngine implements GraphicEngine {
 	}
 
 	private int _________________TMP = 0;
-	
+
 	@Override
 	public void repaint() {
 		if (_________________TMP % 100 == 0) {
@@ -142,10 +137,10 @@ public class FBEngine implements GraphicEngine {
 		_________________TMP++;
 		realFb.getBuffer().clear();
 		realFb.getBuffer().put(fb);
-		for (int i = 0; i < fb.capacity()/2; i++) {
+		for (int i = 0; i < fb.capacity() / 2; i++) {
 			realFb.getBuffer().put(i, (byte) (_________________TMP < 50 ? 0xFF : 0xF0));
 		}
-		for (int i = fb.capacity()/2; i < fb.capacity(); i++) {
+		for (int i = fb.capacity() / 2; i < fb.capacity(); i++) {
 			realFb.getBuffer().put(i, (byte) (0x18));
 		}
 	}
@@ -174,13 +169,14 @@ public class FBEngine implements GraphicEngine {
 	public void waitForExit() {
 		try {
 			exitSemaphore.acquire();
-		} catch (InterruptedException e) {}
+		} catch (final InterruptedException e) {}
 	}
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.forceEngine != null && Utils.forceEngine != "fb")
+		if (Utils.forceEngine != null && Utils.forceEngine != "fb") {
 			return false;
+		}
 		if (Utils.headlessOverride) {
 			return false;
 		}
@@ -203,5 +199,5 @@ public class FBEngine implements GraphicEngine {
 	public boolean doesRefreshPauses() {
 		return true;
 	}
-	
+
 }

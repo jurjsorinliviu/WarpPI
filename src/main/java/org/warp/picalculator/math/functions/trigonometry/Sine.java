@@ -33,11 +33,11 @@ public class Sine extends FunctionSingle {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
-		BlockSine bs = new BlockSine();
-		BlockContainer bpc = bs.getNumberContainer();
-		for (Block b : sub) {
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
+		final BlockSine bs = new BlockSine();
+		final BlockContainer bpc = bs.getNumberContainer();
+		for (final Block b : sub) {
 			bpc.appendBlockUnsafe(b);
 		}
 		bpc.recomputeDimensions();

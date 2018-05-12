@@ -116,35 +116,49 @@ public abstract class FunctionOperator implements Function {
 
 	@Override
 	public final ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 
-		ObjectArrayList<Function> simplifiedParam1 = parameter1.simplify(rule);
-		ObjectArrayList<Function> simplifiedParam2 = parameter2.simplify(rule);
+		final ObjectArrayList<Function> simplifiedParam1 = parameter1.simplify(rule);
+		final ObjectArrayList<Function> simplifiedParam2 = parameter2.simplify(rule);
 		try {
-			if (simplifiedParam1 == null & simplifiedParam2 == null) return rule.execute(this);
-		} catch (Exception e) {
-			Error err = new Error(Errors.ERROR, "Error while executing rule '" + rule.getRuleName() + "'!\n" + e.getMessage());
+			if (simplifiedParam1 == null & simplifiedParam2 == null) {
+				return rule.execute(this);
+			}
+		} catch (final Exception e) {
+			final Error err = new Error(Errors.ERROR, "Error while executing rule '" + rule.getRuleName() + "'!\n" + e.getMessage());
 			err.initCause(e);
 			throw err;
 		}
-			
-		if (Thread.interrupted()) throw new InterruptedException();
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
+
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 
 		final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
 		final ObjectArrayList<Function> l2 = new ObjectArrayList<>();
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		if (simplifiedParam1 == null) {
 			l1.add(parameter1);
 		} else {
-			if (Thread.interrupted()) throw new InterruptedException();
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
 			l1.addAll(simplifiedParam1);
 		}
-		if (Thread.interrupted()) throw new InterruptedException();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 		if (simplifiedParam2 == null) {
 			l2.add(parameter2);
 		} else {
-			if (Thread.interrupted()) throw new InterruptedException();
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
 			l2.addAll(simplifiedParam2);
 		}
 
@@ -153,7 +167,7 @@ public abstract class FunctionOperator implements Function {
 		for (final Function[] f : results) {
 			result.add(setParameter1(f[0]).setParameter2(f[1]));
 		}
-			
+
 		return result;
 	}
 
@@ -170,6 +184,6 @@ public abstract class FunctionOperator implements Function {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + this.getParameter1() + "," + this.getParameter2() + ")";
+		return this.getClass().getSimpleName() + "(" + getParameter1() + "," + getParameter2() + ")";
 	}
 }

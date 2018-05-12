@@ -77,46 +77,29 @@ public class Utils {
 	public static boolean msDosMode;
 	public static boolean debugCache;
 	public static boolean newtMode = true;
-	
+
 	public static final class AdvancedOutputStream extends StringWriter {
-		
+
 		private void print(PrintStream stream, String str) {
 			stream.print(fixString(str));
 		}
-		
+
 		private void println(PrintStream stream, String str) {
 			stream.println(fixString(str));
 		}
-		
+
 		private void println(PrintStream stream) {
 			stream.println();
 		}
-		
+
 		private String fixString(String str) {
-			
-			return str
-					.replace(""+MathematicalSymbols.NTH_ROOT, "root")
-					.replace(""+MathematicalSymbols.SQUARE_ROOT, "sqrt")
-					.replace(""+MathematicalSymbols.POWER, "powerOf")
-					.replace(""+MathematicalSymbols.POWER_OF_TWO, "powerOfTwo")
-					.replace(""+MathematicalSymbols.SINE, "sine")
-					.replace(""+MathematicalSymbols.COSINE, "cosine")
-					.replace(""+MathematicalSymbols.TANGENT, "tangent")
-					.replace(""+MathematicalSymbols.ARC_SINE, "asin")
-					.replace(""+MathematicalSymbols.ARC_COSINE, "acos")
-					.replace(""+MathematicalSymbols.ARC_TANGENT, "atan")
-					.replace(""+MathematicalSymbols.UNDEFINED, "undefined")
-					.replace(""+MathematicalSymbols.PI, "PI")
-					.replace(""+MathematicalSymbols.EULER_NUMBER, "EULER_NUMBER")
-					.replace(""+MathematicalSymbols.X, "X")
-					.replace(""+MathematicalSymbols.Y, "Y")
-					;
+
+			return str.replace("" + MathematicalSymbols.NTH_ROOT, "root").replace("" + MathematicalSymbols.SQUARE_ROOT, "sqrt").replace("" + MathematicalSymbols.POWER, "powerOf").replace("" + MathematicalSymbols.POWER_OF_TWO, "powerOfTwo").replace("" + MathematicalSymbols.SINE, "sine").replace("" + MathematicalSymbols.COSINE, "cosine").replace("" + MathematicalSymbols.TANGENT, "tangent").replace("" + MathematicalSymbols.ARC_SINE, "asin").replace("" + MathematicalSymbols.ARC_COSINE, "acos").replace("" + MathematicalSymbols.ARC_TANGENT, "atan").replace("" + MathematicalSymbols.UNDEFINED, "undefined").replace("" + MathematicalSymbols.PI, "PI").replace("" + MathematicalSymbols.EULER_NUMBER, "EULER_NUMBER").replace("" + MathematicalSymbols.X, "X").replace("" + MathematicalSymbols.Y, "Y");
 		}
-		
+
 		public void println(String str) {
 			println(0, str);
 		}
-		
 
 		public void println(int level) {
 			if (StaticVars.outputLevel >= level) {
@@ -133,9 +116,9 @@ public class Utils {
 			if (StaticVars.outputLevel >= level) {
 				final String time = getTimeString();
 				if (StaticVars.outputLevel == 0) {
-					println(System.out, "[" + time + "]"+str);
+					println(System.out, "[" + time + "]" + str);
 				} else {
-					println(System.out, "[" + time + "]"+str);
+					println(System.out, "[" + time + "]" + str);
 				}
 			}
 		}
@@ -179,7 +162,7 @@ public class Utils {
 				}
 			}
 		}
-		
+
 		private String getTimeString() {
 			return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"));
 		}
@@ -809,29 +792,29 @@ public class Utils {
 	}
 
 	public static <T> ObjectArrayList<T> newArrayList(T o) {
-		ObjectArrayList<T> t = new ObjectArrayList<T>();
+		final ObjectArrayList<T> t = new ObjectArrayList<>();
 		t.add(o);
 		return t;
 	}
 
 	public static Path getResource(String string) throws IOException, URISyntaxException {
-		URL res = Main.instance.getClass().getResource(string);
-		boolean isResource = res != null;
+		final URL res = Main.instance.getClass().getResource(string);
+		final boolean isResource = res != null;
 		if (isResource) {
 			try {
 				final URI uri = res.toURI();
 				if (res.getProtocol().equalsIgnoreCase("jar")) {
 					try {
 						FileSystems.newFileSystem(uri, Collections.emptyMap());
-					} catch (FileSystemAlreadyExistsException e) {
-				        FileSystems.getFileSystem(uri);
-				    }
-					Path myFolderPath = Paths.get(uri);
+					} catch (final FileSystemAlreadyExistsException e) {
+						FileSystems.getFileSystem(uri);
+					}
+					final Path myFolderPath = Paths.get(uri);
 					return myFolderPath;
 				} else {
 					return Paths.get(uri);
 				}
-			} catch (java.lang.IllegalArgumentException e) {
+			} catch (final java.lang.IllegalArgumentException e) {
 				throw e;
 			}
 		} else {
@@ -842,81 +825,81 @@ public class Utils {
 	public static InputStream getResourceStreamSafe(String string) throws IOException, URISyntaxException {
 		try {
 			return getResourceStream(string);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			return null;
 		}
 	}
-	
+
 	public static InputStream getResourceStream(String string) throws IOException, URISyntaxException {
-		URL res = Main.instance.getClass().getResource(string);
-		boolean isResource = res != null;
+		final URL res = Main.instance.getClass().getResource(string);
+		final boolean isResource = res != null;
 		if (isResource) {
 			try {
 				final URI uri = res.toURI();
 				if (res.getProtocol().equalsIgnoreCase("jar")) {
 					try {
 						FileSystems.newFileSystem(uri, Collections.emptyMap());
-					} catch (FileSystemAlreadyExistsException e) {
-				        FileSystems.getFileSystem(uri);
-				    }
-					Path myFolderPath = Paths.get(uri);
+					} catch (final FileSystemAlreadyExistsException e) {
+						FileSystems.getFileSystem(uri);
+					}
+					final Path myFolderPath = Paths.get(uri);
 					return Files.newInputStream(myFolderPath);
 				} else {
 					return Files.newInputStream(Paths.get(uri));
 				}
-			} catch (java.lang.IllegalArgumentException e) {
+			} catch (final java.lang.IllegalArgumentException e) {
 				throw e;
 			}
 		} else {
 			return Files.newInputStream(Paths.get(string.substring(1)));
 		}
 	}
-	
-    public static String read(InputStream input) throws IOException {
-        try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
-            return buffer.lines().collect(Collectors.joining("\n"));
-        }
-    }
-    
-    public static void zip(String targetPath, String destinationFilePath, String password) {
-        try {
-            ZipParameters parameters = new ZipParameters();
-            parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-            parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 
-            if(password.length()>0){
-                parameters.setEncryptFiles(true);
-                parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
-                parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
-                parameters.setPassword(password);
-            }
+	public static String read(InputStream input) throws IOException {
+		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+			return buffer.lines().collect(Collectors.joining("\n"));
+		}
+	}
 
-            ZipFile zipFile = new ZipFile(destinationFilePath);
+	public static void zip(String targetPath, String destinationFilePath, String password) {
+		try {
+			final ZipParameters parameters = new ZipParameters();
+			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
+			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
 
-            File targetFile = new File(targetPath);
-            if(targetFile.isFile()){
-                zipFile.addFile(targetFile, parameters);
-            }else if(targetFile.isDirectory()){
-                zipFile.addFolder(targetFile, parameters);
-            }
+			if (password.length() > 0) {
+				parameters.setEncryptFiles(true);
+				parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
+				parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
+				parameters.setPassword(password);
+			}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static void unzip(String targetZipFilePath, String destinationFolderPath, String password) {
-        try {
-            ZipFile zipFile = new ZipFile(targetZipFilePath);
-            if (zipFile.isEncrypted()) {
-                zipFile.setPassword(password);
-            }
-            zipFile.extractAll(destinationFolderPath);
+			final ZipFile zipFile = new ZipFile(destinationFilePath);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+			final File targetFile = new File(targetPath);
+			if (targetFile.isFile()) {
+				zipFile.addFile(targetFile, parameters);
+			} else if (targetFile.isDirectory()) {
+				zipFile.addFolder(targetFile, parameters);
+			}
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void unzip(String targetZipFilePath, String destinationFolderPath, String password) {
+		try {
+			final ZipFile zipFile = new ZipFile(targetZipFilePath);
+			if (zipFile.isEncrypted()) {
+				zipFile.setPassword(password);
+			}
+			zipFile.extractAll(destinationFolderPath);
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static Path getJarDirectory() {
 		return Paths.get("").toAbsolutePath();

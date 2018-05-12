@@ -2,12 +2,11 @@ package org.warp.picalculator;
 
 import org.warp.picalculator.MmapByteBuffer;
 
-
 public class TestJNI {
 	public TestJNI() {
-		
+
 	}
-	
+
 	static {
 		System.load("/boot/libpicalc.so");
 	}
@@ -19,7 +18,7 @@ public class TestJNI {
 	public MmapByteBuffer retrieveBuffer() {
 		return getDisplayBuffer();
 	}
-	
+
 	public void deleteBuffer() {
 		disposeDisplayBuffer();
 	}

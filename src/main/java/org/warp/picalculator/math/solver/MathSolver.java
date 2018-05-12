@@ -14,34 +14,33 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class MathSolver {
-	
+
 	private final Function initialFunction;
-	private AtomicInteger stepState = new AtomicInteger(0);
+	private final AtomicInteger stepState = new AtomicInteger(0);
 	private int stepStateRepetitions = 0;
 	private int consecutiveNullSteps = 0;
+
 	private enum StepState {
-		_1_CALCULATION,
-		_2_EXPANSION,
-		_3_CALCULATION,
-		_4_REDUCTION
+		_1_CALCULATION, _2_EXPANSION, _3_CALCULATION, _4_REDUCTION
 	}
+
 	private final StepState[] stepStates = StepState.values();
 	@SuppressWarnings("unchecked")
 	private final ObjectArrayList<Function>[][] lastFunctions = new ObjectArrayList[2][stepStates.length];
-	
+
 	public MathSolver(Function initialFunction) {
 		this.initialFunction = initialFunction;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public ObjectArrayList<ObjectArrayList<Function>> solveAllSteps() throws InterruptedException, Error {
-		ObjectArrayList<ObjectArrayList<Function>> steps = new ObjectArrayList<>();
+		final ObjectArrayList<ObjectArrayList<Function>> steps = new ObjectArrayList<>();
 		ObjectArrayList<Function> lastFnc = null, currFnc = new ObjectArrayList<>();
 		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Solving all steps. Input: " + initialFunction.toString());
 		currFnc.add(initialFunction);
 		long stepNumber = 0;
 		int initStepState = 0, endStepState = 0;
-		AtomicInteger stepState = new AtomicInteger(0);
+		final AtomicInteger stepState = new AtomicInteger(0);
 		do {
 			lastFunctions[1] = lastFunctions[0];
 			lastFunctions[0] = new ObjectArrayList[stepStates.length];
@@ -52,9 +51,9 @@ public class MathSolver {
 			lastFnc = currFnc;
 			initStepState = stepState.get();
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step " + stepStates[initStepState] + ". Input: " + currFnc);
-			ObjectArrayList<Function> stepResult = solveStep(lastFnc, stepState);
+			final ObjectArrayList<Function> stepResult = solveStep(lastFnc, stepState);
 			if (stepResult != null) {
-				for (Function result : stepResult) {
+				for (final Function result : stepResult) {
 					Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, result.toString());
 				}
 				currFnc = stepResult;
@@ -72,7 +71,7 @@ public class MathSolver {
 			if (StaticVars.debugOn) {
 				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, currFnc + " is " + (checkEquals(currFnc, lastFunctions[1][endStepState]) ? "" : "not ") + "equals to [1]:" + lastFunctions[1][endStepState]);
 			}
-		} while(consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[0][endStepState]) && !checkEquals(currFnc, lastFunctions[1][endStepState]));
+		} while (consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[0][endStepState]) && !checkEquals(currFnc, lastFunctions[1][endStepState]));
 		if (consecutiveNullSteps >= stepStates.length) {
 			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + consecutiveNullSteps + " >= " + stepStates.length);
 		} else if (checkEquals(currFnc, lastFunctions[0][endStepState])) {
@@ -105,14 +104,15 @@ public class MathSolver {
 	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs) throws InterruptedException, Error {
 		return solveStep(fncs, stepState);
 	}
-	
-	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs, AtomicInteger stepState) throws InterruptedException, Error {
-		ObjectArrayList<Function> processedFncs = applyRules(fncs, RuleType.EXISTENCE); // Apply existence rules before everything
+
+	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs, AtomicInteger stepState)
+			throws InterruptedException, Error {
+		final ObjectArrayList<Function> processedFncs = applyRules(fncs, RuleType.EXISTENCE); // Apply existence rules before everything
 		if (processedFncs != null) {
 			fncs = processedFncs;
 		}
 		RuleType currentAcceptedRules;
-		switch(stepStates[stepState.get()]) {
+		switch (stepStates[stepState.get()]) {
 			case _1_CALCULATION: {
 				currentAcceptedRules = RuleType.CALCULATION;
 				break;
@@ -133,8 +133,8 @@ public class MathSolver {
 				System.err.println("Unknown Step State");
 				throw new NotImplementedException();
 		}
-		ObjectArrayList<Function> results = applyRules(fncs, currentAcceptedRules);
-		switch(stepStates[stepState.get()]) {
+		final ObjectArrayList<Function> results = applyRules(fncs, currentAcceptedRules);
+		switch (stepStates[stepState.get()]) {
 			case _1_CALCULATION: {
 				if (results == null) {
 					stepState.incrementAndGet();
@@ -195,17 +195,20 @@ public class MathSolver {
 		}
 		return null;
 	}
-	
-	private ObjectArrayList<Function> applyRules(ObjectArrayList<Function> fncs, RuleType currentAcceptedRules) throws InterruptedException, Error {
-		ObjectArrayList<Rule> rules = initialFunction.getMathContext().getAcceptableRules(currentAcceptedRules);
+
+	private ObjectArrayList<Function> applyRules(ObjectArrayList<Function> fncs, RuleType currentAcceptedRules)
+			throws InterruptedException, Error {
+		final ObjectArrayList<Rule> rules = initialFunction.getMathContext().getAcceptableRules(currentAcceptedRules);
 		ObjectArrayList<Function> results = null;
 		Rule appliedRule = null;
 		out: {
-			for (Function fnc : fncs) {
-				for (Rule rule : rules) {
-					List<Function> ruleResults = fnc.simplify(rule);
+			for (final Function fnc : fncs) {
+				for (final Rule rule : rules) {
+					final List<Function> ruleResults = fnc.simplify(rule);
 					if (ruleResults != null && !ruleResults.isEmpty()) {
-						if (results == null) results = new ObjectArrayList<Function>();
+						if (results == null) {
+							results = new ObjectArrayList<>();
+						}
 						results.addAll(ruleResults);
 						appliedRule = rule;
 						break;

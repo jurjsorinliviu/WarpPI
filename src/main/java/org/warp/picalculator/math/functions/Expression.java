@@ -26,7 +26,7 @@ public class Expression extends FunctionSingle {
 		super(root, value);
 	}
 
-	private boolean initialParenthesis = false;
+	private final boolean initialParenthesis = false;
 
 	@Deprecated
 	public Expression(MathContext root, String string) throws Error {
@@ -570,11 +570,11 @@ public class Expression extends FunctionSingle {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
-		BlockParenthesis bp = new BlockParenthesis();
-		BlockContainer bpc = bp.getNumberContainer();
-		for (Block b : sub) {
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
+		final BlockParenthesis bp = new BlockParenthesis();
+		final BlockContainer bpc = bp.getNumberContainer();
+		for (final Block b : sub) {
 			bpc.appendBlockUnsafe(b);
 		}
 		bpc.recomputeDimensions();
@@ -602,7 +602,7 @@ public class Expression extends FunctionSingle {
 		} else {
 			final Function f = (Function) o;
 			if (f instanceof Expression) {
-				return (getParameter(0).equals(((Expression)f).getParameter(0)));
+				return (getParameter(0).equals(((Expression) f).getParameter(0)));
 			} else {
 				return (getParameter(0).equals(f));
 			}

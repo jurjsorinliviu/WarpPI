@@ -35,7 +35,7 @@ public class Sum extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
 		result.addAll(getParameter1().toBlock(context));
 		result.add(new BlockChar(MathematicalSymbols.SUM));
 		result.addAll(getParameter2().toBlock(context));

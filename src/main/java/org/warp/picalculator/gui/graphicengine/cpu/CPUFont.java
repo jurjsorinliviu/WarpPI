@@ -38,11 +38,11 @@ public class CPUFont implements BinaryFont {
 		isResource = true;
 		load("/font_" + fontName + ".rft", onlyRaw);
 	}
-	
+
 	public CPUFont(String path, String fontName) throws IOException {
 		this(path, fontName, false);
 	}
-	
+
 	CPUFont(String path, String fontName, boolean onlyRaw) throws IOException {
 		isResource = false;
 		load(path + "/font_" + fontName + ".rft", onlyRaw);
@@ -60,7 +60,7 @@ public class CPUFont implements BinaryFont {
 	public void load(String path) throws IOException {
 		load(path, false);
 	}
-	
+
 	private void load(String path, boolean onlyRaw) throws IOException {
 		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Loading font " + path);
 		loadFont(path);
@@ -167,38 +167,38 @@ public class CPUFont implements BinaryFont {
 	}
 
 	private void findIntervals() {
-		final LinkedList<int[]> intervals = new LinkedList<int[]>();
+		final LinkedList<int[]> intervals = new LinkedList<>();
 		int beginIndex = -1;
 		int endIndex = 0;
 		int intervalSize = 0;
-		int holeSize = 0;
+		final int holeSize = 0;
 		for (int i = 0; i < rawchars.length; i++) {
 			if (rawchars[i] != null) {
 				beginIndex = i;
 				int firstNull = 0;
-				while(i+firstNull < rawchars.length && rawchars[i+firstNull] != null) {
+				while (i + firstNull < rawchars.length && rawchars[i + firstNull] != null) {
 					firstNull++;
 				}
 				endIndex = beginIndex + firstNull - 1;
 				i = endIndex;
 				if (endIndex >= 0) {
 					intervalSize = endIndex - beginIndex + 1;
-					intervals.add(new int[] {beginIndex, endIndex, intervalSize});
+					intervals.add(new int[] { beginIndex, endIndex, intervalSize });
 					intervalsTotalSize += intervalSize;
 				}
 				beginIndex = -1;
 			}
 		}
 		int lastIndex = 0;
-		boolean[][] newrawchars = new boolean[intervalsTotalSize][];
-		for (int[] interval: intervals) {
+		final boolean[][] newrawchars = new boolean[intervalsTotalSize][];
+		for (final int[] interval : intervals) {
 			if (rawchars.length - (interval[0]) - interval[2] < 0) {
 				System.err.println(interval[0] + "-" + interval[1] + "(" + interval[2] + ")");
 				System.err.println(rawchars.length - (interval[0]) - interval[2]);
 				throw new ArrayIndexOutOfBoundsException();
 			}
-			if (newrawchars.length - (lastIndex-1) - interval[2] < 0) {
-				System.err.println(newrawchars.length - (lastIndex-1) - interval[2]);
+			if (newrawchars.length - (lastIndex - 1) - interval[2] < 0) {
+				System.err.println(newrawchars.length - (lastIndex - 1) - interval[2]);
 				throw new ArrayIndexOutOfBoundsException();
 			}
 			System.arraycopy(rawchars, interval[0], newrawchars, lastIndex, interval[2]);
@@ -208,7 +208,7 @@ public class CPUFont implements BinaryFont {
 		final int intervalsSize = intervals.size();
 		this.intervals = new int[intervalsSize * 3];
 		for (int i = 0; i < intervalsSize; i++) {
-			int[] interval = intervals.get(i);
+			final int[] interval = intervals.get(i);
 			this.intervals[i * 3 + 0] = interval[0];
 			this.intervals[i * 3 + 1] = interval[1];
 			this.intervals[i * 3 + 2] = interval[2];
@@ -232,41 +232,41 @@ public class CPUFont implements BinaryFont {
 		final int[] indexes = new int[l];
 		final char[] chars = txt.toCharArray();
 		for (int i = 0; i < l; i++) {
-			int originalIndex = (chars[i] & 0xFFFF) - minBound;
+			final int originalIndex = (chars[i] & 0xFFFF) - minBound;
 			indexes[i] = compressIndex(originalIndex);
 		}
 		return indexes;
 	}
-	
+
 	public int getCharIndex(char c) {
-		int originalIndex = c & 0xFFFF;
+		final int originalIndex = c & 0xFFFF;
 		return compressIndex(originalIndex);
 	}
-	
+
 	private int compressIndex(int originalIndex) {
 		int compressedIndex = 0;
-		for (int i = 0; i < intervals.length; i+=3) {
+		for (int i = 0; i < intervals.length; i += 3) {
 			if (intervals[i] > originalIndex) {
 				break;
-			} else if (originalIndex <= intervals[i+1]) {
-				compressedIndex+=(originalIndex-intervals[i]);
+			} else if (originalIndex <= intervals[i + 1]) {
+				compressedIndex += (originalIndex - intervals[i]);
 				break;
 			} else {
-				compressedIndex+=intervals[i+2];
+				compressedIndex += intervals[i + 2];
 			}
 		}
 		return compressedIndex;
 	}
-	
+
 	private int decompressIndex(int compressedIndex) {
-		int originalIndex = 0;
+		final int originalIndex = 0;
 		int i = 0;
-		for (int intvl = 0; intvl < intervals.length; intvl+=3) {
-			i+=intervals[intvl+2];
+		for (int intvl = 0; intvl < intervals.length; intvl += 3) {
+			i += intervals[intvl + 2];
 			if (i == compressedIndex) {
-				return intervals[intvl+1];
+				return intervals[intvl + 1];
 			} else if (i > compressedIndex) {
-				return intervals[intvl+1] - (i - compressedIndex);
+				return intervals[intvl + 1] - (i - compressedIndex);
 			}
 		}
 		return originalIndex;

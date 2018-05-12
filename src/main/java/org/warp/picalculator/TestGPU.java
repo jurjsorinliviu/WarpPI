@@ -115,7 +115,7 @@ public class TestGPU {
 							break;
 					}
 					return false;
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					ex.printStackTrace();
 				}
 				return false;

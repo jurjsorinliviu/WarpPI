@@ -32,12 +32,12 @@ public class Negative extends FunctionSingle {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> blocks = new ObjectArrayList<Block>();
+		final ObjectArrayList<Block> blocks = new ObjectArrayList<>();
 		blocks.add(new BlockChar(MathematicalSymbols.MINUS));
 		if (new Expression(context, getParameter()).parenthesisNeeded()) {
-			BlockParenthesis par = new BlockParenthesis();
-			ObjectArrayList<Block> parBlocks = getParameter().toBlock(context);
-			for (Block b : parBlocks) {
+			final BlockParenthesis par = new BlockParenthesis();
+			final ObjectArrayList<Block> parBlocks = getParameter().toBlock(context);
+			for (final Block b : parBlocks) {
 				par.getNumberContainer().appendBlockUnsafe(b); // Skips recomputeDimension
 			}
 			par.recomputeDimensions(); // Recompute dimensions after appendBlockUnsafe

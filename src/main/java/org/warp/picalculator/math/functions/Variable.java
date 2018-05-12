@@ -55,7 +55,7 @@ public class Variable implements Function {
 			this.n = n;
 		}
 	}
-	
+
 	@Override
 	public ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
 		return rule.execute(this);
@@ -100,7 +100,7 @@ public class Variable implements Function {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
 		//TODO: Temporary solution. In near future Variables will be distint objects and they will have a color. So they will be no longer a BlockChar/FeatureChar
 		result.add(new BlockChar(getChar()));
 		return result;

@@ -1,10 +1,8 @@
 package org.warp.picalculator.math.functions;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
-import org.warp.picalculator.gui.expression.blocks.BlockDivision;
 import org.warp.picalculator.gui.expression.blocks.BlockLogarithm;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
@@ -34,16 +32,16 @@ public class Logarithm extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
-		ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
-		BlockLogarithm bd = new BlockLogarithm();
-		BlockContainer uc = bd.getBaseContainer();
-		BlockContainer lc = bd.getNumberContainer();
-		for (Block b : sub1) {
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
+		final ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
+		final BlockLogarithm bd = new BlockLogarithm();
+		final BlockContainer uc = bd.getBaseContainer();
+		final BlockContainer lc = bd.getNumberContainer();
+		for (final Block b : sub1) {
 			uc.appendBlockUnsafe(b);
 		}
-		for (Block b : sub2) {
+		for (final Block b : sub2) {
 			lc.appendBlockUnsafe(b);
 		}
 		uc.recomputeDimensions();

@@ -10,13 +10,13 @@ public class ScriptUtils {
 	}
 
 	public static LinkedList<BigInteger> mcm(LinkedList<BigInteger> factors1, LinkedList<BigInteger> factors2) {
-		LinkedList<BigInteger> mcm = new LinkedList<>();
-		Iterator<BigInteger> i1 = factors1.iterator();
-		while(i1.hasNext()) {
-			BigInteger int1 = i1.next();
-			Iterator<BigInteger> i2 = factors2.iterator();
-			while(i2.hasNext()) {
-				BigInteger int2 = i2.next();
+		final LinkedList<BigInteger> mcm = new LinkedList<>();
+		final Iterator<BigInteger> i1 = factors1.iterator();
+		while (i1.hasNext()) {
+			final BigInteger int1 = i1.next();
+			final Iterator<BigInteger> i2 = factors2.iterator();
+			while (i2.hasNext()) {
+				final BigInteger int2 = i2.next();
 				if (int1.equals(int2)) {
 					i1.remove();
 					i2.remove();

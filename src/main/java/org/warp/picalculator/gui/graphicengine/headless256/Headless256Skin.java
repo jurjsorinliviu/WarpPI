@@ -28,9 +28,9 @@ public class Headless256Skin implements Skin {
 
 	public static int[] getMatrixOfImage(BufferedImage bufferedImage) {
 		BufferedImage after = new BufferedImage(bufferedImage.getWidth(null), bufferedImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-		AffineTransform at = new AffineTransform();
+		final AffineTransform at = new AffineTransform();
 		at.scale(1f / (Headless256Engine.C_MUL_X), 1f / (Headless256Engine.C_MUL_Y));
-		AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+		final AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
 		after = scaleOp.filter(bufferedImage, after);
 
 		final int width = after.getWidth(null);
@@ -38,11 +38,11 @@ public class Headless256Skin implements Skin {
 		final int[] pixels = new int[width * height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				int rgb = after.getRGB(i, j);
-				int r = (rgb >> 16) & 0xFF;
-				int g = (rgb >> 8) & 0xFF;
-				int b = rgb & 0xFF;
-				boolean transparent = ((rgb >> 24) & 0xFF) <= 128;
+				final int rgb = after.getRGB(i, j);
+				final int r = (rgb >> 16) & 0xFF;
+				final int g = (rgb >> 8) & 0xFF;
+				final int b = rgb & 0xFF;
+				final boolean transparent = ((rgb >> 24) & 0xFF) <= 128;
 				pixels[i + j * width] = Headless256Renderer.rgbToX256(r, g, b) | (transparent ? Headless256Renderer.TRANSPARENT : 0);
 			}
 		}

@@ -35,8 +35,8 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 
 	public void setContentAsSingleGroup(ObjectArrayList<Block> blocks) {
 		roots.clear();
-		BlockContainer bcnt = new BlockContainer();
-		for (Block block : blocks) {
+		final BlockContainer bcnt = new BlockContainer();
+		for (final Block block : blocks) {
 			bcnt.appendBlockUnsafe(block);
 		}
 		roots.add(bcnt);
@@ -45,9 +45,9 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 
 	public void setContentAsMultipleGroups(ObjectArrayList<ObjectArrayList<Block>> roots) {
 		this.roots.clear();
-		for (ObjectArrayList<Block> blocks : roots) {
-			BlockContainer bcnt = new BlockContainer();
-			for (Block block : blocks) {
+		for (final ObjectArrayList<Block> blocks : roots) {
+			final BlockContainer bcnt = new BlockContainer();
+			for (final Block block : blocks) {
 				bcnt.appendBlockUnsafe(block);
 			}
 			this.roots.add(bcnt);
@@ -56,18 +56,18 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	}
 
 	public void setContentAsMultipleElements(ObjectArrayList<Block> elems) {
-		this.roots.clear();
-		for (Block block : elems) {
-			BlockContainer bcnt = new BlockContainer();
+		roots.clear();
+		for (final Block block : elems) {
+			final BlockContainer bcnt = new BlockContainer();
 			bcnt.appendBlockUnsafe(block);
-			this.roots.add(bcnt);
+			roots.add(bcnt);
 		}
 		recomputeDimensions();
 	}
 
 	@Override
 	public void recomputeDimensions() {
-		for (BlockContainer root : roots) {
+		for (final BlockContainer root : roots) {
 			root.recomputeDimensions();
 		}
 	}
@@ -75,10 +75,11 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	@Override
 	public int getWidth() {
 		int maxw = 0;
-		for (BlockContainer root : roots) {
-			int w = root.getWidth();
-			if (w > maxw)
+		for (final BlockContainer root : roots) {
+			final int w = root.getWidth();
+			if (w > maxw) {
 				maxw = w;
+			}
 		}
 		return maxw;
 	}
@@ -86,7 +87,7 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	@Override
 	public int getHeight() {
 		int h = 0;
-		for (BlockContainer root : roots) {
+		for (final BlockContainer root : roots) {
 			h += root.getHeight() + 2;
 		}
 		if (h > 0) {
@@ -123,7 +124,7 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	 */
 	public void draw(GraphicEngine ge, Renderer r, int x, int y) {
 		int offset = 0;
-		for (BlockContainer root : roots) {
+		for (final BlockContainer root : roots) {
 			root.draw(ge, r, x, y + offset, caret);
 			offset += root.getHeight() + 2;
 		}
@@ -136,8 +137,8 @@ public abstract class OutputContainer implements GraphicalElement, OutputLayout,
 	}
 
 	public boolean isContentEmpty() {
-		for (BlockContainer root : roots) {
-			ObjectArrayList<Block> cnt = root.getContent();
+		for (final BlockContainer root : roots) {
+			final ObjectArrayList<Block> cnt = root.getContent();
 			if (cnt != null && !cnt.isEmpty()) {
 				return false;
 			}

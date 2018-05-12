@@ -14,9 +14,9 @@ public class StaticVars {
 	public static boolean debugWindow2x = false;
 	public static Class<?> classLoader;
 	public static float windowZoom = 2;
-	
+
 	private StaticVars() {
-		
+
 	}
 
 	public static float getCurrentZoomValue() {

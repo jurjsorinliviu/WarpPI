@@ -41,7 +41,9 @@ public class SumMethod1 {
 		Function prec = new Sum(root, elem1, elem2);
 		for (int i = size - 1; i >= 0; i--) {
 			if (i != workingElementCouple[0] & i != workingElementCouple[1]) {
-				if (Thread.interrupted()) throw new InterruptedException();
+				if (Thread.interrupted()) {
+					throw new InterruptedException();
+				}
 				final Function a = prec;
 				final Function b = elements.get(i);
 				if (b instanceof Negative) {
@@ -67,7 +69,9 @@ public class SumMethod1 {
 		final MathContext root = sum.getMathContext();
 		final ObjectArrayList<Function> elements = new ObjectArrayList<>();
 		while (sum instanceof Sum || sum instanceof Subtraction) {
-			if (Thread.interrupted()) throw new InterruptedException();
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
 			if (sum instanceof Sum) {
 				elements.add(((FunctionOperator) sum).getParameter2());
 			} else {
@@ -79,7 +83,8 @@ public class SumMethod1 {
 		return elements;
 	}
 
-	private static int[] getFirstWorkingSumCouple(MathContext root, ObjectArrayList<Function> elements) throws InterruptedException {
+	private static int[] getFirstWorkingSumCouple(MathContext root, ObjectArrayList<Function> elements)
+			throws InterruptedException {
 		return null;
 //		final int size = elements.size();
 //		Function a;

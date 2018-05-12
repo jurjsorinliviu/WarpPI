@@ -38,7 +38,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 public class MathInputScreen extends Screen {
 
 	private static final BinaryFont fontBig = Utils.getFont(false);
-	
+
 	public MathContext calc;
 	public InputContext ic;
 	public InputContainer userInput;
@@ -93,7 +93,7 @@ public class MathInputScreen extends Screen {
 		}
 		if (computingResult) {
 			computingElapsedTime += dt;
-			computingAnimationElapsedTime+=dt;
+			computingAnimationElapsedTime += dt;
 			if (computingAnimationElapsedTime > 0.1) {
 				computingAnimationElapsedTime -= 0.1;
 				computingAnimationIndex = (computingAnimationIndex + 1) % 16;
@@ -101,7 +101,7 @@ public class MathInputScreen extends Screen {
 			}
 			if (computingElapsedTime > 5) {
 				computingBreakTipVisible = true;
-			} 
+			}
 		} else {
 			computingElapsedTime = 0;
 			computingAnimationElapsedTime = 0;
@@ -109,6 +109,7 @@ public class MathInputScreen extends Screen {
 			computingBreakTipVisible = false;
 		}
 	}
+
 	@Override
 	public void render() {
 		final Renderer renderer = DisplayManager.INSTANCE.renderer;
@@ -130,7 +131,7 @@ public class MathInputScreen extends Screen {
 			if (computingBreakTipVisible) {
 				Utils.getFont(false).use(DisplayManager.INSTANCE.engine);
 				renderer.glColor3f(0.75f, 0, 0);
-				renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth() - 4 - size - 4, DisplayManager.INSTANCE.engine.getHeight() - size/2 - renderer.getCurrentFont().getCharacterHeight()/2 - 4, "Press (=) to stop");
+				renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth() - 4 - size - 4, DisplayManager.INSTANCE.engine.getHeight() - size / 2 - renderer.getCurrentFont().getCharacterHeight() / 2 - 4, "Press (=) to stop");
 			}
 		} else {
 			if (!result.isContentEmpty()) {
@@ -154,7 +155,6 @@ public class MathInputScreen extends Screen {
 		DisplayManager.INSTANCE.guiSkin.use(DisplayManager.INSTANCE.engine);
 		renderer.glFillRect(2 + 18 * pos + 2 * spacersNumb, 2, 16, 16, 16 * skinN, 16 * 0, 16, 16);
 	}
-
 
 	@Override
 	public boolean mustBeRefreshed() {
@@ -193,7 +193,9 @@ public class MathInputScreen extends Screen {
 							case STEP:
 								currentStep++;
 							case SIMPLIFY:
-								if (!step) currentStep = 0;
+								if (!step) {
+									currentStep = 0;
+								}
 								if (DisplayManager.INSTANCE.error != null) {
 									//TODO: make the error management a global API rather than being relegated to this screen.
 									Utils.out.println(1, "Resetting after error...");
@@ -205,11 +207,11 @@ public class MathInputScreen extends Screen {
 								} else {
 									if (!computingResult) {
 										computingResult = true;
-										computingThread = new Thread(()-> {
+										computingThread = new Thread(() -> {
 											try {
 												try {
 													if (!userInput.isAlreadyParsed() && !userInput.isEmpty()) {
-														Expression expr = MathParser.parseInput(calc, userInput);
+														final Expression expr = MathParser.parseInput(calc, userInput);
 														if (calc.f == null | calc.f2 == null) {
 															calc.f = new ObjectArrayList<>();
 															calc.f2 = new ObjectArrayList<>();
@@ -219,14 +221,14 @@ public class MathInputScreen extends Screen {
 														}
 														calc.f.add(expr);
 														Utils.out.println(2, "INPUT: " + expr);
-														MathSolver ms = new MathSolver(expr);
-														ObjectArrayList<ObjectArrayList<Function>> resultSteps = ms.solveAllSteps();
+														final MathSolver ms = new MathSolver(expr);
+														final ObjectArrayList<ObjectArrayList<Function>> resultSteps = ms.solveAllSteps();
 														resultSteps.add(0, Utils.newArrayList(expr));
-														ObjectArrayList<Function> resultExpressions = resultSteps.get(resultSteps.size() - 1);	
-														for (Function rr : resultExpressions) {
+														final ObjectArrayList<Function> resultExpressions = resultSteps.get(resultSteps.size() - 1);
+														for (final Function rr : resultExpressions) {
 															Utils.out.println(0, "RESULT: " + rr.toString());
 														}
-														ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
+														final ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
 														result.setContentAsMultipleGroups(resultBlocks);
 														//									showVariablesDialog(() -> {
 														//										currentExpression = newExpression;
@@ -454,7 +456,7 @@ public class MathInputScreen extends Screen {
 						}
 					}
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ex.printStackTrace();
 			return true;
 		}

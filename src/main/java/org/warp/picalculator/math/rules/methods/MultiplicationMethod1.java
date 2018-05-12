@@ -30,7 +30,9 @@ public class MultiplicationMethod1 {
 		final int size = elements.size();
 		Function prec = new Multiplication(root, elem1, elem2);
 		for (int i = size - 1; i >= 0; i--) {
-			if (Thread.interrupted()) throw new InterruptedException();
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
 			if (i != workingElementCouple[0] & i != workingElementCouple[1]) {
 				final Function a = prec;
 				final Function b = elements.get(i);
@@ -48,7 +50,9 @@ public class MultiplicationMethod1 {
 	private static ObjectArrayList<Function> getMultiplicationElements(Function mult) throws InterruptedException {
 		final ObjectArrayList<Function> elements = new ObjectArrayList<>();
 		while (mult instanceof Multiplication) {
-			if (Thread.interrupted()) throw new InterruptedException();
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
 			elements.add(((Multiplication) mult).getParameter1());
 			mult = ((Multiplication) mult).getParameter2();
 		}
@@ -56,7 +60,8 @@ public class MultiplicationMethod1 {
 		return elements;
 	}
 
-	private static int[] getFirstWorkingMultiplicationCouple(ObjectArrayList<Function> elements) throws InterruptedException {
+	private static int[] getFirstWorkingMultiplicationCouple(ObjectArrayList<Function> elements)
+			throws InterruptedException {
 		return null;
 		// TODO:
 //		final int size = elements.size();

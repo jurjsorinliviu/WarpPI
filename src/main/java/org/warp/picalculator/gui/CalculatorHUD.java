@@ -12,37 +12,37 @@ public class CalculatorHUD extends HUD {
 	@Override
 	public void created() throws InterruptedException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void initialized() throws InterruptedException {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void render() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void renderTopmostBackground() {
-		Renderer renderer = d.renderer;
-		GraphicEngine engine = d.engine;
-		Skin guiSkin = d.guiSkin;
-		
+		final Renderer renderer = d.renderer;
+		final GraphicEngine engine = d.engine;
+		final Skin guiSkin = d.guiSkin;
+
 		renderer.glColor(0xFFc5c2af);
 		renderer.glFillColor(0, 0, engine.getWidth(), 20);
 	}
-	
+
 	@Override
 	public void renderTopmost() {
-		Renderer renderer = d.renderer;
-		GraphicEngine engine = d.engine;
-		Skin guiSkin = d.guiSkin;
-		
+		final Renderer renderer = d.renderer;
+		final GraphicEngine engine = d.engine;
+		final Skin guiSkin = d.guiSkin;
+
 		//DRAW TOP
 		renderer.glColor3i(0, 0, 0);
 		renderer.glDrawLine(0, 20, engine.getWidth() - 1, 20);
@@ -107,10 +107,9 @@ public class CalculatorHUD extends HUD {
 		}
 
 		padding += 18;
-		
-		
+
 		//DRAW BOTTOM
-		this.d.renderer.glDrawStringLeft(2, 90, this.d.displayDebugString);
+		d.renderer.glDrawStringLeft(2, 90, d.displayDebugString);
 
 		Utils.getFont(true, false).use(DisplayManager.INSTANCE.engine);
 		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 40);
@@ -126,13 +125,13 @@ public class CalculatorHUD extends HUD {
 	@Override
 	public void beforeRender(float dt) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void renderBackground() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

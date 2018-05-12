@@ -76,7 +76,9 @@ public class Number implements Function {
 		if (Utils.isIntegerValue(f.term)) {
 			final BigInteger bi = f.term.toBigInteger().abs();
 			for (BigInteger i = BigInteger.ZERO; i.compareTo(bi) < 0; i = i.add(BigInteger.ONE)) {
-				if (Thread.interrupted()) throw new InterruptedException();
+				if (Thread.interrupted()) {
+					throw new InterruptedException();
+				}
 				ret = ret.multiply(new Number(root, getTerm()));
 			}
 			if (f.term.signum() == -1) {
@@ -231,16 +233,16 @@ public class Number implements Function {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		String numberString = this.toString();
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final String numberString = toString();
 		if (numberString.contains("ℯ℮")) {
-			String[] numberParts = numberString.split("ℯ℮", 2);
-			BlockPower bp = new BlockExponentialNotation();
-			BlockContainer bpec = bp.getExponentContainer();
-			for (char c : numberParts[0].toCharArray()) {
+			final String[] numberParts = numberString.split("ℯ℮", 2);
+			final BlockPower bp = new BlockExponentialNotation();
+			final BlockContainer bpec = bp.getExponentContainer();
+			for (final char c : numberParts[0].toCharArray()) {
 				result.add(new BlockChar(c));
 			}
-			for (char c : numberParts[1].toCharArray()) {
+			for (final char c : numberParts[1].toCharArray()) {
 				bpec.appendBlockUnsafe(new BlockChar(c));
 			} ;
 			bpec.recomputeDimensions();
@@ -248,7 +250,7 @@ public class Number implements Function {
 			result.add(bp);
 			return result;
 		} else {
-			for (char c : numberString.toCharArray()) {
+			for (final char c : numberString.toCharArray()) {
 				result.add(new BlockChar(c));
 			}
 		}

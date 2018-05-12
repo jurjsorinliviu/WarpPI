@@ -41,7 +41,7 @@ public final class DisplayManager implements RenderingLoop {
 	public final int[] glyphsHeight;
 
 	private Screen screen;
-	private HUD hud;
+	private final HUD hud;
 	public Semaphore screenChange = new Semaphore(0);
 	public String displayDebugString;
 	public ObjectArrayList<GUIErrorMessage> errorMessages;
@@ -50,31 +50,33 @@ public final class DisplayManager implements RenderingLoop {
 		INSTANCE = this;
 		engine = chooseGraphicEngine();
 		supportsPauses = engine.doesRefreshPauses();
-		
+
 		this.monitor = monitor;
 		this.hud = hud;
-		
+
 		monitor.initialize();
 		glyphsHeight = new int[] { 9, 6, 12, 9 };
 		displayDebugString = "";
 		errorMessages = new ObjectArrayList<>();
-		
+
 		try {
 			hud.d = this;
 			hud.create();
-			if (!hud.initialized) hud.initialize();
+			if (!hud.initialized) {
+				hud.initialize();
+			}
 		} catch (final Exception e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
+
 		setScreen(screen);
 		try {
 			engine.create();
 			renderer = engine.getRenderer();
 			engine.setTitle(title);
 			loop();
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ex.printStackTrace();
 		}
 		monitor.shutdown();
@@ -154,7 +156,7 @@ public final class DisplayManager implements RenderingLoop {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
 				if (DisplayManager.INSTANCE.currentSession > 0) {
-					int sl = DisplayManager.INSTANCE.sessions.length + 5; //TODO: I don't know why if i don't add +5 or more some items disappear
+					final int sl = DisplayManager.INSTANCE.sessions.length + 5; //TODO: I don't know why if i don't add +5 or more some items disappear
 					DisplayManager.INSTANCE.sessions = Arrays.copyOfRange(DisplayManager.INSTANCE.sessions, DisplayManager.INSTANCE.currentSession, sl);
 				}
 				DisplayManager.INSTANCE.currentSession = 0;
@@ -293,8 +295,8 @@ public final class DisplayManager implements RenderingLoop {
 
 	private void draw_init() {
 		if (engine.supportsFontRegistering()) {
-			List<BinaryFont> fontsIterator = engine.getRegisteredFonts();
-			for (BinaryFont f : fontsIterator) {
+			final List<BinaryFont> fontsIterator = engine.getRegisteredFonts();
+			for (final BinaryFont f : fontsIterator) {
 				if (!f.isInitialized()) {
 					f.initialize(engine);
 				}
@@ -307,7 +309,7 @@ public final class DisplayManager implements RenderingLoop {
 		renderer.glColor3i(255, 255, 255);
 
 		if (error != null) {
-			BinaryFont fnt = Utils.getFont(false, false);
+			final BinaryFont fnt = Utils.getFont(false, false);
 			if (fnt != null && fnt != engine.getRenderer().getCurrentFont()) {
 				fnt.use(engine);
 			}

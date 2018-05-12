@@ -52,11 +52,14 @@ public interface Function {
 	 * @return Calculator mathContext
 	 */
 	public MathContext getMathContext();
-	
+
 	/**
-	 * Simplify the current function or it's children using the specified <b>rule</b>
+	 * Simplify the current function or it's children using the specified
+	 * <b>rule</b>
+	 * 
 	 * @param rule
-	 * @return A list of the resulting Functions if the rule is applicable and something changed, <b>null</b> otherwise
+	 * @return A list of the resulting Functions if the rule is applicable and
+	 *         something changed, <b>null</b> otherwise
 	 * @throws Error
 	 * @throws InterruptedException
 	 */

@@ -58,7 +58,7 @@ public class BlockLogarithm extends Block {
 		r.glDrawCharLeft(x + width - chw, y + toph, '╮');
 		r.glDrawCharLeft(x + width - chw, y + toph + nmbh - chh, '╯');
 		r.glColor(BlockContainer.getDefaultColor());
-		containerBase.draw(ge, r, x + prw, y + line + chh/2 - bl, caret);
+		containerBase.draw(ge, r, x + prw, y + line + chh / 2 - bl, caret);
 		r.glColor(BlockContainer.getDefaultColor());
 		containerNumber.draw(ge, r, x + bw + prw + chw, y + toph, caret);
 	}
@@ -111,7 +111,7 @@ public class BlockLogarithm extends Block {
 		schh = BlockContainer.getDefaultCharHeight(true);
 		width = prw + bw + chw + containerNumber.getWidth() + chw + 3;
 		nmbh = containerNumber.getHeight();
-		int nl = containerNumber.getLine();
+		final int nl = containerNumber.getLine();
 		if (bl > nmbh) {
 			toph = bl - nmbh;
 			line = toph + nl;

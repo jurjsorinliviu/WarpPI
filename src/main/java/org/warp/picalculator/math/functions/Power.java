@@ -32,13 +32,13 @@ public class Power extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
-		ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
-		BlockPower bp = new BlockPower();
-		BlockContainer ec = bp.getExponentContainer();
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
+		final ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
+		final BlockPower bp = new BlockPower();
+		final BlockContainer ec = bp.getExponentContainer();
 		result.addAll(sub1);
-		for (Block b : sub2) {
+		for (final Block b : sub2) {
 			ec.appendBlockUnsafe(b);
 		}
 		ec.recomputeDimensions();

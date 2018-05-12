@@ -31,12 +31,12 @@ public class Headless24bitSkin implements Skin {
 		final int[][] pixels = new int[width * height][];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				int rgb = bufferedImage.getRGB(i, j);
-				int r = (rgb >> 16) & 0xFF;
-				int g = (rgb >> 8) & 0xFF;
-				int b = rgb & 0xFF;
-				boolean transparent = ((rgb >> 24) & 0xFF) <= 128;
-				int[] curCol = Headless24bitRenderer.rgbToIntArray(r, g, b);
+				final int rgb = bufferedImage.getRGB(i, j);
+				final int r = (rgb >> 16) & 0xFF;
+				final int g = (rgb >> 8) & 0xFF;
+				final int b = rgb & 0xFF;
+				final boolean transparent = ((rgb >> 24) & 0xFF) <= 128;
+				final int[] curCol = Headless24bitRenderer.rgbToIntArray(r, g, b);
 				pixels[i + j * width] = new int[] { curCol[0], curCol[1], curCol[2], transparent ? 1 : 0 };
 			}
 		}

@@ -90,15 +90,19 @@ public abstract class FunctionDynamic implements Function {
 	@Override
 	public final ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
 		final Function[] fncs = getParameters();
-		if (Thread.interrupted()) throw new InterruptedException();
-		ObjectArrayList<Function> result  = new ObjectArrayList<>();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 
 		final ObjectArrayList<ObjectArrayList<Function>> ln = new ObjectArrayList<>();
 		boolean alreadySolved = true;
 		for (final Function fnc : fncs) {
 			final ObjectArrayList<Function> l = new ObjectArrayList<>();
-			if (Thread.interrupted()) throw new InterruptedException();
-			ObjectArrayList<Function> simplifiedFnc = fnc.simplify(rule);
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
+			final ObjectArrayList<Function> simplifiedFnc = fnc.simplify(rule);
 			if (simplifiedFnc == null) {
 				l.add(fnc);
 			} else {
@@ -107,8 +111,10 @@ public abstract class FunctionDynamic implements Function {
 			}
 			ln.add(l);
 		}
-		
-		if (alreadySolved) return rule.execute(this);
+
+		if (alreadySolved) {
+			return rule.execute(this);
+		}
 
 		final Function[][] results = Utils.joinFunctionsResults(ln);
 

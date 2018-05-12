@@ -14,7 +14,7 @@ public class Division extends FunctionOperator {
 	public Division(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Division) {
@@ -36,16 +36,16 @@ public class Division extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
-		ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
-		BlockDivision bd = new BlockDivision();
-		BlockContainer uc = bd.getUpperContainer();
-		BlockContainer lc = bd.getLowerContainer();
-		for (Block b : sub1) {
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> sub1 = getParameter1().toBlock(context);
+		final ObjectArrayList<Block> sub2 = getParameter2().toBlock(context);
+		final BlockDivision bd = new BlockDivision();
+		final BlockContainer uc = bd.getUpperContainer();
+		final BlockContainer lc = bd.getLowerContainer();
+		for (final Block b : sub1) {
 			uc.appendBlockUnsafe(b);
 		}
-		for (Block b : sub2) {
+		for (final Block b : sub2) {
 			lc.appendBlockUnsafe(b);
 		}
 		uc.recomputeDimensions();

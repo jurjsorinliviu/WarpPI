@@ -10,19 +10,20 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RemoveParentheses implements MathParserStep {
 
-	private MathContext context;
+	private final MathContext context;
 
 	public RemoveParentheses(MathContext context) {
 		this.context = context;
 	}
 
 	@Override
-	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction, ObjectArrayList<Function> functionsList) {
+	public boolean eval(IntegerObj curIndex, Function lastFunction, Function currentFunction,
+			ObjectArrayList<Function> functionsList) {
 		if (currentFunction instanceof Expression) {
-			if (((Expression)currentFunction).getParameter() == null) {
+			if (((Expression) currentFunction).getParameter() == null) {
 				functionsList.remove(curIndex.i);
 			} else {
-				functionsList.set(curIndex.i, ((Expression)currentFunction).getParameter());
+				functionsList.set(curIndex.i, ((Expression) currentFunction).getParameter());
 			}
 			return true;
 		}

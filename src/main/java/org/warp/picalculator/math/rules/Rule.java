@@ -8,12 +8,14 @@ import jdk.nashorn.internal.objects.annotations.SpecializedFunction;
 
 /**
  * Rule interface
+ * 
  * @author Andrea Cavalli
  *
  */
 public interface Rule {
 	/**
 	 * Get rule name
+	 * 
 	 * @return
 	 */
 	public default String getRuleName() {
@@ -22,16 +24,23 @@ public interface Rule {
 
 	/**
 	 * Get rule type
+	 * 
 	 * @return
 	 */
 	@SpecializedFunction
 	public RuleType getRuleType();
-	
+
 	/**
 	 * 
 	 * @param func
-	 * @return <ul><li><code>null</code> if it's not executable on the function <b>func</b></li><li>An <code>ObjectArrayList&lt;Function&gt;</code> if it did something</li></ul>
-	 * @throws Error 
+	 * @return
+	 *         <ul>
+	 *         <li><code>null</code> if it's not executable on the function
+	 *         <b>func</b></li>
+	 *         <li>An <code>ObjectArrayList&lt;Function&gt;</code> if it did
+	 *         something</li>
+	 *         </ul>
+	 * @throws Error
 	 */
 	public ObjectArrayList<Function> execute(Function func) throws Error, InterruptedException;
 }

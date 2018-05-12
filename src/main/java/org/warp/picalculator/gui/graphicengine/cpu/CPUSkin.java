@@ -25,7 +25,7 @@ public class CPUSkin implements Skin {
 		final BufferedImage img = ImageIO.read(isResource ? this.getClass().getResource("/" + file) : new File(file).toURI().toURL());
 		if (img == null) {
 			skinData = new int[0];
-			skinSize = new int[] {0,0};
+			skinSize = new int[] { 0, 0 };
 		} else {
 			skinData = getMatrixOfImage(img);
 			skinSize = new int[] { img.getWidth(), img.getHeight() };

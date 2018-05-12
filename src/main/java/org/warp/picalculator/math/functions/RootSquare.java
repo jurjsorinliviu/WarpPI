@@ -32,10 +32,10 @@ public class RootSquare extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		BlockSquareRoot bsqr = new BlockSquareRoot();
-		BlockContainer bsqrc = bsqr.getNumberContainer();
-		for (Block b : getParameter2().toBlock(context)) {
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final BlockSquareRoot bsqr = new BlockSquareRoot();
+		final BlockContainer bsqrc = bsqr.getNumberContainer();
+		for (final Block b : getParameter2().toBlock(context)) {
 			bsqrc.appendBlockUnsafe(b);
 		}
 		bsqrc.recomputeDimensions();

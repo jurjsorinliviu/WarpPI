@@ -1,12 +1,5 @@
 package org.warp.picalculator;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.PIHardwareDisplay;
 import org.warp.picalculator.gui.CalculatorHUD;
@@ -23,6 +16,7 @@ import com.pi4j.wiringpi.Gpio;
 public class Main {
 	public static Main instance;
 	public static String[] args;
+
 	public Main(String[] args) throws InterruptedException, Error {
 		this(new LoadingScreen(), new PIHardwareDisplay(), new CalculatorHUD(), args);
 	}
@@ -52,7 +46,7 @@ public class Main {
 		boolean isRaspi = false;
 		try {
 			isRaspi = com.pi4j.system.SystemInfo.getBoardType() != BoardType.UNKNOWN;
-		} catch (Exception e) {}
+		} catch (final Exception e) {}
 		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args) && isRaspi) {
 			Gpio.wiringPiSetupPhys();
 			Gpio.pinMode(12, Gpio.PWM_OUTPUT);
@@ -61,7 +55,7 @@ public class Main {
 			StaticVars.debugOn = true;
 		}
 		Utils.debugThirdScreen = StaticVars.debugOn & false;
-		for (String arg : args) {
+		for (final String arg : args) {
 			if (arg.contains("2x")) {
 				StaticVars.debugWindow2x = true;
 			}

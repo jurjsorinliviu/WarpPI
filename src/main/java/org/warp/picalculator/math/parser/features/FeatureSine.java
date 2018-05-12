@@ -13,7 +13,7 @@ public class FeatureSine extends FeatureSingleImpl {
 
 	@Override
 	public Function toFunction(MathContext context) throws Error {
-		return new Sine(context, this.getFunction1());
+		return new Sine(context, getFunction1());
 	}
 
 }

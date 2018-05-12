@@ -48,8 +48,10 @@ public class CPURenderer implements Renderer {
 	public void glClear(int screenWidth, int screenHeight) {
 		for (int x = 0; x < screenWidth; x++) {
 			for (int y = 0; y < screenHeight; y++) {
-				int index = x + y * size[0];
-				if (index >= 0 && index < canvas2d.length) canvas2d[index] = clearcolor;
+				final int index = x + y * size[0];
+				if (index >= 0 && index < canvas2d.length) {
+					canvas2d[index] = clearcolor;
+				}
 			}
 		}
 	}
@@ -57,10 +59,10 @@ public class CPURenderer implements Renderer {
 	private void glDrawSkin(int x0, int y0, int x1, int y1, int s0, int t0, int s1, int t1, boolean transparent) {
 		x0 += StaticVars.screenPos[0];
 		y0 += StaticVars.screenPos[1];
-		double incrementX = Math.abs((double)(x1-x0)/(double)(s1-s0));
-		double incrementY = Math.abs((double)(y1-y0)/(double)(t1-t0));
-		boolean flippedX = (x1-x0)/(s1-s0) < 0;
-		boolean flippedY = (y1-y0)/(t1-t0) < 0;
+		final double incrementX = Math.abs((double) (x1 - x0) / (double) (s1 - s0));
+		final double incrementY = Math.abs((double) (y1 - y0) / (double) (t1 - t0));
+		final boolean flippedX = (x1 - x0) / (s1 - s0) < 0;
+		final boolean flippedY = (y1 - y0) / (t1 - t0) < 0;
 		int oldColor;
 		int newColor;
 		final int onex = s0 <= s1 ? 1 : -1;
@@ -106,25 +108,25 @@ public class CPURenderer implements Renderer {
 			}
 			y0 = 0;
 		}
-		for (double pixelX = 0; pixelX < x1-x0; pixelX++) {
-			for (double pixelY = 0; pixelY < y1-y0; pixelY++) {
-				final int index = (int) (x0+pixelX + (y0+pixelY) * size[0]);
+		for (double pixelX = 0; pixelX < x1 - x0; pixelX++) {
+			for (double pixelY = 0; pixelY < y1 - y0; pixelY++) {
+				final int index = (int) (x0 + pixelX + (y0 + pixelY) * size[0]);
 				if (index >= 0 && index < canvas2d.length && pixelX < size[0]) {
-					int texx = (int) (pixelX / incrementX);
-					int texy = (int) (pixelY / incrementY);
+					final int texx = (int) (pixelX / incrementX);
+					final int texy = (int) (pixelY / incrementY);
 					int expX = 0;
 					int expY = 0;
 					if (incrementX < 1) {
-						expX = (int) Math.round(1d/incrementX/2d);
+						expX = (int) Math.round(1d / incrementX / 2d);
 					}
 					if (incrementY < 1) {
-						expY = (int) Math.round(1d/incrementY/2d);
+						expY = (int) Math.round(1d / incrementY / 2d);
 					}
-					int[] newColors = new int[(1+expX*2)*(1+expY*2)];
+					final int[] newColors = new int[(1 + expX * 2) * (1 + expY * 2)];
 					for (int expXi = -expX; expXi <= expX; expXi++) {
 						for (int expYi = -expY; expYi <= expY; expYi++) {
-							int skinIndex = (int) (s0 + (texx*(flippedX ? -1d : 1d)+(flippedX ? -(s0 - s1)-1 : 0)+expXi) + (t0 + (texy*(flippedY ? -1d : 1d)+(flippedY ? -(t0 - t1)-1 : 0)+expYi)) * currentSkin.skinSize[0]);
-							int idx = (expXi+expX)+(expYi+expY)*(1+expY*2);
+							final int skinIndex = (int) (s0 + (texx * (flippedX ? -1d : 1d) + (flippedX ? -(s0 - s1) - 1 : 0) + expXi) + (t0 + (texy * (flippedY ? -1d : 1d) + (flippedY ? -(t0 - t1) - 1 : 0) + expYi)) * currentSkin.skinSize[0]);
+							final int idx = (expXi + expX) + (expYi + expY) * (1 + expY * 2);
 							if (idx >= 0 && idx < newColors.length) {
 								newColors[idx] = getSkinColorAt(currentSkin.skinData, skinIndex);
 							}
@@ -135,12 +137,12 @@ public class CPURenderer implements Renderer {
 						oldColor = canvas2d[index];
 						final float a2 = (newColor >> 24 & 0xFF) / 255f;
 						final float a1 = 1f - a2;
-						int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
-						int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
-						int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
+						final int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
+						final int g = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
+						final int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
 						newColor = 0xFF000000 | r << 16 | g << 8 | b;
 					}
-					
+
 					canvas2d[index] = stackColors(canvas2d[index], newColor);
 				}
 			}
@@ -152,14 +154,13 @@ public class CPURenderer implements Renderer {
 		int r = 0;
 		int g = 0;
 		int b = 0;
-		for (int i = 0; i < newColors.length; i++) {
-			int newColor = newColors[i];
+		for (final int newColor : newColors) {
 			a += newColor >> 24 & 0xFF;
 			r += newColor >> 16 & 0xFF;
 			g += newColor >> 8 & 0xFF;
 			b += newColor & 0xFF;
 		}
-		return (a/newColors.length) << 24 | (r/newColors.length) << 16 | (g/newColors.length) << 8 | (b/newColors.length);
+		return (a / newColors.length) << 24 | (r / newColors.length) << 16 | (g / newColors.length) << 8 | (b / newColors.length);
 	}
 
 	private int stackColors(int... color) {
@@ -167,25 +168,24 @@ public class CPURenderer implements Renderer {
 		double r = 0;
 		double g = 0;
 		double b = 0;
-		for (int i = 0; i < color.length; i++) {
-			int newColor = color[i];
-			double alpha = (newColor >> 24 & 0xFF) / 255d;
-			a = a * (1d-alpha) + (newColor >> 24 & 0xFF) * alpha;
-			r = r * (1d-alpha) + (newColor >> 16 & 0xFF) * alpha;
-			g = g * (1d-alpha) + (newColor >> 8 & 0xFF) * alpha;
-			b = b * (1d-alpha) + (newColor & 0xFF) * alpha;
+		for (final int newColor : color) {
+			final double alpha = (newColor >> 24 & 0xFF) / 255d;
+			a = a * (1d - alpha) + (newColor >> 24 & 0xFF) * alpha;
+			r = r * (1d - alpha) + (newColor >> 16 & 0xFF) * alpha;
+			g = g * (1d - alpha) + (newColor >> 8 & 0xFF) * alpha;
+			b = b * (1d - alpha) + (newColor & 0xFF) * alpha;
 		}
-		return ((int)a) << 24 | ((int)r) << 16 | ((int)g) << 8 | ((int)b);
+		return ((int) a) << 24 | ((int) r) << 16 | ((int) g) << 8 | ((int) b);
 	}
 
 	private int getSkinColorAt(int[] skinData, int skinIndex) {
 		int newColor = 0;
 		if (skinIndex >= 0 && skinIndex < skinData.length) {
 			newColor = skinData[skinIndex];
-			final int a = (int) ((double)(newColor >> 24 & 0xFF) * ((double)(color >> 24 & 0xFF)/(double)0xFF));
-			int r = (int) ((double)(newColor >> 16 & 0xFF) * ((double)(color >> 16 & 0xFF)/(double)0xFF));
-			int g = (int) ((double)(newColor >> 8 & 0xFF) * ((double)(color >> 8 & 0xFF)/(double)0xFF));
-			int b = (int) ((double)(newColor & 0xFF) * ((double)(color & 0xFF)/(double)0xFF));
+			final int a = (int) ((newColor >> 24 & 0xFF) * ((double) (color >> 24 & 0xFF) / (double) 0xFF));
+			final int r = (int) ((newColor >> 16 & 0xFF) * ((double) (color >> 16 & 0xFF) / (double) 0xFF));
+			final int g = (int) ((newColor >> 8 & 0xFF) * ((double) (color >> 8 & 0xFF) / (double) 0xFF));
+			final int b = (int) ((newColor & 0xFF) * ((double) (color & 0xFF) / (double) 0xFF));
 			newColor = a << 24 | r << 16 | g << 8 | b;
 		}
 		return newColor;
@@ -270,9 +270,10 @@ public class CPURenderer implements Renderer {
 		final int sizeW = size[0];
 		for (int px = x0; px < x1; px++) {
 			for (int py = y0; py < y1; py++) {
-				int idx = (px) + (py) * sizeW;
-				if (px < sizeW && idx >= 0 && idx < canvas2d.length)
+				final int idx = (px) + (py) * sizeW;
+				if (px < sizeW && idx >= 0 && idx < canvas2d.length) {
 					canvas2d[idx] = stackColors(canvas2d[idx], color);
+				}
 			}
 		}
 	}
@@ -307,7 +308,7 @@ public class CPURenderer implements Renderer {
 						final int bit = dx + dy * currentFont.charW;
 						currentInt = (int) (Math.floor(bit) / (CPUFont.intBits));
 						currentIntBitPosition = bit - (currentInt * CPUFont.intBits);
-						int charIdx = charIndex * currentFont.charIntCount + currentInt;
+						final int charIdx = charIndex * currentFont.charIntCount + currentInt;
 						if (charIdx >= 0 && charIdx < currentFont.chars32.length) {
 							bitData = (currentFont.chars32[charIdx] >> currentIntBitPosition) & 1;
 							screenPos = ix + cpos + dx + (iy + dy) * screenSize[0];

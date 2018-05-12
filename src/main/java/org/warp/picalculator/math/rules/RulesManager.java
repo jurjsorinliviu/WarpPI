@@ -28,18 +28,17 @@ import org.warp.picalculator.math.solver.MathSolver;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class RulesManager {
-	
+
 	public static ObjectArrayList<Rule>[] rules;
-	
-	private RulesManager() {
-	}
+
+	private RulesManager() {}
 
 	@SuppressWarnings("unchecked")
 	public static void initialize() {
 		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Loading the rules");
 		rules = new ObjectArrayList[RuleType.values().length];
-		for (RuleType val : RuleType.values()) {
-			rules[val.ordinal()] = new ObjectArrayList<Rule>();
+		for (final RuleType val : RuleType.values()) {
+			rules[val.ordinal()] = new ObjectArrayList<>();
 		}
 		try {
 			boolean compiledSomething = false;
@@ -47,31 +46,29 @@ public class RulesManager {
 			if (!Files.exists(defaultRulesPath)) {
 				throw new FileNotFoundException("default-rules.lst not found!");
 			}
-			List<String> ruleLines = new ArrayList<String>();
-			Path rulesPath = Paths.get("rules/");
+			final List<String> ruleLines = new ArrayList<>();
+			final Path rulesPath = Paths.get("rules/");
 			if (rulesPath.toFile().exists()) {
 				try (Stream<Path> paths = Files.walk(rulesPath)) {
-				    paths
-				        .filter(Files::isRegularFile)
-				        .forEach((Path p) -> {
-				        	if (p.toString().endsWith(".java")) {
-				        		String path = rulesPath.relativize(p).toString();
-				        		path = path.substring(0, path.length() - ".java".length());
-					        	ruleLines.add(path);
-					        	Utils.out.print(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Found external rule: " + p.toAbsolutePath().toString());
-					        	System.err.println(path);
-				        	}
-				        });
-				} 
+					paths.filter(Files::isRegularFile).forEach((Path p) -> {
+						if (p.toString().endsWith(".java")) {
+							String path = rulesPath.relativize(p).toString();
+							path = path.substring(0, path.length() - ".java".length());
+							ruleLines.add(path);
+							Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Found external rule: " + p.toAbsolutePath().toString());
+							System.err.println(path);
+						}
+					});
+				}
 			}
 			ruleLines.addAll(Files.readAllLines(defaultRulesPath));
-			
+
 			boolean useCache = false;
-			Path tDir = Paths.get(System.getProperty("java.io.tmpdir"), "WarpPi-Calculator").resolve("rules-rt");
+			final Path tDir = Paths.get(System.getProperty("java.io.tmpdir"), "WarpPi-Calculator").resolve("rules-rt");
 //			try {
 //				final Path defaultResource = Utils.getResource("/math-rules-cache.zip");
 //			}
-			Path cacheFilePath =  Utils.getResource("/math-rules-cache.zip");//Paths.get(Utils.getJarDirectory().toString()).resolve("math-rules-cache.zip").toAbsolutePath();
+			final Path cacheFilePath = Utils.getResource("/math-rules-cache.zip");//Paths.get(Utils.getJarDirectory().toString()).resolve("math-rules-cache.zip").toAbsolutePath();
 			if (cacheFilePath.toFile().exists()) {
 				try {
 					if (tDir.toFile().exists()) {
@@ -79,19 +76,19 @@ public class RulesManager {
 					}
 					Utils.unzip(cacheFilePath.toString(), tDir.getParent().toString(), "");
 					useCache = !Utils.debugCache;
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					ex.printStackTrace();
 				}
 			}
-			for (String rulesLine : ruleLines) {
+			for (final String rulesLine : ruleLines) {
 				if (rulesLine.length() > 0) {
-					String[] ruleDetails = rulesLine.split(",", 1);
-					String ruleName = ruleDetails[0];
-					String ruleNameEscaped = ruleName.replace(".", "_");
+					final String[] ruleDetails = rulesLine.split(",", 1);
+					final String ruleName = ruleDetails[0];
+					final String ruleNameEscaped = ruleName.replace(".", "_");
 					Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Evaluating /rules/" + ruleNameEscaped + ".java");
-					String pathWithoutExtension = "/rules/" + ruleNameEscaped;
-					String scriptFile = pathWithoutExtension + ".java";
-					InputStream resourcePath = Utils.getResourceStream(scriptFile);
+					final String pathWithoutExtension = "/rules/" + ruleNameEscaped;
+					final String scriptFile = pathWithoutExtension + ".java";
+					final InputStream resourcePath = Utils.getResourceStream(scriptFile);
 					if (resourcePath == null) {
 						System.err.println(new FileNotFoundException("/rules/" + ruleName + ".java not found!"));
 					} else {
@@ -103,7 +100,7 @@ public class RulesManager {
 								if (r != null) {
 									Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "Loaded cached rule");
 								}
-							} catch (Exception e) {
+							} catch (final Exception e) {
 								e.printStackTrace();
 								Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", ruleName, "Can't load the rule!");
 							}
@@ -116,7 +113,7 @@ public class RulesManager {
 							} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | IOException e) {
 								e.printStackTrace();
 							}
-							 
+
 						}
 						if (r != null) {
 							RulesManager.addRule(r);
@@ -137,21 +134,21 @@ public class RulesManager {
 			System.exit(1);
 		}
 	}
-	
-	public static Rule compileJavaRule(String scriptFile, Path tDir) throws IOException, URISyntaxException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		InputStream resource = Utils.getResourceStream(scriptFile);
-		String text = Utils.read(resource);
-		String[] textArray = text.split("\\n", 5);
-		String javaClassDeclaration = textArray[2].substring(6);
+
+	public static Rule compileJavaRule(String scriptFile, Path tDir) throws IOException, URISyntaxException,
+			InstantiationException, IllegalAccessException, ClassNotFoundException {
+		final InputStream resource = Utils.getResourceStream(scriptFile);
+		final String text = Utils.read(resource);
+		final String[] textArray = text.split("\\n", 5);
+		final String javaClassDeclaration = textArray[2].substring(6);
 		int extIndex = javaClassDeclaration.lastIndexOf('.');
-		String javaClassNameOnly = javaClassDeclaration.substring(extIndex + 1, javaClassDeclaration.length());
-		String javaClassNameAndPath = new StringBuilder("org.warp.picalculator.math.rules.").append(javaClassDeclaration).toString();
+		final String javaClassNameOnly = javaClassDeclaration.substring(extIndex + 1, javaClassDeclaration.length());
+		final String javaClassNameAndPath = new StringBuilder("org.warp.picalculator.math.rules.").append(javaClassDeclaration).toString();
 		extIndex = javaClassNameAndPath.lastIndexOf('.');
-		String javaCode = new StringBuilder("package ").append(javaClassNameAndPath.substring(0, extIndex >= 0 ? extIndex : javaClassNameAndPath.length())).append(";\n")
-				.append(textArray[4]).toString();
-		Path tDirPath = tDir.resolve(javaClassNameAndPath.replace('.', File.separatorChar)).getParent();
-		Path tFileJava = tDirPath.resolve(javaClassNameOnly + ".java");
-		Path tFileClass = tDirPath.resolve(javaClassNameOnly + ".class");
+		final String javaCode = new StringBuilder("package ").append(javaClassNameAndPath.substring(0, extIndex >= 0 ? extIndex : javaClassNameAndPath.length())).append(";\n").append(textArray[4]).toString();
+		final Path tDirPath = tDir.resolve(javaClassNameAndPath.replace('.', File.separatorChar)).getParent();
+		final Path tFileJava = tDirPath.resolve(javaClassNameOnly + ".java");
+		final Path tFileClass = tDirPath.resolve(javaClassNameOnly + ".class");
 		if (!tDirPath.toFile().exists()) {
 			Files.createDirectories(tDirPath);
 		}
@@ -159,7 +156,7 @@ public class RulesManager {
 			tFileJava.toFile().delete();
 		}
 		Files.write(tFileJava, javaCode.getBytes("UTF-8"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-		boolean compiled = org.eclipse.jdt.internal.compiler.batch.Main.compile(new String[] {"-nowarn", "-1.8", tFileJava.toString()}, new PrintWriter(System.out), new PrintWriter(System.err), null);
+		final boolean compiled = org.eclipse.jdt.internal.compiler.batch.Main.compile(new String[] { "-nowarn", "-1.8", tFileJava.toString() }, new PrintWriter(System.out), new PrintWriter(System.err), null);
 		if (Utils.debugCache) {
 			tFileJava.toFile().deleteOnExit();
 		} else {
@@ -172,41 +169,43 @@ public class RulesManager {
 			throw new IOException("Can't build script file '" + scriptFile + "'");
 		}
 	}
-	
-	public static Rule loadClassRuleFromSourceFile(String scriptFile, Path tDir) throws IOException, URISyntaxException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		InputStream resource = Utils.getResourceStream(scriptFile);
-		String text = Utils.read(resource);
-		String[] textArray = text.split("\\n", 5);
-		String javaClassName = textArray[2].substring(6);
-		String javaClassNameAndPath = new StringBuilder("org.warp.picalculator.math.rules.").append(javaClassName).toString();
+
+	public static Rule loadClassRuleFromSourceFile(String scriptFile, Path tDir) throws IOException, URISyntaxException,
+			InstantiationException, IllegalAccessException, ClassNotFoundException {
+		final InputStream resource = Utils.getResourceStream(scriptFile);
+		final String text = Utils.read(resource);
+		final String[] textArray = text.split("\\n", 5);
+		final String javaClassName = textArray[2].substring(6);
+		final String javaClassNameAndPath = new StringBuilder("org.warp.picalculator.math.rules.").append(javaClassName).toString();
 		try {
 			return loadClassRuleDirectly(javaClassNameAndPath, tDir);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ex.printStackTrace();
 			return null;
 		}
 	}
-	
-	public static Rule loadClassRuleDirectly(String javaClassNameAndPath, Path tDir) throws IOException, URISyntaxException, InstantiationException, IllegalAccessException, ClassNotFoundException {
-		URLClassLoader cl = new URLClassLoader(new URL[] {tDir.toUri().toURL()});
-		Class<?> aClass = cl.loadClass(javaClassNameAndPath);
+
+	public static Rule loadClassRuleDirectly(String javaClassNameAndPath, Path tDir) throws IOException,
+			URISyntaxException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		final URLClassLoader cl = new URLClassLoader(new URL[] { tDir.toUri().toURL() });
+		final Class<?> aClass = cl.loadClass(javaClassNameAndPath);
 		cl.close();
 		return (Rule) aClass.newInstance();
 	}
-	
+
 	public static void warmUp() throws Error, InterruptedException {
 		ObjectArrayList<Function> uselessResult = null;
 		boolean uselessVariable = false;
-		for (RuleType val : RuleType.values()) {
+		for (final RuleType val : RuleType.values()) {
 			final ObjectArrayList<Rule> ruleList = rules[val.ordinal()];
 			for (final Rule rule : ruleList) {
 				String ruleName = "<null>";
 				try {
 					ruleName = rule.getRuleName();
-					ObjectArrayList<Function> uselessResult2 = rule.execute(generateUselessExpression());
+					final ObjectArrayList<Function> uselessResult2 = rule.execute(generateUselessExpression());
 					uselessVariable = (uselessResult == null ? new ObjectArrayList<>() : uselessResult).equals(uselessResult2);
 					uselessResult = uselessResult2;
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					if (uselessVariable || true) {
 						System.err.println("Exception thrown by rule '" + ruleName + "'!");
 						e.printStackTrace();
@@ -220,14 +219,14 @@ public class RulesManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private static Function generateUselessExpression() {
-		MathContext mc = new MathContext();
+		final MathContext mc = new MathContext();
 		Function expr = new Expression(mc);
 		expr = expr.setParameter(0, new Variable(mc, 'x', V_TYPE.VARIABLE));
 		return expr;
 	}
-	
+
 	public static void addRule(Rule rule) {
 		rules[rule.getRuleType().ordinal()].add(rule);
 		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", rule.getRuleName(), "Loaded as " + rule.getRuleType() + " rule");

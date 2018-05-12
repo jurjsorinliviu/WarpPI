@@ -28,10 +28,6 @@
 
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
@@ -72,7 +68,7 @@ class NEWTWindow implements GLEventListener {
 	public NEWTWindow(GPUEngine disp) {
 		this.disp = disp;
 		renderer = disp.getRenderer();
-		realWindowSize = new int[] {1,1};
+		realWindowSize = new int[] { 1, 1 };
 	}
 
 	public GLWindow window;
@@ -300,7 +296,7 @@ class NEWTWindow implements GLEventListener {
 			//Vsync
 			gl.setSwapInterval(2);
 		}
-		
+
 		//Textures
 		gl.glEnable(GL.GL_TEXTURE_2D);
 
@@ -341,24 +337,24 @@ class NEWTWindow implements GLEventListener {
 	}
 
 	private void onZoomChanged(GL2ES1 gl, boolean sizeChanged) {
-		float precWindowZoom = windowZoom;
+		final float precWindowZoom = windowZoom;
 		windowZoom = StaticVars.getCurrentZoomValue();
 
-		if (((precWindowZoom % ((int)precWindowZoom)) != 0f) != ((windowZoom % ((int)windowZoom)) != 0f)) {
-			boolean linear = (windowZoom % ((int)windowZoom)) != 0f;
+		if (((precWindowZoom % ((int) precWindowZoom)) != 0f) != ((windowZoom % ((int) windowZoom)) != 0f)) {
+			final boolean linear = (windowZoom % ((int) windowZoom)) != 0f;
 
-			for(Texture t : disp.registeredTextures) {
+			for (final Texture t : disp.registeredTextures) {
 				t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, linear ? GL.GL_LINEAR : GL.GL_NEAREST);
 				t.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 			}
 		}
-		
+
 		final int width = realWindowSize[0];
 		final int height = realWindowSize[1];
 
 		disp.size[0] = (int) (realWindowSize[0] / windowZoom);
 		disp.size[1] = (int) (realWindowSize[1] / windowZoom);
-		
+
 		gl.glViewport(0, 0, width, height);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
@@ -369,28 +365,28 @@ class NEWTWindow implements GLEventListener {
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
 	}
-	
+
 	@Override
 	public void display(GLAutoDrawable glad) {
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 
 		GPURenderer.gl = gl;
-		
+
 		if (windowZoom != StaticVars.getCurrentZoomValue()) {
 			onZoomChanged(gl, false);
 		}
 
 		Boolean linear = null;
-		while(!disp.unregisteredTextures.isEmpty()) {
+		while (!disp.unregisteredTextures.isEmpty()) {
 			if (linear == null) {
-				linear = (windowZoom % ((int)windowZoom)) != 0f;
+				linear = (windowZoom % ((int) windowZoom)) != 0f;
 			}
-			Texture t = disp.unregisteredTextures.pop();
+			final Texture t = disp.unregisteredTextures.pop();
 			t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
 			t.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
 			disp.registeredTextures.addLast(t);
 		}
-		
+
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_TEXTURE_COORD_ARRAY);

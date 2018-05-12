@@ -3,7 +3,6 @@ package org.warp.picalculator.math.parser.features;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Logarithm;
-import org.warp.picalculator.math.functions.Power;
 
 public class FeatureLogarithm extends FeatureDoubleImpl {
 

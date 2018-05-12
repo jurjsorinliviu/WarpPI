@@ -2,13 +2,13 @@ package org.warp.picalculator.extra.mario;
 
 public class MarioWorld {
 
-	private int[] spawnPoint;
-	private int width;
-	private int height;
-	private byte[][] data;
-	private MarioEvent[] events;
-	private MarioEntity[] entities;
-	
+	private final int[] spawnPoint;
+	private final int width;
+	private final int height;
+	private final byte[][] data;
+	private final MarioEvent[] events;
+	private final MarioEntity[] entities;
+
 	/**
 	 * @param width
 	 * @param height
@@ -26,10 +26,14 @@ public class MarioWorld {
 	}
 
 	public byte getBlockIdAt(int x, int y) {
-		int idy = (height - 1 - y);
-		if (idy < 0 || idy >= data.length) return 0b0;
-		int idx = x;
-		if (idx < 0 || idx >= data[0].length) return 0b0;
+		final int idy = (height - 1 - y);
+		if (idy < 0 || idy >= data.length) {
+			return 0b0;
+		}
+		final int idx = x;
+		if (idx < 0 || idx >= data[0].length) {
+			return 0b0;
+		}
 		return data[idy][idx];
 	}
 
@@ -46,7 +50,7 @@ public class MarioWorld {
 	}
 
 	public void reset() {
-		
+
 	}
 
 	public double getSpawnPointX() {

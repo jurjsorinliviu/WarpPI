@@ -36,7 +36,7 @@ public interface GraphicEngine {
 	public Renderer getRenderer();
 
 	public BinaryFont loadFont(String fontName) throws IOException;
-	
+
 	public BinaryFont loadFont(String path, String fontName) throws IOException;
 
 	public Skin loadSkin(String file) throws IOException;

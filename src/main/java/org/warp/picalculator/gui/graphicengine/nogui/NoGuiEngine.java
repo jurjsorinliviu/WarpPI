@@ -17,7 +17,7 @@ public class NoGuiEngine implements GraphicEngine {
 
 	@Override
 	public int[] getSize() {
-		return new int[] {2, 2};
+		return new int[] { 2, 2 };
 	}
 
 	@Override
@@ -26,23 +26,20 @@ public class NoGuiEngine implements GraphicEngine {
 	}
 
 	@Override
-	public void setTitle(String title) {
-	}
+	public void setTitle(String title) {}
 
 	@Override
-	public void setResizable(boolean r) {
-	}
+	public void setResizable(boolean r) {}
 
 	@Override
-	public void setDisplayMode(int ww, int wh) {
-	}
-
+	public void setDisplayMode(int ww, int wh) {}
 
 	@Override
 	public void create(Runnable onInitialized) {
 		initialized = true;
-		if (onInitialized != null)
+		if (onInitialized != null) {
 			onInitialized.run();
+		}
 	}
 
 	@Override
@@ -67,12 +64,10 @@ public class NoGuiEngine implements GraphicEngine {
 	}
 
 	@Override
-	public void start(RenderingLoop d) {
-	}
+	public void start(RenderingLoop d) {}
 
 	@Override
-	public void repaint() {
-	}
+	public void repaint() {}
 
 	@Override
 	public Renderer getRenderer() {
@@ -81,83 +76,65 @@ public class NoGuiEngine implements GraphicEngine {
 			public int glGetClearColor() {
 				return 0;
 			}
+
 			@Override
 			public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth,
-					float uvHeight) {
-			}
-			
+					float uvHeight) {}
+
 			@Override
-			public void glFillColor(float x, float y, float width, float height) {
-			}
-			
+			public void glFillColor(float x, float y, float width, float height) {}
+
 			@Override
-			public void glDrawStringRight(float x, float y, String text) {
-			}
-			
+			public void glDrawStringRight(float x, float y, String text) {}
+
 			@Override
-			public void glDrawStringLeft(float x, float y, String text) {
-			}
-			
+			public void glDrawStringLeft(float x, float y, String text) {}
+
 			@Override
-			public void glDrawStringCenter(float x, float y, String text) {
-			}
-			
+			public void glDrawStringCenter(float x, float y, String text) {}
+
 			@Override
-			public void glDrawLine(float x0, float y0, float x1, float y1) {
-			}
-			
+			public void glDrawLine(float x0, float y0, float x1, float y1) {}
+
 			@Override
-			public void glDrawCharRight(int x, int y, char ch) {
-			}
-			
+			public void glDrawCharRight(int x, int y, char ch) {}
+
 			@Override
-			public void glDrawCharLeft(int x, int y, char ch) {
-			}
-			
+			public void glDrawCharLeft(int x, int y, char ch) {}
+
 			@Override
-			public void glDrawCharCenter(int x, int y, char ch) {
-			}
-			
+			public void glDrawCharCenter(int x, int y, char ch) {}
+
 			@Override
-			public void glColor4i(int red, int green, int blue, int alpha) {
-			}
-			
+			public void glColor4i(int red, int green, int blue, int alpha) {}
+
 			@Override
-			public void glColor4f(float red, float green, float blue, float alpha) {	
-			}
-			
+			public void glColor4f(float red, float green, float blue, float alpha) {}
+
 			@Override
-			public void glColor3i(int r, int gg, int b) {
-			}
-			
+			public void glColor3i(int r, int gg, int b) {}
+
 			@Override
-			public void glColor3f(float red, float green, float blue) {
-			}
-			
+			public void glColor3f(float red, float green, float blue) {}
+
 			@Override
-			public void glColor(int c) {
-			}
-			
+			public void glColor(int c) {}
+
 			@Override
-			public void glClearSkin() {
-			}
-			
+			public void glClearSkin() {}
+
 			@Override
-			public void glClearColor4i(int red, int green, int blue, int alpha) {
-			}
-			
+			public void glClearColor4i(int red, int green, int blue, int alpha) {}
+
 			@Override
-			public void glClearColor4f(float red, float green, float blue, float alpha) {
-			}
-			
+			public void glClearColor4f(float red, float green, float blue, float alpha) {}
+
 			@Override
-			public void glClearColor(int c) {
-			}
-			
+			public void glClearColor(int c) {}
+
 			@Override
-			public void glClear(int screenWidth, int screenHeight) {
-			}
-			
+			public void glClear(int screenWidth, int screenHeight) {}
+
 			@Override
 			public BinaryFont getCurrentFont() {
 				return null;
@@ -169,32 +146,29 @@ public class NoGuiEngine implements GraphicEngine {
 	public BinaryFont loadFont(String fontName) throws IOException {
 		return new BinaryFont() {
 			@Override
-			public void use(GraphicEngine d) {
-			}
-			
+			public void use(GraphicEngine d) {}
+
 			@Override
-			public void load(String file) throws IOException {
-			}
-			
+			public void load(String file) throws IOException {}
+
 			@Override
 			public boolean isInitialized() {
 				return true;
 			}
-			
+
 			@Override
-			public void initialize(GraphicEngine d) {
-			}
-			
+			public void initialize(GraphicEngine d) {}
+
 			@Override
 			public int getStringWidth(String text) {
 				return 1;
 			}
-			
+
 			@Override
 			public int getCharacterWidth() {
 				return 1;
 			}
-			
+
 			@Override
 			public int getCharacterHeight() {
 				return 1;
@@ -218,32 +192,29 @@ public class NoGuiEngine implements GraphicEngine {
 	public BinaryFont loadFont(String path, String fontName) throws IOException {
 		return new BinaryFont() {
 			@Override
-			public void use(GraphicEngine d) {
-			}
-			
+			public void use(GraphicEngine d) {}
+
 			@Override
-			public void load(String file) throws IOException {
-			}
-			
+			public void load(String file) throws IOException {}
+
 			@Override
 			public boolean isInitialized() {
 				return true;
 			}
-			
+
 			@Override
-			public void initialize(GraphicEngine d) {
-			}
-			
+			public void initialize(GraphicEngine d) {}
+
 			@Override
 			public int getStringWidth(String text) {
 				return 1;
 			}
-			
+
 			@Override
 			public int getCharacterWidth() {
 				return 1;
 			}
-			
+
 			@Override
 			public int getCharacterHeight() {
 				return 1;
@@ -267,21 +238,18 @@ public class NoGuiEngine implements GraphicEngine {
 	public Skin loadSkin(String file) throws IOException {
 		return new Skin() {
 			@Override
-			public void use(GraphicEngine d) {
-			}
-			
+			public void use(GraphicEngine d) {}
+
 			@Override
-			public void load(String file) throws IOException {
-			}
-			
+			public void load(String file) throws IOException {}
+
 			@Override
 			public boolean isInitialized() {
 				return true;
 			}
-			
+
 			@Override
-			public void initialize(GraphicEngine d) {
-			}
+			public void initialize(GraphicEngine d) {}
 
 			@Override
 			public int getSkinWidth() {
@@ -301,7 +269,7 @@ public class NoGuiEngine implements GraphicEngine {
 	public void waitForExit() {
 		try {
 			exitSemaphore.acquire();
-		} catch (InterruptedException e) {}
+		} catch (final InterruptedException e) {}
 	}
 
 	@Override

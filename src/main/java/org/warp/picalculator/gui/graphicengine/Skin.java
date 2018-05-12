@@ -11,8 +11,8 @@ public interface Skin {
 	public boolean isInitialized();
 
 	public void use(GraphicEngine d);
-	
+
 	public int getSkinWidth();
-	
+
 	public int getSkinHeight();
 }

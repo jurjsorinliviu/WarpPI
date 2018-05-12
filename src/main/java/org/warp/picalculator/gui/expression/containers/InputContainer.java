@@ -96,7 +96,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 
 	public BlockReference<?> getSelectedBlock() {
 		caret.resetRemaining();
-		BlockReference<?> selectedBlock = root.getBlock(caret);
+		final BlockReference<?> selectedBlock = root.getBlock(caret);
 		return selectedBlock;
 	}
 
@@ -230,7 +230,7 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 
 	public void toggleExtra() {
 		if (extra == null) {
-			BlockReference<?> selectedBlock = getSelectedBlock();
+			final BlockReference<?> selectedBlock = getSelectedBlock();
 			if (selectedBlock != null) {
 				extra = selectedBlock.get().getExtraMenu();
 				extra.open();
