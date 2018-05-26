@@ -42,11 +42,23 @@ public class MathSolver {
 		int initStepState = 0, endStepState = 0;
 		final AtomicInteger stepState = new AtomicInteger(0);
 		do {
-			lastFunctions[1] = lastFunctions[0];
-			lastFunctions[0] = new ObjectArrayList[stepStates.length];
+			final ObjectArrayList<Function>[] currFncHistory = new ObjectArrayList[stepStates.length];
 			final String stepName = "Step " + stepNumber;
-			for (int i = initStepState; i <= endStepState; i++) {
-				lastFunctions[0][i] = currFnc;
+			if (initStepState > endStepState) {
+				for (int i = initStepState; i < stepStates.length; i++) {
+					currFncHistory[i] = currFnc;
+				}
+				for (int i = 0; i <= initStepState; i++) {
+					currFncHistory[i] = currFnc;
+				}
+			} else {
+				for (int i = initStepState; i <= endStepState; i++) {
+					currFncHistory[i] = currFnc;
+				}
+			}
+			if (currFnc != null) {
+				lastFunctions[1] = lastFunctions[0];
+				lastFunctions[0] = currFncHistory;
 			}
 			lastFnc = currFnc;
 			initStepState = stepState.get();
@@ -200,24 +212,41 @@ public class MathSolver {
 			throws InterruptedException, Error {
 		final ObjectArrayList<Rule> rules = initialFunction.getMathContext().getAcceptableRules(currentAcceptedRules);
 		ObjectArrayList<Function> results = null;
-		Rule appliedRule = null;
+		ObjectArrayList<Rule> appliedRules = new ObjectArrayList<>();
 		out: {
 			for (final Function fnc : fncs) {
+				boolean didSomething = false;
 				for (final Rule rule : rules) {
-					final List<Function> ruleResults = fnc.simplify(rule);
-					if (ruleResults != null && !ruleResults.isEmpty()) {
+					List<Function> ruleResults = fnc.simplify(rule);
+					if ((ruleResults != null && !ruleResults.isEmpty())) {
 						if (results == null) {
 							results = new ObjectArrayList<>();
 						}
 						results.addAll(ruleResults);
-						appliedRule = rule;
+						appliedRules.add(rule);
+						didSomething = true;
 						break;
 					}
 				}
+				if (!didSomething && fncs.size() > 1) {
+					if (results == null) {
+						results = new ObjectArrayList<>();
+					}
+					results.add(fnc);
+				}
 			}
 		}
-		if (StaticVars.debugOn & results != null & appliedRule != null) {
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", currentAcceptedRules.toString(), "Applied rule " + appliedRule.getRuleName());
+		if (appliedRules.isEmpty()) results = null;
+		if (StaticVars.debugOn & results != null && !appliedRules.isEmpty()) {
+			StringBuilder rulesStr = new StringBuilder();
+			appliedRules.forEach((r) -> {
+				rulesStr.append(r.getRuleName());
+				rulesStr.append(',');
+			});
+			if (rulesStr.length() > 0) {
+				rulesStr.setLength(rulesStr.length() - 1);
+			}
+			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", currentAcceptedRules.toString(), "Applied rules: " + rulesStr);
 		}
 		return results;
 	}

@@ -22,6 +22,7 @@ import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.functions.Sum;
 import org.warp.picalculator.math.functions.Subtraction;
 import org.warp.picalculator.math.functions.Variable;
+import org.warp.picalculator.math.functions.Variable.V_TYPE;
 import org.warp.picalculator.math.functions.Number;
 
 /**
