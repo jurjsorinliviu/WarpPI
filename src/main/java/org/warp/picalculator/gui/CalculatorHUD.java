@@ -1,5 +1,6 @@
 package org.warp.picalculator.gui;
 
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.Keyboard;
@@ -83,7 +84,7 @@ public class CalculatorHUD extends HUD {
 		if (brightness <= 10) {
 			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * brightness, 16 * 1, 16, 16);
 		} else {
-			Utils.out.println(1, "Brightness error");
+			ConsoleUtils.out.println(1, "Brightness error");
 		}
 
 		padding += 18 + 6;

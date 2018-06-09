@@ -2,6 +2,8 @@ package org.warp.picalculator.gui.expression.blocks;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.PlatformUtils;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
@@ -352,7 +354,7 @@ public class BlockContainer implements GraphicalElement {
 
 	private static void checkInitialized() {
 		if (!initialized) {
-			throw new ExceptionInInitializerError("Please initialize BlockContainer by running the method BlockContainer.initialize(...) first!");
+			PlatformUtils.throwNewExceptionInInitializerError("Please initialize BlockContainer by running the method BlockContainer.initialize(...) first!");
 		}
 	}
 

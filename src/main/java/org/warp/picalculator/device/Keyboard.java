@@ -2,8 +2,9 @@ package org.warp.picalculator.device;
 
 import java.awt.event.KeyEvent;
 
+import org.warp.picalculator.ConsoleUtils;
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
 import org.warp.picalculator.gui.DisplayManager;
@@ -12,7 +13,8 @@ import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
 import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.gui.screens.Screen;
 
-import com.pi4j.wiringpi.Gpio;
+import org.warp.picalculator.deps.DGpio;
+import org.warp.picalculator.deps.jogamp.DJogamp;
 
 public class Keyboard {
 	public static volatile boolean alpha = false;
@@ -54,19 +56,19 @@ public class Keyboard {
 					}
 				} catch (final InterruptedException e) {}
 			} else {
-				Gpio.pinMode(CLK_INH_pin, Gpio.OUTPUT);
-				Gpio.pinMode(RCK_pin, Gpio.OUTPUT);
-				Gpio.pinMode(SER_pin, Gpio.OUTPUT);
-				Gpio.pinMode(SH_LD_pin, Gpio.OUTPUT);
-				Gpio.pinMode(SCK_and_CLK_pin, Gpio.OUTPUT);
-				Gpio.pinMode(QH_pin, Gpio.INPUT);
+				DGpio.pinMode(CLK_INH_pin, DGpio.OUTPUT);
+				DGpio.pinMode(RCK_pin, DGpio.OUTPUT);
+				DGpio.pinMode(SER_pin, DGpio.OUTPUT);
+				DGpio.pinMode(SH_LD_pin, DGpio.OUTPUT);
+				DGpio.pinMode(SCK_and_CLK_pin, DGpio.OUTPUT);
+				DGpio.pinMode(QH_pin, DGpio.INPUT);
 
-				Gpio.digitalWrite(CLK_INH_pin, false);
-				Gpio.digitalWrite(RCK_pin, false);
-				Gpio.digitalWrite(SER_pin, false);
-				Gpio.digitalWrite(SH_LD_pin, false);
-				Gpio.digitalWrite(SCK_and_CLK_pin, false);
-				Gpio.digitalWrite(QH_pin, false);
+				DGpio.digitalWrite(CLK_INH_pin, false);
+				DGpio.digitalWrite(RCK_pin, false);
+				DGpio.digitalWrite(SER_pin, false);
+				DGpio.digitalWrite(SH_LD_pin, false);
+				DGpio.digitalWrite(SCK_and_CLK_pin, false);
+				DGpio.digitalWrite(QH_pin, false);
 				final SerialToParallel chip1 = new SerialToParallel(RCK_pin, SCK_and_CLK_pin /*SCK*/, SER_pin);
 				final ParallelToSerial chip2 = new ParallelToSerial(SH_LD_pin, CLK_INH_pin, QH_pin, SCK_and_CLK_pin/*CLK*/);
 
@@ -97,12 +99,12 @@ public class Keyboard {
 				}
 			}
 		});
-		kt.setName("Keyboard thread");
+		PlatformUtils.setThreadName(kt, "Keyboard thread");
 		kt.setPriority(Thread.NORM_PRIORITY + 1);
-		kt.setDaemon(true);
+		PlatformUtils.setDaemon(kt);
 		kt.start();
 	}
-
+	
 	private synchronized static void debugKeyPressed(int keyCode) {
 		switch (keyCode) {
 			case KeyEvent.VK_ESCAPE:
@@ -204,7 +206,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.LOGARITHM);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_ENTER:
+			case DJogamp.VK_ENTER:
 			case KeyEvent.VK_ENTER:
 				if (Keyboard.shift) {
 					Keyboard.keyPressed(Key.STEP);
@@ -304,7 +306,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_ADD:
+			case DJogamp.VK_ADD:
 			case KeyEvent.VK_ADD:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.PLUS);
@@ -314,7 +316,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_SUBTRACT:
+			case DJogamp.VK_SUBTRACT:
 			case KeyEvent.VK_SUBTRACT:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.MINUS);
@@ -322,7 +324,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_MULTIPLY:
+			case DJogamp.VK_MULTIPLY:
 			case KeyEvent.VK_MULTIPLY:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.MULTIPLY);
@@ -330,7 +332,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_DIVIDE:
+			case DJogamp.VK_DIVIDE:
 			case KeyEvent.VK_DIVIDE:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.DIVIDE);
@@ -345,7 +347,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_DELETE:
+			case DJogamp.VK_DELETE:
 			case KeyEvent.VK_DELETE:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.RESET);
@@ -353,7 +355,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_LEFT:
+			case DJogamp.VK_LEFT:
 			case KeyEvent.VK_LEFT:
 				//LEFT
 				row = 2;
@@ -365,7 +367,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_RIGHT:
+			case DJogamp.VK_RIGHT:
 			case KeyEvent.VK_RIGHT:
 				//RIGHT
 				row = 2;
@@ -377,7 +379,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_UP:
+			case DJogamp.VK_UP:
 			case KeyEvent.VK_UP:
 				//UP
 				row = 1;
@@ -389,7 +391,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_DOWN:
+			case DJogamp.VK_DOWN:
 			case KeyEvent.VK_DOWN:
 				//DOWN
 				row = 3;
@@ -412,7 +414,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD4:
+			case DJogamp.VK_NUMPAD4:
 			case KeyEvent.VK_NUMPAD4:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.HISTORY_BACK);
@@ -420,7 +422,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD6:
+			case DJogamp.VK_NUMPAD6:
 			case KeyEvent.VK_NUMPAD6:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.HISTORY_FORWARD);
@@ -435,26 +437,26 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_SHIFT:
+			case DJogamp.VK_SHIFT:
 			case KeyEvent.VK_SHIFT:
 				Keyboard.keyPressed(Key.SHIFT);
 				break;
 			case KeyEvent.VK_A:
 				Keyboard.keyPressed(Key.ALPHA);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD1:
+			case DJogamp.VK_NUMPAD1:
 			case KeyEvent.VK_NUMPAD1:
 				Keyboard.keyPressed(Key.SQRT);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD2:
+			case DJogamp.VK_NUMPAD2:
 			case KeyEvent.VK_NUMPAD2:
 				Keyboard.keyPressed(Key.ROOT);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD3:
+			case DJogamp.VK_NUMPAD3:
 			case KeyEvent.VK_NUMPAD3:
 				Keyboard.keyPressed(Key.POWER_OF_2);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD5:
+			case DJogamp.VK_NUMPAD5:
 			case KeyEvent.VK_NUMPAD5:
 				Keyboard.keyPressed(Key.POWER_OF_x);
 				break;
@@ -468,14 +470,14 @@ public class Keyboard {
 				int col = 1;
 				Keyboard.debugKeysDown[row - 1][col - 1] = false;
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_LEFT:
+			case DJogamp.VK_LEFT:
 			case KeyEvent.VK_LEFT:
 				//LEFT
 				row = 2;
 				col = 3;
 				Keyboard.debugKeysDown[row - 1][col - 1] = false;
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_RIGHT:
+			case DJogamp.VK_RIGHT:
 			case KeyEvent.VK_RIGHT:
 				//RIGHT
 				row = 2;
@@ -483,14 +485,14 @@ public class Keyboard {
 				Keyboard.debugKeysDown[row - 1][col - 1] = false;
 				System.out.println("RELEASE");
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_UP:
+			case DJogamp.VK_UP:
 			case KeyEvent.VK_UP:
 				//UP
 				row = 1;
 				col = 4;
 				Keyboard.debugKeysDown[row - 1][col - 1] = false;
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_DOWN:
+			case DJogamp.VK_DOWN:
 			case KeyEvent.VK_DOWN:
 				//DOWN
 				row = 3;
@@ -614,12 +616,12 @@ public class Keyboard {
 
 	public static void stopKeyboard() {
 		if (StaticVars.debugOn == false) {
-			Gpio.digitalWrite(33, false);
-			Gpio.digitalWrite(35, false);
-			Gpio.digitalWrite(36, false);
-			Gpio.digitalWrite(37, false);
-			Gpio.digitalWrite(38, false);
-			Gpio.digitalWrite(40, false);
+			DGpio.digitalWrite(33, false);
+			DGpio.digitalWrite(35, false);
+			DGpio.digitalWrite(36, false);
+			DGpio.digitalWrite(37, false);
+			DGpio.digitalWrite(38, false);
+			DGpio.digitalWrite(40, false);
 		}
 	}
 
@@ -703,7 +705,7 @@ public class Keyboard {
 				refreshRequest = true;
 			}
 		} else if (!done) {
-			Utils.out.println(1, "Key " + k.toString() + " ignored.");
+			ConsoleUtils.out.println(1, "Key " + k.toString() + " ignored.");
 		}
 	}
 
@@ -733,7 +735,7 @@ public class Keyboard {
 				refreshRequest = true;
 			}
 		} else if (!done) {
-			Utils.out.println(1, "Key " + k.toString() + " ignored.");
+			ConsoleUtils.out.println(1, "Key " + k.toString() + " ignored.");
 		}
 	}
 

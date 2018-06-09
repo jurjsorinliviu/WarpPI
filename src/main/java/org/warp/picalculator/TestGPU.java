@@ -2,6 +2,8 @@ package org.warp.picalculator;
 
 import java.io.IOException;
 
+import org.warp.picalculator.deps.DEngine;
+import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.KeyboardEventListener;
@@ -13,7 +15,6 @@ import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
-import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Expression;
@@ -21,7 +22,7 @@ import org.warp.picalculator.math.parser.MathParser;
 
 public class TestGPU {
 
-	public static final GraphicEngine d = new GPUEngine();
+	public static final GraphicEngine d = DEngine.newGPUEngine();
 
 	public static void main(String[] args) throws IOException, Error {
 		StaticVars.debugOn = true;
@@ -101,7 +102,7 @@ public class TestGPU {
 							return true;
 						case POWEROFF:
 							d.destroy();
-							System.exit(0);
+							DSystem.exit(0);
 							return true;
 						case EQUAL:
 							Expression expr;
@@ -185,7 +186,7 @@ public class TestGPU {
 				}
 				if (!StaticVars.debugOn) {
 					d.destroy();
-					System.exit(0);
+					DSystem.exit(0);
 				}
 			}).start();
 

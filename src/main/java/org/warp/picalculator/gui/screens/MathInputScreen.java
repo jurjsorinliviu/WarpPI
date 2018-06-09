@@ -3,10 +3,14 @@ package org.warp.picalculator.gui.screens;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.gui.DisplayManager;
@@ -67,7 +71,7 @@ public class MathInputScreen extends Screen {
 			BlockContainer.initializeFonts(DisplayManager.INSTANCE.engine.loadFont("norm"), DisplayManager.INSTANCE.engine.loadFont("smal"));
 		} catch (final IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			DSystem.exit(1);
 		}
 
 		userInput = new NormalInputContainer(ic);
@@ -168,7 +172,7 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public boolean keyPressed(Key k) {
-		Utils.out.println(1, k.toString());
+		ConsoleUtils.out.println(1, k.toString());
 		try {
 			switch (k) {
 				case OK:
@@ -198,7 +202,7 @@ public class MathInputScreen extends Screen {
 								}
 								if (DisplayManager.INSTANCE.error != null) {
 									//TODO: make the error management a global API rather than being relegated to this screen.
-									Utils.out.println(1, "Resetting after error...");
+									ConsoleUtils.out.println(1, "Resetting after error...");
 									DisplayManager.INSTANCE.error = null;
 									calc.f = null;
 									calc.f2 = null;
@@ -220,13 +224,13 @@ public class MathInputScreen extends Screen {
 															calc.f2.clear();
 														}
 														calc.f.add(expr);
-														Utils.out.println(2, "INPUT: " + expr);
+														ConsoleUtils.out.println(2, "INPUT: " + expr);
 														final MathSolver ms = new MathSolver(expr);
 														final ObjectArrayList<ObjectArrayList<Function>> resultSteps = ms.solveAllSteps();
 														resultSteps.add(0, Utils.newArrayList(expr));
 														final ObjectArrayList<Function> resultExpressions = resultSteps.get(resultSteps.size() - 1);
 														for (final Function rr : resultExpressions) {
-															Utils.out.println(0, "RESULT: " + rr.toString());
+															ConsoleUtils.out.println(0, "RESULT: " + rr.toString());
 														}
 														final ObjectArrayList<ObjectArrayList<Block>> resultBlocks = MathParser.parseOutput(calc, resultExpressions);
 														result.setContentAsMultipleGroups(resultBlocks);
@@ -236,7 +240,7 @@ public class MathInputScreen extends Screen {
 														//									});
 													}
 												} catch (final InterruptedException ex) {
-													Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Computing thread stopped.");
+													ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_MIN, "Computing thread stopped.");
 												} catch (final Exception ex) {
 													if (StaticVars.debugOn) {
 														ex.printStackTrace();
@@ -244,17 +248,14 @@ public class MathInputScreen extends Screen {
 													throw new Error(Errors.SYNTAX_ERROR);
 												}
 											} catch (final Error e) {
-												final StringWriter sw = new StringWriter();
-												final PrintWriter pw = new PrintWriter(sw);
-												e.printStackTrace(pw);
-												d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+												d.errorStackTrace = PlatformUtils.stacktraceToString(e);
 												DisplayManager.INSTANCE.error = e.id.toString();
 												System.err.println(e.id);
 											}
 											computingResult = false;
 										});
-										computingThread.setName("Computing Thread");
-										computingThread.setDaemon(true);
+										PlatformUtils.setThreadName(computingThread, "Computing Thread");
+										PlatformUtils.setDaemon(computingThread);
 										computingThread.setPriority(Thread.NORM_PRIORITY + 3);
 										computingThread.start();
 										return true;
@@ -387,7 +388,7 @@ public class MathInputScreen extends Screen {
 								result.clear();
 								currentStep = 0;
 								if (DisplayManager.INSTANCE.error != null) {
-									Utils.out.println(1, "Resetting after error...");
+									ConsoleUtils.out.println(1, "Resetting after error...");
 									DisplayManager.INSTANCE.error = null;
 								}
 								return true;
@@ -661,9 +662,9 @@ public class MathInputScreen extends Screen {
 				}
 			}
 		});
-		ct.setName("Variables user-input queue thread");
+		PlatformUtils.setThreadName(ct, "Variables user-input queue thread");
 		ct.setPriority(Thread.MIN_PRIORITY);
-		ct.setDaemon(true);
+		PlatformUtils.setDaemon(ct);
 		ct.start();
 	}
 

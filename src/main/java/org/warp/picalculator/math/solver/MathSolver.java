@@ -3,9 +3,10 @@ package org.warp.picalculator.math.solver;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.Utils;
+import org.warp.picalculator.deps.DAtomicInteger;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
@@ -16,7 +17,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public class MathSolver {
 
 	private final Function initialFunction;
-	private final AtomicInteger stepState = new AtomicInteger(0);
+	private final DAtomicInteger stepState = new DAtomicInteger(0);
 	private int stepStateRepetitions = 0;
 	private int consecutiveNullSteps = 0;
 
@@ -36,11 +37,11 @@ public class MathSolver {
 	public ObjectArrayList<ObjectArrayList<Function>> solveAllSteps() throws InterruptedException, Error {
 		final ObjectArrayList<ObjectArrayList<Function>> steps = new ObjectArrayList<>();
 		ObjectArrayList<Function> lastFnc = null, currFnc = new ObjectArrayList<>();
-		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Solving all steps. Input: " + initialFunction.toString());
+		ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Solving all steps. Input: " + initialFunction.toString());
 		currFnc.add(initialFunction);
 		long stepNumber = 0;
 		int initStepState = 0, endStepState = 0;
-		final AtomicInteger stepState = new AtomicInteger(0);
+		final DAtomicInteger stepState = new DAtomicInteger(0);
 		do {
 			final ObjectArrayList<Function>[] currFncHistory = new ObjectArrayList[stepStates.length];
 			final String stepName = "Step " + stepNumber;
@@ -62,11 +63,11 @@ public class MathSolver {
 			}
 			lastFnc = currFnc;
 			initStepState = stepState.get();
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step " + stepStates[initStepState] + ". Input: " + currFnc);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Starting step " + stepStates[initStepState] + ". Input: " + currFnc);
 			final ObjectArrayList<Function> stepResult = solveStep(lastFnc, stepState);
 			if (stepResult != null) {
 				for (final Function result : stepResult) {
-					Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, result.toString());
+					ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, result.toString());
 				}
 				currFnc = stepResult;
 				steps.add(currFnc);
@@ -74,22 +75,22 @@ public class MathSolver {
 			endStepState = stepState.get();
 			stepNumber++;
 
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result: " + stepResult);
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + stepStateRepetitions + " simplifications.");
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Next step state: " + stepStates[endStepState]);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result: " + stepResult);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Step result details: Consecutive steps that did nothing: " + consecutiveNullSteps + ", this step did " + stepStateRepetitions + " simplifications.");
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, "Next step state: " + stepStates[endStepState]);
 			if (StaticVars.debugOn) {
-				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, currFnc + " is " + (checkEquals(currFnc, lastFunctions[0][endStepState]) ? "" : "not ") + "equals to [0]:" + lastFunctions[0][endStepState]);
+				ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, currFnc + " is " + (checkEquals(currFnc, lastFunctions[0][endStepState]) ? "" : "not ") + "equals to [0]:" + lastFunctions[0][endStepState]);
 			}
 			if (StaticVars.debugOn) {
-				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, currFnc + " is " + (checkEquals(currFnc, lastFunctions[1][endStepState]) ? "" : "not ") + "equals to [1]:" + lastFunctions[1][endStepState]);
+				ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", stepName, currFnc + " is " + (checkEquals(currFnc, lastFunctions[1][endStepState]) ? "" : "not ") + "equals to [1]:" + lastFunctions[1][endStepState]);
 			}
 		} while (consecutiveNullSteps < stepStates.length && !checkEquals(currFnc, lastFunctions[0][endStepState]) && !checkEquals(currFnc, lastFunctions[1][endStepState]));
 		if (consecutiveNullSteps >= stepStates.length) {
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + consecutiveNullSteps + " >= " + stepStates.length);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + consecutiveNullSteps + " >= " + stepStates.length);
 		} else if (checkEquals(currFnc, lastFunctions[0][endStepState])) {
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to [0]:" + lastFunctions[0][endStepState]);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to [0]:" + lastFunctions[0][endStepState]);
 		} else {
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to [1]:" + lastFunctions[1][endStepState]);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", "Loop ended because " + currFnc + " is equals to [1]:" + lastFunctions[1][endStepState]);
 		}
 		return steps;
 	}
@@ -117,7 +118,7 @@ public class MathSolver {
 		return solveStep(fncs, stepState);
 	}
 
-	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs, AtomicInteger stepState)
+	private ObjectArrayList<Function> solveStep(ObjectArrayList<Function> fncs, DAtomicInteger stepState)
 			throws InterruptedException, Error {
 		final ObjectArrayList<Function> processedFncs = applyRules(fncs, RuleType.EXISTENCE); // Apply existence rules before everything
 		if (processedFncs != null) {
@@ -239,14 +240,14 @@ public class MathSolver {
 		if (appliedRules.isEmpty()) results = null;
 		if (StaticVars.debugOn & results != null && !appliedRules.isEmpty()) {
 			StringBuilder rulesStr = new StringBuilder();
-			appliedRules.forEach((r) -> {
+			for(Rule r : appliedRules) {
 				rulesStr.append(r.getRuleName());
 				rulesStr.append(',');
-			});
+			}
 			if (rulesStr.length() > 0) {
 				rulesStr.setLength(rulesStr.length() - 1);
 			}
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", currentAcceptedRules.toString(), "Applied rules: " + rulesStr);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "Math Solver", currentAcceptedRules.toString(), "Applied rules: " + rulesStr);
 		}
 		return results;
 	}

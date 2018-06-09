@@ -5,20 +5,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import org.warp.picalculator.ConsoleUtils;
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.deps.DEngine;
+import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.gui.graphicengine.framebuffer.FBEngine;
-import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
-import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitEngine;
-import org.warp.picalculator.gui.graphicengine.headless256.Headless256Engine;
-import org.warp.picalculator.gui.graphicengine.headless8.Headless8Engine;
 import org.warp.picalculator.gui.graphicengine.nogui.NoGuiEngine;
 import org.warp.picalculator.gui.screens.Screen;
 
@@ -67,7 +65,7 @@ public final class DisplayManager implements RenderingLoop {
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.exit(0);
+			DSystem.exit(0);
 		}
 
 		setScreen(screen);
@@ -114,37 +112,37 @@ public final class DisplayManager implements RenderingLoop {
 		GraphicEngine d;
 		d = new NoGuiEngine();
 		if (d.isSupported()) {
-			Utils.out.println(1, "Using NoGui Graphic Engine");
+			ConsoleUtils.out.println(1, "Using NoGui Graphic Engine");
 			return d;
 		}
 		if (!StaticVars.debugOn) {
-			d = new FBEngine();
+			d = DEngine.newFBEngine();
 			if (d.isSupported()) {
-				Utils.out.println(1, "Using FB Graphic Engine");
+				ConsoleUtils.out.println(1, "Using FB Graphic Engine");
 				return d;
 			}
 		}
-		d = new GPUEngine();
+		d = DEngine.newGPUEngine();
 		if (d.isSupported()) {
-			Utils.out.println(1, "Using GPU Graphic Engine");
+			ConsoleUtils.out.println(1, "Using GPU Graphic Engine");
 			return d;
 		}
-		d = new CPUEngine();
+		d = DEngine.newCPUEngine();
 		if (d.isSupported()) {
-			Utils.out.println(1, "Using CPU Graphic Engine");
+			ConsoleUtils.out.println(1, "Using CPU Graphic Engine");
 			return d;
 		}
-		d = new Headless24bitEngine();
+		d = DEngine.newHeadless24bitEngine();
 		if (d.isSupported()) {
 			System.err.println("Using Headless 24 bit Engine! This is a problem! No other graphic engines are available.");
 			return d;
 		}
-		d = new Headless256Engine();
+		d = DEngine.newHeadless256Engine();
 		if (d.isSupported()) {
 			System.err.println("Using Headless 256 Engine! This is a problem! No other graphic engines are available.");
 			return d;
 		}
-		d = new Headless8Engine();
+		d = DEngine.newHeadless8Engine();
 		if (d.isSupported()) {
 			System.err.println("Using Headless basic Engine! This is a problem! No other graphic engines are available.");
 			return d;
@@ -178,7 +176,7 @@ public final class DisplayManager implements RenderingLoop {
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.exit(0);
+			DSystem.exit(0);
 		}
 	}
 
@@ -203,7 +201,7 @@ public final class DisplayManager implements RenderingLoop {
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.exit(0);
+			DSystem.exit(0);
 		}
 	}
 
@@ -372,7 +370,7 @@ public final class DisplayManager implements RenderingLoop {
 				screen.initialize();
 			} catch (final Exception e) {
 				e.printStackTrace();
-				System.exit(0);
+				DSystem.exit(0);
 			}
 
 			//Working thread
@@ -449,8 +447,8 @@ public final class DisplayManager implements RenderingLoop {
 					e.printStackTrace();
 				}
 			});
-			workThread.setDaemon(true);
-			workThread.setName("Work thread");
+			PlatformUtils.setDaemon(workThread);
+			PlatformUtils.setThreadName(workThread, "Work thread");
 			workThread.start();
 
 			engine.start(getDrawable());

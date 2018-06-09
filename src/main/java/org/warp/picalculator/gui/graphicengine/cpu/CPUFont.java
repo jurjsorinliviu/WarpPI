@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
@@ -62,7 +63,7 @@ public class CPUFont implements BinaryFont {
 	}
 
 	private void load(String path, boolean onlyRaw) throws IOException {
-		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Loading font " + path);
+		ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_MIN, "Loading font " + path);
 		loadFont(path);
 		if (!onlyRaw) {
 			chars32 = new int[(intervalsTotalSize) * charIntCount];

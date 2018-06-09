@@ -42,7 +42,10 @@ public class BlockVariable extends Block {
 	}
 
 	private void retrieveValue() {
-		type = ic.variableTypes.getOrDefault(ch, V_TYPE.VARIABLE);
+		type = ic.variableTypes.get(ch);
+		if (type == null) {
+			type = V_TYPE.VARIABLE;
+		}
 		typeDirtyID = ic.variableTypeDirtyID;
 		if (menu != null) {
 			menu.mustRefreshMenu = true;

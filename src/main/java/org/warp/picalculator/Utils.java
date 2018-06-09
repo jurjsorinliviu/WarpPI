@@ -7,8 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.ref.WeakReference;
@@ -25,10 +23,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import org.nevec.rjm.BigDecimalMath;
@@ -38,7 +35,6 @@ import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.FunctionSingle;
-import org.warp.picalculator.math.MathematicalSymbols;
 import org.warp.picalculator.math.functions.Division;
 import org.warp.picalculator.math.functions.Expression;
 import org.warp.picalculator.math.functions.Multiplication;
@@ -52,9 +48,6 @@ import org.warp.picalculator.math.functions.equations.Equation;
 import org.warp.picalculator.math.functions.equations.EquationsSystemPart;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.model.ZipParameters;
-import net.lingala.zip4j.util.Zip4jConstants;
 
 public class Utils {
 
@@ -65,112 +58,12 @@ public class Utils {
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;
 
-	public static AdvancedOutputStream out = new AdvancedOutputStream();
-
-	public static final int OUTPUTLEVEL_NODEBUG = 0;
-	public static final int OUTPUTLEVEL_DEBUG_MIN = 1;
-	public static final int OUTPUTLEVEL_DEBUG_VERBOSE = 4;
 	public static boolean debugThirdScreen;
 	public static boolean headlessOverride = false;
-	private static String OS = System.getProperty("os.name").toLowerCase();
 	public static String forceEngine;
 	public static boolean msDosMode;
 	public static boolean debugCache;
 	public static boolean newtMode = true;
-
-	public static final class AdvancedOutputStream extends StringWriter {
-
-		private void print(PrintStream stream, String str) {
-			stream.print(fixString(str));
-		}
-
-		private void println(PrintStream stream, String str) {
-			stream.println(fixString(str));
-		}
-
-		private void println(PrintStream stream) {
-			stream.println();
-		}
-
-		private String fixString(String str) {
-
-			return str.replace("" + MathematicalSymbols.NTH_ROOT, "root").replace("" + MathematicalSymbols.SQUARE_ROOT, "sqrt").replace("" + MathematicalSymbols.POWER, "powerOf").replace("" + MathematicalSymbols.POWER_OF_TWO, "powerOfTwo").replace("" + MathematicalSymbols.SINE, "sine").replace("" + MathematicalSymbols.COSINE, "cosine").replace("" + MathematicalSymbols.TANGENT, "tangent").replace("" + MathematicalSymbols.ARC_SINE, "asin").replace("" + MathematicalSymbols.ARC_COSINE, "acos").replace("" + MathematicalSymbols.ARC_TANGENT, "atan").replace("" + MathematicalSymbols.UNDEFINED, "undefined").replace("" + MathematicalSymbols.PI, "PI").replace("" + MathematicalSymbols.EULER_NUMBER, "EULER_NUMBER").replace("" + MathematicalSymbols.X, "X").replace("" + MathematicalSymbols.Y, "Y");
-		}
-
-		public void println(String str) {
-			println(0, str);
-		}
-
-		public void println(int level) {
-			if (StaticVars.outputLevel >= level) {
-				final String time = getTimeString();
-				if (StaticVars.outputLevel == 0) {
-					println(System.out);
-				} else {
-					println(System.out);
-				}
-			}
-		}
-
-		public void println(int level, String str) {
-			if (StaticVars.outputLevel >= level) {
-				final String time = getTimeString();
-				if (StaticVars.outputLevel == 0) {
-					println(System.out, "[" + time + "]" + str);
-				} else {
-					println(System.out, "[" + time + "]" + str);
-				}
-			}
-		}
-
-		public void print(int level, String str) {
-			if (StaticVars.outputLevel >= level) {
-				if (StaticVars.outputLevel == 0) {
-					print(System.out, str);
-				} else {
-					print(System.out, str);
-				}
-			}
-		}
-
-		public void println(int level, String prefix, String str) {
-			if (StaticVars.outputLevel >= level) {
-				final String time = getTimeString();
-				if (StaticVars.outputLevel == 0) {
-					println(System.out, "[" + time + "][" + prefix + "]" + str);
-				} else {
-					println(System.out, "[" + time + "][" + prefix + "]" + str);
-				}
-			}
-		}
-
-		public void println(int level, String... parts) {
-			if (StaticVars.outputLevel >= level) {
-				final String time = getTimeString();
-				String output = "";
-				for (int i = 0; i < parts.length; i++) {
-					if (i + 1 == parts.length) {
-						output += parts[i];
-					} else {
-						output += "[" + parts[i] + "]";
-					}
-				}
-				if (StaticVars.outputLevel == 0) {
-					println(System.out, "[" + time + "]" + output);
-				} else {
-					println(System.out, "[" + time + "]" + output);
-				}
-			}
-		}
-
-		private String getTimeString() {
-			return LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss.SSS"));
-		}
-
-		int before = 0;
-		boolean due = false;
-
-	}
 
 	public static boolean isInArray(String ch, String[] a) {
 		boolean contains = false;
@@ -760,7 +653,7 @@ public class Utils {
 	}
 
 	public static boolean isRunningOnRaspberry() {
-		if (System.getProperty("os.name").equals("Linux")) {
+		if (PlatformUtils.osName.equals("Linux")) {
 			final File file = new File("/etc", "os-release");
 			try (FileInputStream fis = new FileInputStream(file); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis))) {
 				String string;
@@ -779,7 +672,7 @@ public class Utils {
 	}
 
 	public static boolean isWindows() {
-		return (OS.indexOf("win") >= 0);
+		return (PlatformUtils.osName.indexOf("win") >= 0);
 	}
 
 	public static void gc() {
@@ -858,46 +751,6 @@ public class Utils {
 	public static String read(InputStream input) throws IOException {
 		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
 			return buffer.lines().collect(Collectors.joining("\n"));
-		}
-	}
-
-	public static void zip(String targetPath, String destinationFilePath, String password) {
-		try {
-			final ZipParameters parameters = new ZipParameters();
-			parameters.setCompressionMethod(Zip4jConstants.COMP_DEFLATE);
-			parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-
-			if (password.length() > 0) {
-				parameters.setEncryptFiles(true);
-				parameters.setEncryptionMethod(Zip4jConstants.ENC_METHOD_AES);
-				parameters.setAesKeyStrength(Zip4jConstants.AES_STRENGTH_256);
-				parameters.setPassword(password);
-			}
-
-			final ZipFile zipFile = new ZipFile(destinationFilePath);
-
-			final File targetFile = new File(targetPath);
-			if (targetFile.isFile()) {
-				zipFile.addFile(targetFile, parameters);
-			} else if (targetFile.isDirectory()) {
-				zipFile.addFolder(targetFile, parameters);
-			}
-
-		} catch (final Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void unzip(String targetZipFilePath, String destinationFolderPath, String password) {
-		try {
-			final ZipFile zipFile = new ZipFile(targetZipFilePath);
-			if (zipFile.isEncrypted()) {
-				zipFile.setPassword(password);
-			}
-			zipFile.extractAll(destinationFolderPath);
-
-		} catch (final Exception e) {
-			e.printStackTrace();
 		}
 	}
 

@@ -16,8 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.ZipUtils;
+import org.warp.picalculator.deps.StorageUtils;
+import org.warp.picalculator.deps.DJDTCompiler;
+import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Expression;
@@ -35,7 +40,7 @@ public class RulesManager {
 
 	@SuppressWarnings("unchecked")
 	public static void initialize() {
-		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Loading the rules");
+		ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Loading the rules");
 		rules = new ObjectArrayList[RuleType.values().length];
 		for (final RuleType val : RuleType.values()) {
 			rules[val.ordinal()] = new ObjectArrayList<>();
@@ -43,11 +48,11 @@ public class RulesManager {
 		try {
 			boolean compiledSomething = false;
 			final Path defaultRulesPath = Utils.getResource("/default-rules.lst");
-			if (!Files.exists(defaultRulesPath)) {
+			if (!StorageUtils.exists(defaultRulesPath)) {
 				throw new FileNotFoundException("default-rules.lst not found!");
 			}
 			final List<String> ruleLines = new ArrayList<>();
-			final Path rulesPath = Paths.get("rules/");
+			final Path rulesPath = StorageUtils.get("rules/");
 			if (rulesPath.toFile().exists()) {
 				try (Stream<Path> paths = Files.walk(rulesPath)) {
 					paths.filter(Files::isRegularFile).forEach((Path p) -> {
@@ -55,7 +60,7 @@ public class RulesManager {
 							String path = rulesPath.relativize(p).toString();
 							path = path.substring(0, path.length() - ".java".length());
 							ruleLines.add(path);
-							Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Found external rule: " + p.toAbsolutePath().toString());
+							ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Found external rule: " + p.toAbsolutePath().toString());
 							System.err.println(path);
 						}
 					});
@@ -74,7 +79,7 @@ public class RulesManager {
 					if (tDir.toFile().exists()) {
 						tDir.toFile().delete();
 					}
-					Utils.unzip(cacheFilePath.toString(), tDir.getParent().toString(), "");
+					ZipUtils.unzip(cacheFilePath.toString(), tDir.getParent().toString(), "");
 					useCache = !Utils.debugCache;
 				} catch (final Exception ex) {
 					ex.printStackTrace();
@@ -85,7 +90,7 @@ public class RulesManager {
 					final String[] ruleDetails = rulesLine.split(",", 1);
 					final String ruleName = ruleDetails[0];
 					final String ruleNameEscaped = ruleName.replace(".", "_");
-					Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Evaluating /rules/" + ruleNameEscaped + ".java");
+					ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Evaluating /rules/" + ruleNameEscaped + ".java");
 					final String pathWithoutExtension = "/rules/" + ruleNameEscaped;
 					final String scriptFile = pathWithoutExtension + ".java";
 					final InputStream resourcePath = Utils.getResourceStream(scriptFile);
@@ -95,18 +100,18 @@ public class RulesManager {
 						Rule r = null;
 						if (useCache) {
 							try {
-								Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "Trying to load cached rule");
+								ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "Trying to load cached rule");
 								r = loadClassRuleFromSourceFile(scriptFile, tDir);
 								if (r != null) {
-									Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "Loaded cached rule");
+									ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "Loaded cached rule");
 								}
 							} catch (final Exception e) {
 								e.printStackTrace();
-								Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", ruleName, "Can't load the rule!");
+								ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "RulesManager", ruleName, "Can't load the rule!");
 							}
 						}
 						if (r == null || !useCache) {
-							Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "This rule is not cached. Compiling");
+							ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_MIN, "RulesManager", ruleName, "This rule is not cached. Compiling");
 							try {
 								r = compileJavaRule(scriptFile, tDir);
 								compiledSomething = true;
@@ -121,17 +126,17 @@ public class RulesManager {
 					}
 				}
 			}
-			Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Loaded all the rules successfully");
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Loaded all the rules successfully");
 			if (compiledSomething) {
 				if (cacheFilePath.toFile().exists()) {
 					cacheFilePath.toFile().delete();
 				}
-				Utils.zip(tDir.toString(), cacheFilePath.toString(), "");
-				Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Cached the compiled rules");
+				ZipUtils.zip(tDir.toString(), cacheFilePath.toString(), "");
+				ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "RulesManager", "Cached the compiled rules");
 			}
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			DSystem.exit(1);
 		}
 	}
 
@@ -156,7 +161,7 @@ public class RulesManager {
 			tFileJava.toFile().delete();
 		}
 		Files.write(tFileJava, javaCode.getBytes("UTF-8"), StandardOpenOption.WRITE, StandardOpenOption.CREATE);
-		final boolean compiled = org.eclipse.jdt.internal.compiler.batch.Main.compile(new String[] { "-nowarn", "-1.8", tFileJava.toString() }, new PrintWriter(System.out), new PrintWriter(System.err), null);
+		final boolean compiled = DJDTCompiler.compile(new String[] { "-nowarn", "-1.8", tFileJava.toString() }, new PrintWriter(System.out), new PrintWriter(System.err));
 		if (Utils.debugCache) {
 			tFileJava.toFile().deleteOnExit();
 		} else {
@@ -229,6 +234,6 @@ public class RulesManager {
 
 	public static void addRule(Rule rule) {
 		rules[rule.getRuleType().ordinal()].add(rule);
-		Utils.out.println(Utils.OUTPUTLEVEL_NODEBUG, "RulesManager", rule.getRuleName(), "Loaded as " + rule.getRuleType() + " rule");
+		ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "RulesManager", rule.getRuleName(), "Loaded as " + rule.getRuleType() + " rule");
 	}
 }

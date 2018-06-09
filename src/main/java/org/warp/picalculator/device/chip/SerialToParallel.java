@@ -1,6 +1,6 @@
 package org.warp.picalculator.device.chip;
 
-import com.pi4j.wiringpi.Gpio;
+import org.warp.picalculator.deps.DGpio;
 
 public class SerialToParallel {
 	private final int RCK; //Storage register clock pin (latch pin)
@@ -17,15 +17,15 @@ public class SerialToParallel {
 		if (data.length != 8) {
 			return;
 		} else {
-			Gpio.digitalWrite(RCK, Gpio.LOW);
+			DGpio.digitalWrite(RCK, DGpio.LOW);
 
 			for (int i = 7; i >= 0; i--) {
-				Gpio.digitalWrite(SCK, Gpio.LOW);
-				Gpio.digitalWrite(SER, data[i]);
-				Gpio.digitalWrite(SCK, Gpio.HIGH);
+				DGpio.digitalWrite(SCK, DGpio.LOW);
+				DGpio.digitalWrite(SER, data[i]);
+				DGpio.digitalWrite(SCK, DGpio.HIGH);
 			}
 
-			Gpio.digitalWrite(RCK, Gpio.HIGH);
+			DGpio.digitalWrite(RCK, DGpio.HIGH);
 		}
 	}
 }

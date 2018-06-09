@@ -12,7 +12,6 @@ public class StaticVars {
 	public static boolean debugOn;
 	public static int outputLevel = 0;
 	public static boolean debugWindow2x = false;
-	public static Class<?> classLoader;
 	public static float windowZoom = 2;
 
 	private StaticVars() {

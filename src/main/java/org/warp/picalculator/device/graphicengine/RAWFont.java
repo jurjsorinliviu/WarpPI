@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.deps.DSystem;
 
 /**
  *
@@ -35,7 +36,7 @@ public class RAWFont {
 			loadFont("/font_" + name + ".rft");
 		} catch (final IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			DSystem.exit(1);
 		}
 		chars32 = new int[(maxBound - minBound) * charIntCount];
 		for (int charIndex = 0; charIndex < maxBound - minBound; charIndex++) {
@@ -113,7 +114,7 @@ public class RAWFont {
 					} catch (final Exception ex) {
 						ex.printStackTrace();
 						System.out.println(string);
-						System.exit(-1);
+						DSystem.exit(-1);
 					}
 				}
 			} else {

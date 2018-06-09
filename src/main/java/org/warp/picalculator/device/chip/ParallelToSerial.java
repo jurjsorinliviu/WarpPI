@@ -1,6 +1,6 @@
 package org.warp.picalculator.device.chip;
 
-import com.pi4j.wiringpi.Gpio;
+import org.warp.picalculator.deps.DGpio;
 
 public class ParallelToSerial {
 
@@ -18,16 +18,16 @@ public class ParallelToSerial {
 
 	public boolean[] read() {
 		final boolean[] data = new boolean[8];
-		Gpio.digitalWrite(CLK_INH, Gpio.HIGH);
-		Gpio.digitalWrite(SH_LD, Gpio.LOW);
-		Gpio.delayMicroseconds(1);
-		Gpio.digitalWrite(SH_LD, Gpio.HIGH);
-		Gpio.digitalWrite(CLK_INH, Gpio.LOW);
+		DGpio.digitalWrite(CLK_INH, DGpio.HIGH);
+		DGpio.digitalWrite(SH_LD, DGpio.LOW);
+		DGpio.delayMicroseconds(1);
+		DGpio.digitalWrite(SH_LD, DGpio.HIGH);
+		DGpio.digitalWrite(CLK_INH, DGpio.LOW);
 
 		for (int i = 7; i >= 0; i--) {
-			Gpio.digitalWrite(CLK, Gpio.HIGH);
-			Gpio.digitalWrite(CLK, Gpio.LOW);
-			data[i] = Gpio.digitalRead(QH) == Gpio.HIGH ? true : false;
+			DGpio.digitalWrite(CLK, DGpio.HIGH);
+			DGpio.digitalWrite(CLK, DGpio.LOW);
+			data[i] = DGpio.digitalRead(QH) == DGpio.HIGH ? true : false;
 		}
 
 		return data;

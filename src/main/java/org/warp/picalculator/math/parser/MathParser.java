@@ -1,10 +1,10 @@
 package org.warp.picalculator.math.parser;
 
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.IntegerObj;
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.containers.InputContainer;
 import org.warp.picalculator.math.Function;
@@ -85,16 +85,16 @@ public class MathParser {
 		Function lastElement;
 
 		if (StaticVars.debugOn) {
-			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
+			ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
 			for (final Function f : functionsList) {
-				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
+				ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
 			}
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE);
 		}
 
 		for (final MathParserStep step : steps) {
 			if (StaticVars.debugOn) {
-				Utils.out.println(2, "Stack fixing step \"" + step.getStepName() + "\"");
+				ConsoleUtils.out.println(2, "Stack fixing step \"" + step.getStepName() + "\"");
 			}
 			final int stepQty = step.requiresReversedIteration() ? -1 : 1,
 					initialIndex = step.requiresReversedIteration() ? functionsList.size() - 1 : 0;
@@ -116,11 +116,11 @@ public class MathParser {
 			} while (lastLoopDidSomething);
 
 			if (StaticVars.debugOn) {
-				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
+				ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
 				for (final Function f : functionsList) {
-					Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
+					ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
 				}
-				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_VERBOSE);
+				ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE);
 			}
 		}
 
