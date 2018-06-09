@@ -1,12 +1,11 @@
 package org.warp.picalculator.math.functions;
 
-import java.util.List;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
+import org.warp.picalculator.gui.expression.blocks.BlockUndefined;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.MathContext;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -19,13 +18,8 @@ public class Undefined implements Function {
 	}
 
 	@Override
-	public List<Function> simplify() throws Error {
-		return null;
-	}
-
-	@Override
-	public boolean isSimplified() {
-		return true;
+	public ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
+		return rule.execute(this);
 	}
 
 	@Override
@@ -35,9 +29,6 @@ public class Undefined implements Function {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof Undefined) {
-			return true;
-		}
 		return false;
 	}
 
@@ -57,9 +48,15 @@ public class Undefined implements Function {
 	}
 
 	@Override
-	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		// TODO Auto-generated method stub
-		throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + getClass().getSimpleName());
+	public ObjectArrayList<Block> toBlock(MathContext context) {
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		result.add(new BlockUndefined());
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "UNDEFINED";
 	}
 
 }

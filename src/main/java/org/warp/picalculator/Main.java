@@ -1,52 +1,62 @@
 package org.warp.picalculator;
 
+import java.io.IOException;
+
+import org.warp.picalculator.deps.DGpio;
+import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.PIHardwareDisplay;
+import org.warp.picalculator.gui.CalculatorHUD;
 import org.warp.picalculator.gui.DisplayManager;
+import org.warp.picalculator.gui.HUD;
+import org.warp.picalculator.gui.HardwareDisplay;
 import org.warp.picalculator.gui.screens.LoadingScreen;
 import org.warp.picalculator.gui.screens.Screen;
-
-import com.pi4j.system.SystemInfo.BoardType;
-import com.pi4j.wiringpi.Gpio;
+import org.warp.picalculator.math.rules.RulesManager;
 
 public class Main {
 	public static Main instance;
 	public static String[] args;
-	public Main(String[] args) throws InterruptedException {
-		this(new LoadingScreen(), args);
+
+	public Main(String[] args) throws InterruptedException, Error, IOException {
+		this(new LoadingScreen(), new PIHardwareDisplay(), new CalculatorHUD(), args);
 	}
 
-	public Main(Screen screen, String[] args) {
+	public Main(Screen screen, HardwareDisplay disp, HUD hud, String[] args) throws InterruptedException, Error, IOException {
 		System.out.println("WarpPI Calculator");
 		instance = this;
-		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-		Thread.currentThread().setName("Main thread");
 		Main.args = args;
+		ClassUtils.classLoader = this.getClass();
 		beforeStart();
-		new DisplayManager(screen);
+		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+		PlatformUtils.setThreadName(Thread.currentThread(), "Main thread");
+		new DisplayManager(disp, hud, screen, "WarpPI Calculator by Andrea Cavalli (@Cavallium)");
 		afterStart();
+		if (screen instanceof LoadingScreen) {
+			((LoadingScreen) screen).loaded = true;
+		}
 		DisplayManager.INSTANCE.waitForExit();
-		Utils.out.println(1, "Shutdown...");
+		ConsoleUtils.out.println(1, "Shutdown...");
 		beforeShutdown();
-		Utils.out.println(1, "");
-		Utils.out.println(1, "Closed.");
-		System.exit(0);
+		ConsoleUtils.out.println(1, "");
+		ConsoleUtils.out.println(1, "Closed.");
+		DSystem.exit(0);
 	}
 
-	public void beforeStart() {
+	public void beforeStart() throws IOException {
 		boolean isRaspi = false;
 		try {
-			isRaspi = com.pi4j.system.SystemInfo.getBoardType() != BoardType.UNKNOWN;
-		} catch (Exception e) {}
+			isRaspi = DGpio.getBoardType() != DGpio.UnknownBoardType;
+		} catch (final Exception e) {}
 		if (Utils.isRunningOnRaspberry() && !Utils.isInArray("-noraspi", args) && isRaspi) {
-			Gpio.wiringPiSetupPhys();
-			Gpio.pinMode(12, Gpio.PWM_OUTPUT);
+			DGpio.wiringPiSetupPhys();
+			DGpio.pinMode(12, DGpio.PWM_OUTPUT);
 		} else {
 			StaticVars.screenPos = new int[] { 0, 0 };
 			StaticVars.debugOn = true;
 		}
 		Utils.debugThirdScreen = StaticVars.debugOn & false;
-		for (String arg : args) {
+		for (final String arg : args) {
 			if (arg.contains("2x")) {
 				StaticVars.debugWindow2x = true;
 			}
@@ -74,6 +84,15 @@ public class Main {
 			if (arg.contains("fb")) {
 				Utils.forceEngine = "fb";
 			}
+			if (arg.contains("nogui")) {
+				Utils.forceEngine = "nogui";
+			}
+			if (arg.contains("verbose") || arg.contains("debug")) {
+				StaticVars.outputLevel = ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE;
+			}
+			if (arg.contains("uncached")) {
+				Utils.debugCache = true;
+			}
 			if (arg.contains("ms-dos")) {
 				Utils.headlessOverride = true;
 				Utils.msDosMode = true;
@@ -82,15 +101,17 @@ public class Main {
 		Keyboard.startKeyboard();
 	}
 
-	public void afterStart() {
+	public void afterStart() throws InterruptedException, Error {
 		DisplayManager.INSTANCE.setBrightness(0.2f);
+		RulesManager.initialize();
+		RulesManager.warmUp();
 	}
 
 	public void beforeShutdown() {
 		Keyboard.stopKeyboard();
 	}
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, Error, IOException {
 		/*
 		 * TEST: Comparing BigIntegerMath.divisors() vs programmingpraxis' Number.getFactors() function
 		 * 

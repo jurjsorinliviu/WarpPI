@@ -2,6 +2,8 @@ package org.warp.picalculator.gui.expression.blocks;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
+import org.warp.picalculator.PlatformUtils;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;
@@ -69,6 +71,11 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public void addBlock(int position, Block b) {
+		addBlockUnsafe(position, b);
+		recomputeDimensions();
+	}
+
+	public void addBlockUnsafe(int position, Block b) {
 		if (b.isSmall() != small) {
 			b.setSmall(small);
 		}
@@ -77,7 +84,6 @@ public class BlockContainer implements GraphicalElement {
 		} else {
 			content.add(position, b);
 		}
-		recomputeDimensions();
 	}
 
 	public void appendBlock(Block b) {
@@ -93,8 +99,12 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public void removeBlock(Block b) {
-		content.remove(b);
+		removeBlockUnsafe(b);
 		recomputeDimensions();
+	}
+
+	public void removeBlockUnsafe(Block b) {
+		content.remove(b);
 	}
 
 	public void removeAt(int i) {
@@ -102,8 +112,13 @@ public class BlockContainer implements GraphicalElement {
 		recomputeDimensions();
 	}
 
-	public Block getBlockAt(int i) {
-		return content.get(i);
+	public BlockReference<?> getBlockAt(int i) {
+		final Block b = content.get(i);
+		return new BlockReference<>(b, i, this);
+	}
+
+	public int getSize() {
+		return content.size();
 	}
 
 	public void clear() {
@@ -202,8 +217,8 @@ public class BlockContainer implements GraphicalElement {
 		return removed;
 	}
 
-	public Block getBlock(Caret caret) {
-		Block block = null;
+	public BlockReference<?> getBlock(Caret caret) {
+		BlockReference<?> block = null;
 
 		int pos = 0;
 		for (final Block b : content) {
@@ -323,11 +338,11 @@ public class BlockContainer implements GraphicalElement {
 
 	public void setSmall(boolean small) {
 		this.small = small;
-		if (this.autoMinimums) {
-			this.minWidth = BlockContainer.getDefaultCharWidth(small);
-			this.minHeight = BlockContainer.getDefaultCharHeight(small);
+		if (autoMinimums) {
+			minWidth = BlockContainer.getDefaultCharWidth(small);
+			minHeight = BlockContainer.getDefaultCharHeight(small);
 		}
-		for (Block b : this.content) {
+		for (final Block b : content) {
 			b.setSmall(small);
 		}
 		recomputeDimensions();
@@ -339,7 +354,7 @@ public class BlockContainer implements GraphicalElement {
 
 	private static void checkInitialized() {
 		if (!initialized) {
-			throw new ExceptionInInitializerError("Please initialize BlockContainer by running the method BlockContainer.initialize(...) first!");
+			PlatformUtils.throwNewExceptionInInitializerError("Please initialize BlockContainer by running the method BlockContainer.initialize(...) first!");
 		}
 	}
 
@@ -352,13 +367,14 @@ public class BlockContainer implements GraphicalElement {
 	}
 
 	public Function toFunction(MathContext context) throws Error {
-		ObjectArrayList<Block> blocks = getContent();
+		final ObjectArrayList<Block> blocks = getContent();
 		final ObjectArrayList<Feature> blockFeatures = new ObjectArrayList<>();
 
 		for (final Block block : blocks) {
 			final Feature blockFeature = block.toFeature(context);
-			if (blockFeature == null)
+			if (blockFeature == null) {
 				throw new Error(Errors.NOT_IMPLEMENTED, "The block " + block.getClass().getSimpleName() + " isn't a known Block");
+			}
 			blockFeatures.add(blockFeature);
 		}
 

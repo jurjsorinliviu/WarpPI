@@ -11,6 +11,7 @@ import org.warp.picalculator.gui.expression.ExtraMenu;
 import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
+import org.warp.picalculator.gui.expression.blocks.BlockReference;
 import org.warp.picalculator.gui.expression.layouts.InputLayout;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
@@ -58,6 +59,10 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 
 	public void typeChar(char c) {
 		final Block b = parseChar(c);
+		typeBlock(b);
+	}
+
+	public void typeBlock(Block b) {
 		if (b != null) {
 			caret.resetRemaining();
 			if (root.putBlock(caret, b)) {
@@ -89,9 +94,9 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 		closeExtra();
 	}
 
-	public Block getSelectedBlock() {
+	public BlockReference<?> getSelectedBlock() {
 		caret.resetRemaining();
-		Block selectedBlock = root.getBlock(caret);
+		final BlockReference<?> selectedBlock = root.getBlock(caret);
 		return selectedBlock;
 	}
 
@@ -225,9 +230,9 @@ public abstract class InputContainer implements GraphicalElement, InputLayout, S
 
 	public void toggleExtra() {
 		if (extra == null) {
-			Block selectedBlock = getSelectedBlock();
+			final BlockReference<?> selectedBlock = getSelectedBlock();
 			if (selectedBlock != null) {
-				extra = selectedBlock.getExtraMenu();
+				extra = selectedBlock.get().getExtraMenu();
 				extra.open();
 			}
 		} else {

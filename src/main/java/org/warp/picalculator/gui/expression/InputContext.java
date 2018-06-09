@@ -11,8 +11,9 @@ public class InputContext {
 	public BlockVariable variableTypeDirtyID = null;
 
 	public InputContext() {
-		this.variableTypes = new HashMap<>();
-		this.variableTypes.put(MathematicalSymbols.PI, V_TYPE.CONSTANT);
+		variableTypes = new HashMap<>();
+		variableTypes.put(MathematicalSymbols.PI, V_TYPE.CONSTANT);
+		variableTypes.put(MathematicalSymbols.EULER_NUMBER, V_TYPE.CONSTANT);
 	}
 
 	public InputContext(HashMap<Character, V_TYPE> variableTypes) {

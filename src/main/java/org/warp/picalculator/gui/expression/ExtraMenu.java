@@ -30,8 +30,8 @@ public abstract class ExtraMenu<T extends Block> implements Serializable, Keyboa
 	public abstract void close();
 
 	public boolean beforeRender(float delta, Caret caret) {
-		int[] l = caret.getLastLocation();
-		int[] cs = caret.getLastSize();
+		final int[] l = caret.getLastLocation();
+		final int[] cs = caret.getLastSize();
 		location[0] = l[0] - block.getWidth() / 2 - width / 2;
 		location[1] = l[1] + cs[1];
 		return false;

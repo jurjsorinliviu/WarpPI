@@ -10,10 +10,19 @@ public class StaticVars {
 	public static int[] screenPos = new int[] { 0, 0 };
 	public static final int[] screenSize = new int[] { 480, 320 };
 	public static boolean debugOn;
-	public static int outputLevel = 5;
+	public static int outputLevel = 0;
 	public static boolean debugWindow2x = false;
-	
+	public static float windowZoom = 2;
+
 	private StaticVars() {
-		
+
+	}
+
+	public static float getCurrentZoomValue() {
+		if (StaticVars.debugOn & StaticVars.debugWindow2x) {
+			return 2;
+		} else {
+			return StaticVars.windowZoom;
+		}
 	}
 }

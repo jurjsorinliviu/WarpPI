@@ -23,8 +23,13 @@ public class CPUSkin implements Skin {
 	@Override
 	public void load(String file) throws IOException {
 		final BufferedImage img = ImageIO.read(isResource ? this.getClass().getResource("/" + file) : new File(file).toURI().toURL());
-		skinData = getMatrixOfImage(img);
-		skinSize = new int[] { img.getWidth(), img.getHeight() };
+		if (img == null) {
+			skinData = new int[0];
+			skinSize = new int[] { 0, 0 };
+		} else {
+			skinData = getMatrixOfImage(img);
+			skinSize = new int[] { img.getWidth(), img.getHeight() };
+		}
 	}
 
 	public static int[] getMatrixOfImage(BufferedImage bufferedImage) {
@@ -56,6 +61,16 @@ public class CPUSkin implements Skin {
 	@Override
 	public boolean isInitialized() {
 		return true;
+	}
+
+	@Override
+	public int getSkinWidth() {
+		return skinSize[0];
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return skinSize[1];
 	}
 
 }

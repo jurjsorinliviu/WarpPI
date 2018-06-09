@@ -7,7 +7,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.lang.ref.WeakReference;
@@ -16,9 +15,18 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
@@ -45,61 +53,17 @@ public class Utils {
 
 	public static final int scale = 24;
 	public static final int displayScale = 8;
+	public static final BigInteger maxFactor = BigInteger.valueOf(1000000L);
 
 	public static final int scaleMode = BigDecimal.ROUND_HALF_UP;
 	public static final RoundingMode scaleMode2 = RoundingMode.HALF_UP;
 
-	public static AdvancedOutputStream out = new AdvancedOutputStream();
-
-	public static final int OUTPUTLEVEL_NODEBUG = 0;
-	public static final int OUTPUTLEVEL_DEBUG_MIN = 1;
-	public static final int OUTPUTLEVEL_DEBUG_MAX = 4;
 	public static boolean debugThirdScreen;
 	public static boolean headlessOverride = false;
-	private static String OS = System.getProperty("os.name").toLowerCase();
 	public static String forceEngine;
 	public static boolean msDosMode;
-
-	public static final class AdvancedOutputStream extends StringWriter {
-
-		public void println(String str) {
-			println(0, str);
-		}
-
-		public void println(int level) {
-			if (StaticVars.outputLevel >= level) {
-				if (StaticVars.outputLevel == 0) {
-					System.out.println();
-				} else {
-					System.err.println();
-				}
-			}
-		}
-
-		public void println(int level, String str) {
-			if (StaticVars.outputLevel >= level) {
-				if (StaticVars.outputLevel == 0) {
-					System.out.println(str);
-				} else {
-					System.err.println(str);
-				}
-			}
-		}
-
-		public void print(int level, String str) {
-			if (StaticVars.outputLevel >= level) {
-				if (StaticVars.outputLevel == 0) {
-					System.out.print(str);
-				} else {
-					System.err.print(str);
-				}
-			}
-		}
-
-		int before = 0;
-		boolean due = false;
-
-	}
+	public static boolean debugCache;
+	public static boolean newtMode = true;
 
 	public static boolean isInArray(String ch, String[] a) {
 		boolean contains = false;
@@ -538,15 +502,6 @@ public class Utils {
 		return realbytes;
 	}
 
-	public static boolean allSolved(List<Function> expressions) throws Error, InterruptedException {
-		for (final Function itm : expressions) {
-			if (itm.isSimplified() == false) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public static Function[][] joinFunctionsResults(List<Function> l1, List<Function> l2) {
 		final int size1 = l1.size();
 		final int size2 = l2.size();
@@ -698,7 +653,7 @@ public class Utils {
 	}
 
 	public static boolean isRunningOnRaspberry() {
-		if (System.getProperty("os.name").equals("Linux")) {
+		if (PlatformUtils.osName.equals("Linux")) {
 			final File file = new File("/etc", "os-release");
 			try (FileInputStream fis = new FileInputStream(file); BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fis))) {
 				String string;
@@ -717,26 +672,7 @@ public class Utils {
 	}
 
 	public static boolean isWindows() {
-		return (OS.indexOf("win") >= 0);
-	}
-
-	public static LinkedList<BigInteger> mcm(LinkedList<BigInteger> factors1, LinkedList<BigInteger> factors2) {
-		LinkedList<BigInteger> mcm = new LinkedList<>();
-		Iterator<BigInteger> i1 = factors1.iterator();
-		while(i1.hasNext()) {
-			BigInteger int1 = i1.next();
-			Iterator<BigInteger> i2 = factors2.iterator();
-			while(i2.hasNext()) {
-				BigInteger int2 = i2.next();
-				if (int1.equals(int2)) {
-					i1.remove();
-					i2.remove();
-					mcm.add(int1);
-					break;
-				}
-			}
-		}
-		return mcm;
+		return (PlatformUtils.osName.indexOf("win") >= 0);
 	}
 
 	public static void gc() {
@@ -746,5 +682,79 @@ public class Utils {
 		while (ref.get() != null) {
 			System.gc();
 		}
+	}
+
+	public static <T> ObjectArrayList<T> newArrayList(T o) {
+		final ObjectArrayList<T> t = new ObjectArrayList<>();
+		t.add(o);
+		return t;
+	}
+
+	public static Path getResource(String string) throws IOException, URISyntaxException {
+		final URL res = Main.instance.getClass().getResource(string);
+		final boolean isResource = res != null;
+		if (isResource) {
+			try {
+				final URI uri = res.toURI();
+				if (res.getProtocol().equalsIgnoreCase("jar")) {
+					try {
+						FileSystems.newFileSystem(uri, Collections.emptyMap());
+					} catch (final FileSystemAlreadyExistsException e) {
+						FileSystems.getFileSystem(uri);
+					}
+					final Path myFolderPath = Paths.get(uri);
+					return myFolderPath;
+				} else {
+					return Paths.get(uri);
+				}
+			} catch (final java.lang.IllegalArgumentException e) {
+				throw e;
+			}
+		} else {
+			return Paths.get(string.substring(1));
+		}
+	}
+
+	public static InputStream getResourceStreamSafe(String string) throws IOException, URISyntaxException {
+		try {
+			return getResourceStream(string);
+		} catch (final Exception ex) {
+			return null;
+		}
+	}
+
+	public static InputStream getResourceStream(String string) throws IOException, URISyntaxException {
+		final URL res = Main.instance.getClass().getResource(string);
+		final boolean isResource = res != null;
+		if (isResource) {
+			try {
+				final URI uri = res.toURI();
+				if (res.getProtocol().equalsIgnoreCase("jar")) {
+					try {
+						FileSystems.newFileSystem(uri, Collections.emptyMap());
+					} catch (final FileSystemAlreadyExistsException e) {
+						FileSystems.getFileSystem(uri);
+					}
+					final Path myFolderPath = Paths.get(uri);
+					return Files.newInputStream(myFolderPath);
+				} else {
+					return Files.newInputStream(Paths.get(uri));
+				}
+			} catch (final java.lang.IllegalArgumentException e) {
+				throw e;
+			}
+		} else {
+			return Files.newInputStream(Paths.get(string.substring(1)));
+		}
+	}
+
+	public static String read(InputStream input) throws IOException {
+		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
+			return buffer.lines().collect(Collectors.joining("\n"));
+		}
+	}
+
+	public static Path getJarDirectory() {
+		return Paths.get("").toAbsolutePath();
 	}
 }

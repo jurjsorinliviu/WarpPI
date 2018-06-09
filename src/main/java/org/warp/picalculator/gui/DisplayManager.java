@@ -1,26 +1,24 @@
 package org.warp.picalculator.gui;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+import org.warp.picalculator.ConsoleUtils;
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.deps.DEngine;
+import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
-import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
-import org.warp.picalculator.gui.graphicengine.framebuffer.FBEngine;
-import org.warp.picalculator.gui.graphicengine.gpu.GPUEngine;
-import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitEngine;
-import org.warp.picalculator.gui.graphicengine.headless256.Headless256Engine;
-import org.warp.picalculator.gui.graphicengine.headless8.Headless8Engine;
+import org.warp.picalculator.gui.graphicengine.nogui.NoGuiEngine;
 import org.warp.picalculator.gui.screens.Screen;
-
-import com.pi4j.wiringpi.Gpio;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -29,6 +27,7 @@ public final class DisplayManager implements RenderingLoop {
 	private float brightness;
 
 	public final GraphicEngine engine;
+	public final HardwareDisplay monitor;
 	public final boolean supportsPauses;
 	public Renderer renderer;
 
@@ -40,19 +39,45 @@ public final class DisplayManager implements RenderingLoop {
 	public final int[] glyphsHeight;
 
 	private Screen screen;
+	private final HUD hud;
 	public Semaphore screenChange = new Semaphore(0);
 	public String displayDebugString;
 	public ObjectArrayList<GUIErrorMessage> errorMessages;
 
-	public DisplayManager(Screen screen) {
+	public DisplayManager(HardwareDisplay monitor, HUD hud, Screen screen, String title) {
 		INSTANCE = this;
 		engine = chooseGraphicEngine();
 		supportsPauses = engine.doesRefreshPauses();
+
+		this.monitor = monitor;
+		this.hud = hud;
+
+		monitor.initialize();
 		glyphsHeight = new int[] { 9, 6, 12, 9 };
 		displayDebugString = "";
 		errorMessages = new ObjectArrayList<>();
+
+		try {
+			hud.d = this;
+			hud.create();
+			if (!hud.initialized) {
+				hud.initialize();
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+			DSystem.exit(0);
+		}
+
 		setScreen(screen);
-		loop();
+		try {
+			engine.create();
+			renderer = engine.getRenderer();
+			engine.setTitle(title);
+			loop();
+		} catch (final Exception ex) {
+			ex.printStackTrace();
+		}
+		monitor.shutdown();
 	}
 	/*
 	 * private void load_skin() {
@@ -85,34 +110,39 @@ public final class DisplayManager implements RenderingLoop {
 
 	private GraphicEngine chooseGraphicEngine() {
 		GraphicEngine d;
+		d = new NoGuiEngine();
+		if (d.isSupported()) {
+			ConsoleUtils.out.println(1, "Using NoGui Graphic Engine");
+			return d;
+		}
 		if (!StaticVars.debugOn) {
-			d = new FBEngine();
+			d = DEngine.newFBEngine();
 			if (d.isSupported()) {
-				Utils.out.println(1, "Using FB Graphic Engine");
+				ConsoleUtils.out.println(1, "Using FB Graphic Engine");
 				return d;
 			}
 		}
-		d = new GPUEngine();
+		d = DEngine.newGPUEngine();
 		if (d.isSupported()) {
-			Utils.out.println(1, "Using GPU Graphic Engine");
+			ConsoleUtils.out.println(1, "Using GPU Graphic Engine");
 			return d;
 		}
-		d = new CPUEngine();
+		d = DEngine.newCPUEngine();
 		if (d.isSupported()) {
-			Utils.out.println(1, "Using CPU Graphic Engine");
+			ConsoleUtils.out.println(1, "Using CPU Graphic Engine");
 			return d;
 		}
-		d = new Headless24bitEngine();
+		d = DEngine.newHeadless24bitEngine();
 		if (d.isSupported()) {
 			System.err.println("Using Headless 24 bit Engine! This is a problem! No other graphic engines are available.");
 			return d;
 		}
-		d = new Headless256Engine();
+		d = DEngine.newHeadless256Engine();
 		if (d.isSupported()) {
 			System.err.println("Using Headless 256 Engine! This is a problem! No other graphic engines are available.");
 			return d;
 		}
-		d = new Headless8Engine();
+		d = DEngine.newHeadless8Engine();
 		if (d.isSupported()) {
 			System.err.println("Using Headless basic Engine! This is a problem! No other graphic engines are available.");
 			return d;
@@ -123,6 +153,10 @@ public final class DisplayManager implements RenderingLoop {
 	public void setScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
+				if (DisplayManager.INSTANCE.currentSession > 0) {
+					final int sl = DisplayManager.INSTANCE.sessions.length + 5; //TODO: I don't know why if i don't add +5 or more some items disappear
+					DisplayManager.INSTANCE.sessions = Arrays.copyOfRange(DisplayManager.INSTANCE.sessions, DisplayManager.INSTANCE.currentSession, sl);
+				}
 				DisplayManager.INSTANCE.currentSession = 0;
 				for (int i = DisplayManager.INSTANCE.sessions.length - 1; i >= 1; i--) {
 					DisplayManager.INSTANCE.sessions[i] = DisplayManager.INSTANCE.sessions[i - 1];
@@ -142,7 +176,7 @@ public final class DisplayManager implements RenderingLoop {
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.exit(0);
+			DSystem.exit(0);
 		}
 	}
 
@@ -167,7 +201,7 @@ public final class DisplayManager implements RenderingLoop {
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
-			System.exit(0);
+			DSystem.exit(0);
 		}
 	}
 
@@ -236,7 +270,11 @@ public final class DisplayManager implements RenderingLoop {
 	}
 
 	public Screen getScreen() {
-		return DisplayManager.INSTANCE.screen;
+		return screen;
+	}
+
+	public HUD getHUD() {
+		return hud;
 	}
 
 	private void load_skin() throws IOException {
@@ -255,8 +293,8 @@ public final class DisplayManager implements RenderingLoop {
 
 	private void draw_init() {
 		if (engine.supportsFontRegistering()) {
-			List<BinaryFont> fontsIterator = engine.getRegisteredFonts();
-			for (BinaryFont f : fontsIterator) {
+			final List<BinaryFont> fontsIterator = engine.getRegisteredFonts();
+			for (final BinaryFont f : fontsIterator) {
 				if (!f.isInitialized()) {
 					f.initialize(engine);
 				}
@@ -265,100 +303,14 @@ public final class DisplayManager implements RenderingLoop {
 		renderer.glClear(engine.getWidth(), engine.getHeight());
 	}
 
-	private void draw_status() {
-		renderer.glColor(0xFFc5c2af);
-		renderer.glFillColor(0, 0, engine.getWidth(), 20);
-		renderer.glColor3i(0, 0, 0);
-		renderer.glDrawLine(0, 20, engine.getWidth() - 1, 20);
-		renderer.glColor3i(255, 255, 255);
-		guiSkin.use(engine);
-		if (Keyboard.shift) {
-			renderer.glFillRect(2 + 18 * 0, 2, 16, 16, 16 * 2, 16 * 0, 16, 16);
-		} else {
-			renderer.glFillRect(2 + 18 * 0, 2, 16, 16, 16 * 3, 16 * 0, 16, 16);
-		}
-		if (Keyboard.alpha) {
-			renderer.glFillRect(2 + 18 * 1, 2, 16, 16, 16 * 0, 16 * 0, 16, 16);
-		} else {
-			renderer.glFillRect(2 + 18 * 1, 2, 16, 16, 16 * 1, 16 * 0, 16, 16);
-		}
-		/*
-		if (Calculator.angleMode == AngleMode.DEG) {
-			drawSkinPart(8 + 18 * 2, 2, 16 * 4, 16 * 0, 16 + 16 * 4, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 3, 2, 16 * 7, 16 * 0, 16 + 16 * 7, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 4, 2, 16 * 9, 16 * 0, 16 + 16 * 9, 16 + 16 * 0);
-		} else if (Calculator.angleMode == AngleMode.RAD) {
-			drawSkinPart(8 + 18 * 2, 2, 16 * 5, 16 * 0, 16 + 16 * 5, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 3, 2, 16 * 6, 16 * 0, 16 + 16 * 6, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 4, 2, 16 * 9, 16 * 0, 16 + 16 * 9, 16 + 16 * 0);
-		} else if (Calculator.angleMode == AngleMode.GRA) {
-			drawSkinPart(8 + 18 * 2, 2, 16 * 5, 16 * 0, 16 + 16 * 5, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 3, 2, 16 * 7, 16 * 0, 16 + 16 * 7, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 4, 2, 16 * 8, 16 * 0, 16 + 16 * 8, 16 + 16 * 0);
-		} else {
-			drawSkinPart(8 + 18 * 2, 2, 16 * 5, 16 * 0, 16 + 16 * 5, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 3, 2, 16 * 7, 16 * 0, 16 + 16 * 7, 16 + 16 * 0);
-			drawSkinPart(8 + 18 * 4, 2, 16 * 9, 16 * 0, 16 + 16 * 9, 16 + 16 * 0);
-		}*/
-
-		int padding = 2;
-
-		final int brightness = (int) (Math.ceil(DisplayManager.INSTANCE.brightness * 9));
-		if (brightness <= 10) {
-			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * brightness, 16 * 1, 16, 16);
-		} else {
-			Utils.out.println(1, "Brightness error");
-		}
-
-		padding += 18 + 6;
-
-		final boolean canGoBack = canGoBack();
-		final boolean canGoForward = canGoForward();
-
-		if (StaticVars.haxMode) {
-			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 18, 16 * 0, 16, 16);
-			padding += 18 + 6;
-		}
-
-		if (canGoBack && canGoForward) {
-			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 14, 16 * 0, 16, 16);
-		} else if (canGoBack) {
-			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 15, 16 * 0, 16, 16);
-		} else if (canGoForward) {
-			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 16, 16 * 0, 16, 16);
-		} else {
-			renderer.glFillRect(StaticVars.screenSize[0] - (padding + 16), 2, 16, 16, 16 * 17, 16 * 0, 16, 16);
-		}
-
-		padding += 18;
-
-		screen.renderStatusbar();
-	}
-
-	private void draw_screen() {
-		screen.render();
-	}
-
-	private void draw_bottom() {
-		renderer.glDrawStringLeft(2, 90, displayDebugString);
-
-		Utils.getFont(true, false).use(DisplayManager.INSTANCE.engine);
-		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 40);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, StaticVars.screenSize[1] - 7 - 7 + 1, "WORK IN");
-		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 80);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, StaticVars.screenSize[1] - 7 - 7, "WORK IN");
-		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 40);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1 + 1, StaticVars.screenSize[1] - 7 + 1, "PROGRESS.");
-		DisplayManager.INSTANCE.renderer.glColor4i(255, 0, 0, 80);
-		DisplayManager.INSTANCE.renderer.glDrawStringLeft(1, StaticVars.screenSize[1] - 7, "PROGRESS.");
-	}
-
 	private void draw_world() {
 		renderer.glColor3i(255, 255, 255);
 
 		if (error != null) {
-			BinaryFont fnt = Utils.getFont(false, false);
-			fnt.use(engine);
+			final BinaryFont fnt = Utils.getFont(false, false);
+			if (fnt != null && fnt != engine.getRenderer().getCurrentFont()) {
+				fnt.use(engine);
+			}
 			renderer.glColor3i(129, 28, 22);
 			renderer.glDrawStringRight(StaticVars.screenSize[0] - 2, StaticVars.screenSize[1] - (fnt.getCharacterHeight() + 2), StaticVars.calculatorNameUPPER + " CALCULATOR");
 			renderer.glColor3i(149, 32, 26);
@@ -369,14 +321,21 @@ public final class DisplayManager implements RenderingLoop {
 				renderer.glDrawStringLeft(2, 22 + i, stackPart);
 				i += 11;
 			}
-			fonts[0].use(engine);
+			if (fonts[0] != null && fonts[0] != engine.getRenderer().getCurrentFont()) {
+				fonts[0].use(engine);
+			}
 			renderer.glColor3i(129, 28, 22);
 			renderer.glDrawStringCenter((StaticVars.screenSize[0] / 2), 11, "UNEXPECTED EXCEPTION");
 		} else {
-			fonts[0].use(engine);
-			draw_screen();
-			draw_status();
-			draw_bottom();
+			if (fonts[0] != null && fonts[0] != engine.getRenderer().getCurrentFont()) {
+				fonts[0].use(engine);
+			}
+			hud.renderBackground();
+			screen.render();
+			hud.render();
+			hud.renderTopmostBackground();
+			screen.renderTopmost();
+			hud.renderTopmost();
 		}
 	}
 
@@ -404,9 +363,6 @@ public final class DisplayManager implements RenderingLoop {
 
 	public void loop() {
 		try {
-			engine.create();
-			renderer = engine.getRenderer();
-
 			load_skin();
 			load_fonts();
 
@@ -414,7 +370,7 @@ public final class DisplayManager implements RenderingLoop {
 				screen.initialize();
 			} catch (final Exception e) {
 				e.printStackTrace();
-				System.exit(0);
+				DSystem.exit(0);
 			}
 
 			//Working thread
@@ -491,8 +447,8 @@ public final class DisplayManager implements RenderingLoop {
 					e.printStackTrace();
 				}
 			});
-			workThread.setDaemon(true);
-			workThread.setName("Work thread");
+			PlatformUtils.setDaemon(workThread);
+			PlatformUtils.setThreadName(workThread, "Work thread");
 			workThread.start();
 
 			engine.start(getDrawable());
@@ -508,12 +464,7 @@ public final class DisplayManager implements RenderingLoop {
 	public void setBrightness(float newval) {
 		if (newval >= 0 && newval <= 1) {
 			brightness = newval;
-			if (StaticVars.debugOn == false) {
-				Gpio.pwmWrite(12, (int) Math.ceil(brightness * 1024f));
-//				SoftPwm.softPwmWrite(12, (int)(Math.ceil(brightness*10)));
-			} else {
-				Utils.out.println(1, "Brightness: " + newval);
-			}
+			monitor.setBrightness(brightness);
 		}
 	}
 

@@ -1,7 +1,9 @@
 package org.warp.picalculator.math;
 
 import org.warp.picalculator.Error;
+import org.warp.picalculator.Errors;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -113,68 +115,61 @@ public abstract class FunctionOperator implements Function {
 	}
 
 	@Override
-	public boolean isSimplified() throws InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
-		return (parameter1.isSimplified() & parameter2.isSimplified()) ? !isSolvable() : false;
-	}
+	public final ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
 
-	/**
-	 * The current simplification status of this function, assuming that its
-	 * children are already simplified.
-	 * 
-	 * @return <strong>true</strong> if this function can be solved, otherwise
-	 *         <strong>false</strong>.
-	 * @throws InterruptedException 
-	 */
-	protected abstract boolean isSolvable() throws InterruptedException;
-
-	@Override
-	public final ObjectArrayList<Function> simplify() throws Error, InterruptedException {
-		if (Thread.interrupted()) throw new InterruptedException();
-		final boolean solved = parameter1.isSimplified() & parameter2.isSimplified();
-		if (Thread.interrupted()) throw new InterruptedException();
-		ObjectArrayList<Function> result = solved ? solve() : null;;
-
-		if (result == null || result.isEmpty()) {
-			result = new ObjectArrayList<>();
-
-			final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
-			final ObjectArrayList<Function> l2 = new ObjectArrayList<>();
-			if (Thread.interrupted()) throw new InterruptedException();
-			if (parameter1.isSimplified()) {
-				l1.add(parameter1);
-			} else {
-				if (Thread.interrupted()) throw new InterruptedException();
-				l1.addAll(parameter1.simplify());
+		final ObjectArrayList<Function> simplifiedParam1 = parameter1.simplify(rule);
+		final ObjectArrayList<Function> simplifiedParam2 = parameter2.simplify(rule);
+		try {
+			if (simplifiedParam1 == null & simplifiedParam2 == null) {
+				return rule.execute(this);
 			}
-			if (Thread.interrupted()) throw new InterruptedException();
-			if (parameter2.isSimplified()) {
-				l2.add(parameter2);
-			} else {
-				if (Thread.interrupted()) throw new InterruptedException();
-				l2.addAll(parameter2.simplify());
-			}
+		} catch (final Exception e) {
+			final Error err = new Error(Errors.ERROR, "Error while executing rule '" + rule.getRuleName() + "'!\n" + e.getMessage());
+			err.initCause(e);
+			throw err;
+		}
 
-			final Function[][] results = Utils.joinFunctionsResults(l1, l2);
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 
-			for (final Function[] f : results) {
-				result.add(setParameter1(f[0]).setParameter2(f[1]));
+		final ObjectArrayList<Function> l1 = new ObjectArrayList<>();
+		final ObjectArrayList<Function> l2 = new ObjectArrayList<>();
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
+		if (simplifiedParam1 == null) {
+			l1.add(parameter1);
+		} else {
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
 			}
+			l1.addAll(simplifiedParam1);
+		}
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
+		}
+		if (simplifiedParam2 == null) {
+			l2.add(parameter2);
+		} else {
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
+			}
+			l2.addAll(simplifiedParam2);
+		}
+
+		final Function[][] results = Utils.joinFunctionsResults(l1, l2);
+
+		for (final Function[] f : results) {
+			result.add(setParameter1(f[0]).setParameter2(f[1]));
 		}
 
 		return result;
 	}
-
-	/**
-	 * Solves only this function, assuming that its children are already
-	 * simplified and it can be solved.
-	 * 
-	 * @return The solved function.
-	 * @throws Error
-	 *             Errors during computation, like a/0 or similar.
-	 * @throws InterruptedException 
-	 */
-	protected abstract ObjectArrayList<Function> solve() throws Error, InterruptedException;
 
 	@Override
 	public abstract FunctionOperator clone();
@@ -189,6 +184,6 @@ public abstract class FunctionOperator implements Function {
 
 	@Override
 	public String toString() {
-		return this.getClass().getSimpleName() + "(" + this.getParameter1() + "," + this.getParameter2() + ")";
+		return this.getClass().getSimpleName() + "(" + getParameter1() + "," + getParameter2() + ")";
 	}
 }

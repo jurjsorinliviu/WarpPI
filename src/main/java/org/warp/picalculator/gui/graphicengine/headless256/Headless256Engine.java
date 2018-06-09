@@ -7,15 +7,15 @@ import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.internal.WindowsSupport;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitRenderer;
 
 public class Headless256Engine implements org.warp.picalculator.gui.graphicengine.GraphicEngine {
 
-	private Headless256Renderer r = new Headless256Renderer();
+	private final Headless256Renderer r = new Headless256Renderer();
 	private boolean stopped = true;
 	private RenderingLoop renderLoop;
 	public static final int C_MUL_X = 4;//8;
@@ -66,7 +66,7 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 		if (Utils.isWindows() && !Utils.msDosMode) {
 			win = true;
 			WindowsSupport.setConsoleMode(0x0200);
-			Thread t = new Thread(() -> {
+			final Thread t = new Thread(() -> {
 				int ch = -1;
 				while (true) {
 					if (precKey != null) {
@@ -131,8 +131,9 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 			t.start();
 		}
 		stopped = false;
-		if (onInitialized != null)
+		if (onInitialized != null) {
 			onInitialized.run();
+		}
 	}
 
 	@Override
@@ -157,7 +158,7 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 
 	@Override
 	public void start(RenderingLoop d) {
-		this.renderLoop = d;
+		renderLoop = d;
 		final Thread th = new Thread(() -> {
 			try {
 				double extratime = 0;
@@ -207,7 +208,7 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 				curBgColor = r.bgColorMatrix[x + y * C_WIDTH];
 				curFgColor = r.fgColorMatrix[x + y * C_WIDTH];
 				if (precBgColor != curBgColor) {
-					String str = Headless256Renderer.ANSI_PREFIX + Headless256Renderer.ansiBgColorPrefix + curBgColor + Headless256Renderer.ansiColorSuffix;
+					final String str = Headless256Renderer.ANSI_PREFIX + Headless256Renderer.ansiBgColorPrefix + curBgColor + Headless256Renderer.ansiColorSuffix;
 					if (win) {
 						WindowsSupport.writeConsole(str);
 					} else {
@@ -215,7 +216,7 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 					}
 				}
 				if (precFgColor != curFgColor) {
-					String str = Headless256Renderer.ANSI_PREFIX + Headless256Renderer.ansiFgColorPrefix + curFgColor + Headless256Renderer.ansiColorSuffix;
+					final String str = Headless256Renderer.ANSI_PREFIX + Headless256Renderer.ansiFgColorPrefix + curFgColor + Headless256Renderer.ansiColorSuffix;
 					if (win) {
 						WindowsSupport.writeConsole(str);
 					} else {
@@ -223,7 +224,7 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 					}
 				}
 
-				String stri = r.charmatrix[x + y * C_WIDTH] + "";
+				final String stri = r.charmatrix[x + y * C_WIDTH] + "";
 				if (win) {
 					WindowsSupport.writeConsole(stri);
 				} else {
@@ -275,8 +276,9 @@ public class Headless256Engine implements org.warp.picalculator.gui.graphicengin
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.msDosMode || (Utils.forceEngine != null && Utils.forceEngine != "console-256"))
+		if (Utils.msDosMode || (Utils.forceEngine != null && Utils.forceEngine != "console-256")) {
 			return false;
+		}
 		return true;
 	}
 

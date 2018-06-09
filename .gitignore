@@ -4,15 +4,22 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+!/target/*.jar
 *.war
+*.jar
 *.ear
-Thumbs.db
-font_easter.png
-font_easter.rft
-font_fu32.rft
+*Thumbs.db
+font_gputest1.rft
+font_gputest12.rft
+font_gputest2.rft
+font_gputest3.png
+font_gputest4.png
+font_gputest4.xcf
+manager2/
+VBO_Example.java
 
 /target/
+!/target/*.jar
 /backups/
 /Resources_and_Videos/
 

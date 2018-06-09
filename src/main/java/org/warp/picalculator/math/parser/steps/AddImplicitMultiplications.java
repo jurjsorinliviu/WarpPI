@@ -2,7 +2,6 @@ package org.warp.picalculator.math.parser.steps;
 
 import org.warp.picalculator.IntegerObj;
 import org.warp.picalculator.math.Function;
-import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.functions.Multiplication;
 import org.warp.picalculator.math.parser.MathParserStep;
@@ -11,7 +10,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class AddImplicitMultiplications implements MathParserStep {
 
-	private MathContext context;
+	private final MathContext context;
 
 	public AddImplicitMultiplications(MathContext context) {
 		this.context = context;

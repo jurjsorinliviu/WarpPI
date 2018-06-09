@@ -22,9 +22,14 @@ public class Headless8Renderer implements Renderer {
 	public static final char FILL = Utils.msDosMode ? 0xDB : '█';
 
 	private int hexColor(int red, int green, int blue) {
-		int r1 = red, r2, g1 = green, g2, b1 = blue, b2;
+		final int r1 = red;
+		int r2;
+		final int g1 = green;
+		int g2;
+		final int b1 = blue;
+		int b2;
 
-		float[] match = new float[16];
+		final float[] match = new float[16];
 
 		// COLOR 
 		r2 = 0;
@@ -124,7 +129,7 @@ public class Headless8Renderer implements Renderer {
 
 		int minIndex = 0;
 		for (int i = 1; i < match.length; i++) {
-			float newnumber = match[i];
+			final float newnumber = match[i];
 			if ((newnumber < match[minIndex])) {
 				minIndex = i;
 			}
@@ -231,11 +236,11 @@ public class Headless8Renderer implements Renderer {
 		y1 /= Headless8Engine.C_MUL_Y;
 		y2 /= Headless8Engine.C_MUL_Y;
 
-		int dx = (int) Math.abs(x2 - x1);
-		int dy = (int) Math.abs(y2 - y1);
+		final int dx = (int) Math.abs(x2 - x1);
+		final int dy = (int) Math.abs(y2 - y1);
 
-		int sx = (x1 < x2) ? 1 : -1;
-		int sy = (y1 < y2) ? 1 : -1;
+		final int sx = (x1 < x2) ? 1 : -1;
+		final int sy = (y1 < y2) ? 1 : -1;
 
 		int err = dx - dy;
 
@@ -243,7 +248,7 @@ public class Headless8Renderer implements Renderer {
 			if (((int) x1) >= Headless8Engine.C_WIDTH || ((int) y1) >= Headless8Engine.C_HEIGHT || ((int) x2) >= Headless8Engine.C_WIDTH || ((int) y2) >= Headless8Engine.C_HEIGHT) {
 				break;
 			}
-			int precBG = colorMatrix[((int) x1) + ((int) y1) * Headless8Engine.C_WIDTH] & 0xF0;
+			final int precBG = colorMatrix[((int) x1) + ((int) y1) * Headless8Engine.C_WIDTH] & 0xF0;
 			colorMatrix[((int) x1) + ((int) y1) * Headless8Engine.C_WIDTH] = precBG | curColor;
 			charmatrix[((int) x1) + ((int) y1) * Headless8Engine.C_WIDTH] = FILL;
 
@@ -251,7 +256,7 @@ public class Headless8Renderer implements Renderer {
 				break;
 			}
 
-			int e2 = 2 * err;
+			final int e2 = 2 * err;
 
 			if (e2 > -dy) {
 				err = err - dy;
@@ -300,7 +305,7 @@ public class Headless8Renderer implements Renderer {
 		final int sizeW = Headless8Engine.C_WIDTH;
 		for (int px = ix; px < x1; px++) {
 			for (int py = iy; py < y1; py++) {
-				int precBG = colorMatrix[(px) + (py) * sizeW] & 0xF0;
+				final int precBG = colorMatrix[(px) + (py) * sizeW] & 0xF0;
 				colorMatrix[(px) + (py) * sizeW] = precBG | color;
 				charmatrix[(px) + (py) * sizeW] = character;
 			}
@@ -309,13 +314,13 @@ public class Headless8Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharLeft(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless8Engine.C_MUL_X;
-		final int cy = ((int) y) / Headless8Engine.C_MUL_Y;
+		final int cx = (x) / Headless8Engine.C_MUL_X;
+		final int cy = (y) / Headless8Engine.C_MUL_Y;
 		if (cx >= Headless8Engine.C_WIDTH || cy >= Headless8Engine.C_HEIGHT) {
 			return;
 		}
 		charmatrix[cx + cy * Headless8Engine.C_WIDTH] = ch;
-		int precBG = colorMatrix[cx + cy * Headless8Engine.C_WIDTH] & 0xF0;
+		final int precBG = colorMatrix[cx + cy * Headless8Engine.C_WIDTH] & 0xF0;
 		colorMatrix[cx + cy * Headless8Engine.C_WIDTH] = precBG | curColor;
 	}
 
@@ -326,13 +331,13 @@ public class Headless8Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharRight(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless8Engine.C_MUL_X - 1;
-		final int cy = ((int) y) / Headless8Engine.C_MUL_Y;
+		final int cx = (x) / Headless8Engine.C_MUL_X - 1;
+		final int cy = (y) / Headless8Engine.C_MUL_Y;
 		if (cx >= Headless8Engine.C_WIDTH || cy >= Headless8Engine.C_HEIGHT) {
 			return;
 		}
 		charmatrix[cx + cy * Headless8Engine.C_WIDTH] = ch;
-		int precBG = colorMatrix[cx + cy * Headless8Engine.C_WIDTH] & 0xF0;
+		final int precBG = colorMatrix[cx + cy * Headless8Engine.C_WIDTH] & 0xF0;
 		colorMatrix[cx + cy * Headless8Engine.C_WIDTH] = precBG | curColor;
 	}
 
@@ -341,12 +346,12 @@ public class Headless8Renderer implements Renderer {
 		final int cx = ((int) x) / Headless8Engine.C_MUL_X;
 		final int cy = ((int) y) / Headless8Engine.C_MUL_Y;
 		int i = 0;
-		for (char c : text.toCharArray()) {
+		for (final char c : text.toCharArray()) {
 			if (cx + i >= Headless8Engine.C_WIDTH || cy >= Headless8Engine.C_HEIGHT) {
 				break;
 			}
 			charmatrix[cx + i + cy * Headless8Engine.C_WIDTH] = c;
-			int precBG = colorMatrix[cx + i + cy * Headless8Engine.C_WIDTH] & 0xF0;
+			final int precBG = colorMatrix[cx + i + cy * Headless8Engine.C_WIDTH] & 0xF0;
 			colorMatrix[cx + i + cy * Headless8Engine.C_WIDTH] = precBG | curColor;
 			i++;
 		}
@@ -357,12 +362,12 @@ public class Headless8Renderer implements Renderer {
 		final int cx = ((int) x) / Headless8Engine.C_MUL_X - text.length() / 2;
 		final int cy = ((int) y) / Headless8Engine.C_MUL_Y;
 		int i = 0;
-		for (char c : text.toCharArray()) {
+		for (final char c : text.toCharArray()) {
 			if (cx + i >= Headless8Engine.C_WIDTH || cy >= Headless8Engine.C_HEIGHT) {
 				break;
 			}
 			charmatrix[cx + i + cy * Headless8Engine.C_WIDTH] = c;
-			int precBG = colorMatrix[cx + i + cy * Headless8Engine.C_WIDTH] & 0xF0;
+			final int precBG = colorMatrix[cx + i + cy * Headless8Engine.C_WIDTH] & 0xF0;
 			colorMatrix[cx + i + cy * Headless8Engine.C_WIDTH] = precBG | curColor;
 			i++;
 		}
@@ -438,7 +443,7 @@ public class Headless8Renderer implements Renderer {
 							final int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
 							newColor = 0xFF000000 | r << 16 | g << 8 | b;
 						}
-						int bgColor = colorMatrix[pixelX + pixelY * Headless8Engine.C_WIDTH] & 0xF0;
+						final int bgColor = colorMatrix[pixelX + pixelY * Headless8Engine.C_WIDTH] & 0xF0;
 						colorMatrix[pixelX + pixelY * Headless8Engine.C_WIDTH] = bgColor | hexColor(newColor >> 16 & 0xFF, newColor >> 8 & 0xFF, newColor & 0xFF);
 						charmatrix[pixelX + pixelY * Headless8Engine.C_WIDTH] = FILL;
 					}

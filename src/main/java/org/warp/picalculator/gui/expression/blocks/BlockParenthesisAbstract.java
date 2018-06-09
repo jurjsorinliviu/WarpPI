@@ -27,13 +27,13 @@ public abstract class BlockParenthesisAbstract extends Block {
 
 	public BlockParenthesisAbstract() {
 		containerNumber = new BlockContainer(false);
-		this.prefix = null;
+		prefix = null;
 		recomputeDimensions();
 	}
 
 	public BlockParenthesisAbstract(ObjectArrayList<Block> blocks) {
 		containerNumber = new BlockContainer(false, blocks);
-		this.prefix = null;
+		prefix = null;
 		recomputeDimensions();
 	}
 
@@ -79,7 +79,7 @@ public abstract class BlockParenthesisAbstract extends Block {
 	}
 
 	@Override
-	public Block getBlock(Caret caret) {
+	public BlockReference<?> getBlock(Caret caret) {
 		return containerNumber.getBlock(caret);
 	}
 
@@ -113,6 +113,7 @@ public abstract class BlockParenthesisAbstract extends Block {
 		return containerNumber.computeCaretMaxBound();
 	}
 
+	@Override
 	public abstract Feature toFeature(MathContext context) throws Error;
 
 }

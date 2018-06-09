@@ -29,8 +29,8 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import org.warp.picalculator.StaticVars;
+import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.Keyboard.Key;
 import org.warp.picalculator.gui.DisplayManager;
 
 import com.jogamp.newt.event.KeyEvent;
@@ -49,22 +49,26 @@ import com.jogamp.opengl.fixedfunc.GLLightingFunc;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.fixedfunc.GLPointerFunc;
 import com.jogamp.opengl.util.Animator;
+import com.jogamp.opengl.util.texture.Texture;
 
 /**
  *
  * @author Xerxes Rånby (xranby)
- * @author Andrea Cavalli (XDRake99)
+ * @author Andrea Cavalli (@Cavallium)
  */
 
 class NEWTWindow implements GLEventListener {
 
 	private final GPUEngine disp;
 	private final GPURenderer renderer;
+	public float windowZoom;
+	public int[] realWindowSize;
 	public Runnable onInitialized;
 
 	public NEWTWindow(GPUEngine disp) {
 		this.disp = disp;
 		renderer = disp.getRenderer();
+		realWindowSize = new int[] { 1, 1 };
 	}
 
 	public GLWindow window;
@@ -82,12 +86,14 @@ class NEWTWindow implements GLEventListener {
 		final GLCapabilities caps = new GLCapabilities(GLProfile.get(GLProfile.GL2ES1));
 		System.out.println("Loaded OpenGL");
 		// We may at this point tweak the caps and request a translucent drawable
+		caps.setHardwareAccelerated(true);
 		caps.setBackgroundOpaque(true); //transparency window
-		caps.setSampleBuffers(false);
+//		caps.setSampleBuffers(true);
+//		caps.setNumSamples(4);
 		final GLWindow glWindow = GLWindow.create(caps);
 		window = glWindow;
 
-		glWindow.setTitle("WarpPI Calculator by Andrea Cavalli (XDrake99)");
+		glWindow.setTitle("WarpPI Calculator by Andrea Cavalli (@Cavallium)");
 
 		glWindow.addWindowListener(new WindowListener() {
 
@@ -142,7 +148,7 @@ class NEWTWindow implements GLEventListener {
 			public void keyReleased(KeyEvent arg0) {
 				switch (arg0.getKeyCode()) {
 					case KeyEvent.VK_ESCAPE:
-						Keyboard.keyReleased(Key.POWER);
+						Keyboard.keyReleased(Key.POWEROFF);
 						break;
 					case KeyEvent.VK_D:
 						Keyboard.keyReleased(Key.debug_DEG);
@@ -173,7 +179,7 @@ class NEWTWindow implements GLEventListener {
 						} else if (!Keyboard.shift && !Keyboard.alpha) {
 							Keyboard.keyReleased(Key.BRIGHTNESS_CYCLE);
 						} else {
-							Keyboard.keyReleased(Key.NONE);
+							Keyboard.keyReleased(Key.ZOOM_MODE);
 						}
 						break;
 					case KeyEvent.VK_ENTER:
@@ -283,8 +289,13 @@ class NEWTWindow implements GLEventListener {
 	public void init(GLAutoDrawable drawable) {
 		final GL2ES1 gl = drawable.getGL().getGL2ES1();
 
-		//Vsync
-		gl.setSwapInterval(2);
+		if (StaticVars.debugOn) {
+			//Vsync
+			gl.setSwapInterval(1);
+		} else {
+			//Vsync
+			gl.setSwapInterval(2);
+		}
 
 		//Textures
 		gl.glEnable(GL.GL_TEXTURE_2D);
@@ -293,6 +304,9 @@ class NEWTWindow implements GLEventListener {
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 		gl.glShadeModel(GLLightingFunc.GL_FLAT);
+
+		//Multisampling
+		//gl.glEnable(GL.GL_MULTISAMPLE);
 
 		if (onInitialized != null) {
 			onInitialized.run();
@@ -313,22 +327,40 @@ class NEWTWindow implements GLEventListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int width, int height) {
-		disp.size[0] = (StaticVars.debugOn & StaticVars.debugWindow2x) ? width / 2 : width;
-		disp.size[1] = (StaticVars.debugOn & StaticVars.debugWindow2x) ? height / 2 : height;
+		realWindowSize[0] = width;
+		realWindowSize[1] = height;
+		disp.size[0] = width;
+		disp.size[1] = height;
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
-		if (width == 0) {
-			width = 1;
+
+		onZoomChanged(gl, true);
+	}
+
+	private void onZoomChanged(GL2ES1 gl, boolean sizeChanged) {
+		final float precWindowZoom = windowZoom;
+		windowZoom = StaticVars.getCurrentZoomValue();
+
+		if (((precWindowZoom % ((int) precWindowZoom)) != 0f) != ((windowZoom % ((int) windowZoom)) != 0f)) {
+			final boolean linear = (windowZoom % ((int) windowZoom)) != 0f;
+
+			for (final Texture t : disp.registeredTextures) {
+				t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, linear ? GL.GL_LINEAR : GL.GL_NEAREST);
+				t.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+			}
 		}
-		if (height == 0) {
-			height = 1;
-		}
+
+		final int width = realWindowSize[0];
+		final int height = realWindowSize[1];
+
+		disp.size[0] = (int) (realWindowSize[0] / windowZoom);
+		disp.size[1] = (int) (realWindowSize[1] / windowZoom);
 
 		gl.glViewport(0, 0, width, height);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
 		gl.glLoadIdentity();
 
-		gl.glOrtho(0.0, (StaticVars.debugOn & StaticVars.debugWindow2x) ? width / 2 : width, (StaticVars.debugOn & StaticVars.debugWindow2x) ? height / 2 : height, 0.0, -1, 1);
+		gl.glOrtho(0.0, disp.size[0], disp.size[1], 0.0, -1, 1);
 
 		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
 		gl.glLoadIdentity();
@@ -339,16 +371,31 @@ class NEWTWindow implements GLEventListener {
 		final GL2ES1 gl = glad.getGL().getGL2ES1();
 
 		GPURenderer.gl = gl;
-		
+
+		if (windowZoom != StaticVars.getCurrentZoomValue()) {
+			onZoomChanged(gl, false);
+		}
+
+		Boolean linear = null;
+		while (!disp.unregisteredTextures.isEmpty()) {
+			if (linear == null) {
+				linear = (windowZoom % ((int) windowZoom)) != 0f;
+			}
+			final Texture t = disp.unregisteredTextures.pop();
+			t.setTexParameteri(gl, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+			t.setTexParameteri(gl, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+			disp.registeredTextures.addLast(t);
+		}
+
 		gl.glEnableClientState(GLPointerFunc.GL_COLOR_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_VERTEX_ARRAY);
 		gl.glEnableClientState(GLPointerFunc.GL_TEXTURE_COORD_ARRAY);
-		
-		renderer.updateDrawCycle(true, false);
+
+		renderer.initDrawCycle();
 
 		disp.repaint();
 
-		renderer.updateDrawCycle(false, true);
+		renderer.endDrawCycle();
 
 		GPURenderer.gl = null;
 

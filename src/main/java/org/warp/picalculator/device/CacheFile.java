@@ -24,7 +24,7 @@ public class CacheFile {
 		} while (Files.exists(Paths.get(path)));
 		try {
 			Files.createTempFile(StaticVars.calculatorNameLOWER, "");
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -33,7 +33,7 @@ public class CacheFile {
 		if (lastOOS == null) {
 			try {
 				return new ObjectOutputStream(new FileOutputStream(path));
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 				return lastOOS;
 			}
@@ -46,7 +46,7 @@ public class CacheFile {
 		if (lastOIS == null) {
 			try {
 				return new ObjectInputStream(new FileInputStream(path));
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				return lastOIS;
 			}
 		} else {
@@ -72,7 +72,7 @@ public class CacheFile {
 				lastFIS.close();
 				lastFIS = null;
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -81,7 +81,7 @@ public class CacheFile {
 		closeStreams();
 		try {
 			Files.deleteIfExists(Paths.get(path));
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
 	}

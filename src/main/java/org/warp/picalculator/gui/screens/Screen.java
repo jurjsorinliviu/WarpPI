@@ -2,8 +2,9 @@ package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.device.KeyboardEventListener;
 import org.warp.picalculator.gui.DisplayManager;
+import org.warp.picalculator.gui.GraphicalInterface;
 
-public abstract class Screen implements KeyboardEventListener {
+public abstract class Screen implements KeyboardEventListener, GraphicalInterface {
 	public DisplayManager d;
 	public boolean created = false;
 	public boolean initialized = false;
@@ -11,13 +12,15 @@ public abstract class Screen implements KeyboardEventListener {
 
 	public Screen() {}
 
+	@Override
 	public void initialize() throws InterruptedException {
 		if (!initialized) {
 			initialized = true;
-			init();
+			initialized();
 		}
 	}
 
+	@Override
 	public void create() throws InterruptedException {
 		if (!created) {
 			created = true;
@@ -27,15 +30,19 @@ public abstract class Screen implements KeyboardEventListener {
 
 	public abstract void created() throws InterruptedException;
 
-	public abstract void init() throws InterruptedException;
+	public abstract void initialized() throws InterruptedException;
 
+	@Override
 	public abstract void render();
 
-	public void renderStatusbar() {
+	@Override
+	public void renderTopmost() {
 
 	}
 
+	@Override
 	public abstract void beforeRender(float dt);
 
+	@Override
 	public abstract boolean mustBeRefreshed();
 }

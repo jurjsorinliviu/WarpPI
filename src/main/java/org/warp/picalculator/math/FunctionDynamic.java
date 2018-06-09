@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.math.rules.Rule;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -87,74 +88,42 @@ public abstract class FunctionDynamic implements Function {
 	}
 
 	@Override
-	public boolean isSimplified() throws InterruptedException {
-		for (final Function variable : functions) {
-			if (Thread.interrupted()) throw new InterruptedException();
-			if (variable.isSimplified() == false) {
-				return false;
-			}
-		}
-		return !isSolvable();
-	}
-
-	/**
-	 * The current simplification status of this function, assuming that its
-	 * children are already simplified.
-	 * 
-	 * @return <strong>true</strong> if this function can be solved, otherwise
-	 *         <strong>false</strong>.
-	 */
-	protected abstract boolean isSolvable();
-
-	@Override
-	public final ObjectArrayList<Function> simplify() throws Error, InterruptedException {
-		boolean solved = true;
+	public final ObjectArrayList<Function> simplify(Rule rule) throws Error, InterruptedException {
 		final Function[] fncs = getParameters();
-		for (final Function f : fncs) {
-			if (Thread.interrupted()) throw new InterruptedException();
-			if (f.isSimplified() == false) {
-				solved = false;
-				break;
-			}
+		if (Thread.interrupted()) {
+			throw new InterruptedException();
 		}
-		if (Thread.interrupted()) throw new InterruptedException();
-		ObjectArrayList<Function> result = solved ? solve() : null;
+		final ObjectArrayList<Function> result = new ObjectArrayList<>();
 
-		if (result == null || result.isEmpty()) {
-			result = new ObjectArrayList<>();
-
-			final ObjectArrayList<ObjectArrayList<Function>> ln = new ObjectArrayList<>();
-			for (final Function fnc : fncs) {
-				final ObjectArrayList<Function> l = new ObjectArrayList<>();
-				if (Thread.interrupted()) throw new InterruptedException();
-				if (fnc.isSimplified()) {
-					l.add(fnc);
-				} else {
-					l.addAll(fnc.simplify());
-				}
-				ln.add(l);
+		final ObjectArrayList<ObjectArrayList<Function>> ln = new ObjectArrayList<>();
+		boolean alreadySolved = true;
+		for (final Function fnc : fncs) {
+			final ObjectArrayList<Function> l = new ObjectArrayList<>();
+			if (Thread.interrupted()) {
+				throw new InterruptedException();
 			}
-
-			final Function[][] results = Utils.joinFunctionsResults(ln);
-
-			for (final Function[] f : results) {
-				result.add(this.setParameters(f));
+			final ObjectArrayList<Function> simplifiedFnc = fnc.simplify(rule);
+			if (simplifiedFnc == null) {
+				l.add(fnc);
+			} else {
+				l.addAll(simplifiedFnc);
+				alreadySolved = false;
 			}
+			ln.add(l);
+		}
+
+		if (alreadySolved) {
+			return rule.execute(this);
+		}
+
+		final Function[][] results = Utils.joinFunctionsResults(ln);
+
+		for (final Function[] f : results) {
+			result.add(this.setParameters(f));
 		}
 
 		return result;
 	}
-
-	/**
-	 * Solves only this function, assuming that its children are already
-	 * simplified and it can be solved.
-	 * 
-	 * @return The solved function.
-	 * @throws Error
-	 *             Errors during computation, like a/0 or similar.
-	 * @throws InterruptedException 
-	 */
-	protected abstract ObjectArrayList<Function> solve() throws Error, InterruptedException;
 
 	@Override
 	public MathContext getMathContext() {

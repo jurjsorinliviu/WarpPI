@@ -46,7 +46,7 @@ public class BlockPower extends Block {
 	}
 
 	@Override
-	public Block getBlock(Caret caret) {
+	public BlockReference<?> getBlock(Caret caret) {
 		return containerExponent.getBlock(caret);
 	}
 

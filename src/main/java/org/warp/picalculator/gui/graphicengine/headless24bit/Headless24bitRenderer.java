@@ -82,11 +82,11 @@ public class Headless24bitRenderer implements Renderer {
 	@Override
 	public void glDrawLine(float x1, float y1, float x2, float y2) {
 
-		int dx = (int) Math.abs(x2 - x1);
-		int dy = (int) Math.abs(y2 - y1);
+		final int dx = (int) Math.abs(x2 - x1);
+		final int dy = (int) Math.abs(y2 - y1);
 
-		int sx = (x1 < x2) ? 1 : -1;
-		int sy = (y1 < y2) ? 1 : -1;
+		final int sx = (x1 < x2) ? 1 : -1;
+		final int sy = (y1 < y2) ? 1 : -1;
 
 		int err = dx - dy;
 
@@ -101,7 +101,7 @@ public class Headless24bitRenderer implements Renderer {
 				break;
 			}
 
-			int e2 = 2 * err;
+			final int e2 = 2 * err;
 
 			if (e2 > -dy) {
 				err = err - dy;
@@ -185,7 +185,7 @@ public class Headless24bitRenderer implements Renderer {
 		final int cx = (int) x;
 		final int cy = (int) y;
 		int i = 0;
-		for (char c : text.toCharArray()) {
+		for (final char c : text.toCharArray()) {
 			if (cx + i >= size[0] || cy >= size[1]) {
 				break;
 			}
@@ -200,7 +200,7 @@ public class Headless24bitRenderer implements Renderer {
 		final int cx = ((int) x) - (text.length() / 2) * Headless24bitEngine.C_MUL_X;
 		final int cy = ((int) y);
 		int i = 0;
-		for (char c : text.toCharArray()) {
+		for (final char c : text.toCharArray()) {
 			if (cx + i >= size[0] || cy >= size[1]) {
 				break;
 			}

@@ -2,8 +2,9 @@ package org.warp.picalculator.device;
 
 import java.awt.event.KeyEvent;
 
+import org.warp.picalculator.ConsoleUtils;
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
 import org.warp.picalculator.gui.DisplayManager;
@@ -12,7 +13,8 @@ import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
 import org.warp.picalculator.gui.screens.MarioScreen;
 import org.warp.picalculator.gui.screens.Screen;
 
-import com.pi4j.wiringpi.Gpio;
+import org.warp.picalculator.deps.DGpio;
+import org.warp.picalculator.deps.jogamp.DJogamp;
 
 public class Keyboard {
 	public static volatile boolean alpha = false;
@@ -31,6 +33,7 @@ public class Keyboard {
 	private static volatile boolean[][] precedentStates = new boolean[8][8];
 	public static volatile boolean[][] debugKeysDown = new boolean[8][8];
 	public static volatile int debugKeyCode = -1;
+	public static volatile int debugKeyCodeRelease = -1;
 
 	private static volatile boolean refreshRequest = false;
 
@@ -45,23 +48,27 @@ public class Keyboard {
 							debugKeyPressed(debugKeyCode);
 							debugKeyCode = -1;
 						}
+						if (debugKeyCodeRelease != -1) {
+							debugKeyReleased(debugKeyCodeRelease);
+							debugKeyCodeRelease = -1;
+						}
 						Thread.sleep(50);
 					}
 				} catch (final InterruptedException e) {}
 			} else {
-				Gpio.pinMode(CLK_INH_pin, Gpio.OUTPUT);
-				Gpio.pinMode(RCK_pin, Gpio.OUTPUT);
-				Gpio.pinMode(SER_pin, Gpio.OUTPUT);
-				Gpio.pinMode(SH_LD_pin, Gpio.OUTPUT);
-				Gpio.pinMode(SCK_and_CLK_pin, Gpio.OUTPUT);
-				Gpio.pinMode(QH_pin, Gpio.INPUT);
+				DGpio.pinMode(CLK_INH_pin, DGpio.OUTPUT);
+				DGpio.pinMode(RCK_pin, DGpio.OUTPUT);
+				DGpio.pinMode(SER_pin, DGpio.OUTPUT);
+				DGpio.pinMode(SH_LD_pin, DGpio.OUTPUT);
+				DGpio.pinMode(SCK_and_CLK_pin, DGpio.OUTPUT);
+				DGpio.pinMode(QH_pin, DGpio.INPUT);
 
-				Gpio.digitalWrite(CLK_INH_pin, false);
-				Gpio.digitalWrite(RCK_pin, false);
-				Gpio.digitalWrite(SER_pin, false);
-				Gpio.digitalWrite(SH_LD_pin, false);
-				Gpio.digitalWrite(SCK_and_CLK_pin, false);
-				Gpio.digitalWrite(QH_pin, false);
+				DGpio.digitalWrite(CLK_INH_pin, false);
+				DGpio.digitalWrite(RCK_pin, false);
+				DGpio.digitalWrite(SER_pin, false);
+				DGpio.digitalWrite(SH_LD_pin, false);
+				DGpio.digitalWrite(SCK_and_CLK_pin, false);
+				DGpio.digitalWrite(QH_pin, false);
 				final SerialToParallel chip1 = new SerialToParallel(RCK_pin, SCK_and_CLK_pin /*SCK*/, SER_pin);
 				final ParallelToSerial chip2 = new ParallelToSerial(SH_LD_pin, CLK_INH_pin, QH_pin, SCK_and_CLK_pin/*CLK*/);
 
@@ -92,16 +99,16 @@ public class Keyboard {
 				}
 			}
 		});
-		kt.setName("Keyboard thread");
+		PlatformUtils.setThreadName(kt, "Keyboard thread");
 		kt.setPriority(Thread.NORM_PRIORITY + 1);
-		kt.setDaemon(true);
+		PlatformUtils.setDaemon(kt);
 		kt.start();
 	}
-
+	
 	private synchronized static void debugKeyPressed(int keyCode) {
 		switch (keyCode) {
 			case KeyEvent.VK_ESCAPE:
-				Keyboard.keyPressed(Key.POWER);
+				Keyboard.keyPressed(Key.POWEROFF);
 				break;
 			case KeyEvent.VK_S:
 				if (Keyboard.shift) {
@@ -165,6 +172,15 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
+			case KeyEvent.VK_E:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.NONE);
+				} else if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.EULER_NUMBER);
+				}
+				break;
 			case KeyEvent.VK_Y:
 				if (Keyboard.alpha) {
 					Keyboard.keyPressed(Key.LETTER_Y);
@@ -178,10 +194,19 @@ public class Keyboard {
 				} else if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.BRIGHTNESS_CYCLE);
 				} else {
-					Keyboard.keyPressed(Key.NONE);
+					Keyboard.keyPressed(Key.ZOOM_MODE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_ENTER:
+			case KeyEvent.VK_L:
+				if (Keyboard.shift) {
+					Keyboard.keyPressed(Key.LOGARITHM);
+				} else if (Keyboard.alpha) {
+					Keyboard.keyPressed(Key.NONE);
+				} else {
+					Keyboard.keyPressed(Key.LOGARITHM);
+				}
+				break;
+			case DJogamp.VK_ENTER:
 			case KeyEvent.VK_ENTER:
 				if (Keyboard.shift) {
 					Keyboard.keyPressed(Key.STEP);
@@ -281,7 +306,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_ADD:
+			case DJogamp.VK_ADD:
 			case KeyEvent.VK_ADD:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.PLUS);
@@ -291,7 +316,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_SUBTRACT:
+			case DJogamp.VK_SUBTRACT:
 			case KeyEvent.VK_SUBTRACT:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.MINUS);
@@ -299,7 +324,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_MULTIPLY:
+			case DJogamp.VK_MULTIPLY:
 			case KeyEvent.VK_MULTIPLY:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.MULTIPLY);
@@ -307,7 +332,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_DIVIDE:
+			case DJogamp.VK_DIVIDE:
 			case KeyEvent.VK_DIVIDE:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.DIVIDE);
@@ -322,7 +347,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_DELETE:
+			case DJogamp.VK_DELETE:
 			case KeyEvent.VK_DELETE:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.RESET);
@@ -330,7 +355,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_LEFT:
+			case DJogamp.VK_LEFT:
 			case KeyEvent.VK_LEFT:
 				//LEFT
 				row = 2;
@@ -342,7 +367,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_RIGHT:
+			case DJogamp.VK_RIGHT:
 			case KeyEvent.VK_RIGHT:
 				//RIGHT
 				row = 2;
@@ -354,7 +379,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_UP:
+			case DJogamp.VK_UP:
 			case KeyEvent.VK_UP:
 				//UP
 				row = 1;
@@ -366,7 +391,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_DOWN:
+			case DJogamp.VK_DOWN:
 			case KeyEvent.VK_DOWN:
 				//DOWN
 				row = 3;
@@ -389,7 +414,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD4:
+			case DJogamp.VK_NUMPAD4:
 			case KeyEvent.VK_NUMPAD4:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.HISTORY_BACK);
@@ -397,7 +422,7 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD6:
+			case DJogamp.VK_NUMPAD6:
 			case KeyEvent.VK_NUMPAD6:
 				if (!Keyboard.shift && !Keyboard.alpha) {
 					Keyboard.keyPressed(Key.HISTORY_FORWARD);
@@ -412,28 +437,73 @@ public class Keyboard {
 					Keyboard.keyPressed(Key.NONE);
 				}
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_SHIFT:
+			case DJogamp.VK_SHIFT:
 			case KeyEvent.VK_SHIFT:
 				Keyboard.keyPressed(Key.SHIFT);
 				break;
 			case KeyEvent.VK_A:
 				Keyboard.keyPressed(Key.ALPHA);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD1:
+			case DJogamp.VK_NUMPAD1:
 			case KeyEvent.VK_NUMPAD1:
 				Keyboard.keyPressed(Key.SQRT);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD2:
+			case DJogamp.VK_NUMPAD2:
 			case KeyEvent.VK_NUMPAD2:
 				Keyboard.keyPressed(Key.ROOT);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD3:
+			case DJogamp.VK_NUMPAD3:
 			case KeyEvent.VK_NUMPAD3:
 				Keyboard.keyPressed(Key.POWER_OF_2);
 				break;
-			case com.jogamp.newt.event.KeyEvent.VK_NUMPAD5:
+			case DJogamp.VK_NUMPAD5:
 			case KeyEvent.VK_NUMPAD5:
 				Keyboard.keyPressed(Key.POWER_OF_x);
+				break;
+		}
+	}
+
+	private synchronized static void debugKeyReleased(int keyCode) {
+		switch (keyCode) {
+			case KeyEvent.VK_ENTER:
+				int row = 2;
+				int col = 1;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case DJogamp.VK_LEFT:
+			case KeyEvent.VK_LEFT:
+				//LEFT
+				row = 2;
+				col = 3;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case DJogamp.VK_RIGHT:
+			case KeyEvent.VK_RIGHT:
+				//RIGHT
+				row = 2;
+				col = 5;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				System.out.println("RELEASE");
+				break;
+			case DJogamp.VK_UP:
+			case KeyEvent.VK_UP:
+				//UP
+				row = 1;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case DJogamp.VK_DOWN:
+			case KeyEvent.VK_DOWN:
+				//DOWN
+				row = 3;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
+				break;
+			case (short) 12:
+				//DOWN
+				row = 2;
+				col = 4;
+				Keyboard.debugKeysDown[row - 1][col - 1] = false;
 				break;
 		}
 	}
@@ -455,89 +525,80 @@ public class Keyboard {
 	}
 
 	static final Key[][][] keyMap = /* [ROW, COLUMN, (0:normal 1:shift 2:alpha)] */
-		{
-				{ /* ROW 0 */
-					{Key.SHIFT, Key.SHIFT, Key.SHIFT}, /* 0,0 */
-					{Key.ALPHA, Key.ALPHA, Key.ALPHA}, /* 0,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 0,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 0,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 0,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 0,5 */
-					{Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.NONE}, /* 0,6 */
-					{Key.SIMPLIFY, Key.STEP, Key.NONE}  /* 0,7 */
-				},
-				{ /* ROW 1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 1,6 */
-					{Key.NONE, Key.PI, Key.DRG_CYCLE}  /* 1,7 */
-				},
-				{ /* ROW 2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,0 */
-					{Key.SQRT, Key.NONE, Key.LETTER_Y}, /* 2,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 2,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 2,7 */
-				},
-				{ /* ROW 3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 3,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 3,7 */
-				},
-				{ /* ROW 4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 4,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 4,7 */
-				},
-				{ /* ROW 5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 5,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 5,7 */
-				},
-				{ /* ROW 6 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 6,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 6,7 */
-				},
-				{ /* ROW 7 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,0 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,1 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,2 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,3 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,4 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,5 */
-					{Key.NONE, Key.NONE, Key.NONE}, /* 7,6 */
-					{Key.NONE, Key.NONE, Key.NONE}  /* 7,7 */
-				}
-		};
-	
+			{ { /* ROW 0 */
+					{ Key.SHIFT, Key.SHIFT, Key.SHIFT }, /* 0,0 */
+					{ Key.ALPHA, Key.ALPHA, Key.ALPHA }, /* 0,1 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 0,2 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 0,3 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 0,4 */
+					{ Key.SETTINGS, Key.NONE, Key.NONE }, /* 0,5 */
+					{ Key.BRIGHTNESS_CYCLE, Key.BRIGHTNESS_CYCLE_REVERSE, Key.ZOOM_MODE }, /* 0,6 */
+					{ Key.SIMPLIFY, Key.STEP, Key.NONE } /* 0,7 */
+			}, { /* ROW 1 */
+					{ Key.F4, Key.F4, Key.F4 }, /* 1,0 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 1,1 */
+					{ Key.LEFT, Key.NONE, Key.NONE }, /* 1,2 */
+					{ Key.OK, Key.NONE, Key.NONE }, /* 1,3 */
+					{ Key.RIGHT, Key.NONE, Key.NONE }, /* 1,4 */
+					{ Key.HISTORY_BACK, Key.NONE, Key.NONE }, /* 1,5 */
+					{ Key.HISTORY_FORWARD, Key.NONE, Key.NONE }, /* 1,6 */
+					{ Key.NONE, Key.PI, Key.DRG_CYCLE } /* 1,7 */
+			}, { /* ROW 2 */
+					{ Key.F3, Key.F4, Key.F4 }, /* 2,0 */
+					{ Key.SQRT, Key.ROOT, Key.NONE }, /* 2,1 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 2,2 */
+					{ Key.DOWN, Key.NONE, Key.NONE }, /* 2,3 */
+					{ Key.BACK, Key.NONE, Key.NONE }, /* 2,4 */
+					{ Key.HISTORY_BACK, Key.NONE, Key.NONE }, /* 2,5 */
+					{ Key.HISTORY_FORWARD, Key.NONE, Key.NONE }, /* 2,6 */
+					{ Key.NONE, Key.NONE, Key.LETTER_Z } /* 2,7 */
+			}, { /* ROW 3 */
+					{ Key.F2, Key.F2, Key.F2 }, /* 3,0 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 3,1 */
+					{ Key.POWER_OF_x, Key.NONE, Key.NONE }, /* 3,2 */
+					{ Key.POWER_OF_2, Key.NONE, Key.NONE }, /* 3,3 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 3,4 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 3,5 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 3,6 */
+					{ Key.DOT, Key.NONE, Key.LETTER_Y } /* 3,7 */
+			}, { /* ROW 4 */
+					{ Key.F1, Key.F1, Key.F1 }, /* 4,0 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 4,1 */
+					{ Key.PARENTHESIS_OPEN, Key.NONE, Key.NONE }, /* 4,2 */
+					{ Key.PARENTHESIS_CLOSE, Key.NONE, Key.NONE }, /* 4,3 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 4,4 */
+					{ Key.SURD_MODE, Key.NONE, Key.NONE }, /* 4,5 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 4,6 */
+					{ Key.NUM0, Key.NONE, Key.LETTER_X } /* 4,7 */
+			}, { /* ROW 5 */
+					{ Key.NUM7, Key.NONE, Key.NONE }, /* 5,0 */
+					{ Key.NUM8, Key.NONE, Key.NONE }, /* 5,1 */
+					{ Key.NUM9, Key.NONE, Key.NONE }, /* 5,2 */
+					{ Key.DELETE, Key.NONE, Key.NONE }, /* 5,3 */
+					{ Key.RESET, Key.NONE, Key.NONE }, /* 5,4 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 5,5 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 5,6 */
+					{ Key.NONE, Key.NONE, Key.NONE } /* 5,7 */
+			}, { /* ROW 6 */
+					{ Key.NUM4, Key.NONE, Key.NONE }, /* 6,0 */
+					{ Key.NUM5, Key.NONE, Key.NONE }, /* 6,1 */
+					{ Key.NUM6, Key.NONE, Key.NONE }, /* 6,2 */
+					{ Key.MULTIPLY, Key.NONE, Key.NONE }, /* 6,3 */
+					{ Key.DIVIDE, Key.NONE, Key.NONE }, /* 6,4 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 6,5 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 6,6 */
+					{ Key.NONE, Key.NONE, Key.NONE } /* 6,7 */
+			}, { /* ROW 7 */
+					{ Key.NUM1, Key.NONE, Key.NONE }, /* 7,0 */
+					{ Key.NUM2, Key.NONE, Key.NONE }, /* 7,1 */
+					{ Key.NUM3, Key.NONE, Key.NONE }, /* 7,2 */
+					{ Key.PLUS, Key.PLUS_MINUS, Key.NONE }, /* 7,3 */
+					{ Key.MINUS, Key.NONE, Key.NONE }, /* 7,4 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 7,5 */
+					{ Key.NONE, Key.NONE, Key.NONE }, /* 7,6 */
+					{ Key.NONE, Key.NONE, Key.NONE } /* 7,7 */
+			} };
+
 	static synchronized void keyPressedRaw(int row, int col) {
 //		KeyboardDebugScreen.keyX = row;
 //		KeyboardDebugScreen.keyY = col;
@@ -546,7 +607,7 @@ public class Keyboard {
 			keyPressed(k);
 		} else {
 			if (false) {
-			
+
 			} else {
 				keyPressed(Key.NONE);
 			}
@@ -555,12 +616,12 @@ public class Keyboard {
 
 	public static void stopKeyboard() {
 		if (StaticVars.debugOn == false) {
-			Gpio.digitalWrite(33, false);
-			Gpio.digitalWrite(35, false);
-			Gpio.digitalWrite(36, false);
-			Gpio.digitalWrite(37, false);
-			Gpio.digitalWrite(38, false);
-			Gpio.digitalWrite(40, false);
+			DGpio.digitalWrite(33, false);
+			DGpio.digitalWrite(35, false);
+			DGpio.digitalWrite(36, false);
+			DGpio.digitalWrite(37, false);
+			DGpio.digitalWrite(38, false);
+			DGpio.digitalWrite(40, false);
 		}
 	}
 
@@ -586,7 +647,7 @@ public class Keyboard {
 				refresh = true;
 			} else {
 				switch (k) {
-					case POWER:
+					case POWEROFF:
 						DisplayManager.INSTANCE.engine.destroy();
 						break;
 					case NONE:
@@ -603,6 +664,10 @@ public class Keyboard {
 						DisplayManager.INSTANCE.cycleBrightness(true);
 						refresh = true;
 						break;
+					case ZOOM_MODE:
+						StaticVars.windowZoom = (StaticVars.windowZoom % 3) + 1;
+//						StaticVars.windowZoom = ((StaticVars.windowZoom - 0.5f) % 2f) + 1f;
+						refresh = true;
 					case HISTORY_BACK:
 						DisplayManager.INSTANCE.goBack();
 						refresh = true;
@@ -640,7 +705,7 @@ public class Keyboard {
 				refreshRequest = true;
 			}
 		} else if (!done) {
-			Utils.out.println(1, "Key " + k.toString() + " ignored.");
+			ConsoleUtils.out.println(1, "Key " + k.toString() + " ignored.");
 		}
 	}
 
@@ -670,16 +735,12 @@ public class Keyboard {
 				refreshRequest = true;
 			}
 		} else if (!done) {
-			Utils.out.println(1, "Key " + k.toString() + " ignored.");
+			ConsoleUtils.out.println(1, "Key " + k.toString() + " ignored.");
 		}
 	}
 
 	public static void setAdditionalKeyboardListener(KeyboardEventListener l) {
 		additionalListener = l;
-	}
-
-	public static enum Key {
-		POWER, debug_DEG, debug_RAD, debug_GRA, SHIFT, ALPHA, NONE, HISTORY_BACK, HISTORY_FORWARD, SURD_MODE, DRG_CYCLE, LETTER_X, LETTER_Y, STEP, SIMPLIFY, BRIGHTNESS_CYCLE, BRIGHTNESS_CYCLE_REVERSE, DOT, NUM0, NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, PARENTHESIS_OPEN, PARENTHESIS_CLOSE, PLUS, MINUS, PLUS_MINUS, MULTIPLY, DIVIDE, EQUAL, DELETE, RESET, LEFT, RIGHT, UP, DOWN, OK, debug1, debug2, debug3, debug4, debug5, SQRT, ROOT, POWER_OF_2, POWER_OF_x, SINE, COSINE, TANGENT, ARCSINE, ARCCOSINE, ARCTANGENT, PI
 	}
 
 	public static boolean popRefreshRequest() {
@@ -695,49 +756,79 @@ public class Keyboard {
 /*
 
 
--coord-
- NORMAL
- SHIFT
- ALPHA
--------
 
-|0,0---|0,1---|------|0,3---|------|------|0,6---|
-|SHIFT |ALPHA |------|  ^   |------|------|+BRIGH|
-|SHIFT |ALPHA |------|      |------|------|-BRIGH|
-|SHIFT |ALPHA |------|      |------|------|      |
-|1,0---|1,1---|1,2---|1,3---|1,4---|1,5---|1,6---|
-| =    |      |  <   |  OK  |   >  | Back | Fwd  |
-|      |      |      |      |      |      |      |
-|      |      |      |      |      |      |      |
-|2,0---|2,1---|------|2,3---|------|2,5---|2,6---|
-|      | SQRT |------|  v   |------|      |      |
-|      | ROOT |------|      |------|      |      |
-|      |      |------|      |------|      |      |
-|3,0---|3,1---|3,2---|3,3---|3,4---|3,5---|3,6---|
-|      |      | POW 2| POW x|      |      |      |
-|      |      |      |      |      |      |      |
-|      |      |      |      |      |      |      |
-|4,0---|4,1---|4,2---|4,3---|4,4---|4,5---|4,6---|
-|      |      |      |      |      |S<=>D |      |
-|      |      |      |      |      |      |      |
-|      |      |      |      |      |      |      |
-|5,0---|5,1---|5,2---|5,3---|5,4---|5,5---|5,6---|
-| 7    | 8    | 9    | DEL  | RESET              |
-|      |      |      |      |                    |
-|      |      |      |      |                    |
-|6,0---|6,1---|6,2---|6,3---|6,4-----------------|
-| 4    | 5    | 6    | *    | /                  |
-|      |      |      |      |                    |
-|      |      |      |      |                    |
-|7,0---|7,1---|7,2---|7,3---|7,4-----------------|
-| 1    | 2    | 3    |  +   | -                  |
-|      |      |      |      |                    |
-|      |      |      |      |                    |
-|4,7---|3,7---|2,7---|1,7---|0,7-----------------|
-| 0    | .    |      |      | SIMPLIFY           |
-|      |      |      |PI    | STEP               |
-| X    | Y    | Z    |DRGCYCL|SOLVE FOR [x]      |
-|------|------|------|------|--------------------|
+Keyboard:
+	Example button:
+	|ROW,COLUMN----|
+	| NORMAL STATE |
+	| SHIFT STATE  |
+	| ALPHA STATE  |
+	|--------------|
+	
+	Physical keyboard:
+	|0,0-----|0,1-----|########|0,3-----|########|0,5-----|0,6-----|
+	| SHIFT  | ALPHA  |########|  ^     |########|SETTINGS|+BRIGHT |
+	| NORMAL | ALPHA  |########|        |########|        |-BRIGHT |
+	| SHIFT  | NORMAL |########|        |########|        |ZOOMMODE|
+	|1,0-----|1,1-----|1,2-----|1,3-----|1,4-----|1,5-----|1,6-----|
+	| F_4    |        |   <    |   OK   |   >    | Back   | Fwd    |
+	| F_4    |        |        |        |        |        |        |
+	| F_4    |        |        |        |        |        |        |
+	|2,0-----|2,1-----|--------|2,3-----|--------|2,5-----|2,6-----|
+	| F_3    | SQRT   |########|  v     | BACK   |        |        |
+	| F_3    | ROOT   |########|        |        |        |        |
+	| F_3    |        |########|        |        |        |        |
+	|3,0-----|3,1-----|3,2-----|3,3-----|3,4-----|3,5-----|3,6-----|
+	| F_2    |        | POW x  | POW 2  |        |        |        |
+	| F_2    |        |        |        |        |        |        |
+	| F_2    |        |        |        |        |        |        |
+	|4,0-----|4,1-----|4,2-----|4,3-----|4,4-----|4,5-----|4,6-----|
+	| F_1    |        | (      | )      |        | S<=>D  |        |
+	| F_1    |        |        |        |        |        |        |
+	| F_1    |        |        |        |        |        |        |
+	|5,0-----|5,1-----|5,2-----|5,3-----|5,4-----|5,5-----|5,6-----|
+	| 7      | 8      | 9      | DEL    | RESET                    |
+	|        |        |        |        |                          |
+	|        |        |        |        |                          |
+	|6,0-----|6,1-----|6,2-----|6,3-----|6,4-----------------------|
+	| 4      | 5      | 6      | *      | /                        |
+	|        |        |        |        |                          |
+	|        |        |        |        |                          |
+	|7,0-----|7,1-----|7,2-----|7,3-----|7,4-----------------------|
+	| 1      | 2      | 3      |  +     | -                        |
+	|        |        |        |        |                          |
+	|        |        |        |        |                          |
+	|4,7-----|3,7-----|2,7-----|1,7-----|0,7-----------------------|
+	| 0      | .      |        |        | SIMPLIFY                 |
+	|        |        |        |PI      | STEP                     |
+	| X      | Y      | Z      |DRG CYCL|                          |
+	|--------|--------|--------|--------|--------------------------|
 
-
+SCREEN F_n:
+	MathInputScreen:
+		Default:
+			[F_1] Normal: Solve for X			Shift: Solve for _			Alpha: 
+			[F_2] Normal: 						Shift: 						Alpha: 
+			[F_3] Normal: Variables	& constants	Shift: 						Alpha: 
+			[F_4] Normal: Functions f(x)		Shift: 						Alpha: 
+		Variable popup:
+			[F_1] Normal(if constant):Set value	Shift: 						Alpha: 
+			[F_2] Normal: 						Shift: 						Alpha: 
+			[F_3] Normal: 						Shift: 						Alpha: 
+			[F_4] Normal: 						Shift: 						Alpha: 
+	MarioScreen
+		[F_1] Normal: 						Shift: 						Alpha: 
+		[F_2] Normal: 						Shift: 						Alpha: 
+		[F_3] Normal: 						Shift: 						Alpha: 
+		[F_4] Normal: 						Shift: 						Alpha: 
+	ChooseVariableValueScreen
+		[F_1] Normal: 						Shift: 						Alpha: 
+		[F_2] Normal: 						Shift: 						Alpha: 
+		[F_3] Normal: 						Shift: 						Alpha: 
+		[F_4] Normal: 						Shift: 						Alpha: 
+	SolveForXScreen
+		[F_1] Normal: 						Shift: 						Alpha: 
+		[F_2] Normal: 						Shift: 						Alpha: 
+		[F_3] Normal: 						Shift: 						Alpha: 
+		[F_4] Normal: 						Shift: 						Alpha: 
 */

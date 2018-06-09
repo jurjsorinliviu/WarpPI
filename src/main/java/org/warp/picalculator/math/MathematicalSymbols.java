@@ -16,7 +16,6 @@ public class MathematicalSymbols {
 	public static final char PARENTHESIS_OPEN = '(';
 	public static final char PARENTHESIS_CLOSE = ')';
 	public static final char POWER = 'Ⓑ';
-	public static final char POWER_OF_TWO = 'Ⓘ';
 	public static final char EQUATION = '=';
 	public static final char SYSTEM = '{';
 	public static final char SINE = 'Ⓒ';
@@ -25,11 +24,17 @@ public class MathematicalSymbols {
 	public static final char ARC_SINE = 'Ⓕ';
 	public static final char ARC_COSINE = 'Ⓖ';
 	public static final char ARC_TANGENT = 'Ⓗ';
+	public static final char POWER_OF_TWO = 'Ⓘ';
+	public static final char LOGARITHM = 'Ⓙ';
+	public static final char UNDEFINED = '∅';
 	public static final char PI = 'π';
+	public static final char EULER_NUMBER = 'ｅ';
+	public static final char X = 'ⓧ';
+	public static final char Y = 'Ⓨ';
 
 	public static final char[] functionsNSN = new char[] { NTH_ROOT, POWER };
 
-	public static final char[] functionsSN = new char[] { SQUARE_ROOT, POWER_OF_TWO, MINUS, SINE, COSINE, TANGENT, ARC_SINE, ARC_COSINE, ARC_TANGENT };
+	public static final char[] functionsSN = new char[] { SQUARE_ROOT, POWER_OF_TWO, MINUS, SINE, COSINE, TANGENT, ARC_SINE, ARC_COSINE, ARC_TANGENT, LOGARITHM };
 
 	public static final char[] functions = concat(functionsNSN, functionsSN);
 
@@ -48,7 +53,7 @@ public class MathematicalSymbols {
 
 	public static final char[] parentheses = new char[] { PARENTHESIS_OPEN, PARENTHESIS_CLOSE };
 
-	public static final char[] variables = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'ⓧ', 'Ⓨ', 'Z', PI };
+	public static final char[] variables = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', X, Y, 'Z', PI, EULER_NUMBER, UNDEFINED };
 
 	public static final char[] genericSyntax = new char[] { SYSTEM, EQUATION };
 

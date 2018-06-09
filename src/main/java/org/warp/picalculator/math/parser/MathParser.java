@@ -1,10 +1,10 @@
 package org.warp.picalculator.math.parser;
 
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.Errors;
 import org.warp.picalculator.IntegerObj;
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.containers.InputContainer;
 import org.warp.picalculator.math.Function;
@@ -45,10 +45,11 @@ public class MathParser {
 	public static ObjectArrayList<ObjectArrayList<Block>> parseOutput(MathContext context,
 			ObjectArrayList<Function> resultExpressions) throws Error {
 		final ObjectArrayList<ObjectArrayList<Block>> result = new ObjectArrayList<>();
-		for (Function resultExpression : resultExpressions) {
-			ObjectArrayList<Block> resultBlocks = resultExpression.toBlock(context);
-			if (resultBlocks == null)
+		for (final Function resultExpression : resultExpressions) {
+			final ObjectArrayList<Block> resultBlocks = resultExpression.toBlock(context);
+			if (resultBlocks == null) {
 				throw new Error(Errors.NOT_IMPLEMENTED, "Unknown function " + resultExpression.getClass().getSimpleName());
+			}
 			result.add(resultBlocks);
 		}
 		return result;
@@ -61,9 +62,10 @@ public class MathParser {
 		ObjectArrayList<Function> process = new ObjectArrayList<>();
 
 		for (final Feature f : features) {
-			Function fnc = f.toFunction(context);
-			if (fnc == null)
+			final Function fnc = f.toFunction(context);
+			if (fnc == null) {
 				throw new Error(Errors.SYNTAX_ERROR, "\"" + f.getClass().getSimpleName() + "\" can't be converted into a Function!");
+			}
 			process.add(fnc);
 		}
 
@@ -78,35 +80,28 @@ public class MathParser {
 
 	private static ObjectArrayList<Function> fixStack(MathContext context, ObjectArrayList<Function> functionsList)
 			throws Error {
-		final MathParserStep[] steps = new MathParserStep[] {
-				new JoinNumberAndVariables(context),
-				new FixSingleFunctionArgs(),
-				new RemoveParentheses(context),
-				new FixMultiplicationsAndDivisions(),
-				new FixSumsAndSubtractions(),
-				new AddImplicitMultiplications(context),
-			};
+		final MathParserStep[] steps = new MathParserStep[] { new JoinNumberAndVariables(context), new FixSingleFunctionArgs(), new RemoveParentheses(context), new FixMultiplicationsAndDivisions(), new FixSumsAndSubtractions(), new AddImplicitMultiplications(context), };
 		boolean lastLoopDidSomething;
 		Function lastElement;
 
 		if (StaticVars.debugOn) {
-			Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
-			for (Function f : functionsList) {
-				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+			ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
+			for (final Function f : functionsList) {
+				ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
 			}
-			Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE);
 		}
 
-		for (MathParserStep step : steps) {
+		for (final MathParserStep step : steps) {
 			if (StaticVars.debugOn) {
-				Utils.out.println(2, "Stack fixing step \"" + step.getStepName() + "\"");
+				ConsoleUtils.out.println(2, "Stack fixing step \"" + step.getStepName() + "\"");
 			}
-			int stepQty = step.requiresReversedIteration() ? -1 : 1,
+			final int stepQty = step.requiresReversedIteration() ? -1 : 1,
 					initialIndex = step.requiresReversedIteration() ? functionsList.size() - 1 : 0;
 			do {
 				lastLoopDidSomething = false;
 				lastElement = null;
-				IntegerObj curIndex = new IntegerObj(initialIndex);
+				final IntegerObj curIndex = new IntegerObj(initialIndex);
 				while (curIndex.i >= 0 && curIndex.i < functionsList.size()) {
 					final int i = curIndex.i;
 					final Function f = functionsList.get(i);
@@ -121,11 +116,11 @@ public class MathParser {
 			} while (lastLoopDidSomething);
 
 			if (StaticVars.debugOn) {
-				Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, "\tStatus: ");
-				for (Function f : functionsList) {
-					Utils.out.print(Utils.OUTPUTLEVEL_DEBUG_MAX, f.toString());
+				ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, "\tStatus: ");
+				for (final Function f : functionsList) {
+					ConsoleUtils.out.print(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE, f.toString());
 				}
-				Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MAX);
+				ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE);
 			}
 		}
 
@@ -192,7 +187,7 @@ public class MathParser {
 						break;
 				}
 
-				for (char var : MathematicalSymbols.variables) {
+				for (final char var : MathematicalSymbols.variables) {
 					if (featureChar == var) {
 						result = new FeatureVariable(featureChar, V_TYPE.VARIABLE);
 						break;

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
@@ -25,7 +26,7 @@ public class CPUFont implements BinaryFont {
 	public int charH;
 	public int charS;
 	public int charIntCount;
-	public LinkedList<Integer[]> intervals;
+	public int[] intervals;
 	public int intervalsTotalSize = 0;
 	public static final int intBits = 31;
 	private final boolean isResource;
@@ -38,11 +39,11 @@ public class CPUFont implements BinaryFont {
 		isResource = true;
 		load("/font_" + fontName + ".rft", onlyRaw);
 	}
-	
+
 	public CPUFont(String path, String fontName) throws IOException {
 		this(path, fontName, false);
 	}
-	
+
 	CPUFont(String path, String fontName, boolean onlyRaw) throws IOException {
 		isResource = false;
 		load(path + "/font_" + fontName + ".rft", onlyRaw);
@@ -60,9 +61,9 @@ public class CPUFont implements BinaryFont {
 	public void load(String path) throws IOException {
 		load(path, false);
 	}
-	
+
 	private void load(String path, boolean onlyRaw) throws IOException {
-		Utils.out.println(Utils.OUTPUTLEVEL_DEBUG_MIN, "Loading font " + path);
+		ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_DEBUG_MIN, "Loading font " + path);
 		loadFont(path);
 		if (!onlyRaw) {
 			chars32 = new int[(intervalsTotalSize) * charIntCount];
@@ -110,7 +111,7 @@ public class CPUFont implements BinaryFont {
 				minBound = file[0x9] << 24 | file[0xA] << 16 | file[0xB] << 8 | file[0xC];
 				maxBound = file[0xE] << 24 | file[0xF] << 16 | file[0x10] << 8 | file[0x11];
 				if (maxBound <= minBound) {
-					maxBound = 9900; //TODO remove it: temp fix
+					maxBound = 66000; //TODO remove it: temp fix
 				}
 				rawchars = new boolean[maxBound - minBound][];
 				int index = 0x12;
@@ -167,44 +168,52 @@ public class CPUFont implements BinaryFont {
 	}
 
 	private void findIntervals() {
-		intervals = new LinkedList<Integer[]>();
+		final LinkedList<int[]> intervals = new LinkedList<>();
 		int beginIndex = -1;
 		int endIndex = 0;
 		int intervalSize = 0;
-		int holeSize = 0;
+		final int holeSize = 0;
 		for (int i = 0; i < rawchars.length; i++) {
 			if (rawchars[i] != null) {
 				beginIndex = i;
 				int firstNull = 0;
-				while(i+firstNull < rawchars.length && rawchars[i+firstNull] != null) {
+				while (i + firstNull < rawchars.length && rawchars[i + firstNull] != null) {
 					firstNull++;
 				}
 				endIndex = beginIndex + firstNull - 1;
 				i = endIndex;
 				if (endIndex >= 0) {
 					intervalSize = endIndex - beginIndex + 1;
-					intervals.add(new Integer[] {beginIndex, endIndex, intervalSize});
+					intervals.add(new int[] { beginIndex, endIndex, intervalSize });
 					intervalsTotalSize += intervalSize;
 				}
 				beginIndex = -1;
 			}
 		}
 		int lastIndex = 0;
-		boolean[][] newrawchars = new boolean[intervalsTotalSize][];
-		for (Integer[] interval: intervals) {
+		final boolean[][] newrawchars = new boolean[intervalsTotalSize][];
+		for (final int[] interval : intervals) {
 			if (rawchars.length - (interval[0]) - interval[2] < 0) {
 				System.err.println(interval[0] + "-" + interval[1] + "(" + interval[2] + ")");
 				System.err.println(rawchars.length - (interval[0]) - interval[2]);
 				throw new ArrayIndexOutOfBoundsException();
 			}
-			if (newrawchars.length - (lastIndex-1) - interval[2] < 0) {
-				System.err.println(newrawchars.length - (lastIndex-1) - interval[2]);
+			if (newrawchars.length - (lastIndex - 1) - interval[2] < 0) {
+				System.err.println(newrawchars.length - (lastIndex - 1) - interval[2]);
 				throw new ArrayIndexOutOfBoundsException();
 			}
 			System.arraycopy(rawchars, interval[0], newrawchars, lastIndex, interval[2]);
 			lastIndex += interval[2];
 		}
 		rawchars = newrawchars;
+		final int intervalsSize = intervals.size();
+		this.intervals = new int[intervalsSize * 3];
+		for (int i = 0; i < intervalsSize; i++) {
+			final int[] interval = intervals.get(i);
+			this.intervals[i * 3 + 0] = interval[0];
+			this.intervals[i * 3 + 1] = interval[1];
+			this.intervals[i * 3 + 2] = interval[2];
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -224,41 +233,41 @@ public class CPUFont implements BinaryFont {
 		final int[] indexes = new int[l];
 		final char[] chars = txt.toCharArray();
 		for (int i = 0; i < l; i++) {
-			int originalIndex = (chars[i] & 0xFFFF) - minBound;
+			final int originalIndex = (chars[i] & 0xFFFF) - minBound;
 			indexes[i] = compressIndex(originalIndex);
 		}
 		return indexes;
 	}
-	
+
 	public int getCharIndex(char c) {
-		int originalIndex = c & 0xFFFF;
+		final int originalIndex = c & 0xFFFF;
 		return compressIndex(originalIndex);
 	}
-	
+
 	private int compressIndex(int originalIndex) {
 		int compressedIndex = 0;
-		for (Integer[] interval : intervals) {
-			if (interval[0] > originalIndex) {
+		for (int i = 0; i < intervals.length; i += 3) {
+			if (intervals[i] > originalIndex) {
 				break;
-			} else if (originalIndex <= interval[1]) {
-				compressedIndex+=(originalIndex-interval[0]);
+			} else if (originalIndex <= intervals[i + 1]) {
+				compressedIndex += (originalIndex - intervals[i]);
 				break;
 			} else {
-				compressedIndex+=interval[2];
+				compressedIndex += intervals[i + 2];
 			}
 		}
 		return compressedIndex;
 	}
-	
+
 	private int decompressIndex(int compressedIndex) {
-		int originalIndex = 0;
+		final int originalIndex = 0;
 		int i = 0;
-		for (Integer[] interval : intervals) {
-			i+=interval[2];
+		for (int intvl = 0; intvl < intervals.length; intvl += 3) {
+			i += intervals[intvl + 2];
 			if (i == compressedIndex) {
-				return interval[1];
+				return intervals[intvl + 1];
 			} else if (i > compressedIndex) {
-				return interval[1] - (i - compressedIndex);
+				return intervals[intvl + 1] - (i - compressedIndex);
 			}
 		}
 		return originalIndex;
@@ -297,6 +306,16 @@ public class CPUFont implements BinaryFont {
 	@Override
 	public boolean isInitialized() {
 		return true;
+	}
+
+	@Override
+	public int getSkinWidth() {
+		return -1;
+	}
+
+	@Override
+	public int getSkinHeight() {
+		return -1;
 	}
 
 }

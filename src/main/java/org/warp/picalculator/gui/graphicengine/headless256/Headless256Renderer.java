@@ -41,20 +41,20 @@ public class Headless256Renderer implements Renderer {
 	public static int rgbToX256(int r_U, int g_U, int b_U) {
 		// Calculate the nearest 0-based color index at 16 .. 231
 
-		int ir = v2ci(r_U), ig = v2ci(g_U), ib = v2ci(b_U); // 0..5 each
+		final int ir = v2ci(r_U), ig = v2ci(g_U), ib = v2ci(b_U); // 0..5 each
 		/* 0..215, lazy evaluation */
 
 		// Calculate the nearest 0-based gray index at 232 .. 255
-		int average = (r_U + g_U + b_U) / 3;
-		int grayIndex = average > 238 ? 23 : (average - 3) / 10; // 0..23
+		final int average = (r_U + g_U + b_U) / 3;
+		final int grayIndex = average > 238 ? 23 : (average - 3) / 10; // 0..23
 
-		int cr = i2cv[ir], cg = i2cv[ig], cb = i2cv[ib]; // r/g/b, 0..255 each
-		int gv = 8 + 10 * grayIndex; // same value for r/g/b, 0..255
+		final int cr = i2cv[ir], cg = i2cv[ig], cb = i2cv[ib]; // r/g/b, 0..255 each
+		final int gv = 8 + 10 * grayIndex; // same value for r/g/b, 0..255
 
 		// Return the one which is nearer to the original input rgb value
 
-		int colorErr = distSquare(cr, cg, cb, r_U, g_U, b_U);
-		int grayErr = distSquare(gv, gv, gv, r_U, g_U, b_U);
+		final int colorErr = distSquare(cr, cg, cb, r_U, g_U, b_U);
+		final int grayErr = distSquare(gv, gv, gv, r_U, g_U, b_U);
 		return colorErr <= grayErr ? 16 + colorIndex(ir, ig, ib) : 232 + grayIndex;
 	}
 
@@ -115,11 +115,11 @@ public class Headless256Renderer implements Renderer {
 		y1 /= Headless256Engine.C_MUL_Y;
 		y2 /= Headless256Engine.C_MUL_Y;
 
-		int dx = (int) Math.abs(x2 - x1);
-		int dy = (int) Math.abs(y2 - y1);
+		final int dx = (int) Math.abs(x2 - x1);
+		final int dy = (int) Math.abs(y2 - y1);
 
-		int sx = (x1 < x2) ? 1 : -1;
-		int sy = (y1 < y2) ? 1 : -1;
+		final int sx = (x1 < x2) ? 1 : -1;
+		final int sy = (y1 < y2) ? 1 : -1;
 
 		int err = dx - dy;
 
@@ -134,7 +134,7 @@ public class Headless256Renderer implements Renderer {
 				break;
 			}
 
-			int e2 = 2 * err;
+			final int e2 = 2 * err;
 
 			if (e2 > -dy) {
 				err = err - dy;
@@ -187,8 +187,8 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharLeft(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless256Engine.C_MUL_X;
-		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
+		final int cx = (x) / Headless256Engine.C_MUL_X;
+		final int cy = (y) / Headless256Engine.C_MUL_Y;
 		if (cx >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 			return;
 		}
@@ -203,8 +203,8 @@ public class Headless256Renderer implements Renderer {
 
 	@Override
 	public void glDrawCharRight(int x, int y, char ch) {
-		final int cx = ((int) x) / Headless256Engine.C_MUL_X - 1;
-		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
+		final int cx = (x) / Headless256Engine.C_MUL_X - 1;
+		final int cy = (y) / Headless256Engine.C_MUL_Y;
 		if (cx >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 			return;
 		}
@@ -217,7 +217,7 @@ public class Headless256Renderer implements Renderer {
 		final int cx = ((int) x) / Headless256Engine.C_MUL_X;
 		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
 		int i = 0;
-		for (char c : text.toCharArray()) {
+		for (final char c : text.toCharArray()) {
 			if (cx + i >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 				break;
 			}
@@ -232,7 +232,7 @@ public class Headless256Renderer implements Renderer {
 		final int cx = ((int) x) / Headless256Engine.C_MUL_X - text.length() / 2;
 		final int cy = ((int) y) / Headless256Engine.C_MUL_Y;
 		int i = 0;
-		for (char c : text.toCharArray()) {
+		for (final char c : text.toCharArray()) {
 			if (cx + i >= Headless256Engine.C_WIDTH || cy >= Headless256Engine.C_HEIGHT) {
 				break;
 			}

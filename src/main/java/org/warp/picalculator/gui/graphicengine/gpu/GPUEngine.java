@@ -1,12 +1,10 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -18,6 +16,7 @@ import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 import org.warp.picalculator.gui.graphicengine.Skin;
 
 import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.util.texture.Texture;
 
 public class GPUEngine implements GraphicEngine {
 
@@ -26,10 +25,12 @@ public class GPUEngine implements GraphicEngine {
 	private NEWTWindow wnd;
 	private RenderingLoop d;
 	private GPURenderer r;
-	private Map<String, GPUFont> fontCache = new HashMap<String, GPUFont>();
+	private final Map<String, GPUFont> fontCache = new HashMap<>();
 	int[] size = new int[] { StaticVars.screenSize[0], StaticVars.screenSize[1] };
-	private final CopyOnWriteArrayList<BinaryFont> registeredFonts = new CopyOnWriteArrayList<BinaryFont>();
-	private Semaphore exitSemaphore = new Semaphore(0);
+	private final CopyOnWriteArrayList<BinaryFont> registeredFonts = new CopyOnWriteArrayList<>();
+	private final Semaphore exitSemaphore = new Semaphore(0);
+	protected LinkedList<Texture> registeredTextures;
+	protected LinkedList<Texture> unregisteredTextures;
 
 	@Override
 	public int[] getSize() {
@@ -60,7 +61,7 @@ public class GPUEngine implements GraphicEngine {
 	public void setDisplayMode(int ww, int wh) {
 		size[0] = ww;
 		size[1] = wh;
-		wnd.window.setSize((StaticVars.debugOn & StaticVars.debugWindow2x) ? ww * 2 : ww, (StaticVars.debugOn & StaticVars.debugWindow2x) ? wh * 2 : wh);
+		wnd.window.setSize(ww, wh);
 	}
 
 	@Override
@@ -71,6 +72,8 @@ public class GPUEngine implements GraphicEngine {
 	@Override
 	public void create(Runnable onInitialized) {
 		created = true;
+		registeredTextures = new LinkedList<>();
+		unregisteredTextures = new LinkedList<>();
 		r = new GPURenderer();
 		wnd = new NEWTWindow(this);
 		wnd.create();
@@ -123,24 +126,24 @@ public class GPUEngine implements GraphicEngine {
 
 	@Override
 	public BinaryFont loadFont(String name) throws IOException {
-		for (Entry<String, GPUFont> entry : fontCache.entrySet()) {
+		for (final Entry<String, GPUFont> entry : fontCache.entrySet()) {
 			if (entry.getKey().equals(name)) {
 				return entry.getValue();
 			}
 		}
-		GPUFont font = new GPUFont(this, name);
+		final GPUFont font = new GPUFont(this, name);
 		fontCache.put(name, font);
 		return font;
 	}
 
 	@Override
 	public BinaryFont loadFont(String path, String name) throws IOException {
-		for (Entry<String, GPUFont> entry : fontCache.entrySet()) {
+		for (final Entry<String, GPUFont> entry : fontCache.entrySet()) {
 			if (entry.getKey().equals(name)) {
 				return entry.getValue();
 			}
 		}
-		GPUFont font = new GPUFont(this, path, name);
+		final GPUFont font = new GPUFont(this, path, name);
 		fontCache.put(name, font);
 		return font;
 	}
@@ -154,22 +157,24 @@ public class GPUEngine implements GraphicEngine {
 	public void waitForExit() {
 		try {
 			exitSemaphore.acquire();
-		} catch (InterruptedException e) {}
+		} catch (final InterruptedException e) {}
 	}
 
 	@Override
 	public boolean isSupported() {
-		if (Utils.forceEngine != null && Utils.forceEngine != "gpu")
+		if (Utils.forceEngine != null && Utils.forceEngine != "gpu") {
 			return false;
-		if (Utils.headlessOverride)
+		}
+		if (Utils.headlessOverride) {
 			return false;
+		}
 		boolean available = false;
 		boolean errored = false;
 		try {
 			available = GLProfile.isAvailable(GLProfile.GL2ES2);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			errored = true;
-			System.err.println("OpenGL Error: "+ex.getMessage());
+			System.err.println("OpenGL Error: " + ex.getMessage());
 		}
 		if (!available && !errored) {
 			System.err.println(GLProfile.glAvailabilityToString());
@@ -194,6 +199,10 @@ public class GPUEngine implements GraphicEngine {
 	@Override
 	public CopyOnWriteArrayList<BinaryFont> getRegisteredFonts() {
 		return registeredFonts;
+	}
+
+	public void registerTexture(Texture t) {
+		unregisteredTextures.addLast(t);
 	}
 
 }

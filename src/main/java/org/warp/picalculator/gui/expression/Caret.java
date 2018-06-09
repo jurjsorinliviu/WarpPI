@@ -5,8 +5,8 @@ public class Caret {
 	private int pos;
 	private int remaining;
 	private CaretState state;
-	private int[] lastSize;
-	private int[] lastLocation;
+	private final int[] lastSize;
+	private final int[] lastLocation;
 
 	public Caret(CaretState state, int pos) {
 		this(state, pos, new int[] { 0, 0 }, new int[] { 2, 5 });

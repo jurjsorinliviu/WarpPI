@@ -2,7 +2,6 @@ package org.warp.picalculator.math.functions.equations;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
-import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
 
@@ -12,18 +11,6 @@ public class EquationsSystemPart extends FunctionSingle {
 
 	public EquationsSystemPart(MathContext root, Equation equazione) {
 		super(root, equazione);
-	}
-
-	@Override
-	protected ObjectArrayList<Function> solve() throws Error {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected boolean isSolvable() {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override

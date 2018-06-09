@@ -2,6 +2,9 @@ package org.warp.picalculator.math;
 
 import org.warp.picalculator.Error;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
+import org.warp.picalculator.math.rules.Rule;
+import org.warp.picalculator.math.rules.RuleType;
+import org.warp.picalculator.math.rules.RulesManager;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -136,5 +139,9 @@ public class MathContext {
 //		mc.resultsCount = this.resultsCount;
 //		return mc;
 		throw new UnsupportedOperationException();
+	}
+
+	public ObjectArrayList<Rule> getAcceptableRules(RuleType currentAcceptedRules) {
+		return RulesManager.rules[currentAcceptedRules.ordinal()];
 	}
 }

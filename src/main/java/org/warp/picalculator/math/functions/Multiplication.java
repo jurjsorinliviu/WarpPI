@@ -8,15 +8,6 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.rules.ExpandRule1;
-import org.warp.picalculator.math.rules.ExpandRule2;
-import org.warp.picalculator.math.rules.ExponentRule15;
-import org.warp.picalculator.math.rules.ExponentRule16;
-import org.warp.picalculator.math.rules.FractionsRule14;
-import org.warp.picalculator.math.rules.NumberRule1;
-import org.warp.picalculator.math.rules.NumberRule2;
-import org.warp.picalculator.math.rules.methods.MultiplicationMethod1;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Multiplication extends FunctionOperator {
@@ -27,65 +18,6 @@ public class Multiplication extends FunctionOperator {
 			parameter1 = value2;
 			parameter2 = value1;
 		}*/
-	}
-
-	@Override
-	protected boolean isSolvable() throws InterruptedException {
-		final Function variable1 = getParameter1();
-		final Function variable2 = getParameter2();
-		if (variable1 instanceof Number & variable2 instanceof Number) {
-			return true;
-		}
-		if (NumberRule1.compare(this)) {
-			return true;
-		}
-		if (NumberRule2.compare(this)) {
-			return true;
-		}
-		if (ExpandRule1.compare(this)) {
-			return true;
-		}
-		if (ExpandRule2.compare(this)) {
-			return true;
-		}
-		if (ExponentRule15.compare(this)) {
-			return true;
-		}
-		if (ExponentRule16.compare(this)) {
-			return true;
-		}
-		if (FractionsRule14.compare(this)) {
-			return true;
-		}
-		if (MultiplicationMethod1.compare(this)) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (NumberRule1.compare(this)) {
-			result = NumberRule1.execute(this);
-		} else if (NumberRule2.compare(this)) {
-			result = NumberRule2.execute(this);
-		} else if (ExpandRule1.compare(this)) {
-			result = ExpandRule1.execute(this);
-		} else if (ExpandRule2.compare(this)) {
-			result = ExpandRule2.execute(this);
-		} else if (ExponentRule15.compare(this)) {
-			result = ExponentRule15.execute(this);
-		} else if (ExponentRule16.compare(this)) {
-			result = ExponentRule16.execute(this);
-		} else if (FractionsRule14.compare(this)) {
-			result = FractionsRule14.execute(this);
-		} else if (MultiplicationMethod1.compare(this)) {
-			result = MultiplicationMethod1.execute(this);
-		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
-			result.add(((Number) parameter1).multiply((Number) parameter2));
-		}
-		return result;
 	}
 
 	@Override
@@ -108,19 +40,19 @@ public class Multiplication extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		Function par1 = getParameter1();
-		Function par2 = getParameter2();
-		ObjectArrayList<Block> sub1 = par1.toBlock(context);
-		ObjectArrayList<Block> sub2 = par2.toBlock(context);
-		Block nearLeft = sub1.get(sub1.size() - 1);
-		Block nearRight = sub2.get(0);
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final Function par1 = getParameter1();
+		final Function par2 = getParameter2();
+		final ObjectArrayList<Block> sub1 = par1.toBlock(context);
+		final ObjectArrayList<Block> sub2 = par2.toBlock(context);
+		final Block nearLeft = sub1.get(sub1.size() - 1);
+		final Block nearRight = sub2.get(0);
 
 		if (par1 instanceof Number && ((Number) par1).equals(new Number(context, -1))) {
 			result.add(new BlockChar(MathematicalSymbols.MINUS));
 			if (new Expression(context, par2).parenthesisNeeded()) {
-				ObjectArrayList<Block> parBlocks = par2.toBlock(context);
-				BlockParenthesis par = new BlockParenthesis(parBlocks);
+				final ObjectArrayList<Block> parBlocks = par2.toBlock(context);
+				final BlockParenthesis par = new BlockParenthesis(parBlocks);
 				result.add(par);
 			} else {
 				result.addAll(sub2);
@@ -128,28 +60,43 @@ public class Multiplication extends FunctionOperator {
 			return result;
 		} else {
 			if (new Expression(context, par1).parenthesisNeeded()) {
-				ObjectArrayList<Block> parBlocks = par1.toBlock(context);
-				BlockParenthesis par = new BlockParenthesis(parBlocks);
+				final ObjectArrayList<Block> parBlocks = par1.toBlock(context);
+				final BlockParenthesis par = new BlockParenthesis(parBlocks);
 				result.add(par);
 			} else {
 				result.addAll(sub1);
 			}
-			if ((nearLeft instanceof BlockChar && nearRight instanceof BlockChar)
-					&& !(par2 instanceof Negative)
-					&& !(par1 instanceof Number && par2 instanceof Number)
-					) {
+			if ((nearLeft instanceof BlockChar && nearRight instanceof BlockChar) && !(par2 instanceof Negative) && !(par1 instanceof Number && par2 instanceof Number)) {
 
 			} else {
 				result.add(new BlockChar(MathematicalSymbols.MULTIPLICATION));
 			}
 			if (new Expression(context, par2).parenthesisNeeded()) {
-				ObjectArrayList<Block> parBlocks = par2.toBlock(context);
-				BlockParenthesis par = new BlockParenthesis(parBlocks);
+				final ObjectArrayList<Block> parBlocks = par2.toBlock(context);
+				final BlockParenthesis par = new BlockParenthesis(parBlocks);
 				result.add(par);
 			} else {
 				result.addAll(sub2);
 			}
 			return result;
 		}
+	}
+
+	public boolean isNegative() {
+		return parameter1.equals(new Number(getMathContext(), -1)) || parameter2.equals(new Number(getMathContext(), -1));
+	}
+
+	public Function toPositive() {
+		if (parameter1.equals(new Number(getMathContext(), -1))) {
+			return parameter2;
+		} else if (parameter2.equals(new Number(getMathContext(), -1))) {
+			return parameter2;
+		} else {
+			return null;
+		}
+	}
+
+	public static Multiplication newNegative(MathContext context, Function value2) {
+		return new Multiplication(context, new Number(context, -1), value2);
 	}
 }

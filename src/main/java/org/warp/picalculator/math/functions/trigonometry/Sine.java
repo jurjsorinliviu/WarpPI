@@ -1,47 +1,18 @@
 package org.warp.picalculator.math.functions.trigonometry;
 
-import org.nevec.rjm.BigDecimalMath;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.blocks.BlockSine;
-import org.warp.picalculator.math.AngleMode;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionSingle;
 import org.warp.picalculator.math.MathContext;
-import org.warp.picalculator.math.functions.Number;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Sine extends FunctionSingle {
 
 	public Sine(MathContext root, Function value) {
 		super(root, value);
-	}
-
-	@SuppressWarnings("unused")
-	@Override
-	protected boolean isSolvable() {
-		if (parameter instanceof Number) {
-			if (mathContext.exactMode == false) {
-				return true;
-			}
-		}
-		if (mathContext.angleMode == AngleMode.DEG) {
-			final Function[] solvableValues = new Function[] { new Number(mathContext, 0), new Number(mathContext, 30), new Number(mathContext, 90), };
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error {
-		final ObjectArrayList<Function> results = new ObjectArrayList<>();
-		if (parameter instanceof Number) {
-			if (mathContext.exactMode == false) {
-				results.add(new Number(mathContext, BigDecimalMath.sin(((Number) parameter).getTerm())));
-			}
-		}
-		return results;
 	}
 
 	@Override
@@ -62,11 +33,11 @@ public class Sine extends FunctionSingle {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
-		ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
-		BlockSine bs = new BlockSine();
-		BlockContainer bpc = bs.getNumberContainer();
-		for (Block b : sub) {
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> sub = getParameter(0).toBlock(context);
+		final BlockSine bs = new BlockSine();
+		final BlockContainer bpc = bs.getNumberContainer();
+		for (final Block b : sub) {
 			bpc.appendBlockUnsafe(b);
 		}
 		bpc.recomputeDimensions();

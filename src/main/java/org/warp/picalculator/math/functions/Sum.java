@@ -1,96 +1,18 @@
 package org.warp.picalculator.math.functions;
 
-import java.math.BigDecimal;
-
 import org.warp.picalculator.Error;
-import org.warp.picalculator.Errors;
 import org.warp.picalculator.gui.expression.blocks.Block;
 import org.warp.picalculator.gui.expression.blocks.BlockChar;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.FunctionOperator;
 import org.warp.picalculator.math.MathContext;
 import org.warp.picalculator.math.MathematicalSymbols;
-import org.warp.picalculator.math.rules.NumberRule3;
-import org.warp.picalculator.math.rules.NumberRule5;
-import org.warp.picalculator.math.rules.NumberRule7;
-import org.warp.picalculator.math.rules.VariableRule1;
-import org.warp.picalculator.math.rules.VariableRule2;
-import org.warp.picalculator.math.rules.VariableRule3;
-import org.warp.picalculator.math.rules.methods.SumMethod1;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class Sum extends FunctionOperator {
 
 	public Sum(MathContext root, Function value1, Function value2) {
 		super(root, value1, value2);
-	}
-
-	@Override
-	protected boolean isSolvable() throws InterruptedException {
-		if (parameter1 instanceof Number & parameter2 instanceof Number) {
-			return true;
-		}
-		if (VariableRule1.compare(this)) {
-			return true;
-		}
-		if (VariableRule2.compare(this)) {
-			return true;
-		}
-		if (VariableRule3.compare(this)) {
-			return true;
-		}
-		if (NumberRule3.compare(this)) {
-			return true;
-		}
-		if (NumberRule5.compare(this)) {
-			return true;
-		}
-		if (NumberRule7.compare(this)) {
-			return true;
-		}
-		if (SumMethod1.compare(this)) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	public ObjectArrayList<Function> solve() throws Error, InterruptedException {
-		if (parameter1 == null || parameter2 == null) {
-			throw new Error(Errors.SYNTAX_ERROR);
-		}
-		ObjectArrayList<Function> result = new ObjectArrayList<>();
-		if (VariableRule1.compare(this)) {
-			result = VariableRule1.execute(this);
-		} else if (VariableRule2.compare(this)) {
-			result = VariableRule2.execute(this);
-		} else if (VariableRule3.compare(this)) {
-			result = VariableRule3.execute(this);
-		} else if (NumberRule3.compare(this)) {
-			result = NumberRule3.execute(this);
-		} else if (NumberRule5.compare(this)) {
-			result = NumberRule5.execute(this);
-		} else if (NumberRule7.compare(this)) {
-			result = NumberRule7.execute(this);
-		} else if (SumMethod1.compare(this)) {
-			result = SumMethod1.execute(this);
-		} else if (parameter1.isSimplified() & parameter2.isSimplified()) {
-			if ((mathContext.getChild().equals(this))) {
-				if (((Number) parameter1).term.compareTo(new BigDecimal(2)) == 0 && ((Number) parameter2).term.compareTo(new BigDecimal(2)) == 0) {
-					result.add(new Joke(mathContext, Joke.FISH));
-					return result;
-				} else if (((Number) parameter1).term.compareTo(new BigDecimal(20)) == 0 && ((Number) parameter2).term.compareTo(new BigDecimal(20)) == 0) {
-					result.add(new Joke(mathContext, Joke.TORNADO));
-					return result;
-				} else if (((Number) parameter1).term.compareTo(new BigDecimal(29)) == 0 && ((Number) parameter2).term.compareTo(new BigDecimal(29)) == 0) {
-					result.add(new Joke(mathContext, Joke.SHARKNADO));
-					return result;
-				}
-			}
-			result.add(((Number) parameter1).add((Number) parameter2));
-		}
-		return result;
 	}
 
 	@Override
@@ -113,7 +35,7 @@ public class Sum extends FunctionOperator {
 
 	@Override
 	public ObjectArrayList<Block> toBlock(MathContext context) throws Error {
-		ObjectArrayList<Block> result = new ObjectArrayList<>();
+		final ObjectArrayList<Block> result = new ObjectArrayList<>();
 		result.addAll(getParameter1().toBlock(context));
 		result.add(new BlockChar(MathematicalSymbols.SUM));
 		result.addAll(getParameter2().toBlock(context));

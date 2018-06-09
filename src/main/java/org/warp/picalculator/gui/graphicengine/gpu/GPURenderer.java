@@ -1,17 +1,12 @@
 package org.warp.picalculator.gui.graphicengine.gpu;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.StaticVars;
@@ -31,13 +26,17 @@ public class GPURenderer implements Renderer {
 
 	public static GL2ES1 gl;
 
-	private static final int ELEMENT_VERTICES_COUNT = 6;
 	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
+	private static final int ELEMENT_VERTICES_COUNT = 6, vertSize = 3, texSize = 2, colSize = 4, vertBuffer = 0,
+			texBuffer = 1, colBuffer = 2, vertMax = vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
+			texMax = texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
+			colMax = colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER;
 
+	private int[] handlers;
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();
 	FloatBuffer fbVertices;
-	FloatBuffer txVertices;
-	FloatBuffer colVertices;
+	FloatBuffer fbTextures;
+	FloatBuffer fbColors;
 	int fbElements;
 
 	float[] currentColor = new float[24];
@@ -156,8 +155,8 @@ public class GPURenderer implements Renderer {
 		final float[] tex_vertices = { uvX, uvY, uvX + uvWidth, uvY, uvX, uvY + uvHeight, uvX, uvY + uvHeight, uvX + uvWidth, uvY, uvX + uvWidth, uvY + uvHeight };
 		fbElements++;
 		fbVertices.put(vertices);
-		txVertices.put(tex_vertices);
-		colVertices.put(currentColor);
+		fbTextures.put(tex_vertices);
+		fbColors.put(currentColor);
 	}
 
 	@Override
@@ -182,8 +181,8 @@ public class GPURenderer implements Renderer {
 		final float[] tex_vertices = { 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, };
 		fbElements++;
 		fbVertices.put(vertices);
-		txVertices.put(tex_vertices);
-		colVertices.put(currentColor);
+		fbTextures.put(tex_vertices);
+		fbColors.put(currentColor);
 	}
 
 	@Override
@@ -249,23 +248,24 @@ public class GPURenderer implements Renderer {
 		File f;
 		if (isResource) {
 			f = Files.createTempFile("texture-", ".png").toFile();
+			f.deleteOnExit();
 			ImageIO.write(img, "png", f);
 		} else {
 			f = new File(file);
 		}
-		int imgW = img.getWidth();
-		int imgH = img.getHeight();
+		final int imgW = img.getWidth();
+		final int imgH = img.getHeight();
 		img = null;
 		Utils.gc();
 		return new OpenedTextureData(imgW, imgH, f, isResource);
 	}
-	
+
 	public static class OpenedTextureData {
 		public final int w;
 		public final int h;
 		public final File f;
 		public final boolean deleteOnExit;
-		
+
 		/**
 		 * @param w
 		 * @param h
@@ -278,16 +278,18 @@ public class GPURenderer implements Renderer {
 			this.f = f;
 			this.deleteOnExit = deleteOnExit;
 		}
-		
+
 	}
 
 	static Texture importTexture(File f, boolean deleteOnExit) throws GLException, IOException {
 		final Texture tex = TextureIO.newTexture(f, false);
 		if (deleteOnExit && f.exists()) {
 			try {
-				if (StaticVars.debugOn) throw new IOException("Delete on exit!");
+				if (StaticVars.debugOn) {
+					throw new IOException("Delete on exit!");
+				}
 				f.delete();
-			}catch (Exception ex) {
+			} catch (final Exception ex) {
 				f.deleteOnExit();
 			}
 		}
@@ -297,13 +299,49 @@ public class GPURenderer implements Renderer {
 		return tex;
 	}
 
-	public void startDrawCycle(boolean first) {
+	public void initDrawCycle() {
+		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
 		if (fbVertices == null) {
-			fbVertices = Buffers.newDirectFloatBuffer(3 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
-			txVertices = Buffers.newDirectFloatBuffer(2 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
-			colVertices = Buffers.newDirectFloatBuffer(4 * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER);
+			fbVertices = Buffers.newDirectFloatBuffer(vertMax);
+			fbTextures = Buffers.newDirectFloatBuffer(texMax);
+			fbColors = Buffers.newDirectFloatBuffer(colMax);
+			handlers = new int[3];
+			gl.glGenBuffers(3, handlers, 0);
 		}
-		if (first || fbVertices == null || cycleEnded) {
+		startDrawSegment(false);
+		if (textureChange) {
+			changeTexture();
+		}
+	}
+
+	public void endDrawCycle() {
+		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
+		if (textureChange) {
+			if (fbElements > 0) {
+				endDrawSegment();
+			}
+			changeTexture();
+		} else {
+			if (fbElements > 0) {
+				endDrawSegment();
+			}
+		}
+	}
+
+	private void changeTexture() {
+		precTexEnabled = currentTexEnabled;
+		precTex = currentTex;
+		if (currentTexEnabled) {
+			gl.glEnable(GL.GL_TEXTURE_2D);
+			currentTex.bind(gl);
+		} else {
+			gl.glDisable(GL.GL_TEXTURE_2D);
+		}
+		firstBufferTexDataCall = true;
+	}
+
+	public void startDrawSegment(boolean continuation) {
+		if (!continuation || cycleEnded) {
 			fbElements = 0;
 		}
 		cycleEnded = false;
@@ -313,58 +351,63 @@ public class GPURenderer implements Renderer {
 	private Texture precTex;
 	private boolean cycleEnded = true;
 
-	public void updateDrawCycle() {
-		updateDrawCycle(false, false);
-	}
-
-	public void updateDrawCycle(boolean first, boolean last) {
+	public void doDrawSegment() {
 		final boolean textureChange = precTexEnabled != currentTexEnabled || precTex != currentTex;
-		final boolean changeRequired = last || fbElements >= ELEMENTS_MAX_COUNT_PER_BUFFER;
-		if (first) {
-			startDrawCycle(true);
-		}
+		final boolean changeRequired = fbElements >= ELEMENTS_MAX_COUNT_PER_BUFFER;
 		if (textureChange) {
-			if (!first && fbElements > 0) {
-				endDrawCycle();
-				if (!last) {
-					startDrawCycle(true);
-				}
+			if (fbElements > 0) {
+				endDrawSegment();
+				startDrawSegment(false);
 			}
-			precTexEnabled = currentTexEnabled;
-			precTex = currentTex;
-			if (currentTexEnabled) {
-				gl.glEnable(GL.GL_TEXTURE_2D);
-				currentTex.bind(gl);
-			} else {
-				gl.glDisable(GL.GL_TEXTURE_2D);
-			}
-		} else if (!first) {
+			changeTexture();
+		} else {
 			if (fbElements > 0 && changeRequired) {
-				endDrawCycle();
-				if (!last) {
-					startDrawCycle(false);
-				}
+				endDrawSegment();
+				startDrawSegment(true);
 			}
 		}
 	}
 
-	public void endDrawCycle() {
-		fbVertices.limit(fbVertices.position());
-		txVertices.limit(txVertices.position());
-		colVertices.limit(colVertices.position());
-		fbVertices.rewind();
-		txVertices.rewind();
-		colVertices.rewind();
+	boolean firstBufferDataCall = true;
+	boolean firstBufferTexDataCall = true;
 
-		gl.glVertexPointer(3, GL.GL_FLOAT, 0, fbVertices);
-		gl.glTexCoordPointer(2, GL.GL_FLOAT, 0, txVertices);
-		gl.glColorPointer(4, GL.GL_FLOAT, 0, colVertices);
-		fbVertices.limit(fbVertices.capacity());
-		txVertices.limit(txVertices.capacity());
-		colVertices.limit(colVertices.capacity());
+	public void endDrawSegment() {
+		fbVertices.flip();
+		fbTextures.flip();
+		fbColors.flip();
 
+//		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, fbVertices);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[vertBuffer]);
+		if (firstBufferTexDataCall) {
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, fbVertices.limit() * Buffers.SIZEOF_FLOAT, fbVertices, GL.GL_STATIC_DRAW);
+		} else {
+			gl.glBufferSubData(GL.GL_ARRAY_BUFFER, 0, fbVertices.limit() * Buffers.SIZEOF_FLOAT, fbVertices);
+		}
+		gl.glVertexPointer(vertSize, GL.GL_FLOAT, 0, 0l);
+//		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, fbTextures);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[texBuffer]);
+		if (firstBufferTexDataCall) {
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, fbTextures.limit() * Buffers.SIZEOF_FLOAT, fbTextures, GL.GL_STATIC_DRAW);
+		} else {
+			gl.glBufferSubData(GL.GL_ARRAY_BUFFER, 0, fbTextures.limit() * Buffers.SIZEOF_FLOAT, fbTextures);
+		}
+		gl.glTexCoordPointer(texSize, GL.GL_FLOAT, 0, 0l);
+//		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, fbColors);
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, handlers[colBuffer]);
+		if (firstBufferTexDataCall) {
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, fbColors.limit() * Buffers.SIZEOF_FLOAT, fbColors, GL.GL_STATIC_DRAW);
+		} else {
+			gl.glBufferSubData(GL.GL_ARRAY_BUFFER, 0, fbColors.limit() * Buffers.SIZEOF_FLOAT, fbColors);
+		}
+		gl.glColorPointer(colSize, GL.GL_FLOAT, 0, 0l);
+
+		fbVertices.limit(vertMax);
+		fbTextures.limit(texMax);
+		fbColors.limit(colMax);
 		gl.glDrawArrays(GL.GL_TRIANGLES, 0, fbElements * ELEMENT_VERTICES_COUNT);
 		//gl.glDrawArrays(GL.GL_TRIANGLE_STRIP, 0, fbElements * ELEMENT_VERTICES_COUNT);
+		firstBufferDataCall = false;
+		firstBufferTexDataCall = false;
 		cycleEnded = true;
 
 //		deleteBuffer(fbVertices);
@@ -385,18 +428,18 @@ public class GPURenderer implements Renderer {
 	public void glClearSkin() {
 		if (currentTex != null) {
 			currentTex = null;
-			updateDrawCycle();
+			doDrawSegment();
 		}
 	}
 
 	void disableTexture() {
 		currentTexEnabled = false;
-		updateDrawCycle();
+		doDrawSegment();
 	}
 
 	void enableTexture() {
 		currentTexEnabled = true;
-		updateDrawCycle();
+		doDrawSegment();
 	}
 
 	void useTexture(Texture t, float w, float h) {

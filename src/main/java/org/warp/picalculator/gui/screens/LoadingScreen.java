@@ -1,7 +1,7 @@
 package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.device.Keyboard.Key;
+import org.warp.picalculator.device.Key;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.GraphicUtils;
 
@@ -10,6 +10,8 @@ public class LoadingScreen extends Screen {
 	public float endLoading;
 	boolean mustRefresh = true;
 	public float loadingTextTranslation = 0.0f;
+	public boolean loaded = false;
+	private float previousZoomValue = 1;
 
 	public LoadingScreen() {
 		super();
@@ -22,14 +24,18 @@ public class LoadingScreen extends Screen {
 	}
 
 	@Override
-	public void init() throws InterruptedException {}
+	public void initialized() throws InterruptedException {
+		previousZoomValue = StaticVars.getCurrentZoomValue();
+		StaticVars.windowZoom = 1;
+	}
 
 	@Override
 	public void beforeRender(float dt) {
 		loadingTextTranslation = GraphicUtils.sinDeg(endLoading * 90f) * 10f;
 
 		endLoading += dt;
-		if (StaticVars.debugOn || endLoading >= 5f) {
+		if (loaded && (StaticVars.debugOn || endLoading >= 3.5f)) {
+			StaticVars.windowZoom = previousZoomValue;
 			DisplayManager.INSTANCE.setScreen(new MathInputScreen());
 		}
 		mustRefresh = true;
