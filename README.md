@@ -6,6 +6,11 @@ It works but many fundamental features aren't complete.**<br>
 
 **If you really want to build and test it on your computer take account of that.**
 
+# Live preview
+This preview has been built using TeaVM: a JVM made in javascript.
+Obviously it runs slower than the original.
+https://local.cavallium.it/webtests/warppiweb/
+
 # Keypad PCB
 https://workspace.circuitmaker.com/Projects/Details/Andrea-Cavalli/Scientific-calculator-Keypad
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/keypad-preview.jpg "Pictures")
