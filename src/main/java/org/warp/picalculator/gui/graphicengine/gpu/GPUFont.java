@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
@@ -64,10 +66,10 @@ public class GPUFont implements BinaryFont {
 		intervalsTotalSize = font.intervalsTotalSize;
 		boolean[][] rawchars = font.rawchars;
 		font = null;
-		Utils.gc();
+		PlatformUtils.gc();
 		pregenTexture(rawchars);
 		rawchars = null;
-		Utils.gc();
+		PlatformUtils.gc();
 	}
 
 	public int[] getCharIndexes(String txt) {
@@ -162,7 +164,7 @@ public class GPUFont implements BinaryFont {
 		}
 		chars = null;
 		png.end();
-		Utils.gc();
+		PlatformUtils.gc();
 
 		try {
 			memoryWidth = w;
@@ -172,7 +174,7 @@ public class GPUFont implements BinaryFont {
 			textureH = h;
 			outputStream.flush();
 			outputStream.close();
-			Utils.gc();
+			PlatformUtils.gc();
 			tmpFont = f;
 		} catch (GLException | IOException e) {
 			e.printStackTrace();

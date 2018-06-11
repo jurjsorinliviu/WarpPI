@@ -4,6 +4,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -12,7 +14,10 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 import org.warp.picalculator.ConsoleUtils;
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.deps.DSystem;
+import org.warp.picalculator.deps.StorageUtils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 
@@ -95,12 +100,21 @@ public class CPUFont implements BinaryFont {
 			}
 		}
 
-		Utils.gc();
+		PlatformUtils.gc();
 	}
 
 	private void loadFont(String string) throws IOException {
-		final URL res = isResource ? this.getClass().getResource(string) : new File(string).toURI().toURL();
-		final int[] file = Utils.realBytes(Utils.convertStreamToByteArray(res.openStream(), res.getFile().length()));
+		InputStream res;
+		try {
+			if (!string.startsWith("/")) 
+				string = "/"+string;
+			res = StorageUtils.getResourceStream(string);
+		} catch (URISyntaxException e) {
+			IOException ex = new IOException();
+			ex.initCause(e);
+			throw ex;
+		}
+		final int[] file = Utils.realBytes(Utils.convertStreamToByteArray(res, res.available()));
 		final int filelength = file.length;
 		if (filelength >= 16) {
 			if (file[0x0] == 114 && file[0x1] == 97 && file[0x2] == 119 && file[0x3] == 0xFF && file[0x8] == 0xFF && file[0xD] == 0xFF) {
@@ -138,7 +152,7 @@ public class CPUFont implements BinaryFont {
 					} catch (final Exception ex) {
 						ex.printStackTrace();
 						System.out.println(string);
-						System.exit(-1);
+						DSystem.exit(-1);
 					}
 				}
 			} else {

@@ -105,7 +105,7 @@ public class Keyboard {
 		kt.start();
 	}
 	
-	private synchronized static void debugKeyPressed(int keyCode) {
+	public static void debugKeyPressed(int keyCode) {
 		switch (keyCode) {
 			case KeyEvent.VK_ESCAPE:
 				Keyboard.keyPressed(Key.POWEROFF);
@@ -683,10 +683,12 @@ public class Keyboard {
 			switch (k) {
 				case SHIFT:
 					Keyboard.shift = !Keyboard.shift;
+					PlatformUtils.shiftChanged(Keyboard.shift);
 					refresh = true;
 					break;
 				case ALPHA:
 					Keyboard.alpha = !Keyboard.alpha;
+					PlatformUtils.alphaChanged(Keyboard.alpha);
 					refresh = true;
 					break;
 				default:
@@ -695,9 +697,11 @@ public class Keyboard {
 			if (StaticVars.debugOn == false) {
 				if (k != Key.SHIFT && Keyboard.shift) {
 					Keyboard.shift = false;
+					PlatformUtils.shiftChanged(Keyboard.shift);
 					refresh = true;
 				} else if (k != Key.ALPHA && Keyboard.alpha) {
 					Keyboard.alpha = false;
+					PlatformUtils.alphaChanged(Keyboard.alpha);
 					refresh = true;
 				}
 			}

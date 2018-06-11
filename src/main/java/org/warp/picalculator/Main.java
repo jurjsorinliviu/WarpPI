@@ -57,43 +57,46 @@ public class Main {
 		}
 		Utils.debugThirdScreen = StaticVars.debugOn & false;
 		for (final String arg : args) {
-			if (arg.contains("2x")) {
+			if (arg.equalsIgnoreCase("2x")) {
 				StaticVars.debugWindow2x = true;
 			}
-			if (arg.contains("headless")) {
+			if (arg.equalsIgnoreCase("headless")) {
 				Utils.headlessOverride = true;
 			}
-			if (arg.contains("headless-8")) {
+			if (arg.equalsIgnoreCase("headless-8")) {
 				Utils.headlessOverride = true;
 				Utils.forceEngine = "console-8";
 			}
-			if (arg.contains("headless-256")) {
+			if (arg.equalsIgnoreCase("headless-256")) {
 				Utils.headlessOverride = true;
 				Utils.forceEngine = "console-256";
 			}
-			if (arg.contains("headless-24bit")) {
+			if (arg.equalsIgnoreCase("headless-24bit")) {
 				Utils.headlessOverride = true;
 				Utils.forceEngine = "console-24bit";
 			}
-			if (arg.contains("cpu")) {
+			if (arg.equalsIgnoreCase("cpu")) {
 				Utils.forceEngine = "cpu";
 			}
-			if (arg.contains("gpu")) {
+			if (arg.equalsIgnoreCase("gpu")) {
 				Utils.forceEngine = "gpu";
 			}
-			if (arg.contains("fb")) {
+			if (arg.equalsIgnoreCase("fb")) {
 				Utils.forceEngine = "fb";
 			}
-			if (arg.contains("nogui")) {
+			if (arg.equalsIgnoreCase("nogui")) {
 				Utils.forceEngine = "nogui";
 			}
-			if (arg.contains("verbose") || arg.contains("debug")) {
+			if (arg.equalsIgnoreCase("html")) {
+				Utils.forceEngine = "html";
+			}
+			if (arg.equalsIgnoreCase("verbose") || arg.equalsIgnoreCase("debug")) {
 				StaticVars.outputLevel = ConsoleUtils.OUTPUTLEVEL_DEBUG_VERBOSE;
 			}
-			if (arg.contains("uncached")) {
+			if (arg.equalsIgnoreCase("uncached")) {
 				Utils.debugCache = true;
 			}
-			if (arg.contains("ms-dos")) {
+			if (arg.equalsIgnoreCase("ms-dos")) {
 				Utils.headlessOverride = true;
 				Utils.msDosMode = true;
 			}

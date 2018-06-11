@@ -9,27 +9,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.FileSystemAlreadyExistsException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
+import org.warp.picalculator.deps.StorageUtils;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.Function;
@@ -497,7 +490,7 @@ public class Utils {
 		final int len = bytes.length;
 		final int[] realbytes = new int[len];
 		for (int i = 0; i < len; i++) {
-			realbytes[i] = Byte.toUnsignedInt(bytes[i]);
+			realbytes[i] = bytes[i] & 0xFF;
 		}
 		return realbytes;
 	}
@@ -675,82 +668,17 @@ public class Utils {
 		return (PlatformUtils.osName.indexOf("win") >= 0);
 	}
 
-	public static void gc() {
-		Object obj = new Object();
-		final WeakReference<Object> ref = new WeakReference<>(obj);
-		obj = null;
-		while (ref.get() != null) {
-			System.gc();
-		}
-	}
-
 	public static <T> ObjectArrayList<T> newArrayList(T o) {
 		final ObjectArrayList<T> t = new ObjectArrayList<>();
 		t.add(o);
 		return t;
 	}
 
-	public static Path getResource(String string) throws IOException, URISyntaxException {
-		final URL res = Main.instance.getClass().getResource(string);
-		final boolean isResource = res != null;
-		if (isResource) {
-			try {
-				final URI uri = res.toURI();
-				if (res.getProtocol().equalsIgnoreCase("jar")) {
-					try {
-						FileSystems.newFileSystem(uri, Collections.emptyMap());
-					} catch (final FileSystemAlreadyExistsException e) {
-						FileSystems.getFileSystem(uri);
-					}
-					final Path myFolderPath = Paths.get(uri);
-					return myFolderPath;
-				} else {
-					return Paths.get(uri);
-				}
-			} catch (final java.lang.IllegalArgumentException e) {
-				throw e;
-			}
-		} else {
-			return Paths.get(string.substring(1));
-		}
-	}
-
 	public static InputStream getResourceStreamSafe(String string) throws IOException, URISyntaxException {
 		try {
-			return getResourceStream(string);
+			return StorageUtils.getResourceStream(string);
 		} catch (final Exception ex) {
 			return null;
-		}
-	}
-
-	public static InputStream getResourceStream(String string) throws IOException, URISyntaxException {
-		final URL res = Main.instance.getClass().getResource(string);
-		final boolean isResource = res != null;
-		if (isResource) {
-			try {
-				final URI uri = res.toURI();
-				if (res.getProtocol().equalsIgnoreCase("jar")) {
-					try {
-						FileSystems.newFileSystem(uri, Collections.emptyMap());
-					} catch (final FileSystemAlreadyExistsException e) {
-						FileSystems.getFileSystem(uri);
-					}
-					final Path myFolderPath = Paths.get(uri);
-					return Files.newInputStream(myFolderPath);
-				} else {
-					return Files.newInputStream(Paths.get(uri));
-				}
-			} catch (final java.lang.IllegalArgumentException e) {
-				throw e;
-			}
-		} else {
-			return Files.newInputStream(Paths.get(string.substring(1)));
-		}
-	}
-
-	public static String read(InputStream input) throws IOException {
-		try (BufferedReader buffer = new BufferedReader(new InputStreamReader(input))) {
-			return buffer.lines().collect(Collectors.joining("\n"));
 		}
 	}
 

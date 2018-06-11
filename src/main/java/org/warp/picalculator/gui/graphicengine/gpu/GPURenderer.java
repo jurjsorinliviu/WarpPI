@@ -9,6 +9,7 @@ import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import javax.imageio.ImageIO;
 
+import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -256,7 +257,7 @@ public class GPURenderer implements Renderer {
 		final int imgW = img.getWidth();
 		final int imgH = img.getHeight();
 		img = null;
-		Utils.gc();
+		PlatformUtils.gc();
 		return new OpenedTextureData(imgW, imgH, f, isResource);
 	}
 

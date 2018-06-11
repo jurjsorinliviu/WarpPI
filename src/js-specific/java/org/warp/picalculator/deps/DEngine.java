@@ -2,6 +2,7 @@ package org.warp.picalculator.deps;
 
 import org.warp.picalculator.ClassUtils;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
+import org.warp.picalculator.gui.graphicengine.html.HtmlEngine;
 
 public class DEngine {
 	public static GraphicEngine newCPUEngine() {
@@ -21,5 +22,8 @@ public class DEngine {
 	}
 	public static GraphicEngine newFBEngine() {
 		return null;
+	}
+	public static GraphicEngine newHtmlEngine() {
+		return new HtmlEngine();
 	}
 }

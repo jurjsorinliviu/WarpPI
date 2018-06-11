@@ -2,6 +2,7 @@ package org.warp.picalculator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 
 public final class PlatformUtils {
 	public static final boolean isJavascript = false;
@@ -28,5 +29,23 @@ public final class PlatformUtils {
 		final PrintWriter pw = new PrintWriter(sw);
 		e.printStackTrace(pw);
 		return sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
+	}
+
+	public static void loadPlatformRules() {
+	}
+
+	public static void gc() {
+		Object obj = new Object();
+		final WeakReference<Object> ref = new WeakReference<>(obj);
+		obj = null;
+		while (ref.get() != null) {
+			System.gc();
+		}
+	}
+
+	public static void shiftChanged(boolean alpha) {
+	}
+
+	public static void alphaChanged(boolean alpha) {
 	}
 }

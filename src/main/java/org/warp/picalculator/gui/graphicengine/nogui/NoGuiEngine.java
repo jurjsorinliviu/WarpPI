@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.deps.DSemaphore;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
@@ -13,7 +14,7 @@ import org.warp.picalculator.gui.graphicengine.Skin;
 public class NoGuiEngine implements GraphicEngine {
 
 	private boolean initialized;
-	public Semaphore exitSemaphore = new Semaphore(0);
+	public DSemaphore exitSemaphore = new DSemaphore(0);
 
 	@Override
 	public int[] getSize() {
@@ -274,7 +275,7 @@ public class NoGuiEngine implements GraphicEngine {
 
 	@Override
 	public boolean isSupported() {
-		return Utils.forceEngine != null && Utils.forceEngine.equals("nogui");
+		return true;
 	}
 
 	@Override

@@ -24,4 +24,7 @@ public class DEngine {
 	public static GraphicEngine newFBEngine() {
 		return new FBEngine();
 	}
+	public static GraphicEngine newHtmlEngine() {
+		return null;
+	}
 }

@@ -10,6 +10,7 @@ import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.deps.DEngine;
+import org.warp.picalculator.deps.DSemaphore;
 import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
@@ -40,7 +41,7 @@ public final class DisplayManager implements RenderingLoop {
 
 	private Screen screen;
 	private final HUD hud;
-	public Semaphore screenChange = new Semaphore(0);
+	public DSemaphore screenChange = new DSemaphore(0);
 	public String displayDebugString;
 	public ObjectArrayList<GUIErrorMessage> errorMessages;
 
@@ -110,41 +111,46 @@ public final class DisplayManager implements RenderingLoop {
 
 	private GraphicEngine chooseGraphicEngine() {
 		GraphicEngine d;
-		d = new NoGuiEngine();
-		if (d.isSupported()) {
-			ConsoleUtils.out.println(1, "Using NoGui Graphic Engine");
-			return d;
-		}
 		if (!StaticVars.debugOn) {
 			d = DEngine.newFBEngine();
-			if (d.isSupported()) {
+			if (d != null && d.isSupported()) {
 				ConsoleUtils.out.println(1, "Using FB Graphic Engine");
 				return d;
 			}
 		}
 		d = DEngine.newGPUEngine();
-		if (d.isSupported()) {
+		if (d != null && d.isSupported()) {
 			ConsoleUtils.out.println(1, "Using GPU Graphic Engine");
 			return d;
 		}
 		d = DEngine.newCPUEngine();
-		if (d.isSupported()) {
+		if (d != null && d.isSupported()) {
 			ConsoleUtils.out.println(1, "Using CPU Graphic Engine");
 			return d;
 		}
 		d = DEngine.newHeadless24bitEngine();
-		if (d.isSupported()) {
+		if (d != null && d.isSupported()) {
 			System.err.println("Using Headless 24 bit Engine! This is a problem! No other graphic engines are available.");
 			return d;
 		}
 		d = DEngine.newHeadless256Engine();
-		if (d.isSupported()) {
+		if (d != null && d.isSupported()) {
 			System.err.println("Using Headless 256 Engine! This is a problem! No other graphic engines are available.");
 			return d;
 		}
 		d = DEngine.newHeadless8Engine();
-		if (d.isSupported()) {
+		if (d != null && d.isSupported()) {
 			System.err.println("Using Headless basic Engine! This is a problem! No other graphic engines are available.");
+			return d;
+		}
+		d = DEngine.newHtmlEngine();
+		if (d != null && d.isSupported()) {
+			ConsoleUtils.out.println(ConsoleUtils.OUTPUTLEVEL_NODEBUG, "Using Html Graphic Engine");
+			return d;
+		}
+		d = new NoGuiEngine();
+		if (d != null && d.isSupported()) {
+			ConsoleUtils.out.println(1, "Using NoGui Graphic Engine");
 			return d;
 		}
 		throw new UnsupportedOperationException("No graphic engines available.");
