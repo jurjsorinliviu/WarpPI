@@ -5,7 +5,7 @@
 	<groupId>org.warp.picalculator</groupId>
 	<artifactId>warppi-calculator</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.7-SNAPSHOT</version>
 	<name>WarpPI Calculator</name>
 	<url>http://warp.ovh</url>
 	<properties>
