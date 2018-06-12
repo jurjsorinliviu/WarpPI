@@ -516,7 +516,7 @@ public class Keyboard {
 		}
 	}
 
-	private synchronized static void keyReleasedRaw(int row, int col) {
+	public synchronized static void keyReleasedRaw(int row, int col) {
 //		KeyboardDebugScreen.keyX = row;
 //		KeyboardDebugScreen.keyY = col;
 		if (row == 1 && col == 1) {
@@ -599,7 +599,7 @@ public class Keyboard {
 					{ Key.NONE, Key.NONE, Key.NONE } /* 7,7 */
 			} };
 
-	static synchronized void keyPressedRaw(int row, int col) {
+	public static synchronized void keyPressedRaw(int row, int col) {
 //		KeyboardDebugScreen.keyX = row;
 //		KeyboardDebugScreen.keyY = col;
 		final Key k = keyMap[row][col][shift ? 1 : alpha ? 2 : 0];

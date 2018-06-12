@@ -1,6 +1,8 @@
 package org.warp.picalculator.gui.graphicengine.html;
 
+import org.teavm.jso.canvas.CanvasImageSource;
 import org.teavm.jso.canvas.CanvasRenderingContext2D;
+import org.teavm.jso.dom.html.HTMLImageElement;
 import org.teavm.jso.typedarrays.Uint8ClampedArray;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.gui.graphicengine.Renderer;
@@ -138,151 +140,15 @@ public class HtmlRenderer implements Renderer {
 			}
 			y0 = 0;
 		}
-		Uint8ClampedArray oldColors = g.getImageData(x0, y0, x1-x0, y1-y0).getData();
-		for (double pixelX = 0; pixelX < x1 - x0; pixelX++) {
-			for (double pixelY = 0; pixelY < y1 - y0; pixelY++) {
-				final int imgx = (int) (x0 + pixelX);
-				final int imgy = (int) (y0 + pixelY);
-				final int oldindex = (int) (((pixelX)+(pixelY*(x1-x0))) * 4);
-				final int index = imgx + imgy;
-				if (index >= 0 && index < size[0]*size[1] && pixelX < size[0]) {
-					final int texx = (int) (pixelX / incrementX);
-					final int texy = (int) (pixelY / incrementY);
-					int expX = 0;
-					int expY = 0;
-					if (incrementX < 1) {
-						expX = (int) Math.round(1d / incrementX / 2d);
-					}
-					if (incrementY < 1) {
-						expY = (int) Math.round(1d / incrementY / 2d);
-					}
-					if (ENABLE_SUPERSAMPLING) {
-						final int[] newColors = new int[(1 + expX * 2) * (1 + expY * 2)];
-						for (int expXi = -expX; expXi <= expX; expXi++) {
-							for (int expYi = -expY; expYi <= expY; expYi++) {
-								final int skinIndex = (int) (s0 + (texx * (flippedX ? -1d : 1d) + (flippedX ? -(s0 - s1) - 1 : 0) + expXi) + (t0 + (texy * (flippedY ? -1d : 1d) + (flippedY ? -(t0 - t1) - 1 : 0) + expYi)) * currentSkin.skinSize[0]);
-								final int idx = (expXi + expX) + (expYi + expY) * (1 + expY * 2);
-								if (idx >= 0 && idx < newColors.length) {
-									newColors[idx] = getSkinColorAt(currentSkin.skinData, skinIndex);
-								}
-							}
-						}
-						newColor = joinColors(newColors);
-					} else {
-						final int skinIndex = (int) (s0 + (texx * (flippedX ? -1d : 1d) + (flippedX ? -(s0 - s1) - 1 : 0)) + (t0 + (texy * (flippedY ? -1d : 1d) + (flippedY ? -(t0 - t1) - 1 : 0))) * currentSkin.skinSize[0]);
-						newColor = getSkinColorAt(currentSkin.skinData, skinIndex);
-					}
-					
-					if (transparent) {
-						if (ENABLE_TRANSPARENCY) {
-							int oldColorR = oldColors.get(oldindex+0) & 0xFF;
-							int oldColorG = oldColors.get(oldindex+1) & 0xFF;
-							int oldColorB = oldColors.get(oldindex+2) & 0xFF;
-							int oldColorA = 0xFF;
-							oldColor = (oldColorA << 24) | (oldColorR << 16) | (oldColorG << 8) | (oldColorB);
-							final double a2 = (newColor >> 24 & 0xFF) / 255f;
-							final double a1 = 1f - a2;
-							final int r = (int) ((oldColor >> 16 & 0xFF) * a1 + (newColor >> 16 & 0xFF) * a2);
-							final int gg = (int) ((oldColor >> 8 & 0xFF) * a1 + (newColor >> 8 & 0xFF) * a2);
-							final int b = (int) ((oldColor & 0xFF) * a1 + (newColor & 0xFF) * a2);
-							newColor = 0xFF000000 | r << 16 | gg << 8 | b;
-						}
-					}
-					
-					if (!ENABLE_TRANSPARENCY) {
-						if (transparent && (((newColor >> 24) & 0xFF) < 0x02)) {
-							g.setFillStyle(clearColor);
-						} else {
-							g.setFillStyle(toHex8(newColor));
-						}
-					} else {
-						g.setFillStyle(toHex8(stackColors(oldColor, newColor)));
-					}
-					g.fillRect(imgx, imgy, 1, 1 );
-				}
-			}
-		}
+		g.drawImage(currentSkin.getImgElement(), s0, t0, s1-s0, t1-t0, x0, y0, x1-x0, y1-y0);
 	}
-
-	private int joinColors(int[] newColors) {
-		double a = 0;
-		double r = 0;
-		double g = 0;
-		double b = 0;
-		for (final int newColor : newColors) {
-			a += newColor >> 24 & 0xFF;
-			r += newColor >> 16 & 0xFF;
-			g += newColor >> 8 & 0xFF;
-			b += newColor & 0xFF;
-		}
-		return (int)(a / (double)newColors.length) << 24 | (int)(r / (double)newColors.length) << 16 | (int)(g / (double)newColors.length) << 8 | (int)(b / (double)newColors.length);
-	}
-
-	private int getSkinColorAt(int[] skinData, int skinIndex) {
-		int color = hexToInt(currentColor);
-		int newColor = 0;
-		if (skinIndex >= 0 && skinIndex < skinData.length) {
-			newColor = skinData[skinIndex] & 0xFFFFFFFF;
-			final int a = (int) ((double)((newColor >> 24 & 0xFF)) * ((double) (color >> 24 & 0xFF) / (double) 0xFF));
-			final int r = (int) ((double)((newColor >> 16 & 0xFF)) * ((double) (color >> 16 & 0xFF) / (double) 0xFF));
-			final int g = (int) ((double)((newColor >> 8 & 0xFF)) * ((double) (color >> 8 & 0xFF) / (double) 0xFF));
-			final int b = (int) ((double)((newColor & 0xFF)) * ((double) (color & 0xFF) / (double) 0xFF));
-			newColor = a << 24 | r << 16 | g << 8 | b;
-		}
-		return newColor;
-	}
-
 
 	@Override
 	public void glFillColor(float x, float y, float width, float height) {
-		final int[] size = e.getSize();
-		int color = hexToInt(currentColor);
-		
 		x += StaticVars.screenPos[0];
 		y += StaticVars.screenPos[1];
-
-		final int ix = (int) x;
-		final int iy = (int) y;
-		final int iw = (int) width;
-		final int ih = (int) height;
-
-		int x0 = ix;
-		int y0 = iy;
-		int x1 = ix + iw;
-		int y1 = iy + ih;
-		
-		if (ix >= size[0] || iy >= size[1]) {
-			return;
-		}
-		if (x0 < 0) {
-			x0 = 0;
-		}
-		if (x1 >= size[0]) {
-			x1 = size[0];
-		}
-		if (y0 < 0) {
-			y0 = 0;
-		}
-		if (y1 >= size[1]) {
-			y1 = size[1];
-		}
-		final int sizeW = size[0];
-		for (int px = x0; px < x1; px++) {
-			for (int py = y0; py < y1; py++) {
-				final int idx = (px) + (py) * sizeW;
-				if (px < sizeW && idx >= 0 && idx < size[0]*size[1]) {
-					Uint8ClampedArray oldColor = g.getImageData(px, py, 1, 1).getData();
-					int oldColorR = oldColor.get(0) & 0xFF;
-					int oldColorG = oldColor.get(1) & 0xFF;
-					int oldColorB = oldColor.get(2) & 0xFF;
-					int oldColorA = 0xFF;
-					int oldColorARGB = (oldColorA << 24) | (oldColorR << 16) | (oldColorG << 8) | (oldColorB);
-					g.setFillStyle(toHex(stackColors(oldColorARGB, color)));
-					g.fillRect( px, py, 1, 1 );
-					
-				}
-			}
-		}
+		g.setFillStyle(currentColor);
+		g.fillRect( x, y, width, height );
 	}
 
 	@Override
@@ -294,50 +160,19 @@ public class HtmlRenderer implements Renderer {
 	public void glDrawStringLeft(float x, float y, String textString) {
 		x += StaticVars.screenPos[0];
 		y += StaticVars.screenPos[1];
-
-		final int ix = (int) x;
-		final int iy = (int) y;
+		
+		f.imgElCtx.setGlobalCompositeOperation("source-in");
+		f.imgElCtx.setFillStyle(currentColor);
+		f.imgElCtx.fillRect(0, 0, f.imgEl.getWidth(), f.imgEl.getHeight());
 
 		final int[] text = f.getCharIndexes(textString);
 		final int[] screenSize = e.getSize();
-		final int screenLength = screenSize[0]*screenSize[1];
-		int screenPos = 0;
-
-		int currentInt;
-		int currentIntBitPosition;
-		int bitData;
 		int cpos;
-		int j;
 		final int l = text.length;
-		int color = hexToInt(currentColor);
 		for (int i = 0; i < l; i++) {
 			cpos = (i * (f.charW));
 			final int charIndex = text[i];
-			for (int dy = 0; dy < f.charH; dy++) {
-				for (int dx = 0; dx < f.charW; dx++) {
-					j = ix + cpos + dx;
-					if (j > 0 & j < screenSize[0]) {
-						final int bit = dx + dy * f.charW;
-						currentInt = (int) (Math.floor(bit) / (HtmlFont.intBits));
-						currentIntBitPosition = bit - (currentInt * HtmlFont.intBits);
-						final int charIdx = charIndex * f.charIntCount + currentInt;
-						if (charIdx >= 0 && charIdx < f.chars32.length) {
-							bitData = (f.chars32[charIdx] >> currentIntBitPosition) & 1;
-							screenPos = ix + cpos + dx + (iy + dy) * screenSize[0];
-							if (bitData == 1 & screenLength > screenPos & screenPos >= 0) {
-								Uint8ClampedArray oldColor = g.getImageData(ix+cpos+dx, iy+dy, 1, 1).getData();
-								int oldColorR = oldColor.get(0) & 0xFF;
-								int oldColorG = oldColor.get(1) & 0xFF;
-								int oldColorB = oldColor.get(2) & 0xFF;
-								int oldColorA = 0xFF;
-								int oldColorARGB = (oldColorA << 24) | (oldColorR << 16) | (oldColorG << 8) | (oldColorB);
-								g.setFillStyle(toHex(stackColors(oldColorARGB, color)));
-								g.fillRect( ix+cpos+dx, iy+dy, 1, 1 );
-							}
-						}
-					}
-				}
-			}
+			g.drawImage(f.imgEl, 0, charIndex*f.charH, f.charW, f.charH, x+cpos, y, f.charW, f.charH);
 		}
 	}
 	

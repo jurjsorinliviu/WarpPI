@@ -42,7 +42,7 @@ public class HtmlEngine implements GraphicEngine {
 	private RenderingLoop renderingLoop;
 	private HtmlRenderer renderer;
 	private int width = -1, height = -1;
-	private final int frameTime = (int) (1000d/5d);
+	private final int frameTime = (int) (1000d/10d);
 	
 	@Override
 	public int[] getSize() {
@@ -133,30 +133,52 @@ public class HtmlEngine implements GraphicEngine {
 					HTMLButtonElement button = target.cast();
 					new Thread(() -> {
 						try {
-							if (Keyboard.alpha && !Keyboard.shift) {
-								if (button.hasAttribute("keycodea")) {
-									Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycodea")));
-								} else {
-									Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycode")));
+							if (button.hasAttribute("keycode") && button.getAttribute("keycode").contains(",")) {
+								String code = button.getAttribute("keycode");
+								String[] coordinates = code.split(",", 2);
+								boolean removeshift = Keyboard.shift && Integer.parseInt(coordinates[0]) != 0 && Integer.parseInt(coordinates[1]) != 0;
+								boolean removealpha = Keyboard.alpha && Integer.parseInt(coordinates[0]) != 0 && Integer.parseInt(coordinates[1]) != 1;
+								Keyboard.keyPressedRaw(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
+								if (removeshift) {
+									Keyboard.keyPressedRaw(0,0);
 								}
-							} else if (!Keyboard.alpha && Keyboard.shift) {
-								if (button.hasAttribute("keycodes")) {
-									Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycodes")));
-								} else {
-									Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycode")));
+								if (removealpha) {
+									Keyboard.keyPressedRaw(0,1);
 								}
-							} else if (Keyboard.alpha && Keyboard.shift) {
-								if (button.hasAttribute("keycodesa")) {
-									Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycodesa")));
-								} else {
+								Thread.sleep(100);
+								Keyboard.keyReleasedRaw(Integer.parseInt(coordinates[0]), Integer.parseInt(coordinates[1]));
+								if (removeshift) {
+									Keyboard.keyReleasedRaw(0,0);
+								}
+								if (removealpha) {
+									Keyboard.keyReleasedRaw(0,1);
+								}
+							} else {
+								if (Keyboard.alpha && !Keyboard.shift) {
+									if (button.hasAttribute("keycodea")) {
+										Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycodea")));
+									} else {
+										Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycode")));
+									}
+								} else if (!Keyboard.alpha && Keyboard.shift) {
 									if (button.hasAttribute("keycodes")) {
 										Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycodes")));
 									} else {
 										Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycode")));
 									}
+								} else if (Keyboard.alpha && Keyboard.shift) {
+									if (button.hasAttribute("keycodesa")) {
+										Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycodesa")));
+									} else {
+										if (button.hasAttribute("keycodes")) {
+											Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycodes")));
+										} else {
+											Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycode")));
+										}
+									}
+								} else {
+									Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycode")));
 								}
-							} else {
-								Keyboard.debugKeyPressed(Integer.parseInt(button.getAttribute("keycode")));
 							}
 						} catch (Exception ex) {
 							ex.printStackTrace();
@@ -246,7 +268,7 @@ public class HtmlEngine implements GraphicEngine {
 
 	@Override
 	public HtmlFont loadFont(String path, String fontName) throws IOException {
-		return new HtmlFont(path, fontName);
+		return new HtmlFont(fontName);
 	}
 
 	@Override

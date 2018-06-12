@@ -35,7 +35,7 @@ import org.teavm.jso.browser.Window;
 import org.warp.picalculator.Main;
 
 public class StorageUtils {
-	private static final String basepath;
+	public static final String basepath;
 	static {
 		String fullurl = Window.current().getLocation().getFullURL();
 		if (fullurl.charAt(fullurl.length()-1) == '/') {

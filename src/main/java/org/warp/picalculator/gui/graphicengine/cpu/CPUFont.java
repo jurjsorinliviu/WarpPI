@@ -258,7 +258,7 @@ public class CPUFont implements BinaryFont {
 		return compressIndex(originalIndex);
 	}
 
-	private int compressIndex(int originalIndex) {
+	protected int compressIndex(int originalIndex) {
 		int compressedIndex = 0;
 		for (int i = 0; i < intervals.length; i += 3) {
 			if (intervals[i] > originalIndex) {
