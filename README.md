@@ -16,7 +16,7 @@ https://workspace.circuitmaker.com/Projects/Details/Andrea-Cavalli/Scientific-ca
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/keypad-preview.jpg "Pictures")
 
 # Photos and pictures
-![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/algebra_input.gif "Algebra input screen")
+![alt text](https://raw.githubusercontent.com/Cavallium/WarpPI/master/src/main/resources/algebra_input.gif "Algebra input screen")
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/algebra%20variable%20type.gif "Algebra variable type menu")
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/decimal.png "Example expression")
 ![alt text](https://github.com/XDrake99/WarpPI/blob/master/src/main/resources/algebra.png "Simplification of an expression")
