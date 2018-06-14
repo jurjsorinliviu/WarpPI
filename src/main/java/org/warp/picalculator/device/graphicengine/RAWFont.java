@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
+import org.warp.picalculator.ClassUtils;
 import org.warp.picalculator.Main;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.deps.DSystem;
@@ -75,7 +76,7 @@ public class RAWFont {
 	}
 
 	private void loadFont(String string) throws IOException {
-		final URL res = Main.instance.getClass().getResource(string);
+		final URL res = ClassUtils.classLoader.getClass().getResource(string);
 		final int[] file = Utils.realBytes(Utils.convertStreamToByteArray(res.openStream(), res.getFile().length()));
 		final int filelength = file.length;
 		if (filelength >= 16) {

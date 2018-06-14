@@ -16,8 +16,14 @@ public class PngChunkSBIT extends PngChunkSingle {
   // http://www.w3.org/TR/PNG/#11sBIT
 
   // significant bits
-  private int graysb, alphasb;
-  private int redsb, greensb, bluesb;
+  private int graysb;
+
+private int alphasb;
+  private int redsb;
+
+private int greensb;
+
+private int bluesb;
 
   public PngChunkSBIT(ImageInfo info) {
     super(ID, info);

@@ -12,7 +12,9 @@ public abstract class ImageLineSetDefault<T extends IImageLine> implements IImag
 
   protected final ImageInfo imgInfo;
   private final boolean singleCursor;
-  private final int nlines, offset, step;
+  private final int nlines;
+private final int offset;
+private final int step;
   protected List<T> imageLines; // null if single cursor
   protected T imageLine; // null unless single cursor
   protected int currentRow = -1; // only relevant (and not much) for cursor

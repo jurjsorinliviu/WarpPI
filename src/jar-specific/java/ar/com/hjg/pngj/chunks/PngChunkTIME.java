@@ -15,7 +15,17 @@ public class PngChunkTIME extends PngChunkSingle {
   public final static String ID = ChunkHelper.tIME;
 
   // http://www.w3.org/TR/PNG/#11tIME
-  private int year, mon, day, hour, min, sec;
+  private int year;
+
+private int mon;
+
+private int day;
+
+private int hour;
+
+private int min;
+
+private int sec;
 
   public PngChunkTIME(ImageInfo info) {
     super(ID, info);

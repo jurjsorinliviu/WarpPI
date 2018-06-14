@@ -28,10 +28,25 @@ public class GPURenderer implements Renderer {
 	public static GL2ES1 gl;
 
 	private static final int ELEMENTS_MAX_COUNT_PER_BUFFER = StaticVars.enableVBO ? 128 : 1;
-	private static final int ELEMENT_VERTICES_COUNT = 6, vertSize = 3, texSize = 2, colSize = 4, vertBuffer = 0,
-			texBuffer = 1, colBuffer = 2, vertMax = vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
-			texMax = texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER,
-			colMax = colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER;
+	private static final int ELEMENT_VERTICES_COUNT = 6;
+
+	private static final int vertSize = 3;
+
+	private static final int texSize = 2;
+
+	private static final int colSize = 4;
+
+	private static final int vertBuffer = 0;
+
+	private static final int texBuffer = 1;
+
+	private static final int colBuffer = 2;
+
+	private static final int vertMax = vertSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER;
+
+	private static final int texMax = texSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER;
+
+	private static final int colMax = colSize * ELEMENT_VERTICES_COUNT * ELEMENTS_MAX_COUNT_PER_BUFFER;
 
 	private int[] handlers;
 	private final DeallocationHelper deallocationHelper = new DeallocationHelper();

@@ -29,7 +29,9 @@ public class PixelsWriterMultiple extends PixelsWriter {
   // smaller than rowsPerBand
   protected int rowInBand = -1;
   protected int bandNum = -1;
-  protected int firstRowInThisBand, lastRowInThisBand;
+  protected int firstRowInThisBand;
+
+protected int lastRowInThisBand;
   private boolean tryAdaptive = true;
 
   protected static final int HINT_MEMORY_DEFAULT_KB = 100;

@@ -15,7 +15,9 @@ public class PngChunkBKGD extends PngChunkSingle {
   public final static String ID = ChunkHelper.bKGD;
   // only one of these is meaningful
   private int gray;
-  private int red, green, blue;
+  private int red;
+private int green;
+private int blue;
   private int paletteIndex;
 
   public PngChunkBKGD(ImageInfo info) {

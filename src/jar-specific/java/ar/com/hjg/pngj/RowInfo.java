@@ -7,12 +7,16 @@ class RowInfo {
   public final ImageInfo imgInfo;
   public final Deinterlacer deinterlacer;
   public final boolean imode; // Interlaced
-  int dY, dX, oY, oX; // current step and offset (in pixels)
+  int dY; // current step and offset (in pixels)
+int dX;
+int oY;
+int oX;
   int rowNseq; // row number (from 0) in sequential read order
   int rowNreal; // row number in the real image
   int rowNsubImg; // current row in the virtual subsampled image; this increments (by 1) from 0 to
                   // rows/dy 7 times
-  int rowsSubImg, colsSubImg; // size of current subimage , in pixels
+  int rowsSubImg; // size of current subimage , in pixels
+int colsSubImg;
   int bytesRow;
   int pass; // 1-7
   byte[] buf; // non-deep copy

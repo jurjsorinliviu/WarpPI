@@ -3,9 +3,14 @@ package ar.com.hjg.pngj;
 public class Deinterlacer {
   final ImageInfo imi;
   private int pass; // 1-7
-  private int rows, cols;
-  int dY, dX, oY, oX; // current step and offset (in pixels)
-  int oXsamples, dXsamples; // step in samples
+  private int rows;
+private int cols;
+  int dY; // current step and offset (in pixels)
+int dX;
+int oY;
+int oX;
+  int oXsamples; // step in samples
+int dXsamples;
 
   // current row in the virtual subsampled image; this increments (by 1) from 0 to rows/dy 7 times
   private int currRowSubimg;

@@ -19,9 +19,19 @@ public class PngChunkFCTL extends PngChunkMultiple {
   public final static byte APNG_BLEND_OP_OVER = 1;
 
   private int seqNum;
-  private int width, height, xOff, yOff;
-  private int delayNum, delayDen;
-  private byte disposeOp, blendOp;
+  private int width;
+
+private int height;
+
+private int xOff;
+
+private int yOff;
+  private int delayNum;
+
+private int delayDen;
+  private byte disposeOp;
+
+private byte blendOp;
 
   public PngChunkFCTL(ImageInfo info) {
     super(ID, info);

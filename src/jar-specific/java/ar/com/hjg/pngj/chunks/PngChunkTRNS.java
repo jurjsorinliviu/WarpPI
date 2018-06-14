@@ -18,7 +18,11 @@ public class PngChunkTRNS extends PngChunkSingle {
 
   // only one of these is meaningful, depending on the image type
   private int gray;
-  private int red, green, blue;
+  private int red;
+
+private int green;
+
+private int blue;
   private int[] paletteAlpha = new int[] {};
 
   public PngChunkTRNS(ImageInfo info) {

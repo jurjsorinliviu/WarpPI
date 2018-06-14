@@ -18,11 +18,18 @@ public class GraphicUtils {
 	}
 
 	@SuppressWarnings("unused")
-	private static final float RAD, DEG;
-	private static final int SIN_BITS, SIN_MASK, SIN_COUNT;
-	private static final float radFull, radToIndex;
-	private static final float degFull, degToIndex;
-	private static final float[] sin, cos;
+	private static final float RAD;
+	@SuppressWarnings("unused")
+	private static final float DEG;
+	private static final int SIN_BITS;
+	private static final int SIN_MASK;
+	private static final int SIN_COUNT;
+	private static final float radFull;
+	private static final float radToIndex;
+	private static final float degFull;
+	private static final float degToIndex;
+	private static final float[] sin;
+	private static final float[] cos;
 
 	static {
 		RAD = (float) Math.PI / 180.0f;

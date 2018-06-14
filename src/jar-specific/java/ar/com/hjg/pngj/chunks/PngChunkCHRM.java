@@ -13,10 +13,18 @@ public class PngChunkCHRM extends PngChunkSingle {
   public final static String ID = ChunkHelper.cHRM;
 
   // http://www.w3.org/TR/PNG/#11cHRM
-  private double whitex, whitey;
-  private double redx, redy;
-  private double greenx, greeny;
-  private double bluex, bluey;
+  private double whitex;
+
+private double whitey;
+  private double redx;
+
+private double redy;
+  private double greenx;
+
+private double greeny;
+  private double bluex;
+
+private double bluey;
 
   public PngChunkCHRM(ImageInfo info) {
     super(ID, info);

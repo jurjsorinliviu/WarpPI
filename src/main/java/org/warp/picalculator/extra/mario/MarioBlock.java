@@ -1,7 +1,8 @@
 package org.warp.picalculator.extra.mario;
 
 public class MarioBlock {
-	private final int x, y;
+	private final int x;
+	private final int y;
 	private final byte id;
 
 	public MarioBlock(int x, int y, byte b) {

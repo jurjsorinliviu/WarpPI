@@ -26,7 +26,15 @@ public abstract class PngChunk {
   /**
    * Autocomputed at creation time
    */
-  public final boolean crit, pub, safe;
+  public final boolean crit;
+/**
+   * Autocomputed at creation time
+   */
+public final boolean pub;
+/**
+   * Autocomputed at creation time
+   */
+public final boolean safe;
 
   protected final ImageInfo imgInfo;
 

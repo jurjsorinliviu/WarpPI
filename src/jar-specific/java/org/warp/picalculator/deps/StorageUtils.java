@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.warp.picalculator.ClassUtils;
 import org.warp.picalculator.Main;
 
 import com.jogamp.common.util.IOUtil;
@@ -50,7 +51,7 @@ public class StorageUtils {
 	
 	@Deprecated()
 	public static File getResource(String string) throws IOException, URISyntaxException {
-		final URL res = Main.instance.getClass().getResource(string);
+		final URL res = ClassUtils.classLoader.getResource(string);
 		final boolean isResource = res != null;
 		if (isResource) {
 			try {
@@ -93,7 +94,7 @@ public class StorageUtils {
 	}
 	
 	public static InputStream getResourceStream(String string) throws IOException, URISyntaxException {
-		final URL res = Main.instance.getClass().getResource(string);
+		final URL res = ClassUtils.classLoader.getResource(string);
 		final boolean isResource = res != null;
 		if (isResource) {
 			try {
