@@ -137,7 +137,7 @@ public class Wigner3j {
 	 *            separated. Only as many as announced by the m1 parameter are
 	 *            used; trailing numbers are ignored.
 	 * @see A. Bar-Shalom and M. Klapisch,
-	 *      <a href="http://dx.doi.org/10.1016/0010-4655(88)90192-0">NJGRAF...
+	 *      <a href="https://doi.org/10.1016/0010-4655(88)90192-0">NJGRAF...
 	 *      </a>, Comp. Phys Comm. 50 (3) (1988) 375
 	 * @since 2011-02-13
 	 * @since 2012-02-15 Upgraded return value to BigSurdVec
