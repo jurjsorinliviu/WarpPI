@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import org.warp.picalculator.deps.DGpio;
 import org.warp.picalculator.deps.DSystem;
+import org.warp.picalculator.device.HardwareDevice;
+import org.warp.picalculator.device.HardwareTouchDevice;
+import org.warp.picalculator.device.InputManager;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.PIHardwareDisplay;
 import org.warp.picalculator.gui.CalculatorHUD;
@@ -30,17 +33,42 @@ public class Main {
 		beforeStart();
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		PlatformUtils.setThreadName(Thread.currentThread(), "Main thread");
-		new DisplayManager(disp, hud, screen, "WarpPI Calculator by Andrea Cavalli (@Cavallium)");
-		afterStart();
-		if (screen instanceof LoadingScreen) {
-			((LoadingScreen) screen).loaded = true;
-		}
-		DisplayManager.INSTANCE.waitForExit();
-		ConsoleUtils.out.println(1, "Shutdown...");
-		beforeShutdown();
-		ConsoleUtils.out.println(1, "");
-		ConsoleUtils.out.println(1, "Closed.");
-		DSystem.exit(0);
+		DisplayManager dm = new DisplayManager(disp, hud, screen, "WarpPI Calculator by Andrea Cavalli (@Cavallium)");
+		Keyboard k = new Keyboard();
+		HardwareTouchDevice touch = new HardwareTouchDevice() {	
+			@Override
+			public boolean getInvertedY() {
+				return false;
+			}
+			@Override
+			public boolean getInvertedXY() {
+				return false;
+			}
+			@Override
+			public boolean getInvertedX() {
+				return false;
+			}
+		};
+		InputManager im = new InputManager(k, touch);
+		HardwareDevice hardwareDevice = new HardwareDevice(dm, im);
+		hardwareDevice.setup(() -> {
+			try {
+				HardwareDevice.INSTANCE.getDisplayManager().setBrightness(0.2f);
+				RulesManager.initialize();
+				RulesManager.warmUp();
+				if (screen instanceof LoadingScreen) {
+					((LoadingScreen) screen).loaded = true;
+				}
+				HardwareDevice.INSTANCE.getDisplayManager().waitForExit();
+			} catch (InterruptedException | Error e) {
+				e.printStackTrace();
+			}
+			ConsoleUtils.out.println(1, "Shutdown...");
+			beforeShutdown();
+			ConsoleUtils.out.println(1, "");
+			ConsoleUtils.out.println(1, "Closed.");
+			DSystem.exit(0);
+		});
 	}
 
 	public void beforeStart() throws IOException {
@@ -101,13 +129,6 @@ public class Main {
 				Utils.msDosMode = true;
 			}
 		}
-		Keyboard.startKeyboard();
-	}
-
-	public void afterStart() throws InterruptedException, Error {
-		DisplayManager.INSTANCE.setBrightness(0.2f);
-		RulesManager.initialize();
-		RulesManager.warmUp();
 	}
 
 	public void beforeShutdown() {

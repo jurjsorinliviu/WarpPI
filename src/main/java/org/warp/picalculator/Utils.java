@@ -23,6 +23,7 @@ import java.util.Properties;
 import org.nevec.rjm.BigDecimalMath;
 import org.nevec.rjm.Rational;
 import org.warp.picalculator.deps.StorageUtils;
+import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.math.Function;
@@ -408,12 +409,12 @@ public class Utils {
 //
 //		var.draw(x + wsegno, y + (hsegno - h1), null, null);
 //
-//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 1, y + hsegno - 3, x + 1, y + hsegno - 3);
-//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 2, y + hsegno - 2, x + 2, y + hsegno - 2);
-//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 3, y + hsegno - 1, x + 3, y + hsegno - 1);
-//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
-//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
-//		DisplayManager.INSTANCE.renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
+//		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawLine(x + 1, y + hsegno - 3, x + 1, y + hsegno - 3);
+//		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawLine(x + 2, y + hsegno - 2, x + 2, y + hsegno - 2);
+//		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawLine(x + 3, y + hsegno - 1, x + 3, y + hsegno - 1);
+//		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawLine(x + 3, y + (hsegno - 1) / 2 + 1, x + 3, y + hsegno - 1);
+//		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawLine(x + 4, y, x + 4, y + (hsegno - 1) / 2);
+//		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawLine(x + 4, y, x + 4 + 1 + w1 + 1, y);
 	}
 
 	public static final int getFontHeight() {
@@ -425,7 +426,7 @@ public class Utils {
 	}
 
 	public static final BinaryFont getFont(boolean small, boolean zoomed) {
-		return DisplayManager.INSTANCE.fonts[getFontIndex(small, zoomed)];
+		return HardwareDevice.INSTANCE.getDisplayManager().fonts[getFontIndex(small, zoomed)];
 	}
 
 	public static final int getFontIndex(boolean small, boolean zoomed) {
@@ -451,19 +452,20 @@ public class Utils {
 	public static final int getFontHeight(boolean small, boolean zoomed) {
 		if (small) {
 			if (zoomed) {
-				return DisplayManager.INSTANCE.glyphsHeight[3];
+				return HardwareDevice.INSTANCE.getDisplayManager().glyphsHeight[3];
 			} else {
-				return DisplayManager.INSTANCE.glyphsHeight[1];
+				return HardwareDevice.INSTANCE.getDisplayManager().glyphsHeight[1];
 			}
 		} else {
 			if (zoomed) {
-				return DisplayManager.INSTANCE.glyphsHeight[2];
+				return HardwareDevice.INSTANCE.getDisplayManager().glyphsHeight[2];
 			} else {
-				return DisplayManager.INSTANCE.glyphsHeight[0];
+				return HardwareDevice.INSTANCE.getDisplayManager().glyphsHeight[0];
 			}
 		}
 	}
 
+	
 	public static byte[] convertStreamToByteArray(InputStream stream, long size) throws IOException {
 
 		// check to ensure that file size is not larger than Integer.MAX_VALUE.

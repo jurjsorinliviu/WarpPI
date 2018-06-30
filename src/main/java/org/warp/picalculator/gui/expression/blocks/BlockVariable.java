@@ -1,7 +1,10 @@
 package org.warp.picalculator.gui.expression.blocks;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.device.Key;
+import org.warp.picalculator.device.HardwareDevice;
+import org.warp.picalculator.event.Key;
+import org.warp.picalculator.event.KeyPressedEvent;
+import org.warp.picalculator.event.KeyReleasedEvent;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.ExtraMenu;
@@ -154,8 +157,8 @@ public class BlockVariable extends Block {
 		public void close() {}
 
 		@Override
-		public boolean keyPressed(Key k) {
-			switch (k) {
+		public boolean onKeyPressed(KeyPressedEvent k) {
+			switch (k.getKey()) {
 				case LEFT:
 				case UP:
 					switch (block.type) {
@@ -199,7 +202,7 @@ public class BlockVariable extends Block {
 		}
 
 		@Override
-		public boolean keyReleased(Key k) {
+		public boolean onKeyReleased(KeyReleasedEvent k) {
 			return false;
 		}
 
@@ -221,7 +224,7 @@ public class BlockVariable extends Block {
 		@Override
 		public void draw(GraphicEngine ge, Renderer r, Caret caret) {
 			r.glColor3f(1.0f, 1.0f, 1.0f);
-			DisplayManager.INSTANCE.guiSkin.use(ge);
+			HardwareDevice.INSTANCE.getDisplayManager().guiSkin.use(ge);
 			int popupX = location[0];
 			int popupY = location[1];
 			if (popupX < 0) {

@@ -28,13 +28,25 @@
 
 package org.warp.picalculator.gui.graphicengine.gpu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.device.Key;
+import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.event.Key;
+import org.warp.picalculator.event.TouchEndEvent;
+import org.warp.picalculator.event.TouchMoveEvent;
+import org.warp.picalculator.event.TouchPoint;
+import org.warp.picalculator.event.TouchStartEvent;
 import org.warp.picalculator.gui.DisplayManager;
 
+import com.jogamp.newt.event.GestureHandler.GestureEvent;
+import com.jogamp.newt.event.GestureHandler.GestureListener;
 import com.jogamp.newt.event.KeyEvent;
 import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.event.MouseEvent;
+import com.jogamp.newt.event.MouseListener;
 import com.jogamp.newt.event.WindowEvent;
 import com.jogamp.newt.event.WindowListener;
 import com.jogamp.newt.event.WindowUpdateEvent;
@@ -51,6 +63,8 @@ import com.jogamp.opengl.fixedfunc.GLPointerFunc;
 import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.texture.Texture;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 /**
  *
  * @author Xerxes Rånby (xranby)
@@ -64,6 +78,7 @@ class NEWTWindow implements GLEventListener {
 	public float windowZoom;
 	public int[] realWindowSize;
 	public Runnable onInitialized;
+	public List<TouchPoint> touches = new ObjectArrayList<>();
 
 	public NEWTWindow(GPUEngine disp) {
 		this.disp = disp;
@@ -105,7 +120,7 @@ class NEWTWindow implements GLEventListener {
 
 			@Override
 			public void windowDestroyed(WindowEvent e) {
-				DisplayManager.INSTANCE.engine.destroy();
+				HardwareDevice.INSTANCE.getDisplayManager().engine.destroy();
 			}
 
 			@Override
@@ -278,7 +293,112 @@ class NEWTWindow implements GLEventListener {
 				}
 			}
 		});
+		glWindow.addMouseListener(new MouseListener() {
 
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				List<TouchPoint> newPoints = new ObjectArrayList<>();
+				List<TouchPoint> changedPoints = new ObjectArrayList<>();
+				List<TouchPoint> oldPoints = touches;
+				int[] xs = e.getAllX();
+				int[] ys = e.getAllY();
+				float[] ps = e.getAllPressures();
+				short[] is = e.getAllPointerIDs();
+				for (int i = 0; i < e.getPointerCount(); i++) {
+					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
+				}
+				
+				changedPoints.add(newPoints.get(0));
+				newPoints.remove(0);
+				touches = newPoints;
+				HardwareDevice.INSTANCE.getDisplayManager().onTouchStart(new TouchStartEvent(changedPoints, touches));
+				HardwareDevice.INSTANCE.getDisplayManager().onTouchEnd(new TouchEndEvent(changedPoints, touches));
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				List<TouchPoint> newPoints = new ObjectArrayList<>();
+				List<TouchPoint> changedPoints = new ObjectArrayList<>();
+				List<TouchPoint> oldPoints = touches;
+				int[] xs = e.getAllX();
+				int[] ys = e.getAllY();
+				float[] ps = e.getAllPressures();
+				short[] is = e.getAllPointerIDs();
+				for (int i = 0; i < e.getPointerCount(); i++) {
+					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
+				}
+				changedPoints.add(newPoints.get(0));
+				touches = newPoints;
+				HardwareDevice.INSTANCE.getDisplayManager().onTouchStart(new TouchStartEvent(changedPoints, touches));
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				List<TouchPoint> newPoints = new ObjectArrayList<>();
+				List<TouchPoint> changedPoints = new ObjectArrayList<>();
+				List<TouchPoint> oldPoints = touches;
+				int[] xs = e.getAllX();
+				int[] ys = e.getAllY();
+				float[] ps = e.getAllPressures();
+				short[] is = e.getAllPointerIDs();
+				for (int i = 0; i < e.getPointerCount(); i++) {
+					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
+				}
+				changedPoints.add(newPoints.get(0));
+				newPoints.remove(0);
+				touches = newPoints;
+				HardwareDevice.INSTANCE.getDisplayManager().onTouchEnd(new TouchEndEvent(changedPoints, touches));
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				
+			}
+
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				List<TouchPoint> newPoints = new ObjectArrayList<>();
+				List<TouchPoint> changedPoints = new ObjectArrayList<>();
+				List<TouchPoint> oldPoints = touches;
+				int[] xs = e.getAllX();
+				int[] ys = e.getAllY();
+				float[] ps = e.getAllPressures();
+				short[] is = e.getAllPointerIDs();
+				for (int i = 0; i < e.getPointerCount(); i++) {
+					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
+				}
+				newPoints.forEach((newp) -> {
+					oldPoints.forEach((oldp) -> {
+						if (newp.getID() == oldp.getID()) {
+							if (newp.equals(oldp) == false) {
+								changedPoints.add(newp);
+							}
+						}
+					});
+				});
+				touches = newPoints;
+				HardwareDevice.INSTANCE.getDisplayManager().onTouchMove(new TouchMoveEvent(changedPoints, touches));
+			}
+
+			@Override
+			public void mouseWheelMoved(MouseEvent e) {
+				
+			}
+			
+		});
+		
 		glWindow.addGLEventListener(this /* GLEventListener */);
 		final Animator animator = new Animator();
 		animator.add(glWindow);

@@ -7,8 +7,8 @@ import org.fusesource.jansi.AnsiConsole;
 import org.fusesource.jansi.internal.WindowsSupport;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.event.Key;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
 

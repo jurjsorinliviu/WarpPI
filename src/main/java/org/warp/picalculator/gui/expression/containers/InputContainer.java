@@ -3,7 +3,7 @@ package org.warp.picalculator.gui.expression.containers;
 import java.io.Serializable;
 
 import org.warp.picalculator.Error;
-import org.warp.picalculator.device.KeyboardEventListener;
+import org.warp.picalculator.event.KeyboardEventListener;
 import org.warp.picalculator.gui.GraphicalElement;
 import org.warp.picalculator.gui.expression.Caret;
 import org.warp.picalculator.gui.expression.CaretState;

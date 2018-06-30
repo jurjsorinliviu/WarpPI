@@ -2,7 +2,9 @@ package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
-import org.warp.picalculator.device.Key;
+import org.warp.picalculator.device.HardwareDevice;
+import org.warp.picalculator.event.Key;
+import org.warp.picalculator.event.KeyPressedEvent;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.functions.Variable.VariableValue;
@@ -28,21 +30,21 @@ public class ChooseVariableValueScreen extends Screen {
 
 	@Override
 	public void render() {
-		Utils.getFont(false, true).use(DisplayManager.INSTANCE.engine);
-		DisplayManager.INSTANCE.renderer.glColor4i(0, 0, 0, 64);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
-		DisplayManager.INSTANCE.renderer.glColor3i(255, 0, 0);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
+		Utils.getFont(false, true).use(HardwareDevice.INSTANCE.getDisplayManager().engine);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glColor4i(0, 0, 0, 64);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 - 20 + 1, "WORK IN PROGRESS.");
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glColor3i(255, 0, 0);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 - 20, "WORK IN PROGRESS.");
 
-		Utils.getFont(false, false).use(DisplayManager.INSTANCE.engine);
-		DisplayManager.INSTANCE.renderer.glColor4i(0, 0, 0, 64);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
-		DisplayManager.INSTANCE.renderer.glColor3i(255, 0, 0);
-		DisplayManager.INSTANCE.renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		Utils.getFont(false, false).use(HardwareDevice.INSTANCE.getDisplayManager().engine);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glColor4i(0, 0, 0, 64);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2 + 1, StaticVars.screenSize[1] / 2 + 1, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glColor3i(255, 0, 0);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glDrawStringCenter(StaticVars.screenSize[0] / 2, StaticVars.screenSize[1] / 2, "THIS SCREEN MUST HAVE A GUI TO SELECT THE VARIABLE TO SOLVE.");
 	}
 
 	@Override
@@ -56,8 +58,8 @@ public class ChooseVariableValueScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(Key k) {
-		switch (k) {
+	public boolean onKeyPressed(KeyPressedEvent k) {
+		switch (k.getKey()) {
 			case LETTER_X:
 //				PIDisplay.INSTANCE.goBack();
 //				try {
@@ -76,11 +78,6 @@ public class ChooseVariableValueScreen extends Screen {
 			default:
 				return false;
 		}
-	}
-
-	@Override
-	public boolean keyReleased(Key k) {
-		return false;
 	}
 
 }

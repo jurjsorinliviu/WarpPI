@@ -7,6 +7,10 @@ import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.device.chip.ParallelToSerial;
 import org.warp.picalculator.device.chip.SerialToParallel;
+import org.warp.picalculator.event.Key;
+import org.warp.picalculator.event.KeyPressedEvent;
+import org.warp.picalculator.event.KeyReleasedEvent;
+import org.warp.picalculator.event.KeyboardEventListener;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.GUIErrorMessage;
 import org.warp.picalculator.gui.screens.KeyboardDebugScreen;
@@ -39,7 +43,7 @@ public class Keyboard {
 
 	private static KeyboardEventListener additionalListener;
 
-	public synchronized static void startKeyboard() {
+	public synchronized void startKeyboard() {
 		final Thread kt = new Thread(() -> {
 			if (StaticVars.debugOn) {
 				try {
@@ -629,17 +633,17 @@ public class Keyboard {
 		boolean done = false;
 		if (additionalListener != null) {
 			try {
-				done = additionalListener.keyPressed(k);
+				done = additionalListener.onKeyPressed(new KeyPressedEvent(k));
 			} catch (final Exception ex) {
 				new GUIErrorMessage(ex);
 			}
 		}
-		if (DisplayManager.INSTANCE != null) {
-			final Screen scr = DisplayManager.INSTANCE.getScreen();
+		if (HardwareDevice.INSTANCE.getDisplayManager() != null) {
+			final Screen scr = HardwareDevice.INSTANCE.getDisplayManager().getScreen();
 			boolean refresh = false;
 			boolean scrdone = false;
 			try {
-				scrdone = scr.keyPressed(k);
+				scrdone = scr.onKeyPressed(new KeyPressedEvent(k));
 			} catch (final Exception ex) {
 				new GUIErrorMessage(ex);
 			}
@@ -648,7 +652,7 @@ public class Keyboard {
 			} else {
 				switch (k) {
 					case POWEROFF:
-						DisplayManager.INSTANCE.engine.destroy();
+						HardwareDevice.INSTANCE.getDisplayManager().engine.destroy();
 						break;
 					case NONE:
 						break;
@@ -656,12 +660,12 @@ public class Keyboard {
 						letterPressed('X');
 						break;
 					case BRIGHTNESS_CYCLE:
-						DisplayManager.INSTANCE.cycleBrightness(false);
+						HardwareDevice.INSTANCE.getDisplayManager().cycleBrightness(false);
 						refresh = true;
 						break;
 					case BRIGHTNESS_CYCLE_REVERSE:
-						DisplayManager.INSTANCE.setScreen(new MarioScreen()); //TODO: rimuovere: prova
-						DisplayManager.INSTANCE.cycleBrightness(true);
+						HardwareDevice.INSTANCE.getDisplayManager().setScreen(new MarioScreen()); //TODO: rimuovere: prova
+						HardwareDevice.INSTANCE.getDisplayManager().cycleBrightness(true);
 						refresh = true;
 						break;
 					case ZOOM_MODE:
@@ -669,11 +673,11 @@ public class Keyboard {
 //						StaticVars.windowZoom = ((StaticVars.windowZoom - 0.5f) % 2f) + 1f;
 						refresh = true;
 					case HISTORY_BACK:
-						DisplayManager.INSTANCE.goBack();
+						HardwareDevice.INSTANCE.getDisplayManager().goBack();
 						refresh = true;
 						break;
 					case HISTORY_FORWARD:
-						DisplayManager.INSTANCE.goForward();
+						HardwareDevice.INSTANCE.getDisplayManager().goForward();
 						refresh = true;
 						break;
 					default:
@@ -720,12 +724,12 @@ public class Keyboard {
 	public synchronized static void keyReleased(Key k) {
 		boolean done = false;
 		if (additionalListener != null) {
-			done = additionalListener.keyReleased(k);
+			done = additionalListener.onKeyReleased(new KeyReleasedEvent(k));
 		}
 		boolean refresh = false;
-		if (DisplayManager.INSTANCE != null) {
-			final Screen scr = DisplayManager.INSTANCE.getScreen();
-			if (scr != null && scr.initialized && scr.keyReleased(k)) {
+		if (HardwareDevice.INSTANCE.getDisplayManager() != null) {
+			final Screen scr = HardwareDevice.INSTANCE.getDisplayManager().getScreen();
+			if (scr != null && scr.initialized && scr.onKeyReleased(new KeyReleasedEvent(k))) {
 				refresh = true;
 			} else {
 				switch (k) {
@@ -743,7 +747,7 @@ public class Keyboard {
 		}
 	}
 
-	public static void setAdditionalKeyboardListener(KeyboardEventListener l) {
+	public void setAdditionalKeyboardListener(KeyboardEventListener l) {
 		additionalListener = l;
 	}
 

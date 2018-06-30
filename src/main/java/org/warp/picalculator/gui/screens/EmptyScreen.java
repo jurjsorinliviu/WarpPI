@@ -1,6 +1,6 @@
 package org.warp.picalculator.gui.screens;
 
-import org.warp.picalculator.device.Key;
+import org.warp.picalculator.event.Key;
 
 public class EmptyScreen extends Screen {
 
@@ -33,17 +33,6 @@ public class EmptyScreen extends Screen {
 	@Override
 	public boolean mustBeRefreshed() {
 		return true;
-	}
-
-	@Override
-	public boolean keyPressed(Key k) {
-
-		return false;
-	}
-
-	@Override
-	public boolean keyReleased(Key k) {
-		return false;
 	}
 
 }

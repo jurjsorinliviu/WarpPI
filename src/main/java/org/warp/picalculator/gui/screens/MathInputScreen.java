@@ -11,8 +11,11 @@ import org.warp.picalculator.PlatformUtils;
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.deps.DSystem;
-import org.warp.picalculator.device.Key;
+import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.event.Key;
+import org.warp.picalculator.event.KeyPressedEvent;
+import org.warp.picalculator.event.KeyReleasedEvent;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.Block;
@@ -68,7 +71,7 @@ public class MathInputScreen extends Screen {
 		calc = new MathContext();
 
 		try {
-			BlockContainer.initializeFonts(DisplayManager.INSTANCE.engine.loadFont("norm"), DisplayManager.INSTANCE.engine.loadFont("smal"));
+			BlockContainer.initializeFonts(HardwareDevice.INSTANCE.getDisplayManager().engine.loadFont("norm"), HardwareDevice.INSTANCE.getDisplayManager().engine.loadFont("smal"));
 		} catch (final IOException e) {
 			e.printStackTrace();
 			DSystem.exit(1);
@@ -87,10 +90,10 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void beforeRender(float dt) {
-		if (DisplayManager.INSTANCE.error == null) {
-			DisplayManager.INSTANCE.renderer.glClearColor(0xFFc5c2af);
+		if (HardwareDevice.INSTANCE.getDisplayManager().error == null) {
+			HardwareDevice.INSTANCE.getDisplayManager().renderer.glClearColor(0xFFc5c2af);
 		} else {
-			DisplayManager.INSTANCE.renderer.glClearColor(0xFFDC3C32);
+			HardwareDevice.INSTANCE.getDisplayManager().renderer.glClearColor(0xFFDC3C32);
 		}
 		if (userInput.beforeRender(dt)) {
 			mustRefresh = true;
@@ -116,13 +119,13 @@ public class MathInputScreen extends Screen {
 
 	@Override
 	public void render() {
-		final Renderer renderer = DisplayManager.INSTANCE.renderer;
-		fontBig.use(DisplayManager.INSTANCE.engine);
+		final Renderer renderer = HardwareDevice.INSTANCE.getDisplayManager().renderer;
+		fontBig.use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		final int textColor = 0xFF000000;
 		final int padding = 4;
 		renderer.glColor(textColor);
 
-		userInput.draw(DisplayManager.INSTANCE.engine, renderer, padding, padding + 20);
+		userInput.draw(HardwareDevice.INSTANCE.getDisplayManager().engine, renderer, padding, padding + 20);
 
 		if (computingResult) {
 			renderer.glColor3f(1, 1, 1);
@@ -131,22 +134,22 @@ public class MathInputScreen extends Screen {
 			final int size = 32;
 			final int posY = computingAnimationIndex % 2;
 			final int posX = (computingAnimationIndex - posY) / 2;
-			renderer.glFillRect(DisplayManager.INSTANCE.engine.getWidth() - size - 4, DisplayManager.INSTANCE.engine.getHeight() - size - 4, size, size, leftX + size * posX, leftY + size * posY, size, size);
+			renderer.glFillRect(HardwareDevice.INSTANCE.getDisplayManager().engine.getWidth() - size - 4, HardwareDevice.INSTANCE.getDisplayManager().engine.getHeight() - size - 4, size, size, leftX + size * posX, leftY + size * posY, size, size);
 			if (computingBreakTipVisible) {
-				Utils.getFont(false).use(DisplayManager.INSTANCE.engine);
+				Utils.getFont(false).use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 				renderer.glColor3f(0.75f, 0, 0);
-				renderer.glDrawStringRight(DisplayManager.INSTANCE.engine.getWidth() - 4 - size - 4, DisplayManager.INSTANCE.engine.getHeight() - size / 2 - renderer.getCurrentFont().getCharacterHeight() / 2 - 4, "Press (=) to stop");
+				renderer.glDrawStringRight(HardwareDevice.INSTANCE.getDisplayManager().engine.getWidth() - 4 - size - 4, HardwareDevice.INSTANCE.getDisplayManager().engine.getHeight() - size / 2 - renderer.getCurrentFont().getCharacterHeight() / 2 - 4, "Press (=) to stop");
 			}
 		} else {
 			if (!result.isContentEmpty()) {
-				result.draw(DisplayManager.INSTANCE.engine, renderer, DisplayManager.INSTANCE.engine.getWidth() - result.getWidth() - 2, DisplayManager.INSTANCE.engine.getHeight() - result.getHeight() - 2);
+				result.draw(HardwareDevice.INSTANCE.getDisplayManager().engine, renderer, HardwareDevice.INSTANCE.getDisplayManager().engine.getWidth() - result.getWidth() - 2, HardwareDevice.INSTANCE.getDisplayManager().engine.getHeight() - result.getHeight() - 2);
 			}
 		}
 	}
 
 	@Override
 	public void renderTopmost() {
-		final Renderer renderer = DisplayManager.INSTANCE.renderer;
+		final Renderer renderer = HardwareDevice.INSTANCE.getDisplayManager().renderer;
 		renderer.glColor3f(1, 1, 1);
 		final int pos = 2;
 		final int spacersNumb = 1;
@@ -156,7 +159,7 @@ public class MathInputScreen extends Screen {
 		} else {
 			skinN = 21;
 		}
-		DisplayManager.INSTANCE.guiSkin.use(DisplayManager.INSTANCE.engine);
+		HardwareDevice.INSTANCE.getDisplayManager().guiSkin.use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		renderer.glFillRect(2 + 18 * pos + 2 * spacersNumb, 2, 16, 16, 16 * skinN, 16 * 0, 16, 16);
 	}
 
@@ -171,10 +174,10 @@ public class MathInputScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(Key k) {
+	public boolean onKeyPressed(KeyPressedEvent k) {
 		ConsoleUtils.out.println(1, k.toString());
 		try {
-			switch (k) {
+			switch (k.getKey()) {
 				case OK:
 					userInput.toggleExtra();
 					mustRefresh = true;
@@ -187,12 +190,12 @@ public class MathInputScreen extends Screen {
 						return true;
 					}
 				default:
-					if (userInput.isExtraOpened() && userInput.getExtraKeyboardEventListener().keyPressed(k)) {
+					if (userInput.isExtraOpened() && userInput.getExtraKeyboardEventListener().onKeyPressed(k)) {
 						currentStep = 0;
 						return true;
 					} else {
-						final boolean step = k == Key.STEP;
-						switch (k) {
+						final boolean step = k.getKey() == Key.STEP;
+						switch (k.getKey()) {
 
 							case STEP:
 								currentStep++;
@@ -200,10 +203,10 @@ public class MathInputScreen extends Screen {
 								if (!step) {
 									currentStep = 0;
 								}
-								if (DisplayManager.INSTANCE.error != null) {
+								if (HardwareDevice.INSTANCE.getDisplayManager().error != null) {
 									//TODO: make the error management a global API rather than being relegated to this screen.
 									ConsoleUtils.out.println(1, "Resetting after error...");
-									DisplayManager.INSTANCE.error = null;
+									HardwareDevice.INSTANCE.getDisplayManager().error = null;
 									calc.f = null;
 									calc.f2 = null;
 									calc.resultsCount = 0;
@@ -249,7 +252,7 @@ public class MathInputScreen extends Screen {
 												}
 											} catch (final Error e) {
 												d.errorStackTrace = PlatformUtils.stacktraceToString(e);
-												DisplayManager.INSTANCE.error = e.id.toString();
+												HardwareDevice.INSTANCE.getDisplayManager().error = e.id.toString();
 												System.err.println(e.id);
 											}
 											computingResult = false;
@@ -387,9 +390,9 @@ public class MathInputScreen extends Screen {
 								userInput.clear();
 								result.clear();
 								currentStep = 0;
-								if (DisplayManager.INSTANCE.error != null) {
+								if (HardwareDevice.INSTANCE.getDisplayManager().error != null) {
 									ConsoleUtils.out.println(1, "Resetting after error...");
-									DisplayManager.INSTANCE.error = null;
+									HardwareDevice.INSTANCE.getDisplayManager().error = null;
 								}
 								return true;
 							case SURD_MODE:
@@ -399,11 +402,11 @@ public class MathInputScreen extends Screen {
 								Keyboard.keyPressed(Key.SIMPLIFY);
 								return true;
 							case debug1:
-								DisplayManager.INSTANCE.setScreen(new EmptyScreen());
+								HardwareDevice.INSTANCE.getDisplayManager().setScreen(new EmptyScreen());
 								return true;
 							case HISTORY_BACK:
-								//					if (DisplayManager.INSTANCE.canGoBack()) {
-								//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession + 1] instanceof MathInputScreen) {
+								//					if (HardwareDevice.INSTANCE.getDisplayManager().canGoBack()) {
+								//						if (currentExpression != null && currentExpression.length() > 0 & HardwareDevice.INSTANCE.getDisplayManager().sessions[HardwareDevice.INSTANCE.getDisplayManager().currentSession + 1] instanceof MathInputScreen) {
 								//							newExpression = currentExpression;
 								//							try {
 								//								interpreta(true);
@@ -412,8 +415,8 @@ public class MathInputScreen extends Screen {
 								//					}
 								return false;
 							case HISTORY_FORWARD:
-								//					if (DisplayManager.INSTANCE.canGoForward()) {
-								//						if (currentExpression != null && currentExpression.length() > 0 & DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession - 1] instanceof MathInputScreen) {
+								//					if (HardwareDevice.INSTANCE.getDisplayManager().canGoForward()) {
+								//						if (currentExpression != null && currentExpression.length() > 0 & HardwareDevice.INSTANCE.getDisplayManager().sessions[HardwareDevice.INSTANCE.getDisplayManager().currentSession - 1] instanceof MathInputScreen) {
 								//							newExpression = currentExpression;
 								//							try {
 								//								interpreta(true);
@@ -482,7 +485,7 @@ public class MathInputScreen extends Screen {
 			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			DisplayManager.INSTANCE.error = e.id.toString();
+			HardwareDevice.INSTANCE.getDisplayManager().error = e.id.toString();
 			System.err.println(e.id);
 		}
 		return null;
@@ -499,7 +502,7 @@ public class MathInputScreen extends Screen {
 				final ObjectArrayList<Function> partialResults = new ObjectArrayList<>();
 				for (final Function f : calc.f2) {
 					if (f instanceof Equation) {
-						DisplayManager.INSTANCE.setScreen(new SolveEquationScreen(this));
+						HardwareDevice.INSTANCE.getDisplayManager().setScreen(new SolveEquationScreen(this));
 					} else {
 						results.add(f);
 						for (final Function itm : results) {
@@ -539,7 +542,7 @@ public class MathInputScreen extends Screen {
 			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			DisplayManager.INSTANCE.error = e.id.toString();
+			HardwareDevice.INSTANCE.getDisplayManager().error = e.id.toString();
 			System.err.println(e.id);
 		}
 		*/
@@ -552,7 +555,7 @@ public class MathInputScreen extends Screen {
 			try {
 				for (final Function f : calc.f) {
 					if (f instanceof Equation) {
-						DisplayManager.INSTANCE.setScreen(new SolveEquationScreen(this));
+						HardwareDevice.INSTANCE.getDisplayManager().setScreen(new SolveEquationScreen(this));
 						return;
 					}
 				}
@@ -581,7 +584,7 @@ public class MathInputScreen extends Screen {
 			final PrintWriter pw = new PrintWriter(sw);
 			e.printStackTrace(pw);
 			d.errorStackTrace = sw.toString().toUpperCase().replace("\t", "    ").replace("\r", "").split("\n");
-			DisplayManager.INSTANCE.error = e.id.toString();
+			HardwareDevice.INSTANCE.getDisplayManager().error = e.id.toString();
 			System.err.println(e.id);
 		}
 		*/
@@ -595,9 +598,9 @@ public class MathInputScreen extends Screen {
 //		if (!userInput.isEmpty()) {
 //			final MathInputScreen cloned = clone();
 //			cloned.userInput.setCaretPosition(cloned.userInput.getCaretMaxPosition()-1);
-//			DisplayManager.INSTANCE.replaceScreen(cloned);
+//			HardwareDevice.INSTANCE.getDisplayManager().replaceScreen(cloned);
 //			initialized = false;
-//			DisplayManager.INSTANCE.setScreen(this);
+//			HardwareDevice.INSTANCE.getDisplayManager().setScreen(this);
 //
 //		}
 	}
@@ -608,14 +611,14 @@ public class MathInputScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyReleased(Key k) {
-		if (k == Key.OK) {
+	public boolean onKeyReleased(KeyReleasedEvent k) {
+		if (k.getKey() == Key.OK) {
 			return true;
 		} else {
-			if (userInput.isExtraOpened() && userInput.getExtraKeyboardEventListener().keyReleased(k)) {
+			if (userInput.isExtraOpened() && userInput.getExtraKeyboardEventListener().onKeyReleased(k)) {
 				return true;
 			} else {
-				switch (k) {
+				switch (k.getKey()) {
 					default:
 						return false;
 				}
@@ -639,9 +642,9 @@ public class MathInputScreen extends Screen {
 			boolean cancelled = false;
 			for (final Function f : knownVarsInFunctions) {
 				final ChooseVariableValueScreen cvs = new ChooseVariableValueScreen(this, new VariableValue((Variable) f, new Number(calc, 0)));
-				DisplayManager.INSTANCE.setScreen(cvs);
+				HardwareDevice.INSTANCE.getDisplayManager().setScreen(cvs);
 				try {
-					DisplayManager.INSTANCE.screenChange.acquire();
+					HardwareDevice.INSTANCE.getDisplayManager().screenChange.acquire();
 				} catch (final InterruptedException e) {}
 				if (cvs.resultNumberValue == null) {
 					cancelled = true;

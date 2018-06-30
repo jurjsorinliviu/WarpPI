@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import org.warp.picalculator.deps.DEngine;
 import org.warp.picalculator.deps.DSystem;
-import org.warp.picalculator.device.Key;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.device.KeyboardEventListener;
+import org.warp.picalculator.event.Key;
+import org.warp.picalculator.event.KeyPressedEvent;
+import org.warp.picalculator.event.KeyReleasedEvent;
+import org.warp.picalculator.event.KeyboardEventListener;
 import org.warp.picalculator.gui.expression.InputContext;
 import org.warp.picalculator.gui.expression.blocks.BlockContainer;
 import org.warp.picalculator.gui.expression.containers.NormalInputContainer;
@@ -29,12 +31,13 @@ public class TestGPU {
 		Utils.debugThirdScreen = false;
 		d.create();
 
-		Keyboard.startKeyboard();
-		Keyboard.setAdditionalKeyboardListener(new KeyboardEventListener() {
+		Keyboard k = new Keyboard();
+		k.startKeyboard();
+		k.setAdditionalKeyboardListener(new KeyboardEventListener() {
 			@Override
-			public boolean keyPressed(Key k) {
+			public boolean onKeyPressed(KeyPressedEvent k) {
 				try {
-					switch (k) {
+					switch (k.getKey()) {
 						case LEFT:
 							c.moveLeft();
 							return true;
@@ -124,7 +127,7 @@ public class TestGPU {
 			}
 
 			@Override
-			public boolean keyReleased(Key k) {
+			public boolean onKeyReleased(KeyReleasedEvent k) {
 				return false;
 
 			}

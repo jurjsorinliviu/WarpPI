@@ -1,7 +1,8 @@
 package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.device.Key;
+import org.warp.picalculator.device.HardwareDevice;
+import org.warp.picalculator.event.Key;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.GraphicUtils;
 
@@ -36,20 +37,20 @@ public class LoadingScreen extends Screen {
 		endLoading += dt;
 		if (loaded && (StaticVars.debugOn || endLoading >= 3.5f)) {
 			StaticVars.windowZoom = previousZoomValue;
-			DisplayManager.INSTANCE.setScreen(new MathInputScreen());
+			HardwareDevice.INSTANCE.getDisplayManager().setScreen(new MathInputScreen());
 		}
 		mustRefresh = true;
 	}
 
 	@Override
 	public void render() {
-		DisplayManager.INSTANCE.guiSkin.use(DisplayManager.INSTANCE.engine);
-		DisplayManager.INSTANCE.renderer.glColor3i(255, 255, 255);
-		DisplayManager.INSTANCE.renderer.glFillRect(StaticVars.screenSize[0] / 2f - 80, StaticVars.screenSize[1] / 2f - 64, 160, 48, 0, 32, 160, 48);
-		DisplayManager.INSTANCE.renderer.glFillRect(StaticVars.screenSize[0] / 2f - 24, StaticVars.screenSize[1] / 2f - loadingTextTranslation, 48, 48, 160, 32, 48, 48);
+		HardwareDevice.INSTANCE.getDisplayManager().guiSkin.use(HardwareDevice.INSTANCE.getDisplayManager().engine);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glColor3i(255, 255, 255);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glFillRect(StaticVars.screenSize[0] / 2f - 80, StaticVars.screenSize[1] / 2f - 64, 160, 48, 0, 32, 160, 48);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glFillRect(StaticVars.screenSize[0] / 2f - 24, StaticVars.screenSize[1] / 2f - loadingTextTranslation, 48, 48, 160, 32, 48, 48);
 
-		DisplayManager.INSTANCE.renderer.glFillRect(StaticVars.screenSize[0] - 224, StaticVars.screenSize[1] - 48, 224, 48, 0, 80, 224, 48);
-		DisplayManager.INSTANCE.renderer.glFillRect(StaticVars.screenSize[0] - 160 - 24 - 224, StaticVars.screenSize[1] - 48, 160, 48, 224, 80, 160, 48);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glFillRect(StaticVars.screenSize[0] - 224, StaticVars.screenSize[1] - 48, 224, 48, 0, 80, 224, 48);
+		HardwareDevice.INSTANCE.getDisplayManager().renderer.glFillRect(StaticVars.screenSize[0] - 160 - 24 - 224, StaticVars.screenSize[1] - 48, 160, 48, 224, 80, 160, 48);
 
 	}
 
@@ -61,16 +62,6 @@ public class LoadingScreen extends Screen {
 		} else {
 			return false;
 		}
-	}
-
-	@Override
-	public boolean keyPressed(Key k) {
-		return false;
-	}
-
-	@Override
-	public boolean keyReleased(Key k) {
-		return false;
 	}
 
 }

@@ -12,7 +12,15 @@ import org.warp.picalculator.Utils;
 import org.warp.picalculator.deps.DEngine;
 import org.warp.picalculator.deps.DSemaphore;
 import org.warp.picalculator.deps.DSystem;
+import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.event.KeyReleasedEvent;
+import org.warp.picalculator.event.TouchCancelEvent;
+import org.warp.picalculator.event.TouchEndEvent;
+import org.warp.picalculator.event.TouchEvent;
+import org.warp.picalculator.event.TouchEventListener;
+import org.warp.picalculator.event.TouchMoveEvent;
+import org.warp.picalculator.event.TouchStartEvent;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.Renderer;
@@ -23,8 +31,8 @@ import org.warp.picalculator.gui.screens.Screen;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class DisplayManager implements RenderingLoop {
-	public static DisplayManager INSTANCE;
+public final class DisplayManager implements RenderingLoop, TouchEventListener {
+	private HardwareDevice device;
 	private float brightness;
 
 	public final GraphicEngine engine;
@@ -41,22 +49,32 @@ public final class DisplayManager implements RenderingLoop {
 
 	private Screen screen;
 	private final HUD hud;
+	private final String initialTitle;
+	private final Screen initialScreen;
 	public DSemaphore screenChange = new DSemaphore(0);
 	public String displayDebugString;
 	public ObjectArrayList<GUIErrorMessage> errorMessages;
+	/**
+	 * Set to true when an event is fired
+	 */
+	private boolean forceRefresh;
 
 	public DisplayManager(HardwareDisplay monitor, HUD hud, Screen screen, String title) {
-		INSTANCE = this;
 		engine = chooseGraphicEngine();
 		supportsPauses = engine.doesRefreshPauses();
 
 		this.monitor = monitor;
 		this.hud = hud;
+		this.initialTitle = title;
+		this.initialScreen = screen;
 
-		monitor.initialize();
 		glyphsHeight = new int[] { 9, 6, 12, 9 };
 		displayDebugString = "";
 		errorMessages = new ObjectArrayList<>();
+	}
+	
+	public void initialize() {
+		monitor.initialize();
 
 		try {
 			hud.d = this;
@@ -69,17 +87,18 @@ public final class DisplayManager implements RenderingLoop {
 			DSystem.exit(0);
 		}
 
-		setScreen(screen);
+		setScreen(initialScreen);
 		try {
 			engine.create();
 			renderer = engine.getRenderer();
-			engine.setTitle(title);
+			engine.setTitle(initialTitle);
 			loop();
 		} catch (final Exception ex) {
 			ex.printStackTrace();
 		}
 		monitor.shutdown();
 	}
+	
 	/*
 	 * private void load_skin() {
 	 * try {
@@ -159,23 +178,23 @@ public final class DisplayManager implements RenderingLoop {
 	public void setScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
-				if (DisplayManager.INSTANCE.currentSession > 0) {
-					final int sl = DisplayManager.INSTANCE.sessions.length + 5; //TODO: I don't know why if i don't add +5 or more some items disappear
-					DisplayManager.INSTANCE.sessions = Arrays.copyOfRange(DisplayManager.INSTANCE.sessions, DisplayManager.INSTANCE.currentSession, sl);
+				if (this.currentSession > 0) {
+					final int sl = this.sessions.length + 5; //TODO: I don't know why if i don't add +5 or more some items disappear
+					this.sessions = Arrays.copyOfRange(this.sessions, this.currentSession, sl);
 				}
-				DisplayManager.INSTANCE.currentSession = 0;
-				for (int i = DisplayManager.INSTANCE.sessions.length - 1; i >= 1; i--) {
-					DisplayManager.INSTANCE.sessions[i] = DisplayManager.INSTANCE.sessions[i - 1];
+				this.currentSession = 0;
+				for (int i = this.sessions.length - 1; i >= 1; i--) {
+					this.sessions[i] = this.sessions[i - 1];
 				}
-				DisplayManager.INSTANCE.sessions[0] = screen;
+				this.sessions[0] = screen;
 			} else {
-				DisplayManager.INSTANCE.currentSession = -1;
+				this.currentSession = -1;
 			}
 		}
 		screen.d = this;
 		try {
 			screen.create();
-			DisplayManager.INSTANCE.screen = screen;
+			this.screen = screen;
 			screenChange.release();
 			if (screen.initialized == false) {
 				screen.initialize();
@@ -189,18 +208,18 @@ public final class DisplayManager implements RenderingLoop {
 	public void replaceScreen(Screen screen) {
 		if (screen.initialized == false) {
 			if (screen.canBeInHistory) {
-				DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession] = screen;
+				this.sessions[this.currentSession] = screen;
 			} else {
-				DisplayManager.INSTANCE.currentSession = -1;
-				for (int i = 0; i < DisplayManager.INSTANCE.sessions.length - 2; i++) {
-					DisplayManager.INSTANCE.sessions[i] = DisplayManager.INSTANCE.sessions[i + 1];
+				this.currentSession = -1;
+				for (int i = 0; i < this.sessions.length - 2; i++) {
+					this.sessions[i] = this.sessions[i + 1];
 				}
 			}
 		}
 		screen.d = this;
 		try {
 			screen.create();
-			DisplayManager.INSTANCE.screen = screen;
+			this.screen = screen;
 			screenChange.release();
 			if (screen.initialized == false) {
 				screen.initialize();
@@ -212,13 +231,13 @@ public final class DisplayManager implements RenderingLoop {
 	}
 
 	public boolean canGoBack() {
-		if (DisplayManager.INSTANCE.currentSession == -1) {
-			return DisplayManager.INSTANCE.sessions[0] != null;
+		if (this.currentSession == -1) {
+			return this.sessions[0] != null;
 		}
-		if (DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {
+		if (this.screen != this.sessions[this.currentSession]) {
 
-		} else if (DisplayManager.INSTANCE.currentSession + 1 < DisplayManager.INSTANCE.sessions.length) {
-			if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession + 1] != null) {
+		} else if (this.currentSession + 1 < this.sessions.length) {
+			if (this.sessions[this.currentSession + 1] != null) {
 
 			} else {
 				return false;
@@ -226,7 +245,7 @@ public final class DisplayManager implements RenderingLoop {
 		} else {
 			return false;
 		}
-		if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession] != null) {
+		if (this.sessions[this.currentSession] != null) {
 			return true;
 		}
 		return false;
@@ -234,22 +253,22 @@ public final class DisplayManager implements RenderingLoop {
 
 	public void goBack() {
 		if (canGoBack()) {
-			if (DisplayManager.INSTANCE.currentSession >= 0 && DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {} else {
-				DisplayManager.INSTANCE.currentSession += 1;
+			if (this.currentSession >= 0 && this.screen != this.sessions[this.currentSession]) {} else {
+				this.currentSession += 1;
 			}
-			DisplayManager.INSTANCE.screen = DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession];
+			this.screen = this.sessions[this.currentSession];
 			screenChange.release();
 		}
 	}
 
 	public boolean canGoForward() {
-		if (DisplayManager.INSTANCE.currentSession <= 0) { // -1 e 0
+		if (this.currentSession <= 0) { // -1 e 0
 			return false;
 		}
-		if (DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {
+		if (this.screen != this.sessions[this.currentSession]) {
 
-		} else if (DisplayManager.INSTANCE.currentSession > 0) {
-			if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession - 1] != null) {
+		} else if (this.currentSession > 0) {
+			if (this.sessions[this.currentSession - 1] != null) {
 
 			} else {
 				return false;
@@ -257,7 +276,7 @@ public final class DisplayManager implements RenderingLoop {
 		} else {
 			return false;
 		}
-		if (DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession] != null) {
+		if (this.sessions[this.currentSession] != null) {
 			return true;
 		}
 		return false;
@@ -265,12 +284,12 @@ public final class DisplayManager implements RenderingLoop {
 
 	public void goForward() {
 		if (canGoForward()) {
-			if (DisplayManager.INSTANCE.screen != DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession]) {
+			if (this.screen != this.sessions[this.currentSession]) {
 
 			} else {
-				DisplayManager.INSTANCE.currentSession -= 1;
+				this.currentSession -= 1;
 			}
-			DisplayManager.INSTANCE.screen = DisplayManager.INSTANCE.sessions[DisplayManager.INSTANCE.currentSession];
+			this.screen = this.sessions[this.currentSession];
 			screenChange.release();
 		}
 	}
@@ -354,7 +373,8 @@ public final class DisplayManager implements RenderingLoop {
 
 	@Override
 	public void refresh() {
-		if (supportsPauses == false || (Keyboard.popRefreshRequest() || screen.mustBeRefreshed())) {
+		if (supportsPauses == false || (Keyboard.popRefreshRequest() || forceRefresh || screen.mustBeRefreshed())) {
+			forceRefresh = false;
 			draw();
 		}
 
@@ -498,7 +518,7 @@ public final class DisplayManager implements RenderingLoop {
 	}
 
 	public RenderingLoop getDrawable() {
-		return INSTANCE;
+		return this;
 	}
 
 	@Deprecated
@@ -508,5 +528,65 @@ public final class DisplayManager implements RenderingLoop {
 
 	public void waitForExit() {
 		engine.waitForExit();
+	}
+	
+	@Override
+	public boolean onTouchStart(TouchStartEvent e) {
+		final Screen scr = getScreen();
+		boolean refresh = false;
+		if (scr != null && scr.initialized && scr.onTouchStart(e)) {
+			refresh = true;
+		} else {
+			//Default behavior
+		}
+		if (refresh) {
+			forceRefresh = true;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onTouchEnd(TouchEndEvent e) {
+		final Screen scr = getScreen();
+		boolean refresh = false;
+		if (scr != null && scr.initialized && scr.onTouchEnd(e)) {
+			refresh = true;
+		} else {
+			//Default behavior
+		}
+		if (refresh) {
+			forceRefresh = true;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onTouchCancel(TouchCancelEvent e) {
+		final Screen scr = getScreen();
+		boolean refresh = false;
+		if (scr != null && scr.initialized && scr.onTouchCancel(e)) {
+			refresh = true;
+		} else {
+			//Default behavior
+		}
+		if (refresh) {
+			forceRefresh = true;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onTouchMove(TouchMoveEvent e) {
+		final Screen scr = getScreen();
+		boolean refresh = false;
+		if (scr != null && scr.initialized && scr.onTouchMove(e)) {
+			refresh = true;
+		} else {
+			//Default behavior
+		}
+		if (refresh) {
+			forceRefresh = true;
+		}
+		return true;
 	}
 }

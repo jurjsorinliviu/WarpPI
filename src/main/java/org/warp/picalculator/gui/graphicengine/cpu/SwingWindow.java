@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
@@ -63,7 +64,7 @@ public class SwingWindow extends JFrame {
 		addComponentListener(new ComponentListener() {
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				DisplayManager.INSTANCE.engine.destroy();
+				HardwareDevice.INSTANCE.getDisplayManager().engine.destroy();
 			}
 
 			@Override

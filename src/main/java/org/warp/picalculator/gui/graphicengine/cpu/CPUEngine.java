@@ -7,6 +7,7 @@ import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
+import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.BinaryFont;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
@@ -127,7 +128,7 @@ public class CPUEngine implements GraphicEngine {
 
 	@Deprecated()
 	public void refresh() {
-		if (DisplayManager.INSTANCE.getScreen() == null || (DisplayManager.INSTANCE.error != null && DisplayManager.INSTANCE.error.length() > 0) || DisplayManager.INSTANCE.getScreen() == null || DisplayManager.INSTANCE.getScreen().mustBeRefreshed()) {
+		if (HardwareDevice.INSTANCE.getDisplayManager().getScreen() == null || (HardwareDevice.INSTANCE.getDisplayManager().error != null && HardwareDevice.INSTANCE.getDisplayManager().error.length() > 0) || HardwareDevice.INSTANCE.getDisplayManager().getScreen() == null || HardwareDevice.INSTANCE.getDisplayManager().getScreen().mustBeRefreshed()) {
 			INSTANCE.c.repaint();
 		}
 	}

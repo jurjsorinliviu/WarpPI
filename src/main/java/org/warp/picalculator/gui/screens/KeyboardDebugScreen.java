@@ -1,7 +1,10 @@
 package org.warp.picalculator.gui.screens;
 
 import org.warp.picalculator.StaticVars;
-import org.warp.picalculator.device.Key;
+import org.warp.picalculator.device.HardwareDevice;
+import org.warp.picalculator.event.Key;
+import org.warp.picalculator.event.KeyPressedEvent;
+import org.warp.picalculator.event.KeyReleasedEvent;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.Renderer;
 
@@ -27,19 +30,19 @@ public class KeyboardDebugScreen extends Screen {
 
 	@Override
 	public void render() {
-		final Renderer renderer = DisplayManager.INSTANCE.renderer;
-		DisplayManager.INSTANCE.fonts[2].use(DisplayManager.INSTANCE.engine);
+		final Renderer renderer = HardwareDevice.INSTANCE.getDisplayManager().renderer;
+		HardwareDevice.INSTANCE.getDisplayManager().fonts[2].use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		renderer.glColor4f(0.75f, 0.0f, 0.0f, 1.0f);
 		renderer.glDrawStringRight(StaticVars.screenSize[0] - 10, 30, "-" + keyevent.toUpperCase() + "-");
 		if (keyevent != "NONE") {
-			DisplayManager.INSTANCE.fonts[2].use(DisplayManager.INSTANCE.engine);
+			HardwareDevice.INSTANCE.getDisplayManager().fonts[2].use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 			renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 			renderer.glDrawStringLeft(10, 30, "Key position");
 			renderer.glDrawStringLeft(10, 45, "X: " + keyX + ", Y:" + keyY);
 			renderer.glDrawStringLeft(10, 65, "Key value");
 			renderer.glDrawStringLeft(10, 80, key);
 		}
-		DisplayManager.INSTANCE.fonts[3].use(DisplayManager.INSTANCE.engine);
+		HardwareDevice.INSTANCE.getDisplayManager().fonts[3].use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		for (int i = 0; i < 5; i++) {
 			if (log[i] != null) {
@@ -51,10 +54,10 @@ public class KeyboardDebugScreen extends Screen {
 		renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		renderer.glFillColor(-80 + 100 + 200, 90, 5, 5);
 		renderer.glFillColor(-80 + 100, 100, 200, 70);
-		DisplayManager.INSTANCE.fonts[2].use(DisplayManager.INSTANCE.engine);
+		HardwareDevice.INSTANCE.getDisplayManager().fonts[2].use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		renderer.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		renderer.glDrawStringCenter(-80 + 100 + 200 / 2, 100 + 70 / 2 - (renderer.getCurrentFont().getCharacterHeight() / 2), "FROM SERIAL");
-		DisplayManager.INSTANCE.fonts[3].use(DisplayManager.INSTANCE.engine);
+		HardwareDevice.INSTANCE.getDisplayManager().fonts[3].use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		renderer.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 		for (int i = 0; i < 8; i++) {
 			if (pinsA[i] == 1) {
@@ -97,10 +100,10 @@ public class KeyboardDebugScreen extends Screen {
 		renderer.glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 		renderer.glFillColor(150 + 90, 200, 5, 5);
 		renderer.glFillColor(150 + 100, 100, 200, 70);
-		DisplayManager.INSTANCE.fonts[2].use(DisplayManager.INSTANCE.engine);
+		HardwareDevice.INSTANCE.getDisplayManager().fonts[2].use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		renderer.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		renderer.glDrawStringCenter(150 + 100 + 200 / 2, 100 + 70 / 2 - (renderer.getCurrentFont().getCharacterHeight() / 2), "TO SERIAL");
-		DisplayManager.INSTANCE.fonts[3].use(DisplayManager.INSTANCE.engine);
+		HardwareDevice.INSTANCE.getDisplayManager().fonts[3].use(HardwareDevice.INSTANCE.getDisplayManager().engine);
 		renderer.glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
 		for (int i = 15; i >= 8; i--) {
 			if (pinsB[i] == 1) {
@@ -186,7 +189,7 @@ public class KeyboardDebugScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyPressed(Key k) {
+	public boolean onKeyPressed(KeyPressedEvent k) {
 		beforetime = System.currentTimeMillis();
 		keyevent = "PRESSED";
 		keyX = 0;
@@ -196,7 +199,7 @@ public class KeyboardDebugScreen extends Screen {
 	}
 
 	@Override
-	public boolean keyReleased(Key k) {
+	public boolean onKeyReleased(KeyReleasedEvent k) {
 		beforetime = System.currentTimeMillis();
 		keyevent = "RELEASED";
 		keyX = 0;
