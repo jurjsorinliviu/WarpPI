@@ -21,7 +21,7 @@ VBO_Example.java
 
 /target/
 !/target/*.jar
-!/libs/*.jar
+!libs/**/*.jar
 /backups/
 /Resources_and_Videos/
 
