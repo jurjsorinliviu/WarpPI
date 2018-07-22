@@ -5,6 +5,7 @@
 
 # Package Files #
 !/target/*.jar
+!/libs/*.jar
 *.war
 *.jar
 *.ear
