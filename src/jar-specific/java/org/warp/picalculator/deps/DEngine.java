@@ -1,13 +1,18 @@
 package org.warp.picalculator.deps;
 
 import org.warp.picalculator.ClassUtils;
+import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.gui.graphicengine.GraphicEngine;
 import org.warp.picalculator.gui.graphicengine.cpu.CPUEngine;
 import org.warp.picalculator.gui.graphicengine.framebuffer.FBEngine;
 
 public class DEngine {
 	public static GraphicEngine newGPUEngine() {
-		return new org.warp.picalculator.gui.graphicengine.gpu.GPUEngine();
+		try {
+			return (GraphicEngine) ClassUtils.newClassInstance("org.warp.picalculator.gui.graphicengine.gpu.GPUEngine");
+		} catch (NullPointerException ex) {
+			return null;
+		}
 	}
 	public static GraphicEngine newHeadless24bitEngine() {
 		return new org.warp.picalculator.gui.graphicengine.headless24bit.Headless24bitEngine();

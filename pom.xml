@@ -42,48 +42,6 @@
 	</pluginRepositories>
 	<profiles>
         <profile>
-            <id>aarch64</id>
-            <properties>
-                <src.useAarch64Libraries>true</src.useAarch64Libraries>
-            </properties>
-            <activation>
-                <os>
-                    <family>Linux</family>
-                    <arch>aarch64</arch>
-                </os>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.jogamp.jogl</groupId>
-                    <artifactId>jogl-all-main</artifactId>
-                    <version>2.4</version>
-                    <scope>system</scope>
-                    <systemPath>${project.basedir}/libs/jogl 2.4/jogl-all.jar</systemPath>
-                </dependency>
-                <dependency>
-                    <groupId>org.jogamp.jogl</groupId>
-                    <artifactId>jogl-all-natives-linux-aarch64-main</artifactId>
-                    <version>2.4</version>
-                    <scope>system</scope>
-                    <systemPath>${project.basedir}/libs/jogl 2.4/jogl-all-natives-linux-aarch64.jar</systemPath>
-                </dependency>
-                <dependency>
-                    <groupId>org.jogamp.gluegen</groupId>
-                    <artifactId>gluegen-rt-main</artifactId>
-                    <version>2.4</version>
-                    <scope>system</scope>
-                    <systemPath>${project.basedir}/libs/jogl 2.4/gluegen-rt.jar</systemPath>
-                </dependency>
-                <dependency>
-                    <groupId>org.jogamp.gluegen</groupId>
-                    <artifactId>gluegen-rt-natives-linux-aarch64-main</artifactId>
-                    <version>2.4</version>
-                    <scope>system</scope>
-                    <systemPath>${project.basedir}/libs/jogl 2.4/gluegen-rt-natives-linux-aarch64.jar</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
             <id>jarprofile</id>
             <properties>
                 <src.dir>jar-specific</src.dir>
@@ -114,6 +72,19 @@
                     <version>4.6.1</version>
                 </dependency>
             </dependencies>
+        </profile>
+        <profile>
+            <id>jarprofile-aarch64</id>
+            <properties>
+                <src.useAarch64Libraries>true</src.useAarch64Libraries>
+            </properties>
+            <activation>
+                <!--<os>
+                    <family>Linux</family>
+                    <arch>aarch64</arch>
+                </os>-->
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <!-- Set a compiler level -->
@@ -123,7 +94,7 @@
                         <version>2.3.2</version>
                         <configuration>
                             <excludes>
-                                <exclude>org/warp/picalculator/gui/graphicengine/html/*</exclude>
+                                <exclude>org/warp/picalculator/gui/graphicengine/gpu/*</exclude>
                             </excludes>
                             <source>1.8</source>
                             <target>1.8</target>
@@ -152,6 +123,21 @@
                     <version>2.3.2</version>
                 </dependency>
             </dependencies>
+            <build>
+                <plugins>
+                    <!-- Set a compiler level -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <version>2.3.2</version>
+                        <configuration>
+                            <source>1.8</source>
+                            <target>1.8</target>
+                            <encoding>UTF-8</encoding>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 		<profile>
 			<id>jsprofile</id>
