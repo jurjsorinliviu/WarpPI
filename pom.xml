@@ -107,9 +107,10 @@
         <profile>
             <id>jarprofile-not-aarch64</id>
             <activation>
-                <property>
+                <!--<property>
                     <name>!src.useAarch64Libraries</name>
-                </property>
+                </property>-->
+				<activeByDefault>true</activeByDefault>
             </activation>
             <dependencies>
                 <dependency>
