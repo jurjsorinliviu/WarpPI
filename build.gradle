@@ -30,6 +30,10 @@ dependencies {
     compile group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version:'4.6.1'
 }
 
+task("buildAndroid") << {
+
+}
+
 task("buildJava") << {
     println 'Building for java'
     shadowJar {
@@ -92,6 +96,8 @@ if ("buildJava" in project.gradle.startParameter.taskNames) {
     buildType = "java"
 } else if ("buildWeb" in project.gradle.startParameter.taskNames) {
     buildType = "web"
+} else if ("buildAndroid" in project.gradle.startParameter.taskNames) {
+    buildType = "android"
 } else {
     buildType = "java"
     build.dependsOn(buildJava)
@@ -105,8 +111,8 @@ if (buildType == "java") {
         main {
             java {
                 srcDirs 'src/main/java', 'src/jar-specific/java'
-                if (project.hasProperty('aarch64')) {
-                    exclude '**/org/warp/picalculator/gui/graphicengine/gpu/**'
+                if (project.hasProperty('aarch64') == false) {
+                    srcDirs 'src/gpu-specific/java'
                 }
             }
             resources {
@@ -125,4 +131,6 @@ if (buildType == "java") {
             }
         }
     }
+} else if (buildType == "android") {
+
 }

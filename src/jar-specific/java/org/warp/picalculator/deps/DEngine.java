@@ -9,7 +9,7 @@ import org.warp.picalculator.gui.graphicengine.framebuffer.FBEngine;
 public class DEngine {
 	public static GraphicEngine newGPUEngine() {
 		try {
-			return (GraphicEngine) ClassUtils.newClassInstance("org.warp.picalculator.gui.graphicengine.gpu.GPUEngine");
+			return new org.warp.picalculator.gui.graphicengine.gpu.GPUEngine();
 		} catch (NullPointerException ex) {
 			return null;
 		}

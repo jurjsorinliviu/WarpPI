@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="FacetManager">
+    <facet type="android-gradle" name="Android-Gradle">
+      <configuration>
+        <option name="GRADLE_PROJECT_PATH" value=":" />
+      </configuration>
+    </facet>
+    <facet type="java-gradle" name="Java-Gradle">
+      <configuration>
+        <option name="BUILD_FOLDER_PATH" value="$MODULE_DIR$/../../build" />
+        <option name="BUILDABLE" value="true" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/../../build/classes/java/main" />
+    <output-test url="file://$MODULE_DIR$/../../build/classes/java/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../..">
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/jar-specific/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/gpu-specific/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/rules" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/jar-specific/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/../../.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/../../build" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="Gradle: fastutil-7.2.0" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gson-2.8.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: commons-io-2.6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-main-2.3.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-main-2.3.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: pi4j-core-1.2-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jansi-1.15" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: zip4j-1.3.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: ecj-4.6.1" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-android-aarch64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-android-armv6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-linux-amd64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-linux-armv6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-linux-armv6hf" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-linux-i586" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-macosx-universal" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-solaris-amd64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-solaris-i586" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-windows-amd64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jogl-all-2.3.2-natives-windows-i586" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-android-aarch64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-android-armv6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-linux-amd64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-linux-armv6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-linux-armv6hf" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-linux-i586" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-macosx-universal" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-solaris-amd64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-solaris-i586" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-windows-amd64" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: gluegen-rt-2.3.2-natives-windows-i586" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" exported="" name="warppi-calculator.warppi-calculator-0.7-SNAPSHOT" level="project" />
+  </component>
+</module>
