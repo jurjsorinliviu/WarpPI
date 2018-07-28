@@ -580,7 +580,7 @@ public class BigIntegerMath {
 	 * @since 2009-08-06
 	 * @author Richard J. Mathar
 	 * @throws Error
-	 * @see <a href="http://dx.doi.org/10.1080/01630568908816313">P. L. Butzer
+	 * @see <a href="https://doi.org/10.1080/01630568908816313">P. L. Butzer
 	 *      et al, Num. Funct. Anal. Opt. 10 (5)( 1989) 419-488</a>
 	 */
 	static public Rational centrlFactNumt(int n, int k) throws Error {
@@ -627,7 +627,7 @@ public class BigIntegerMath {
 	 * @return T(n,k)
 	 * @since 2009-08-06
 	 * @author Richard J. Mathar
-	 * @see <a href="http://dx.doi.org/10.1080/01630568908816313">P. L. Butzer
+	 * @see <a href="https://doi.org/10.1080/01630568908816313">P. L. Butzer
 	 *      et al, Num. Funct. Anal. Opt. 10 (5)( 1989) 419-488</a>
 	 */
 	static public Rational centrlFactNumT(int n, int k) {

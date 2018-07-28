@@ -25,10 +25,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.IOUtils;
 import org.warp.picalculator.ClassUtils;
 import org.warp.picalculator.Main;
-
-import com.jogamp.common.util.IOUtil;
 
 public class StorageUtils {
 	public static final boolean exists(Path f) {
@@ -77,7 +76,7 @@ public class StorageUtils {
 					tempFile.deleteOnExit();
 					try (FileOutputStream out = new FileOutputStream(tempFile))
 					{
-						 IOUtil.copyStream2Stream(is, out, (int) tempFile.length());
+						IOUtils.copy(is, out, (int) tempFile.length());
 					}
 					resourcesCache.put(string, tempFile);
 					
