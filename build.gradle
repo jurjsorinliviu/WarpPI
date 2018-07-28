@@ -1,0 +1,128 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+plugins {
+    id "com.github.johnrengelman.shadow" version "2.0.4"
+}
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'org.warp.picalculator'
+version = '0.7-SNAPSHOT'
+
+description = """WarpPI Calculator"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+     maven { url "https://dl.bintray.com/konsoletyper/teavm" }
+     maven { url "https://oss.sonatype.org/content/groups/public" }
+}
+dependencies {
+    compile group: 'it.unimi.dsi', name: 'fastutil', version:'7.2.0'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.8.2'
+    compile group: 'commons-io', name: 'commons-io', version:'2.6'
+    compile group: 'org.jogamp.jogl', name: 'jogl-all-main', version:'2.3.2'
+    compile group: 'org.jogamp.gluegen', name: 'gluegen-rt-main', version:'2.3.2'
+    compile group: 'com.pi4j', name: 'pi4j-core', version:'1.2-SNAPSHOT'
+    compile group: 'org.fusesource.jansi', name: 'jansi', version:'1.15'
+    compile group: 'net.lingala.zip4j', name: 'zip4j', version:'1.3.2'
+    compile group: 'org.eclipse.jdt.core.compiler', name: 'ecj', version:'4.6.1'
+}
+
+task("buildJava") << {
+    println 'Building for java'
+    shadowJar {
+        mergeGroovyExtensionModules()
+        classifier = 'fat'
+    }
+}
+
+task("buildJavaAARCH64") << {
+    println 'Building for aarch64'
+}
+
+task("buildWeb") << {
+    println 'Building for web'
+    def sout = new ByteArrayOutputStream()
+    if (new File("$projectDir/pom.xml").exists()) {
+        new File("$projectDir/pom.xml").renameTo("$projectDir/.tmp.pom.xml")
+    }
+    if (new File("$projectDir/teavm-pom.xml").exists()) {
+        new File("$projectDir/teavm-pom.xml").renameTo("$projectDir/pom.xml")
+    }
+    try {
+        exec {
+            workingDir '.'
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'cmd', '/c', 'mvnw', 'install', '-P', 'jsprofile'
+            } else {
+                commandLine './mvnw', 'install', '-P', 'jsprofile'
+            }
+            standardOutput sout
+            errorOutput sout
+        }
+    } catch (Exception ex) {
+        throw ex
+    } finally {
+        if (new File("$projectDir/pom.xml").exists()) {
+            new File("$projectDir/pom.xml").renameTo("$projectDir/teavm-pom.xml")
+        }
+        if (new File("$projectDir/.tmp.pom.xml").exists()) {
+            new File("$projectDir/.tmp.pom.xml").renameTo("$projectDir/pom.xml")
+        }
+        println sout
+    }
+}
+
+task("buildCommon") << {
+    println 'Building for everything'
+    compileJava.options.encoding = 'UTF-8'
+}
+
+tasks["buildJava"].finalizedBy(buildCommon)
+if (project.hasProperty('aarch64')) {
+    tasks["buildJava"].dependsOn(buildJavaAARCH64)
+}
+tasks["buildCommon"].finalizedBy(build)
+
+defaultTasks 'buildJava'
+def buildType = "java"
+if ("buildJava" in project.gradle.startParameter.taskNames) {
+    buildType = "java"
+} else if ("buildWeb" in project.gradle.startParameter.taskNames) {
+    buildType = "web"
+} else {
+    buildType = "java"
+    build.dependsOn(buildJava)
+    compileJava.dependsOn(buildJava)
+    install.dependsOn(buildJava)
+    assemble.dependsOn(buildJava)
+    jar.dependsOn(buildJava)
+}
+if (buildType == "java") {
+    sourceSets {
+        main {
+            java {
+                srcDirs 'src/main/java', 'src/jar-specific/java'
+                if (project.hasProperty('aarch64')) {
+                    exclude '**/org/warp/picalculator/gui/graphicengine/gpu/**'
+                }
+            }
+            resources {
+                srcDirs 'src/main/resources', 'src/jar-specific/resources', 'src/main/rules'
+            }
+        }
+    }
+} else if (buildType == "web") {
+    sourceSets {
+        main {
+            java {
+                srcDirs 'src/main/java', 'src/js-specific/java', 'src/main/rules'
+            }
+            resources {
+                srcDirs 'src/main/resources', 'src/js-specific/resources'
+            }
+        }
+    }
+}
