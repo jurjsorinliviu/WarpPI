@@ -9,6 +9,7 @@ import org.warp.picalculator.device.HardwareTouchDevice;
 import org.warp.picalculator.device.InputManager;
 import org.warp.picalculator.device.Keyboard;
 import org.warp.picalculator.device.PIHardwareDisplay;
+import org.warp.picalculator.device.PIHardwareTouchDevice;
 import org.warp.picalculator.gui.CalculatorHUD;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.HUD;
@@ -29,26 +30,13 @@ public class Main {
 		System.out.println("WarpPI Calculator");
 		instance = this;
 		Main.args = args;
-		ClassUtils.classLoader = this.getClass();
+//		ClassUtils.classLoader = this.getClass();
 		beforeStart();
 		Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 		PlatformUtils.setThreadName(Thread.currentThread(), "Main thread");
 		DisplayManager dm = new DisplayManager(disp, hud, screen, "WarpPI Calculator by Andrea Cavalli (@Cavallium)");
 		Keyboard k = new Keyboard();
-		HardwareTouchDevice touch = new HardwareTouchDevice() {	
-			@Override
-			public boolean getInvertedY() {
-				return false;
-			}
-			@Override
-			public boolean getInvertedXY() {
-				return false;
-			}
-			@Override
-			public boolean getInvertedX() {
-				return false;
-			}
-		};
+		HardwareTouchDevice touch = new PIHardwareTouchDevice(false,false,false);
 		InputManager im = new InputManager(k, touch);
 		HardwareDevice hardwareDevice = new HardwareDevice(dm, im);
 		hardwareDevice.setup(() -> {

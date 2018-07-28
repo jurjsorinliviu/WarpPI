@@ -114,7 +114,13 @@ public class StorageUtils {
 				throw e;
 			}
 		} else {
-			return Files.newInputStream(Paths.get(string.substring(1)));
+			if (string.length() > 0) {
+				char ch = string.charAt(0);
+				if (ch == '/' || ch == File.separatorChar) {
+					string = string.substring(1);
+				}
+			}
+			return Files.newInputStream(Paths.get(string));
 		}
 	}
 

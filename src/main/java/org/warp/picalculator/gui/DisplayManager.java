@@ -31,7 +31,7 @@ import org.warp.picalculator.gui.screens.Screen;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-public final class DisplayManager implements RenderingLoop, TouchEventListener {
+public final class DisplayManager implements RenderingLoop {
 	private HardwareDevice device;
 	private float brightness;
 
@@ -50,14 +50,14 @@ public final class DisplayManager implements RenderingLoop, TouchEventListener {
 	private Screen screen;
 	private final HUD hud;
 	private final String initialTitle;
-	private final Screen initialScreen;
+	private Screen initialScreen;
 	public DSemaphore screenChange = new DSemaphore(0);
 	public String displayDebugString;
 	public ObjectArrayList<GUIErrorMessage> errorMessages;
 	/**
 	 * Set to true when an event is fired
 	 */
-	private boolean forceRefresh;
+	public boolean forceRefresh;
 
 	public DisplayManager(HardwareDisplay monitor, HUD hud, Screen screen, String title) {
 		engine = chooseGraphicEngine();
@@ -87,7 +87,6 @@ public final class DisplayManager implements RenderingLoop, TouchEventListener {
 			DSystem.exit(0);
 		}
 
-		setScreen(initialScreen);
 		try {
 			engine.create();
 			renderer = engine.getRenderer();
@@ -393,6 +392,10 @@ public final class DisplayManager implements RenderingLoop, TouchEventListener {
 			load_fonts();
 
 			try {
+				if (initialScreen != null) {
+					setScreen(initialScreen);
+					initialScreen = null;
+				}
 				screen.initialize();
 			} catch (final Exception e) {
 				e.printStackTrace();
@@ -528,65 +531,5 @@ public final class DisplayManager implements RenderingLoop, TouchEventListener {
 
 	public void waitForExit() {
 		engine.waitForExit();
-	}
-	
-	@Override
-	public boolean onTouchStart(TouchStartEvent e) {
-		final Screen scr = getScreen();
-		boolean refresh = false;
-		if (scr != null && scr.initialized && scr.onTouchStart(e)) {
-			refresh = true;
-		} else {
-			//Default behavior
-		}
-		if (refresh) {
-			forceRefresh = true;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onTouchEnd(TouchEndEvent e) {
-		final Screen scr = getScreen();
-		boolean refresh = false;
-		if (scr != null && scr.initialized && scr.onTouchEnd(e)) {
-			refresh = true;
-		} else {
-			//Default behavior
-		}
-		if (refresh) {
-			forceRefresh = true;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onTouchCancel(TouchCancelEvent e) {
-		final Screen scr = getScreen();
-		boolean refresh = false;
-		if (scr != null && scr.initialized && scr.onTouchCancel(e)) {
-			refresh = true;
-		} else {
-			//Default behavior
-		}
-		if (refresh) {
-			forceRefresh = true;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean onTouchMove(TouchMoveEvent e) {
-		final Screen scr = getScreen();
-		boolean refresh = false;
-		if (scr != null && scr.initialized && scr.onTouchMove(e)) {
-			refresh = true;
-		} else {
-			//Default behavior
-		}
-		if (refresh) {
-			forceRefresh = true;
-		}
-		return true;
 	}
 }

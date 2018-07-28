@@ -148,6 +148,12 @@ public class GPURenderer implements Renderer {
 	public void glFillRect(float x, float y, float width, float height, float uvX, float uvY, float uvWidth,
 			float uvHeight) {
 		enableTexture();
+		if (uvWidth < 0) {
+			uvX -= uvWidth;
+		}
+		if (uvHeight < 0) {
+			uvY -= uvHeight;
+		}
 		uvWidth /= currentTexWidth;
 		uvX /= currentTexWidth;
 		uvHeight /= currentTexHeight;

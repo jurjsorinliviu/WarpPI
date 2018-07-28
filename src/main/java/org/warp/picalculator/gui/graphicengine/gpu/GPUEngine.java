@@ -54,7 +54,7 @@ public class GPUEngine implements GraphicEngine {
 		}
 		wnd.window.setResizable(r);
 		wnd.window.setUndecorated(!r);
-		wnd.window.setPointerVisible(true);
+		wnd.window.setPointerVisible(r);
 	}
 
 	@Override

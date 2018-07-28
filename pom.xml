@@ -31,6 +31,10 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+	   <repository>
+	        <id>jitpack.io</id>           <!-- JitPack allows github repo to be used as a maven repo -->
+	        <url>https://jitpack.io</url> <!-- For documentation: http://jitpack.io/ -->
+	    </repository>
 	</repositories>
 	<pluginRepositories>
 	    <pluginRepository>

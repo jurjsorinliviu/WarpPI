@@ -3,12 +3,16 @@ package org.warp.picalculator.gui.graphicengine.cpu;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 
@@ -19,8 +23,14 @@ import org.warp.picalculator.StaticVars;
 import org.warp.picalculator.Utils;
 import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.device.Keyboard;
+import org.warp.picalculator.event.TouchEndEvent;
+import org.warp.picalculator.event.TouchMoveEvent;
+import org.warp.picalculator.event.TouchPoint;
+import org.warp.picalculator.event.TouchStartEvent;
 import org.warp.picalculator.gui.DisplayManager;
 import org.warp.picalculator.gui.graphicengine.RenderingLoop;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 public class SwingWindow extends JFrame {
 	private static final long serialVersionUID = 2945898937634075491L;
@@ -97,6 +107,49 @@ public class SwingWindow extends JFrame {
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
 
+			}
+		});
+		addMouseMotionListener(new MouseMotionListener() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				final Insets wp = SwingWindow.this.getInsets();
+				TouchPoint p = new TouchPoint(0, e.getX() - wp.left, e.getY() - wp.top, 5, 5, 1, 0);
+				ObjectArrayList<TouchPoint> touches = new ObjectArrayList<>();
+				ObjectArrayList<TouchPoint> changedTouches = new ObjectArrayList<>();
+				touches.add(p);
+				changedTouches.add(p);
+				TouchMoveEvent tse = new TouchMoveEvent(changedTouches, touches);
+				HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchMove(tse);
+			}
+			@Override
+			public void mouseMoved(MouseEvent e) {
+			}
+		});
+		addMouseListener(new MouseListener() {
+			@Override public void mouseClicked(MouseEvent e) {
+			}
+			@Override public void mousePressed(MouseEvent e) {
+				final Insets wp = SwingWindow.this.getInsets();
+				TouchPoint p = new TouchPoint(0, e.getX() - wp.left, e.getY() - wp.top, 5, 5, 1, 0);
+				ObjectArrayList<TouchPoint> touches = new ObjectArrayList<>();
+				ObjectArrayList<TouchPoint> changedTouches = new ObjectArrayList<>();
+				touches.add(p);
+				changedTouches.add(p);
+				TouchStartEvent tse = new TouchStartEvent(changedTouches, touches);
+				HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchStart(tse);
+			}
+			@Override public void mouseReleased(MouseEvent e) {
+				final Insets wp = SwingWindow.this.getInsets();
+				TouchPoint p = new TouchPoint(0, e.getX() - wp.left, e.getY() - wp.top, 5, 5, 1, 0);
+				ObjectArrayList<TouchPoint> touches = new ObjectArrayList<>();
+				ObjectArrayList<TouchPoint> changedTouches = new ObjectArrayList<>();
+				changedTouches.add(p);
+				TouchEndEvent tse = new TouchEndEvent(changedTouches, touches);
+				HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchEnd(tse);
+			}
+			@Override public void mouseEntered(MouseEvent e) {
+			}
+			@Override public void mouseExited(MouseEvent e) {
 			}
 		});
 	}

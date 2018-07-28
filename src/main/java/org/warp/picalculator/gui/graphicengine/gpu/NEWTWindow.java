@@ -297,22 +297,22 @@ class NEWTWindow implements GLEventListener {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				List<TouchPoint> newPoints = new ObjectArrayList<>();
-				List<TouchPoint> changedPoints = new ObjectArrayList<>();
-				List<TouchPoint> oldPoints = touches;
-				int[] xs = e.getAllX();
-				int[] ys = e.getAllY();
-				float[] ps = e.getAllPressures();
-				short[] is = e.getAllPointerIDs();
-				for (int i = 0; i < e.getPointerCount(); i++) {
-					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
-				}
-				
-				changedPoints.add(newPoints.get(0));
-				newPoints.remove(0);
-				touches = newPoints;
-				HardwareDevice.INSTANCE.getDisplayManager().onTouchStart(new TouchStartEvent(changedPoints, touches));
-				HardwareDevice.INSTANCE.getDisplayManager().onTouchEnd(new TouchEndEvent(changedPoints, touches));
+//				List<TouchPoint> newPoints = new ObjectArrayList<>();
+//				List<TouchPoint> changedPoints = new ObjectArrayList<>();
+//				List<TouchPoint> oldPoints = touches;
+//				int[] xs = e.getAllX();
+//				int[] ys = e.getAllY();
+//				float[] ps = e.getAllPressures();
+//				short[] is = e.getAllPointerIDs();
+//				for (int i = 0; i < e.getPointerCount(); i++) {
+//					newPoints.add(HardwareDevice.INSTANCE.getInputManager().getTouchDevice().makePoint(is[i], xs[i], ys[i], disp.getWidth(), disp.getHeight(), 5, 5, ps[i], 0));
+//				}
+//				
+//				changedPoints.add(newPoints.get(0));
+//				newPoints.remove(0);
+//				touches = newPoints;
+//				HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchStart(new TouchStartEvent(changedPoints, touches));
+//				HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchEnd(new TouchEndEvent(changedPoints, touches));
 			}
 
 			@Override
@@ -337,11 +337,11 @@ class NEWTWindow implements GLEventListener {
 				float[] ps = e.getAllPressures();
 				short[] is = e.getAllPointerIDs();
 				for (int i = 0; i < e.getPointerCount(); i++) {
-					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
+					newPoints.add(HardwareDevice.INSTANCE.getInputManager().getTouchDevice().makePoint(is[i], xs[i], ys[i], disp.getWidth(), disp.getHeight(), 5, 5, ps[i], 0));
 				}
 				changedPoints.add(newPoints.get(0));
 				touches = newPoints;
-				HardwareDevice.INSTANCE.getDisplayManager().onTouchStart(new TouchStartEvent(changedPoints, touches));
+				HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchStart(new TouchStartEvent(changedPoints, touches));
 			}
 
 			@Override
@@ -354,42 +354,47 @@ class NEWTWindow implements GLEventListener {
 				float[] ps = e.getAllPressures();
 				short[] is = e.getAllPointerIDs();
 				for (int i = 0; i < e.getPointerCount(); i++) {
-					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
+					newPoints.add(HardwareDevice.INSTANCE.getInputManager().getTouchDevice().makePoint(is[i], xs[i], ys[i], disp.getWidth(), disp.getHeight(), 5, 5, ps[i], 0));
 				}
 				changedPoints.add(newPoints.get(0));
 				newPoints.remove(0);
 				touches = newPoints;
-				HardwareDevice.INSTANCE.getDisplayManager().onTouchEnd(new TouchEndEvent(changedPoints, touches));
+				HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchEnd(new TouchEndEvent(changedPoints, touches));
 			}
 
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				
 			}
 
+			private long lastDraggedTime = 0;
+			
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				List<TouchPoint> newPoints = new ObjectArrayList<>();
-				List<TouchPoint> changedPoints = new ObjectArrayList<>();
-				List<TouchPoint> oldPoints = touches;
-				int[] xs = e.getAllX();
-				int[] ys = e.getAllY();
-				float[] ps = e.getAllPressures();
-				short[] is = e.getAllPointerIDs();
-				for (int i = 0; i < e.getPointerCount(); i++) {
-					newPoints.add(new TouchPoint(is[i], xs[i], ys[i], 5, 5, ps[i], 0));
-				}
-				newPoints.forEach((newp) -> {
-					oldPoints.forEach((oldp) -> {
-						if (newp.getID() == oldp.getID()) {
-							if (newp.equals(oldp) == false) {
-								changedPoints.add(newp);
+				long curTime = System.currentTimeMillis();
+				if (curTime - lastDraggedTime > 50) {
+					lastDraggedTime = curTime;
+					List<TouchPoint> newPoints = new ObjectArrayList<>();
+					List<TouchPoint> changedPoints = new ObjectArrayList<>();
+					List<TouchPoint> oldPoints = touches;
+					int[] xs = e.getAllX();
+					int[] ys = e.getAllY();
+					float[] ps = e.getAllPressures();
+					short[] is = e.getAllPointerIDs();
+					for (int i = 0; i < e.getPointerCount(); i++) {
+						newPoints.add(HardwareDevice.INSTANCE.getInputManager().getTouchDevice().makePoint(is[i], xs[i], ys[i], disp.getWidth(), disp.getHeight(), 5, 5, ps[i], 0));
+					}
+					newPoints.forEach((newp) -> {
+						oldPoints.forEach((oldp) -> {
+							if (newp.getID() == oldp.getID()) {
+								if (newp.equals(oldp) == false) {
+									changedPoints.add(newp);
+								}
 							}
-						}
+						});
 					});
-				});
-				touches = newPoints;
-				HardwareDevice.INSTANCE.getDisplayManager().onTouchMove(new TouchMoveEvent(changedPoints, touches));
+					touches = newPoints;
+					HardwareDevice.INSTANCE.getInputManager().getTouchDevice().onTouchMove(new TouchMoveEvent(changedPoints, touches));
+				}
 			}
 
 			@Override
