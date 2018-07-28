@@ -4,6 +4,7 @@ plugins {
 }
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'org.warp.picalculator'
 version = '0.7-SNAPSHOT'
@@ -36,10 +37,6 @@ task("buildAndroid") << {
 
 task("buildJava") << {
     println 'Building for java'
-    shadowJar {
-        mergeGroovyExtensionModules()
-        classifier = 'fat'
-    }
 }
 
 task("buildJavaAARCH64") << {
@@ -107,10 +104,11 @@ if ("buildJava" in project.gradle.startParameter.taskNames) {
     jar.dependsOn(buildJava)
 }
 if (buildType == "java") {
+    apply plugin: 'application'
     sourceSets {
         main {
             java {
-                srcDirs 'src/main/java', 'src/jar-specific/java'
+                srcDirs 'src/main/java', 'src/jar-specific/java', 'src/jvm-specific/java', 'src/desktop-specific/java'
                 if (project.hasProperty('aarch64') == false) {
                     srcDirs 'src/gpu-specific/java'
                 }
@@ -120,11 +118,20 @@ if (buildType == "java") {
             }
         }
     }
+
+    mainClassName = 'java.lang.UnsupportedOperationException("Not supported yet.")Main'
+    shadowJar {
+        archiveName = "$baseName-$version.$extension"
+    }
+
+    artifacts {
+        archives shadowJar
+    }
 } else if (buildType == "web") {
     sourceSets {
         main {
             java {
-                srcDirs 'src/main/java', 'src/js-specific/java', 'src/main/rules'
+                srcDirs 'src/main/java', 'src/js-specific/java', 'src/main/rules', 'src/main/jvm-specific'
             }
             resources {
                 srcDirs 'src/main/resources', 'src/js-specific/resources'

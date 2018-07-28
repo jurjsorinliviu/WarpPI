@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.warp.picalculator.deps.DEngine;
 import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.event.Key;
 import org.warp.picalculator.event.KeyPressedEvent;
 import org.warp.picalculator.event.KeyReleasedEvent;
 import org.warp.picalculator.event.KeyboardEventListener;
@@ -180,7 +179,7 @@ public class TestGPU {
 			new Thread(() -> {
 				try {
 					for (int i = 0; i < 12; i++) {
-						Utils.printSystemResourcesUsage();
+						org.warp.picalculator.polyfills.android.Utils.printSystemResourcesUsage();
 						Thread.sleep(5000);
 					}
 				} catch (final InterruptedException e) {

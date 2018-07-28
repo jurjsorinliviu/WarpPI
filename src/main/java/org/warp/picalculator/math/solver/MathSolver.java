@@ -1,8 +1,6 @@
 package org.warp.picalculator.math.solver;
 
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.Error;
 import org.warp.picalculator.StaticVars;
@@ -11,8 +9,7 @@ import org.warp.picalculator.math.Function;
 import org.warp.picalculator.math.rules.Rule;
 import org.warp.picalculator.math.rules.RuleType;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.util.List;
 
 public class MathSolver {
 
@@ -144,7 +141,7 @@ public class MathSolver {
 			}
 			default:
 				System.err.println("Unknown Step State");
-				throw new NotImplementedException();
+				throw new java.lang.UnsupportedOperationException("Not supported yet.");
 		}
 		final ObjectArrayList<Function> results = applyRules(fncs, currentAcceptedRules);
 		switch (stepStates[stepState.get()]) {
@@ -204,7 +201,7 @@ public class MathSolver {
 			}
 			default:
 				System.err.println("Unknown Step State");
-				throw new NotImplementedException();
+				throw new java.lang.UnsupportedOperationException("Not supported yet.");
 		}
 		return null;
 	}

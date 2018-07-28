@@ -3,7 +3,6 @@ package org.warp.picalculator.gui;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Semaphore;
 
 import org.warp.picalculator.ConsoleUtils;
 import org.warp.picalculator.PlatformUtils;
@@ -14,10 +13,8 @@ import org.warp.picalculator.deps.DSemaphore;
 import org.warp.picalculator.deps.DSystem;
 import org.warp.picalculator.device.HardwareDevice;
 import org.warp.picalculator.device.Keyboard;
-import org.warp.picalculator.event.KeyReleasedEvent;
 import org.warp.picalculator.event.TouchCancelEvent;
 import org.warp.picalculator.event.TouchEndEvent;
-import org.warp.picalculator.event.TouchEvent;
 import org.warp.picalculator.event.TouchEventListener;
 import org.warp.picalculator.event.TouchMoveEvent;
 import org.warp.picalculator.event.TouchStartEvent;

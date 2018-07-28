@@ -69,12 +69,14 @@ android {
                 srcDirs = ['/src/main/java',
                            '../src/main/java',
                            '../src/gpu-specific/java',
-                           '../src/jar-specific/java']
+                           '../src/jar-specific/java',
+                           '../src/art-specific/java']
             }
             resources {
                 srcDirs = ['/src/main/res',
                            '../src/main/resources',
                            '../src/jar-specific/resources',
+                           '../src/art-specific/resources',
                            '../src/main/rules']
             }
         }
